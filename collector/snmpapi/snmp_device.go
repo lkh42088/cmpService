@@ -11,27 +11,29 @@ type ID string
 
 type SnmpDevice struct {
 	Device device.Device
-	Snmp      *g.GoSNMP
+	Snmp   *g.GoSNMP
 
-	Cpu       Cpu
-	Memory    Memory
-	System    System
-	IfTable   IfTable
-	IpTable   IpTable
-	l4table   L4Table
+	Cpu        Cpu
+	Memory     Memory
+	System     System
+	IfTable    IfTable
+	IpTable    IpTable
+	l4table    L4Table
+	RouteTable IpRouteTable
 }
 
 //func NewSnmpDevice(id device.CodeID, addr string, community string) *SnmpDevice {
 func NewSnmpDevice(device device.Device) *SnmpDevice {
 	return &SnmpDevice{
-		Device:    device,
-		Snmp:      nil,
-		Cpu:       Cpu{},
-		Memory:    Memory{},
-		System:    System{},
-		IfTable:   IfTable{},
-		IpTable:   IpTable{},
-		l4table:   L4Table{},
+		Device:     device,
+		Snmp:       nil,
+		Cpu:        Cpu{},
+		Memory:     Memory{},
+		System:     System{},
+		IfTable:    IfTable{},
+		IpTable:    IpTable{},
+		l4table:    L4Table{},
+		RouteTable: IpRouteTable{},
 	}
 }
 
@@ -44,9 +46,9 @@ type SnmpDeviceTable struct {
 //var ErrDeviceNotExist = errors.New("device does not exist")
 
 func (s *SnmpDevice) String() {
-	output :=fmt.Sprintf("Device %s", s.Device)
+	output := fmt.Sprintf("Device %s", s.Device)
 	n := len(output)
-	for i:=0 ; i < n; i++ {
+	for i := 0; i < n; i++ {
 		fmt.Print("-")
 	}
 	fmt.Print("\n")
@@ -57,6 +59,7 @@ func (s *SnmpDevice) String() {
 	s.l4table.String()
 	s.IfTable.String()
 	s.IpTable.String()
+	s.RouteTable.String()
 }
 
 func (s *SnmpDeviceTable) String() {
@@ -67,7 +70,7 @@ func (s *SnmpDeviceTable) String() {
 }
 
 func NewSnmpDeviceTable() *SnmpDeviceTable {
-	return &SnmpDeviceTable {
+	return &SnmpDeviceTable{
 		map[device.ID]SnmpDevice{},
 		0,
 		influx.Config{},
@@ -105,5 +108,3 @@ func (sd *SnmpDeviceTable) Delete(id device.ID) error {
 	sd.count--
 	return nil
 }
-
-
