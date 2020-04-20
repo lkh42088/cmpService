@@ -1,7 +1,7 @@
 package mariadblayer
 
 import (
-	"nubes/svcmgr/models"
+	"nubes/common/models"
 )
 
 func (db *DBORM) GetAllCodes() (codes []models.Code, err error) {

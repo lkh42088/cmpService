@@ -13,11 +13,11 @@ func (Code) TableName() string {
 }
 
 type SubCode struct {
-	ID uint `gorm:"primary_key;column:csub_idx"`
-	Code Code `gorm:"foreignkey:CodeID;association_"`
-	CodeID uint `gorm:"column:c_idx"`
-	Name string `gorm:"type:varchar(200);column:csub_name"`
-	Order int `gorm:"column:csub_order"`
+	ID     uint   `gorm:"primary_key;column:csub_idx"`
+	Code   Code   `gorm:"foreignkey:CodeID"`
+	CodeID uint   `gorm:"column:c_idx"`
+	Name   string `gorm:"type:varchar(200);column:csub_name"`
+	Order  int    `gorm:"column:csub_order"`
 }
 
 func (SubCode) TableName() string {

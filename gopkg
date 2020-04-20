@@ -1,0 +1,11 @@
+#! /bin/sh
+go get github.com/go-sql-driver/mysql
+go get github.com/jinzhu/gorm
+go get github.com/gin-gonic/gin
+go get github.com/influxdata/influxdb1-client/v2
+
+
+go get github.com/globalsign/mgo
+go get github.com/globalsign/mgo/bson
+go get github.com/gorilla/mux
+go get github.com/soniah/gosnmp

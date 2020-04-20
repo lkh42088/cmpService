@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"nubes/common/config"
+	"nubes/common/db"
 	"testing"
 )
 
@@ -13,7 +14,8 @@ func getTestConfig() *config.DBConfig {
 		"nubes",
 		"nubes1510",
 		"nubes",
-		"192.168.122.127",
+		"192.168.10.115",
+		//"192.168.122.127",
 		3306,
 	}
 
@@ -26,7 +28,7 @@ func Migration(conf config.DBConfig) {
 		Code string
 		Price uint
 	}
-	db, err := gorm.Open(conf.DBDriver, GetDataSourceName(&conf))
+	db, err := gorm.Open(conf.DBDriver, db.GetDataSourceName(&conf))
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -48,7 +50,7 @@ func Migration(conf config.DBConfig) {
 func TestInit(t *testing.T) {
 	config := getTestConfig()
 	fmt.Println(config)
-	Init(config)
+	db.Init(config)
 }
 
 func TestMigrtion(t *testing.T) {

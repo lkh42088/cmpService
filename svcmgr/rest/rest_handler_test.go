@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"nubes/svcmgr/models"
+	"nubes/common/models"
 	"testing"
 )
 

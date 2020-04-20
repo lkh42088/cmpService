@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"nubes/common/config"
+	db2 "nubes/common/db"
+	"nubes/common/mariadblayer"
 	config2 "nubes/svcmgr/config"
-	"nubes/svcmgr/mariadblayer"
 	"nubes/svcmgr/rest"
 )
 
@@ -25,8 +26,8 @@ func SetDatabase() (db *mariadblayer.DBORM, err error) {
 		return
 	}
 	config2.SvcmgrConfig.MariadbConfig = *dbconfig
-	dataSource := mariadblayer.GetDataSourceName(dbconfig)
-	db, err = mariadblayer.NewORM(dbconfig.DBDriver, dataSource)
+	dataSource := db2.GetDataSourceName(dbconfig)
+	db, err = mariadblayer.NewDBORM(dbconfig.DBDriver, dataSource)
 	if err != nil {
 		fmt.Println("[SetDatabase] Error:", err)
 		return

@@ -3,7 +3,7 @@ package config
 import (
 	client "github.com/influxdata/influxdb1-client"
 	"nubes/common/config"
-	"nubes/svcmgr/mariadblayer"
+	"nubes/common/mariadblayer"
 )
 
 type global_config struct {

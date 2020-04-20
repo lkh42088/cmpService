@@ -2,7 +2,7 @@ package rest
 
 import (
 	"github.com/gin-gonic/gin"
-	"nubes/svcmgr/mariadblayer"
+	"nubes/common/mariadblayer"
 )
 
 type HandlerInterface interface {

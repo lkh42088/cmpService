@@ -1,11 +1,12 @@
 package mariadblayer
 
 import (
+	db2 "nubes/common/db"
 	"testing"
 )
 
 func TestCreateTable(t *testing.T) {
-	db := Connect(getTestConfig())
+	db := db2.Connect(getTestConfig())
 	if db == nil {
 		return
 	}
@@ -14,7 +15,7 @@ func TestCreateTable(t *testing.T) {
 }
 
 func TestDropTable(t *testing.T) {
-	db := Connect(getTestConfig())
+	db := db2.Connect(getTestConfig())
 	if db == nil {
 		return
 	}

@@ -1,6 +1,6 @@
 package mariadblayer
 
-import "nubes/svcmgr/models"
+import "nubes/common/models"
 
 type DBLayer interface {
 	// Code

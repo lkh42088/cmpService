@@ -2,16 +2,17 @@ package mariadblayer
 
 import (
 	"fmt"
-	"nubes/svcmgr/models"
+	db2 "nubes/common/db"
+	"nubes/common/models"
 	"testing"
 )
 
 func TestCodeAddEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -35,10 +36,10 @@ func TestCodeAddEntry(t *testing.T) {
 
 func TestCodeGetEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -49,10 +50,10 @@ func TestCodeGetEntry(t *testing.T) {
 
 func TestCodeDeleteLastEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -75,10 +76,10 @@ func TestCodeDeleteLastEntry(t *testing.T) {
 
 func TestCodeDeletesEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -89,10 +90,10 @@ func TestCodeDeletesEntry(t *testing.T) {
 
 func TestSubCodeAddEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -117,10 +118,10 @@ func TestSubCodeAddEntry(t *testing.T) {
 
 func TestSubCodeGetEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -131,10 +132,10 @@ func TestSubCodeGetEntry(t *testing.T) {
 
 func TestSubCodeDeleteLastEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}
@@ -158,10 +159,10 @@ func TestSubCodeDeleteLastEntry(t *testing.T) {
 
 func TestSubCodeDeletesEntry(t *testing.T) {
 	config := getTestConfig()
-	options := GetDataSourceName(config)
+	options := db2.GetDataSourceName(config)
 	fmt.Println("config:", config)
 	fmt.Println("options:", options)
-	db, err := NewORM("mysql", options)
+	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
 		return
 	}

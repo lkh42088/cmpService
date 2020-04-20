@@ -1,40 +1,13 @@
-package mariadblayer
+package mysqllayer
 
 import (
-	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"nubes/common/config"
+	config2 "nubes/dbmigrator/config"
+	"testing"
 )
 
-type DBORM struct {
-	*gorm.DB
-}
-
-func NewORM(dbname, dataSource string) (*DBORM, error) {
-	db, err := gorm.Open(dbname, dataSource)
-	return &DBORM {
-		DB: db,
-	}, err
-}
-
-func Init(config *config.DBConfig) {
-	arg := GetDataSourceName(config)
-	fmt.Println(arg)
-	db, err := sql.Open("mysql", arg)
-	if err != nil {
-		fmt.Println("ERROR...")
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Connect...")
-	defer db.Close()
-
-	var version string
-	db.QueryRow("SELECT version()").Scan(&version)
-	fmt.Println("Connected to:", version)
-}
 
 func GetDataSourceName(config *config.DBConfig) string {
 	options := fmt.Sprint("?charset=utf8mb4&parseTime=True&loc=Local")
@@ -48,6 +21,7 @@ func GetDataSourceName(config *config.DBConfig) string {
 }
 
 func Connect(config *config.DBConfig) *gorm.DB {
+	fmt.Println(config)
 	options := GetDataSourceName(config)
 	db, err := gorm.Open(config.DBDriver, options)
 	if err != nil {
@@ -58,3 +32,13 @@ func Connect(config *config.DBConfig) *gorm.DB {
 	return db
 }
 
+func TestCreateCbTable(t *testing.T) {
+	config := config2.GetTestCbDatabaseConfig()
+	fmt.Println("TEST: ", config)
+	db := Connect(config)
+	if db == nil {
+		return
+	}
+	defer db.Close()
+	CreateCbTable(db)
+}
