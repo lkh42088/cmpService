@@ -31,7 +31,7 @@ const (
 	TypeOidIfDescr
 	TypeOidIfType
 	TypeOidIfMtu
-	TypeOidIfSpeed  /* 20 */
+	TypeOidIfSpeed /* 20 */
 	TypeOidIfPhysAddr
 	TypeOidIfAdminStatus
 	TypeOidIfOperStatus
@@ -60,6 +60,21 @@ const (
 	TypeOidIpIfIndex
 	TypeOidIpMask
 
+	/* IP Route Entry */
+	TypeOidIpRouteDest
+	TypeOidIpRouteIfIndex
+	TypeOidIpRouteMetric1
+	TypeOidIpRouteMetric2
+	TypeOidIpRouteMetric3
+	TypeOidIpRouteMetric4 /* 50 */
+	TypeOidIpRouteNextHop
+	TypeOidIpRouteType
+	TypeOidIpRouteProto
+	TypeOidIpRouteAge
+	TypeOidIpRouteMask
+	TypeOidIpRouteMetric5
+	TypeOidIpRouteInfo
+
 	/* OID MAX */
 	typeOidMAX
 )
@@ -75,26 +90,26 @@ const (
 	StrOidSysHostname = ".1.3.6.1.2.1.1.5.0" // OCTET STRING (0~255)
 
 	/* System */
-	StrOidTotalMemory = ".1.3.6.1.4.1.2021.4.5.0" // INTEGER
-	StrOidAvailMemory = ".1.3.6.1.4.1.2021.4.6.0" // INTEGER
-	StrOidTotalSwap = ".1.3.6.1.4.1.2021.4.3.0" // INTEGER
-	StrOidAvailSwap = ".1.3.6.1.4.1.2021.4.4.0" // INTEGER
+	StrOidTotalMemory    = ".1.3.6.1.4.1.2021.4.5.0"  // INTEGER
+	StrOidAvailMemory    = ".1.3.6.1.4.1.2021.4.6.0"  // INTEGER
+	StrOidTotalSwap      = ".1.3.6.1.4.1.2021.4.3.0"  // INTEGER
+	StrOidAvailSwap      = ".1.3.6.1.4.1.2021.4.4.0"  // INTEGER
 	StrOidTotalSharedMem = ".1.3.6.1.4.1.2021.4.13.0" // INTEGER
 	StrOidTotalBufferMem = ".1.3.6.1.4.1.2021.4.14.0" // INTEGER
-	StrOidTotalCacheMem = ".1.3.6.1.4.1.2021.4.15.0" // INTEGER
+	StrOidTotalCacheMem  = ".1.3.6.1.4.1.2021.4.15.0" // INTEGER
 
 	/* Cpu Load */
-	StrOidCpuIdle = ".1.3.6.1.4.1.2021.11.11.0" // INTEGER
-	StrOidCpuMin1Av = ".1.3.6.1.4.1.2021.10.1.3.1" // OCTET STRING
-	StrOidCpuMin5Av = ".1.3.6.1.4.1.2021.10.1.3.2" // OCTET STRING
+	StrOidCpuIdle    = ".1.3.6.1.4.1.2021.11.11.0"  // INTEGER
+	StrOidCpuMin1Av  = ".1.3.6.1.4.1.2021.10.1.3.1" // OCTET STRING
+	StrOidCpuMin5Av  = ".1.3.6.1.4.1.2021.10.1.3.2" // OCTET STRING
 	StrOidCpuMin10Av = ".1.3.6.1.4.1.2021.10.1.3.3" // OCTET STRING
 
 	/* Interface */
-	StrOidIfNumber          = ".1.3.6.1.2.1.2.1.0"
-	StrOidIfIndex           = ".1.3.6.1.2.1.2.2.1.1"
-	StrOidIfDescr           = ".1.3.6.1.2.1.2.2.1.2"
-	StrOidIfType            = ".1.3.6.1.2.1.2.2.1.3"
-	StrOidIfMtu             = ".1.3.6.1.2.1.2.2.1.4"
+	StrOidIfNumber         = ".1.3.6.1.2.1.2.1.0"
+	StrOidIfIndex          = ".1.3.6.1.2.1.2.2.1.1"
+	StrOidIfDescr          = ".1.3.6.1.2.1.2.2.1.2"
+	StrOidIfType           = ".1.3.6.1.2.1.2.2.1.3"
+	StrOidIfMtu            = ".1.3.6.1.2.1.2.2.1.4"
 	StrOidIfSpeed          = ".1.3.6.1.2.1.2.2.1.5"
 	StrOidIfPhysAddr       = ".1.3.6.1.2.1.2.2.1.6"
 	StrOidIfAdminStatus    = ".1.3.6.1.2.1.2.2.1.7"
@@ -113,16 +128,32 @@ const (
 	StrOidIfOutErrors      = ".1.3.6.1.2.1.2.2.1.20"
 	StrOidIfOutQLen        = ".1.3.6.1.2.1.2.2.1.21"
 	StrOidIfSpecific       = ".1.3.6.1.2.1.2.2.1.22"
-	StrOidIfName           = ".1.3.6.1.2.1.31.1.1.1.1" // OCTET STRING or DISPLAYSTRING
+
+	/* IP Route Entry */
+	StrOidIpRouteDest    = ".1.3.6.1.2.1.4.21.1.1"  // IPADDRESS
+	StrOidIpRouteIfIndex = ".1.3.6.1.2.1.4.21.1.2"  // INTEGER
+	StrOidIpRouteMetric1 = ".1.3.6.1.2.1.4.21.1.3"  // INTEGER
+	StrOidIpRouteMetric2 = ".1.3.6.1.2.1.4.21.1.4"  // INTEGER
+	StrOidIpRouteMetric3 = ".1.3.6.1.2.1.4.21.1.5"  // INTEGER
+	StrOidIpRouteMetric4 = ".1.3.6.1.2.1.4.21.1.6"  // INTEGER
+	StrOidIpRouteNextHop = ".1.3.6.1.2.1.4.21.1.7"  // IPADDRESS
+	StrOidIpRouteType    = ".1.3.6.1.2.1.4.21.1.8"  // INTEGER
+	StrOidIpRouteProto   = ".1.3.6.1.2.1.4.21.1.9"  // INTEGER
+	StrOidIpRouteAge     = ".1.3.6.1.2.1.4.21.1.10" // INTEGER
+	StrOidIpRouteMask    = ".1.3.6.1.2.1.4.21.1.11" // IPADDRESS
+	StrOidIpRouteMetric5 = ".1.3.6.1.2.1.4.21.1.12" // INTEGER
+	StrOidIpRouteInfo    = ".1.3.6.1.2.1.4.21.1.13" // OBJECT IDENTIFIER
+
+	StrOidIfName = ".1.3.6.1.2.1.31.1.1.1.1" // OCTET STRING or DISPLAYSTRING
 
 	/* L4 Port */
-	StrOidTcpConnState     = ".1.3.6.1.2.1.6.13.1.1" // INTEGER {close(1), listen(2), synSent(3), synReceived(4), finWait1(6), finWait2(7), closeWait(8), lastAck(9), closing(10), timeWait(11) }
-	StrOidUdpPort          = ".1.3.6.1.2.1.7.5.1.2" // INTEGER
+	StrOidTcpConnState = ".1.3.6.1.2.1.6.13.1.1" // INTEGER {close(1), listen(2), synSent(3), synReceived(4), finWait1(6), finWait2(7), closeWait(8), lastAck(9), closing(10), timeWait(11) }
+	StrOidUdpPort      = ".1.3.6.1.2.1.7.5.1.2"  // INTEGER
 
 	/* IP Address Entry */
-	StrOidIpAddr           = ".1.3.6.1.2.1.4.20.1.1" // IPADDRESS
-	StrOidIpIfIndex        = ".1.3.6.1.2.1.4.20.1.2" // INTEGER
-	StrOidIpMask           = ".1.3.6.1.2.1.4.20.1.3" // IPADDRESS
+	StrOidIpAddr    = ".1.3.6.1.2.1.4.20.1.1" // IPADDRESS
+	StrOidIpIfIndex = ".1.3.6.1.2.1.4.20.1.2" // INTEGER
+	StrOidIpMask    = ".1.3.6.1.2.1.4.20.1.3" // IPADDRESS
 )
 
 var (
@@ -134,26 +165,26 @@ var (
 		TypeOidSysHostname: StrOidSysHostname,
 
 		/* Memory */
-		TypeOidTotalMemory : StrOidTotalMemory,
-		TypeOidAvailMemory : StrOidAvailMemory,
-		TypeOidTotalSwap : StrOidTotalSwap,
-		TypeOidAvailSwap : StrOidAvailSwap,
-		TypeOidTotalSharedMem : StrOidTotalSharedMem,
-		TypeOidTotalBufferMem : StrOidTotalBufferMem,
-		TypeOidTotalCacheMem : StrOidTotalCacheMem,
+		TypeOidTotalMemory:    StrOidTotalMemory,
+		TypeOidAvailMemory:    StrOidAvailMemory,
+		TypeOidTotalSwap:      StrOidTotalSwap,
+		TypeOidAvailSwap:      StrOidAvailSwap,
+		TypeOidTotalSharedMem: StrOidTotalSharedMem,
+		TypeOidTotalBufferMem: StrOidTotalBufferMem,
+		TypeOidTotalCacheMem:  StrOidTotalCacheMem,
 
 		/* Cpu Load */
-		TypeOidCpuIdle : StrOidCpuIdle,
-		TypeOidCpuMin1Av : StrOidCpuMin1Av,
-		TypeOidCpuMin5Av : StrOidCpuMin5Av,
-		TypeOidCpuMin10Av : StrOidCpuMin10Av,
+		TypeOidCpuIdle:    StrOidCpuIdle,
+		TypeOidCpuMin1Av:  StrOidCpuMin1Av,
+		TypeOidCpuMin5Av:  StrOidCpuMin5Av,
+		TypeOidCpuMin10Av: StrOidCpuMin10Av,
 
 		/* Interface */
-		TypeOidIfNumber:          StrOidIfNumber,
-		TypeOidIfIndex:           StrOidIfIndex,
-		TypeOidIfDescr:           StrOidIfDescr,
-		TypeOidIfType:            StrOidIfType,
-		TypeOidIfMtu:             StrOidIfMtu,
+		TypeOidIfNumber:         StrOidIfNumber,
+		TypeOidIfIndex:          StrOidIfIndex,
+		TypeOidIfDescr:          StrOidIfDescr,
+		TypeOidIfType:           StrOidIfType,
+		TypeOidIfMtu:            StrOidIfMtu,
 		TypeOidIfSpeed:          StrOidIfSpeed,
 		TypeOidIfPhysAddr:       StrOidIfPhysAddr,
 		TypeOidIfAdminStatus:    StrOidIfAdminStatus,
@@ -164,7 +195,7 @@ var (
 		TypeOidIfInNUcastPkts:   StrOidIfInNUcastPkts,
 		TypeOidIfInDiscards:     StrOidIfInDiscards,
 		TypeOidIfInErrors:       StrOidIfInErrors,
-		TypeOidIfInUnknownProto : StrOidIfInUnknownProto,
+		TypeOidIfInUnknownProto: StrOidIfInUnknownProto,
 		TypeOidIfOutOctets:      StrOidIfOutOctets,
 		TypeOidIfOutUcastPkts:   StrOidIfOutUcastPkts,
 		TypeOidIfOutNUcastPkts:  StrOidIfOutNUcastPkts,
@@ -176,42 +207,57 @@ var (
 
 		/* L4 Port */
 		TypeOidTcpConnState: StrOidTcpConnState,
-		TypeOidUdpPort : StrOidUdpPort,
+		TypeOidUdpPort:      StrOidUdpPort,
 
 		/* IP Address Entry */
-		TypeOidIpAddr : StrOidIpAddr,
-		TypeOidIpIfIndex : StrOidIpIfIndex,
-		TypeOidIpMask : StrOidIpMask,
+		TypeOidIpAddr:    StrOidIpAddr,
+		TypeOidIpIfIndex: StrOidIpIfIndex,
+		TypeOidIpMask:    StrOidIpMask,
+
+		/* IP Route	Table */
+		TypeOidIpRouteDest:    StrOidIpRouteDest,
+		TypeOidIpRouteIfIndex: StrOidIpRouteIfIndex,
+		TypeOidIpRouteMetric1: StrOidIpRouteMetric1,
+		TypeOidIpRouteMetric2: StrOidIpRouteMetric2,
+		TypeOidIpRouteMetric3: StrOidIpRouteMetric3,
+		TypeOidIpRouteMetric4: StrOidIpRouteMetric4,
+		TypeOidIpRouteNextHop: StrOidIpRouteNextHop,
+		TypeOidIpRouteType:    StrOidIpRouteType,
+		TypeOidIpRouteProto:   StrOidIpRouteProto,
+		TypeOidIpRouteAge:     StrOidIpRouteAge,
+		TypeOidIpRouteMask:    StrOidIpRouteMask,
+		TypeOidIpRouteMetric5: StrOidIpRouteMetric5,
+		TypeOidIpRouteInfo:    StrOidIpRouteInfo,
 	}
 
 	/* 4. MAP { OID Type : OID Description } */
-	oidDescMap = map[OidType]string {
+	oidDescMap = map[OidType]string{
 		/* System */
 		TypeOidSysDescr:    "SysDescr",
 		TypeOidSysUptime:   "SysUptime",
 		TypeOidSysHostname: "SysHostname",
 
 		/* Memory */
-		TypeOidTotalMemory : "TotalMemory",
-		TypeOidAvailMemory : "AvailMemory",
-		TypeOidTotalSwap : "TotalSwap",
-		TypeOidAvailSwap : "AvailSwap",
-		TypeOidTotalSharedMem : "TotalSharedMem",
-		TypeOidTotalBufferMem : "TotalBufferMem",
-		TypeOidTotalCacheMem : "TotalCacheMem",
+		TypeOidTotalMemory:    "TotalMemory",
+		TypeOidAvailMemory:    "AvailMemory",
+		TypeOidTotalSwap:      "TotalSwap",
+		TypeOidAvailSwap:      "AvailSwap",
+		TypeOidTotalSharedMem: "TotalSharedMem",
+		TypeOidTotalBufferMem: "TotalBufferMem",
+		TypeOidTotalCacheMem:  "TotalCacheMem",
 
 		/* Cpu Load */
-		TypeOidCpuIdle : "CpuIdle",
-		TypeOidCpuMin1Av : "CpuMin1Av",
-		TypeOidCpuMin5Av : "CpuMin5Av",
-		TypeOidCpuMin10Av : "CpuMin10Av",
+		TypeOidCpuIdle:    "CpuIdle",
+		TypeOidCpuMin1Av:  "CpuMin1Av",
+		TypeOidCpuMin5Av:  "CpuMin5Av",
+		TypeOidCpuMin10Av: "CpuMin10Av",
 
 		/* Interface */
-		TypeOidIfNumber:               "IfNumber",
-		TypeOidIfIndex:                "IfIndex",
-		TypeOidIfDescr:                "IfDescr",
-		TypeOidIfType:                 "IfType",
-		TypeOidIfMtu:                  "IfMtu",
+		TypeOidIfNumber:         "IfNumber",
+		TypeOidIfIndex:          "IfIndex",
+		TypeOidIfDescr:          "IfDescr",
+		TypeOidIfType:           "IfType",
+		TypeOidIfMtu:            "IfMtu",
 		TypeOidIfSpeed:          "IfSpeed",
 		TypeOidIfPhysAddr:       "IfPhysAddress",
 		TypeOidIfAdminStatus:    "IfAdminStatus",
@@ -233,12 +279,12 @@ var (
 		TypeOidIfName:           "IfName",
 
 		/* L4 Port */
-		TypeOidTcpConnState:      "TcpConnState",
-		TypeOidUdpPort :          "TcpUdpPort",
+		TypeOidTcpConnState: "TcpConnState",
+		TypeOidUdpPort:      "TcpUdpPort",
 
 		/* IP Address Entry */
-		TypeOidIpAddr : "IpAddr",
-		TypeOidIpIfIndex : "IpIfIndex",
-		TypeOidIpMask : "IpMask",
+		TypeOidIpAddr:    "IpAddr",
+		TypeOidIpIfIndex: "IpIfIndex",
+		TypeOidIpMask:    "IpMask",
 	}
 )

@@ -57,7 +57,7 @@ func RegularCollect(parentwg *sync.WaitGroup) {
 
 	for {
 		CollectSnmpInfo()
-		time.Sleep( 5 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 
 	if parentwg != nil {
@@ -79,13 +79,13 @@ func CollectSnmpInfo() {
 	// sync Add
 	wg.Add(devNum)
 
-	for _, device:= range SnmpDevices.devices {
+	for _, device := range SnmpDevices.devices {
 		if "" == device.Device.Ip {
 
 			// sync Delete
 			wg.Add(-1)
 
-			lib.LogInfoln("go func -->\n", device.Device.Ip, "skip!!")
+			lib.LogInfo("go func --> %s %s\n", device.Device.Ip, "skip!!")
 			continue
 		}
 		go func(device SnmpDevice) {
@@ -97,7 +97,7 @@ func CollectSnmpInfo() {
 			if dev.Snmp == nil {
 				dev.InitDeviceSnmp()
 			}
-			lib.LogInfoln("go func - SNMP Connect ", dev.Device.Ip, dev.Device.Port, dev.Device.SnmpCommunity)
+			lib.LogInfo("go func - SNMP Connect %s %d %s\n", dev.Device.Ip, dev.Device.Port, dev.Device.SnmpCommunity)
 			err := dev.Snmp.Connect()
 			defer dev.Snmp.Conn.Close()
 			if err != nil {
@@ -126,19 +126,19 @@ func ProcessSnmpAllDevice(deviceList []SnmpDevice) {
 	// sync Add
 	wg.Add(len(deviceList))
 
-	lib.LogInfo("deviceList: ", len(deviceList))
-	for _, device:= range deviceList {
+	lib.LogInfo("deviceList: %d", len(deviceList))
+	for _, device := range deviceList {
 		if "" == device.Device.Ip {
 
 			// sync Delete
 			wg.Add(-1)
 
-			lib.LogInfo("go func --> ip address is null! ", device.Device.Ip, "skip!!")
+			lib.LogInfo("go func --> ip address is null! %s %s", device.Device.Ip, "skip!!")
 			continue
 		}
 		go func(device SnmpDevice) {
 			dev := &device
-			lib.LogInfo("go func ", dev.Device.Ip)
+			lib.LogInfo("go func %s", dev.Device.Ip)
 
 			// sync Done
 			defer wg.Done()
@@ -194,6 +194,9 @@ func getDeviceSnmpInfo(s *SnmpDevice) {
 	// Get L4 Port
 	s.getL4Port()
 
+	// Get IP Routing Table
+	s.GetIpRouteTable()
+
 	// Print device information
 	//s.String()
 }
@@ -215,7 +218,7 @@ func (s *SnmpDevice) getIfTable() {
 }
 
 func (s *SnmpDevice) getSystemFromSnmp() error {
-	oids := []string{StrOidSysDescr, StrOidSysUptime, StrOidSysHostname,}
+	oids := []string{StrOidSysDescr, StrOidSysUptime, StrOidSysHostname}
 	result, err := s.Snmp.Get(oids)
 	if err != nil {
 		lib.LogWarn("getSystemFromSnmpGet() : %v\n", err)
@@ -275,4 +278,3 @@ func string2mac(str string) string {
 	return fmt.Sprintf("%02x:%02x:%02x:%02x:%02x:%02x",
 		arr[0], arr[1], arr[2], arr[3], arr[4], arr[5])
 }
-

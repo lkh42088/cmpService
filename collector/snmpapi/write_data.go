@@ -8,14 +8,14 @@ import (
 
 func WriteMetric(s *SnmpDeviceTable) {
 	for _, dev := range s.devices {
-		tags := map[string]string {
-			"serverip" : dev.Device.Ip,
+		tags := map[string]string{
+			"serverip": dev.Device.Ip,
 		}
 		fields := map[string]interface{}{
-			"cpu-idle" : dev.Cpu.Idle,
-			"cpu-1m" : dev.Cpu.min1av,
-			"cpu-5m" : dev.Cpu.min5av,
-			"cpu-10m" : dev.Cpu.min10av,
+			"cpu-idle": dev.Cpu.Idle,
+			"cpu-1m":   dev.Cpu.min1av,
+			"cpu-5m":   dev.Cpu.min5av,
+			"cpu-10m":  dev.Cpu.min10av,
 		}
 
 		eventTime := time.Now().Add(time.Second * -20)
@@ -23,10 +23,10 @@ func WriteMetric(s *SnmpDeviceTable) {
 			"cpu",
 			tags,
 			fields,
-			eventTime.Add(time.Second * 10),
+			eventTime.Add(time.Second*10),
 		)
 		if err != nil {
-			lib.LogWarn("Error: ", err)
+			lib.LogWarn("Error: %s\n", err)
 			return
 		}
 		s.store.Bp.AddPoint(point)
@@ -34,6 +34,6 @@ func WriteMetric(s *SnmpDeviceTable) {
 
 	err := s.store.Client.Write(s.store.Bp)
 	if err != nil {
-		lib.LogWarn("Influxdb Write Error:", err)
+		lib.LogWarn("Influxdb Write Error: %s\n", err)
 	}
 }
