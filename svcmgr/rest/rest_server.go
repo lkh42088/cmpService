@@ -30,6 +30,7 @@ func NewHandler(db *mariadblayer.DBORM) (*Handler, error) {
 
 func RunAPI(address string, db *mariadblayer.DBORM) error {
 	r := gin.Default()
+	r.Use(CORSMiddlewre())
 	h, _ := NewHandler(db)
 
 	// Code
@@ -45,5 +46,19 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	r.DELETE("/v1/subcodes", h.DeleteSubCodes)
 
 	return r.Run(address)
+}
+
+func CORSMiddlewre() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Headers", "Contest-Type, Authorization, Origin")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
 }
 
