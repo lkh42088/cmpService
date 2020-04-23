@@ -30,8 +30,8 @@ func getGOMAXPROCS() int {
 
 func ApplyMongoDB(snmpdevtable *SnmpDeviceTable) {
 
-	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.count, len(SnmpDevices.devices))
-	if mongodao.Mongo != nil {
+	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.Count, len(SnmpDevices.Devices))
+	if mongodao.Mongo.Session != nil {
 		devices, _ := mongodao.Mongo.GetAll()
 		for _, dev := range devices {
 			snmpdev := SnmpDevice{}
@@ -40,18 +40,22 @@ func ApplyMongoDB(snmpdevtable *SnmpDeviceTable) {
 			snmpdevtable.Post(snmpdev)
 		}
 	}
-	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.count, len(SnmpDevices.devices))
+	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.Count, len(SnmpDevices.Devices))
+}
+
+func InfluxConfigure(config *influx.Config) {
+	SnmpDevices.Store = *config
+	return
 }
 
 func RegularCollect(parentwg *sync.WaitGroup) {
-
 	config := influx.Init(
-		"http://localhost:8086",
-		"admin",
-		"nubes1510",
+		"http://192.168.10.19:8086",
+		"nubes",
+		"",
 		"snmp_nodes")
 
-	SnmpDevices.store = *config
+	SnmpDevices.Store = *config
 
 	ApplyMongoDB(SnmpDevices)
 
@@ -66,7 +70,7 @@ func RegularCollect(parentwg *sync.WaitGroup) {
 }
 
 func CollectSnmpInfo() {
-	devNum := len(SnmpDevices.devices)
+	devNum := len(SnmpDevices.Devices)
 	if devNum == 0 {
 		lib.LogInfoln("It does not exist device!")
 		return
@@ -79,7 +83,7 @@ func CollectSnmpInfo() {
 	// sync Add
 	wg.Add(devNum)
 
-	for _, device := range SnmpDevices.devices {
+	for _, device := range SnmpDevices.Devices {
 		if "" == device.Device.Ip {
 
 			// sync Delete
@@ -107,7 +111,7 @@ func CollectSnmpInfo() {
 				lib.LogInfoln("SNMP Get start", dev.Device.Ip)
 				getDeviceSnmpInfo(dev)
 				mutex.Lock()
-				SnmpDevices.devices[dev.Device.GetIdString()] = *dev
+				SnmpDevices.Devices[dev.Device.GetIdString()] = *dev
 				mutex.Unlock()
 			}
 		}(device)
@@ -116,7 +120,7 @@ func CollectSnmpInfo() {
 	WriteMetric(SnmpDevices)
 	//SnmpDevices.String()
 	fmt.Printf("Total: count %d, device slice %d v0.9.5\n",
-		SnmpDevices.count, len(SnmpDevices.devices))
+		SnmpDevices.Count, len(SnmpDevices.Devices))
 }
 
 func ProcessSnmpAllDevice(deviceList []SnmpDevice) {

@@ -38,9 +38,9 @@ func NewSnmpDevice(device device.Device) *SnmpDevice {
 }
 
 type SnmpDeviceTable struct {
-	devices map[device.ID]SnmpDevice
-	count   int
-	store   influx.Config
+	Devices map[device.ID]SnmpDevice
+	Count   int
+	Store   influx.Config
 }
 
 //var ErrDeviceNotExist = errors.New("device does not exist")
@@ -63,10 +63,10 @@ func (s *SnmpDevice) String() {
 }
 
 func (s *SnmpDeviceTable) String() {
-	for _, d := range s.devices {
+	for _, d := range s.Devices {
 		d.String()
 	}
-	fmt.Println("Total:", len(s.devices), s.count)
+	fmt.Println("Total:", len(s.Devices), s.Count)
 }
 
 func NewSnmpDeviceTable() *SnmpDeviceTable {
@@ -78,7 +78,7 @@ func NewSnmpDeviceTable() *SnmpDeviceTable {
 }
 
 func (sd *SnmpDeviceTable) Get(id device.ID) (*SnmpDevice, error) {
-	d, exists := sd.devices[id]
+	d, exists := sd.Devices[id]
 	if !exists {
 		return &SnmpDevice{}, device.ErrDeviceNotExist
 	}
@@ -86,25 +86,25 @@ func (sd *SnmpDeviceTable) Get(id device.ID) (*SnmpDevice, error) {
 }
 
 func (sd *SnmpDeviceTable) Put(id device.ID, d SnmpDevice) error {
-	if _, exists := sd.devices[id]; !exists {
+	if _, exists := sd.Devices[id]; !exists {
 		return device.ErrDeviceNotExist
 	}
-	sd.devices[id] = d
+	sd.Devices[id] = d
 	return nil
 }
 
 func (sd *SnmpDeviceTable) Post(d SnmpDevice) (device.ID, error) {
-	sd.count++
+	sd.Count++
 	fmt.Printf("dev id : %s", d.Device.GetIdString())
-	sd.devices[d.Device.GetIdString()] = d
+	sd.Devices[d.Device.GetIdString()] = d
 	return d.Device.GetIdString(), nil
 }
 
 func (sd *SnmpDeviceTable) Delete(id device.ID) error {
-	if _, exists := sd.devices[id]; !exists {
+	if _, exists := sd.Devices[id]; !exists {
 		return device.ErrDeviceNotExist
 	}
-	delete(sd.devices, id)
-	sd.count--
+	delete(sd.Devices, id)
+	sd.Count--
 	return nil
 }

@@ -15,11 +15,14 @@ func main() {
 func collect() {
 	var wg sync.WaitGroup
 
+	rest.FindConfig()
+	var r = rest.ReadConf()
+
 	fmt.Println("Start ++")
 
 	wg.Add(2)
 
-	go rest.RestRouter(&wg)
+	go rest.RunAPI(&wg)
 
 	go snmpapi.RegularCollect(&wg)
 

@@ -15,7 +15,8 @@ import (
 func TestRestRouter(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
-	RestRouter(&wg)
+	//RestRouter(&wg)
+	RunAPI(&wg)
 	wg.Wait()
 }
 
@@ -56,9 +57,10 @@ func TestRestGet2(t *testing.T) {
 	fmt.Println("resp:", string(data))
 }
 
+// postform : old version
 func TestRestPost(t *testing.T) {
 	dev := device.Device{
-		Id:            "",
+		Id:            "1",
 		Ip:            "192.168.122.19",
 		Port:          161,
 		SnmpCommunity: "nubes",
@@ -74,6 +76,37 @@ func TestRestPost(t *testing.T) {
 		return
 	}
 	fmt.Println("resp:", string(data))
+}
+
+// json : new version
+func TestRestPort2(t *testing.T) {
+	dev := []device.Device{
+		{
+			Id:            "1",
+			Ip:            "127.0.0.1",
+			Port:          161,
+			SnmpCommunity: "nubes",
+		}, {
+			Id:            "2",
+			Ip:            "211.211.211.211",
+			Port:          161,
+			SnmpCommunity: "nubes",
+		},
+	}
+	pbytes, _ := json.Marshal(dev)
+	req, _ := http.NewRequest("POST",
+		"http://127.0.0.1:8884" + apiPathPrefix + apiDevice,
+		bytes.NewBuffer(pbytes))
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("response err:", err)
+		return
+	}
+	defer resp.Body.Close()
+	data, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(data)
 }
 
 func TestRestDelete(t *testing.T) {
@@ -99,4 +132,17 @@ func TestId(t *testing.T) {
 	id := device.ID(fmt.Sprintf("%x",string(objID)))
 	fmt.Printf("%s\n", id)
 	fmt.Printf("%s\n", string(objID))
+}
+
+func TestCreateConf(t *testing.T) {
+	CreateConf()
+}
+
+func TestWriteConf(t *testing.T) {
+	WriteConf("influxip", "127.0.0.1")
+}
+
+func TestReadConf(t *testing.T) {
+	rest := ReadConf()
+	fmt.Println(rest)
 }

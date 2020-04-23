@@ -7,7 +7,7 @@ import (
 )
 
 func WriteMetric(s *SnmpDeviceTable) {
-	for _, dev := range s.devices {
+	for _, dev := range s.Devices {
 		tags := map[string]string{
 			"serverip": dev.Device.Ip,
 		}
@@ -29,10 +29,10 @@ func WriteMetric(s *SnmpDeviceTable) {
 			lib.LogWarn("Error: %s\n", err)
 			return
 		}
-		s.store.Bp.AddPoint(point)
+		s.Store.Bp.AddPoint(point)
 	}
 
-	err := s.store.Client.Write(s.store.Bp)
+	err := s.Store.Client.Write(s.Store.Bp)
 	if err != nil {
 		lib.LogWarn("Influxdb Write Error: %s\n", err)
 	}
