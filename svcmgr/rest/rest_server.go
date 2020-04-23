@@ -16,6 +16,8 @@ type HandlerInterface interface {
 	AddSubCode(c *gin.Context)
 	DeleteSubCode(c *gin.Context)
 	DeleteSubCodes(c *gin.Context)
+	// Device
+	GetDevices(c *gin.Context)
 }
 
 type Handler struct {
@@ -45,6 +47,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	r.DELETE("/v1/subcode/:id", h.DeleteSubCode)
 	r.DELETE("/v1/subcodes", h.DeleteSubCodes)
 
+	// Devices
+	r.GET("/v1/devices", h.GetDevices)
+	r.GET("/v1/devices/:menuType", h.GetDevicesByList)
+
 	return r.Run(address)
 }
 
@@ -61,4 +67,3 @@ func CORSMiddlewre() gin.HandlerFunc {
 		c.Next()
 	}
 }
-

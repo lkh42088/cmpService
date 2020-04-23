@@ -16,11 +16,15 @@ func main () {
 		return
 	}
 	SetRestServer(db)
+/*	http.HandleFunc("/", serveStatic)
+	http.ListenAndServe(Port, nil)*/
 }
 
 func SetDatabase() (db *mariadblayer.DBORM, err error) {
-	dbconfig, err := config.NewDBConfig("mysql", "nubes", "nubes1510",
-		"nubes","192.168.122.127", 3306)
+	dbconfig, err := config.NewDBConfig("mysql", "nubes", "nubes1510!",
+		"nubes","192.168.227.129", 3306)
+	/*dbconfig, err := config.NewDBConfig("mysql", "nubes", "nubes1510",
+		"nubes","192.168.122.127", 3306)*/
 	if err != nil {
 		fmt.Println("[SetDatabase] Error:", err)
 		return
@@ -41,3 +45,11 @@ func SetRestServer(db *mariadblayer.DBORM) {
 	config2.SvcmgrConfig.RestServer = restServer
 	rest.RunAPI(restServer, db)
 }
+
+/*func serveStatic(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("src/main/template/public/index.html")
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Execute(w, nil)
+}*/
