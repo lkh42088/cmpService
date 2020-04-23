@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	conf "nubes/collector/conf"
 	"nubes/collector/db/influx"
 	"nubes/collector/device"
 	"nubes/collector/lib"
@@ -39,39 +40,39 @@ type MongoUser interface {
 }
 
 func MongoDBConfigChange() {
-	r := ReadConf()
-	if r == nil {
+	config := conf.ReadConfig()
+	if config == nil {
 		fmt.Println("NewmongoDB Readconf fail")
 		Mongo = mongodao.New("127.0.0.1", "collector", "devices")
 	} else {
 		fmt.Printf("Mongo Config IP:%s DB:%s TABLE:%s\n",
-			r["mongoip"], r["mongodb"], r["mongotable"])
-		Mongo = mongodao.New(r["mongoip"], r["mongodb"], r["mongotable"])
+			config[conf.Mongoip], config[conf.Mongodb], config[conf.Mongotable])
+		Mongo = mongodao.New(config[conf.Mongoip], config[conf.Mongodb], config[conf.Mongotable])
 	}
 	return
 }
 
 func InfluxDBConfigChange() {
-	var config *influx.Config
-	r := ReadConf()
-	if r == nil {
-		config = influx.Init(
+	var influxConfig *influx.Config
+	config := conf.ReadConfig()
+	if config == nil {
+		influxConfig = influx.Init(
 			"http://192.168.10.19:8086",
 			"nubes",
 			"",
 			"snmp_nodes")
 	} else {
-		path := "http://" + r["influxip"] + ":8086"
-		config = influx.Init(
+		path := "http://" + config[conf.Influxip] + ":8086"
+		influxConfig = influx.Init(
 			path,
 			"nubes",
 			//"",	// id
 			"",
-			r["influxdb"])
+			config[conf.Influxdb])
 	}
 
-	fmt.Println(config)
-	snmpapi.InfluxConfigure(config)
+	fmt.Println(influxConfig)
+	snmpapi.InfluxConfigure(influxConfig)
 }
 
 func RestAPIServerRestart() {
@@ -211,10 +212,10 @@ func apiDeviceRemoveHandler(c *gin.Context) {
 // REST CONFIG change
 func apiRestConfigHandler(c *gin.Context) {
 	key := c.Param("key")
-	config := c.Param("config")
-	fmt.Printf("===== key:%s, config:%s =====\n", key, config)
-	if WriteConf(key, config) == nil {
-		// Apply config
+	config := c.Param("conf")
+	fmt.Printf("===== key:%s, conf:%s =====\n", key, config)
+	if conf.UpdateConfig(key, config) == nil {
+		// Apply conf
 		if strings.Contains(key, "mongo") {
 			MongoDBConfigChange()
 		} else if strings.Contains(key, "influx") {
@@ -224,7 +225,7 @@ func apiRestConfigHandler(c *gin.Context) {
 		} else if strings.Contains(key, "svcmgr"){
 			// SvcmgrReconnect()
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "Success config change.\n"})
+		c.JSON(http.StatusOK, gin.H{"message": "Success conf change.\n"})
 	} else {
 		c.JSON(http.StatusInternalServerError,
 			gin.H{"message":"Config file cannot modify.\n"})

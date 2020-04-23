@@ -1,22 +1,28 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"nubes/collector/conf"
 	"nubes/collector/rest"
 	"nubes/collector/snmpapi"
 	"sync"
 )
 
+
 func main() {
-	collect()
+	configFile := flag.String("file", "/etc/collector/collector.conf",
+		"Input configuration file")
+	flag.Parse()
+	collect(*configFile)
 	//simpleCollect()
 }
 
-func collect() {
+func collect(configFile string) {
 	var wg sync.WaitGroup
 
-	rest.FindConfig()
-	var r = rest.ReadConf()
+	// Process configuration information
+	conf.ProcessConfig(configFile)
 
 	fmt.Println("Start ++")
 

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
+	conf "nubes/collector/conf"
 	"nubes/collector/device"
 	"sync"
 )
@@ -14,7 +15,7 @@ const (
 	apiPathPrefix = "/api/v1"
 	idPattern = "/{id:[0-9a-f]+}"
 	apiDevice = "/device"
-	apiConfig = "/config"
+	apiConfig = "/conf"
 )
 
 var Router *gin.Engine
@@ -64,13 +65,13 @@ func RunAPI(parentwg *sync.WaitGroup) {
 	// Configure
 	RestAPIConfigure()
 
-	// Read REST api config
-	restconfig := ReadConf()
-	if restconfig == nil {
+	// Read REST api conf
+	config := conf.ReadConfig()
+	if config == nil {
 		fmt.Println("===== Need to REST server configuration. =====")
 		return
 	}
-	address := restconfig["restip"] + ":" + restconfig["restport"]
+	address := config[conf.Restip] + ":" + config[conf.Restport]
 
 	// Activate GIN
 	router := gin.Default()
@@ -86,7 +87,7 @@ func RunAPI(parentwg *sync.WaitGroup) {
 	rg.DELETE(apiDevice + "/:del", apiDeviceRemoveHandler)
 
 	// REST CONFIG CHANGE
-	rg.POST(apiConfig + "/:key" + "/:config", apiRestConfigHandler)
+	rg.POST(apiConfig + "/:key" + "/:conf", apiRestConfigHandler)
 
 	router.Run(address)
 	if parentwg != nil {

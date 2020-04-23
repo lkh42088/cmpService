@@ -7,6 +7,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"io/ioutil"
 	"net/http"
+	"nubes/collector/conf"
 	"nubes/collector/device"
 	"sync"
 	"testing"
@@ -135,14 +136,14 @@ func TestId(t *testing.T) {
 }
 
 func TestCreateConf(t *testing.T) {
-	CreateConf()
+	conf.CreateDefaultConfig()
 }
 
 func TestWriteConf(t *testing.T) {
-	WriteConf("influxip", "127.0.0.1")
+	conf.UpdateConfig("influxip", "127.0.0.1")
 }
 
 func TestReadConf(t *testing.T) {
-	rest := ReadConf()
-	fmt.Println(rest)
+	config := conf.ReadConfig()
+	fmt.Println(config)
 }

@@ -11,7 +11,7 @@ import (
 func TestDeviceAddEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("config:", config)
+	fmt.Println("conf:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {

@@ -23,7 +23,7 @@ func main () {
 func SetDatabase() (db *mariadblayer.DBORM, err error) {
 	dbconfig, err := config.NewDBConfig("mysql", "nubes", "nubes1510!",
 		"nubes","192.168.227.129", 3306)
-	/*dbconfig, err := config.NewDBConfig("mysql", "nubes", "nubes1510",
+	/*dbconfig, err := conf.NewDBConfig("mysql", "nubes", "nubes1510",
 		"nubes","192.168.122.127", 3306)*/
 	if err != nil {
 		fmt.Println("[SetDatabase] Error:", err)
