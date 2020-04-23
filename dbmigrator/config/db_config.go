@@ -7,9 +7,9 @@ func GetNewDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
 		"nubes",
-		"nubes1510",
+		"nubes1510!",
 		"nubes",
-		"192.168.10.115",
+		"192.168.227.129",
 		3306,
 	}
 	return &config
@@ -22,7 +22,7 @@ func GetOldDatabaseConfig() *config.DBConfig {
 		"nubes",
 		"Nubes1510!",
 		"cdn_db_2020",
-		"192.168.10.44",
+		"192.168.227.128",
 		3306,
 	}
 	return &config
@@ -34,8 +34,8 @@ func GetTestCbDatabaseConfig() *config.DBConfig {
 		"mysql",
 		"nubes",
 		"Nubes1510!",
-		"cb_db",
-		"192.168.10.33",
+		"test_cdn_db",
+		"192.168.227.128",
 		3306,
 	}
 	return &config

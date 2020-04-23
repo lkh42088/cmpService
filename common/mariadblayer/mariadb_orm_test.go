@@ -12,10 +12,9 @@ func getTestConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
 		"nubes",
-		"nubes1510",
+		"nubes1510!",
 		"nubes",
-		"192.168.10.115",
-		//"192.168.122.127",
+		"192.168.227.129",
 		3306,
 	}
 

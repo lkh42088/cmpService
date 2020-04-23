@@ -1,13 +1,45 @@
 package rest
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"nubes/common/models"
 	"strconv"
 )
 
+func (h *Handler) GetDevicesByList(c *gin.Context) {
+	fmt.Println("GetDevicesByMenutype")
+	if h.db == nil {
+		return
+	}
+	devices, err := h.db.GetDevicesByMenutype()
+	if err  != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+	fmt.Println(devices)
+
+	c.JSON(http.StatusOK, devices)
+}
+
+func (h *Handler) GetDevices(c *gin.Context) {
+	fmt.Println("GetDevices")
+	if h.db == nil {
+		return
+	}
+	devices, err := h.db.GetAllDevices()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+	fmt.Println(devices)
+
+	c.JSON(http.StatusOK, devices)
+}
+
 func (h *Handler) GetCodes(c *gin.Context) {
+	fmt.Println("Getcodes")
 	if h.db == nil {
 		return
 	}
@@ -16,6 +48,8 @@ func (h *Handler) GetCodes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
+	fmt.Println(codes)
+
 	c.JSON(http.StatusOK, codes)
 }
 

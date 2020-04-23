@@ -8,7 +8,6 @@ import (
 	"testing"
 )
 
-
 func GetDataSourceName(config *config.DBConfig) string {
 	options := fmt.Sprint("?charset=utf8mb4&parseTime=True&loc=Local")
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s",
