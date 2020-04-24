@@ -29,7 +29,6 @@ type HandlerInterface interface {
 }
 
 // Avoid import cycle (rest <-> mongodao)
-var Mongo MongoUser
 type MongoUser interface {
 	Get(device.ID) (device.Device, error)
 	Put(device.ID, device.Device) error
@@ -43,12 +42,15 @@ func MongoDBConfigChange() {
 	config := conf.ReadConfig()
 	if config.Mongoip == "" || config.Mongodb == "" || config.Mongotable == "" {
 		fmt.Println("NewmongoDB Readconf fail")
-		Mongo = mongodao.New("127.0.0.1", "collector", "devices")
+		mongo := mongodao.New("127.0.0.1", "collector", "devices")
+		mongodao.SetMongo(mongo)
 	} else {
 		fmt.Printf("Mongo Config IP:%s DB:%s TABLE:%s\n",
 			config.Mongoip, config.Mongodb, config.Mongotable)
-		Mongo = mongodao.New(config.Mongoip, config.Mongodb, config.Mongotable)
+		mongo := mongodao.New(config.Mongoip, config.Mongodb, config.Mongotable)
+		mongodao.SetMongo(mongo)
 	}
+	snmpapi.CallApplyMongoDb()
 	return
 }
 
@@ -81,7 +83,7 @@ func RestAPIServerRestart() {
 
 /// REST-GET
 func apiDeviceGetAllHandler(c *gin.Context) {
-	d, err := Mongo.GetAll()
+	d, err := mongodao.Mongo.GetAll()
 	if d != nil {
 		fmt.Println("devices:", d)
 	}
@@ -96,7 +98,7 @@ func apiDeviceGetAllHandler(c *gin.Context) {
 
 func apiDeviceGetHandler(c *gin.Context) {
 	id := device.ID(c.Param("get"))
-	d, err := Mongo.Get(id)
+	d, err := mongodao.Mongo.Get(id)
 	response := Response{
 		ID:	id,
 		Device: d,
@@ -116,7 +118,9 @@ func apiDevicePostHandler(c *gin.Context) {
 		return
 	}
 	for _, d := range devices {
-		id, err := Mongo.Post(&d)
+		fmt.Println(d)
+		id, err := mongodao.Mongo.Post(&d)
+		fmt.Println(id, err)
 		response = Response{
 			ID:     id,
 			Device: d,
@@ -162,7 +166,7 @@ func apiDevicePostJsonHandler(c *gin.Context) {
 			ResponseError{err},
 		})
 	}
-	if _, err := Mongo.Post(&dev); err != nil {
+	if _, err := mongodao.Mongo.Post(&dev); err != nil {
 		json.NewEncoder(c.Writer).Encode(Response {
 			"-1",
 			dev,
@@ -184,7 +188,7 @@ func apiDevicePostJsonHandler(c *gin.Context) {
 // Not used
 func apiDeviceRemoveAllHandler(c *gin.Context) {
 	var err error
-	_, err = Mongo.DeleteAll()
+	_, err = mongodao.Mongo.DeleteAll()
 	response := Response{
 		Error:  ResponseError{err},
 	}
@@ -197,10 +201,10 @@ func apiDeviceRemoveHandler(c *gin.Context) {
 	id := device.ID(c.Param("del"))
 	var err error
 	if strings.ToUpper(string(id)) == "ALL" {
-		_, err = Mongo.DeleteAll()
+		_, err = mongodao.Mongo.DeleteAll()
 		id = ""
 	} else {
-		err = Mongo.Delete(id)
+		err = mongodao.Mongo.Delete(id)
 	}
 	response := Response{
 		ID:     id,

@@ -24,14 +24,13 @@ var mutex sync.Mutex
 func getGOMAXPROCS() int {
 
 	// Default GOMAXPROCS : The number of Server Cores.
-
 	return runtime.GOMAXPROCS(0)
 }
 
 func ApplyMongoDB(snmpdevtable *SnmpDeviceTable) {
 
 	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.Count, len(SnmpDevices.Devices))
-	if mongodao.Mongo.Session != nil {
+	if mongodao.Mongo != nil {
 		devices, _ := mongodao.Mongo.GetAll()
 		for _, dev := range devices {
 			snmpdev := SnmpDevice{}
@@ -48,16 +47,11 @@ func InfluxConfigure(config *influx.Config) {
 	return
 }
 
-func RegularCollect(parentwg *sync.WaitGroup) {
-	//config := influx.Init(
-	//	"http://192.168.10.19:8086",
-	//	"nubes",
-	//	"",
-	//	"snmp_nodes")
-
-	//SnmpDevices.Store = *config
-
+func CallApplyMongoDb() {
 	ApplyMongoDB(SnmpDevices)
+}
+
+func RegularCollect(parentwg *sync.WaitGroup) {
 
 	for {
 		CollectSnmpInfo()

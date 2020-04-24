@@ -14,11 +14,12 @@ type MongoAccessor struct {
 
 //var Mongo = device.NewMemoryDataAccess()
 //var Mongo = New("127.0.0.1", "collector", "devices")
-var Mongo MongoAccessor
+var Mongo *MongoAccessor
 
 func New(path, db, c string) *MongoAccessor {
 	session, err := mgo.Dial(path)
 	if err != nil {
+		fmt.Println("ERROR: failed to create mongodb connection!!")
 		return nil
 	}
 	collection := session.DB(db).C(c)
@@ -26,6 +27,10 @@ func New(path, db, c string) *MongoAccessor {
 		Session:    session,
 		Collection: collection,
 	}
+}
+
+func SetMongo(mongo *MongoAccessor) {
+	Mongo = mongo
 }
 
 func (m *MongoAccessor) Close() error {

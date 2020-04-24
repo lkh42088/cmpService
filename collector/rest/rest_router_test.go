@@ -96,7 +96,7 @@ func TestRestPort2(t *testing.T) {
 	}
 	pbytes, _ := json.Marshal(dev)
 	req, _ := http.NewRequest("POST",
-		"http://127.0.0.1:8884" + apiPathPrefix + apiDevice,
+		"http://127.0.0.1:7708" + apiPathPrefix + apiDevice,
 		bytes.NewBuffer(pbytes))
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
@@ -112,7 +112,7 @@ func TestRestPort2(t *testing.T) {
 
 func TestRestDelete(t *testing.T) {
 	req, err := http.NewRequest("DELETE",
-		"http://localhost:8884" + apiPathPrefix + apiDevice + "/all", nil)
+		"http://localhost:7708" + apiPathPrefix + apiDevice + "/all", nil)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {

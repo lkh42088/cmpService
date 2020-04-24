@@ -19,7 +19,7 @@ func TestMongoPost(t *testing.T) {
 	fmt.Println("objId:", objId)
 	d := device.Device{
 		Id:            device.ID(objId),
-		Ip:            "192.168.122.11",
+		Ip:            "192.168.10.115",
 		Port:          161,
 		SnmpCommunity: "nubes",
 	}

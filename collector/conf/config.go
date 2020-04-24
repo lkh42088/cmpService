@@ -24,18 +24,7 @@ type Config struct {
 	Restport string		`json:"restport"`
 }
 
-
-
 const defaultConfigName = "collector.conf"
-const Mongoip = "mongoip"
-const Mongodb = "mongodb"
-const Mongotable = "mongotable"
-const Influxip = "influxip"
-const Influxdb = "influxdb"
-const Svcmgrip = "svcmgrip"
-const Restip = "restip"
-const Restport = "restport"
-
 var ConfigPath string
 
 //need to change default conf

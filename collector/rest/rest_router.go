@@ -34,10 +34,11 @@ func (err ResponseError) MarshalJSON() ([]byte, error) {
 func getDevices(r *http.Request) ([]device.Device, error) {
 	var result []device.Device
 	resp, _ := ioutil.ReadAll(r.Body)
-	fmt.Println(resp)
+	fmt.Println(string(resp))
 	err := json.Unmarshal(resp, &result)
 	if err != nil {
 		fmt.Printf("getDevices() func fail.(err:%s)\n", err)
+		return result, err
 	}
 	return result, nil
 }
@@ -83,8 +84,8 @@ func RunAPI(parentwg *sync.WaitGroup) {
 	// POST
 	rg.POST(apiDevice, apiDevicePostHandler)
 	// DELETE
-	//rg.DELETE(apiDevice + "/all", apiDeviceRemoveAllHandler)
-	rg.DELETE(apiDevice + "/:del", apiDeviceRemoveHandler)
+	rg.DELETE(apiDevice + "/all", apiDeviceRemoveAllHandler)
+	//rg.DELETE(apiDevice + "/:del", apiDeviceRemoveHandler)
 
 	// REST CONFIG CHANGE
 	rg.POST(apiConfig + "/:key" + "/:conf", apiRestConfigHandler)
