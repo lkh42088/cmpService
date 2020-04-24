@@ -14,7 +14,8 @@ type DBLayer interface {
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error
 	// Devices
-	GetAllDevices() ([]models.Device, error)
-	AddDevice(device models.Device) (models.Device, error)
+	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
+	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
+	GetAllDevicesPart(deviceType string, outFlag int) ([]models.DevicePart, error)
 }
 

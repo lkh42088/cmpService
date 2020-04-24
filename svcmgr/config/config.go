@@ -11,10 +11,9 @@ type global_config struct {
 	Mariadb       mariadblayer.DBORM
 
 	InfluxdbConfig config.DBConfig
-	InfluxdbBp client.BatchPoints
+	InfluxdbBp     client.BatchPoints
 	InfluxdbClient client.Client
 	RestServer     string
 }
 
 var SvcmgrConfig = &global_config{}
-
