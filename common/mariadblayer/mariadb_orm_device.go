@@ -4,10 +4,29 @@ import (
 	"nubes/common/models"
 )
 
-func (db *DBORM) GetAllDevices() (devices []models.Device, err error) {
-	return devices, db.Find(&devices).Error
+func (db *DBORM) GetAllDevicesServer(deviceType string, outFlag int) (devices []models.DeviceServer,
+	err error) {
+	return devices, db.Where("dvs_out_flag=?", outFlag).Find(&devices).Error
 }
 
-func (db *DBORM) AddDevice(device models.Device) (models.Device, error) {
+func (db *DBORM) GetAllDevicesNetwork(deviceType string, outFlag int) (devices []models.DeviceNetwork,
+	err error) {
+	return devices, db.Where("dvn_out_flag=?", outFlag).Find(&devices).Error
+}
+
+func (db *DBORM) GetAllDevicesPart(deviceType string, outFlag int) (devices []models.DevicePart,
+	err error) {
+	return devices, db.Where("dvp_out_flag=?", outFlag).Find(&devices).Error
+}
+
+func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {
+	return device, db.Create(&device).Error
+}
+
+func (db *DBORM) AddDeviceNetwork(device models.DeviceNetwork) (models.DeviceNetwork, error) {
+	return device, db.Create(&device).Error
+}
+
+func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, error) {
 	return device, db.Create(&device).Error
 }

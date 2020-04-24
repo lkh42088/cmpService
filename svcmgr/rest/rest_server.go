@@ -17,7 +17,7 @@ type HandlerInterface interface {
 	DeleteSubCode(c *gin.Context)
 	DeleteSubCodes(c *gin.Context)
 	// Device
-	GetDevices(c *gin.Context)
+	GetDevicesByList(c *gin.Context)
 }
 
 type Handler struct {
@@ -48,8 +48,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	r.DELETE("/v1/subcodes", h.DeleteSubCodes)
 
 	// Devices
-	r.GET("/v1/devices", h.GetDevices)
-	r.GET("/v1/devices/:menuType", h.GetDevicesByList)
+	r.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 
 	return r.Run(address)
 }

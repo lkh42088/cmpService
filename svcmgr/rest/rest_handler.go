@@ -8,36 +8,6 @@ import (
 	"strconv"
 )
 
-func (h *Handler) GetDevicesByList(c *gin.Context) {
-	fmt.Println("GetDevicesByMenutype")
-	if h.db == nil {
-		return
-	}
-	devices, err := h.db.GetDevicesByMenutype()
-	if err  != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
-		return
-	}
-	fmt.Println(devices)
-
-	c.JSON(http.StatusOK, devices)
-}
-
-func (h *Handler) GetDevices(c *gin.Context) {
-	fmt.Println("GetDevices")
-	if h.db == nil {
-		return
-	}
-	devices, err := h.db.GetAllDevices()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
-		return
-	}
-	fmt.Println(devices)
-
-	c.JSON(http.StatusOK, devices)
-}
-
 func (h *Handler) GetCodes(c *gin.Context) {
 	fmt.Println("Getcodes")
 	if h.db == nil {
@@ -157,5 +127,56 @@ func (h *Handler) DeleteSubCodes(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, nil)
+}
+
+// Device
+func (h *Handler) GetDevicesByList(c *gin.Context) {
+	fmt.Println("GetDevicesByList")
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+/*	fmt.Println("GetDevicesByList1 : ",p)
+	deviceType, err := strconv.Atoi(p)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		return
+	}
+	fmt.Println("GetDevicesByList2")*/
+
+	f := c.Param("outFlag")
+	outFlag, err := strconv.Atoi(f)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		return
+	}
+
+	devicesServer, err := h.db.GetAllDevicesServer(deviceType, outFlag)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+
+	devicesNetwork, err := h.db.GetAllDevicesNetwork(deviceType, outFlag)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+
+	devicesPart, err := h.db.GetAllDevicesPart(deviceType, outFlag)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+
+	fmt.Println("type : ", deviceType, ", outFlag : ", outFlag)
+
+	if deviceType == "server" {
+		c.JSON(http.StatusOK, devicesServer)
+	} else if string(deviceType) == "network" {
+		c.JSON(http.StatusOK, devicesNetwork)
+	} else if string(deviceType) == "part" {
+		c.JSON(http.StatusOK, devicesPart)
+	}
 }
 
