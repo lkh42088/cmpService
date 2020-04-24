@@ -41,13 +41,13 @@ type MongoUser interface {
 
 func MongoDBConfigChange() {
 	config := conf.ReadConfig()
-	if config == nil {
+	if config.Mongoip == "" || config.Mongodb == "" || config.Mongotable == "" {
 		fmt.Println("NewmongoDB Readconf fail")
 		Mongo = mongodao.New("127.0.0.1", "collector", "devices")
 	} else {
 		fmt.Printf("Mongo Config IP:%s DB:%s TABLE:%s\n",
-			config[conf.Mongoip], config[conf.Mongodb], config[conf.Mongotable])
-		Mongo = mongodao.New(config[conf.Mongoip], config[conf.Mongodb], config[conf.Mongotable])
+			config.Mongoip, config.Mongodb, config.Mongotable)
+		Mongo = mongodao.New(config.Mongoip, config.Mongodb, config.Mongotable)
 	}
 	return
 }
@@ -55,20 +55,20 @@ func MongoDBConfigChange() {
 func InfluxDBConfigChange() {
 	var influxConfig *influx.Config
 	config := conf.ReadConfig()
-	if config == nil {
+	if config.Influxip == "" || config.Influxdb == "" {
 		influxConfig = influx.Init(
 			"http://192.168.10.19:8086",
 			"nubes",
 			"",
 			"snmp_nodes")
 	} else {
-		path := "http://" + config[conf.Influxip] + ":8086"
+		path := "http://" + config.Influxip + ":8086"
 		influxConfig = influx.Init(
 			path,
 			"nubes",
 			//"",	// id
 			"",
-			config[conf.Influxdb])
+			config.Influxdb)
 	}
 
 	fmt.Println(influxConfig)

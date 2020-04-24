@@ -140,10 +140,20 @@ func TestCreateConf(t *testing.T) {
 }
 
 func TestWriteConf(t *testing.T) {
-	conf.UpdateConfig("influxip", "127.0.0.1")
+	conf.ProcessConfig("/etc/collector/collector.conf")
+	conf.UpdateConfig("svcmgrip", "10.10.10.10")
 }
 
 func TestReadConf(t *testing.T) {
+	conf.ProcessConfig("/etc/collector/collector.conf")
 	config := conf.ReadConfig()
 	fmt.Println(config)
 }
+
+func TestInput(t *testing.T) {
+	var config conf.Config
+	conf.SetConfigByField("svcmgrip", "1.1.1.1", &config)
+
+	fmt.Println(config)
+}
+

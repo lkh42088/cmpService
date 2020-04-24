@@ -67,11 +67,11 @@ func RunAPI(parentwg *sync.WaitGroup) {
 
 	// Read REST api conf
 	config := conf.ReadConfig()
-	if config == nil {
+	if config.Restip == "" || config.Restport == "" {
 		fmt.Println("===== Need to REST server configuration. =====")
 		return
 	}
-	address := config[conf.Restip] + ":" + config[conf.Restport]
+	address := config.Restip + ":" + config.Restport
 
 	// Activate GIN
 	router := gin.Default()

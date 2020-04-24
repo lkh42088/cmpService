@@ -3,26 +3,28 @@ package conf
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"nubes/collector/lib"
 	"os"
+	"reflect"
 )
 
 type CollectorConfig map[string]string
 
 type Config struct {
-	Mongoip string
-	Mongodb string
-	Mongotable string
-	Influxip string
-	Influxdb string
-	Svcmgrip string
-	Restip string
-	Restport string
+	Mongoip string		`json:"mongoip"`
+	Mongodb string		`json:"mongodb"`
+	Mongotable string	`json:"mongotable"`
+	Influxip string		`json:"influxip"`
+	Influxdb string		`json:"influxdb"`
+	Svcmgrip string		`json:"svcmgrip"`
+	Restip string		`json:"restip"`
+	Restport string		`json:"restport"`
 }
+
+
 
 const defaultConfigName = "collector.conf"
 const Mongoip = "mongoip"
@@ -36,31 +38,18 @@ const Restport = "restport"
 
 var ConfigPath string
 
-// need to change default conf
-func GetDefaultConfig() CollectorConfig {
-	return CollectorConfig{
-		Mongoip:    "127.0.0.1",
-		Mongodb:    "collector",
-		Mongotable: "devices",
-		Influxip:   "192.168.10.19",
-		Influxdb:   "snmp_nodes",
-		Svcmgrip:   "127.0.0.1",
-		Restip:     "127.0.0.1",
-		Restport:   "8884",
-	}
-}
-
-func ConvertCollectorConfig(c Config) CollectorConfig {
-	return CollectorConfig{
-		Mongoip: c.Mongoip,
-		Mongodb: c.Mongodb,
-		Mongotable: c.Mongotable,
-		Influxip: c.Influxip,
-		Influxdb: c.Influxdb,
-		Svcmgrip: c.Svcmgrip,
-		Restip: c.Restip,
-		Restport: c.Restport,
-	}
+//need to change default conf
+func GetDefaultConfig() Config {
+	var c Config
+	c.Mongoip =    "127.0.0.1"
+	c.Mongodb =    "collector"
+	c.Mongotable = "devices"
+	c.Influxip =   "192.168.10.19"
+	c.Influxdb =   "snmp_nodes"
+	c.Svcmgrip =   "127.0.0.1"
+	c.Restip =     "127.0.0.1"
+	c.Restport =   "8884"
+	return c
 }
 
 func CreateDefaultConfig() (config string) {
@@ -89,17 +78,17 @@ func CreateDefaultConfig() (config string) {
 
 // not exist param string : default conf
 // exist param string : change conf
-func UpdateConfig(key string, config string) error {
+func UpdateConfig(key string, value string) error {
 	var f *os.File
 	var err error
 
-	collectorConfig := ReadConfig()
-	if collectorConfig == nil {
-		collectorConfig = GetDefaultConfig()
-	}
+	config := ReadConfig()
+	//if collectorConfig == nil {
+	//	collectorConfig = GetDefaultConfig()
+	//}
 
 	// No param
-	if key == "" || config == "" {
+	if key == "" || value == "" {
 		lib.LogWarn("Not found change conf param.\n")
 		return nil
 	}
@@ -112,16 +101,14 @@ func UpdateConfig(key string, config string) error {
 	}
 	defer f.Close()
 
-	// map value change
-	if _, ok := collectorConfig[key]; ok {
-		collectorConfig[key] = config
-		fmt.Println(collectorConfig)
-	} else {
-		return errors.New("Invalid key name.\n")
+	// Value Change
+	if SetConfigByField(key, value, &config) < 0 {
+		lib.LogWarn("Invalid key name.\n")
+		return nil
 	}
 
 	// JSON transform
-	b, err := json.Marshal(collectorConfig)
+	b, err := json.Marshal(config)
 
 	b, _ = PrettyPrint(b)
 
@@ -149,22 +136,21 @@ func IsFileExists(filename string) bool {
 }
 
 // Read conf file and return conf object
-func ReadConfig() (config CollectorConfig) {
+func ReadConfig() (config Config) {
 	// read file
 	b, err := ioutil.ReadFile(ConfigPath)
 	if err != nil {
 		lib.LogWarn("Fail to Read rest conf file.(%s)\n", err)
-		return nil
+		//return nil
+		return config
 	}
 	// JSON transform
-	//err = json.Unmarshal(b, &config)
-	var cfg Config
-	err = json.Unmarshal(b, &cfg)
-	fmt.Println(cfg)
+	err = json.Unmarshal(b, &config)
+	fmt.Println(config)
 	if err != nil {
 		fmt.Println(err)
 	}
-	config = ConvertCollectorConfig(cfg)
+
 	return config
 }
 
@@ -175,5 +161,25 @@ func ProcessConfig(config string) {
 		ConfigPath = config
 	}
 	fmt.Println(ConfigPath)
+}
+
+func SetConfigByField(key string, config string, c *Config) int {
+	if key == "" {
+		lib.LogWarn("Key or config string is empty.\n")
+		return -1
+	}
+	// find json field and set value
+	elements := reflect.ValueOf(c).Elem()
+	target := elements.Type()
+	// Find json field
+	for i := 0; i < target.NumField(); i++ {
+		tag :=  target.Field(i).Tag
+		if tag.Get("json") == key {
+			// Set Value
+			elements.Field(i).SetString(config)
+			return i
+		}
+	}
+	return -1
 }
 

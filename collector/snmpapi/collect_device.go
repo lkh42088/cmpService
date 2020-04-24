@@ -49,13 +49,13 @@ func InfluxConfigure(config *influx.Config) {
 }
 
 func RegularCollect(parentwg *sync.WaitGroup) {
-	config := influx.Init(
-		"http://192.168.10.19:8086",
-		"nubes",
-		"",
-		"snmp_nodes")
+	//config := influx.Init(
+	//	"http://192.168.10.19:8086",
+	//	"nubes",
+	//	"",
+	//	"snmp_nodes")
 
-	SnmpDevices.Store = *config
+	//SnmpDevices.Store = *config
 
 	ApplyMongoDB(SnmpDevices)
 
