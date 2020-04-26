@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"nubes/collector/lib"
+	"nubes/common/lib"
 	"os"
 	"reflect"
 )

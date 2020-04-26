@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"nubes/collector/collectdevice"
-	"nubes/collector/config"
+	config2 "nubes/collector/config"
 	"nubes/collector/mongo"
 	"nubes/collector/snmpapi"
 	"nubes/common/config"
@@ -93,7 +93,7 @@ func apiConfInfluxdbPostHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
-	config.SetConfigInfluxdb(cfg)
+	config2.SetConfigInfluxdb(cfg)
 	c.JSON(http.StatusOK, cfg)
 }
 
@@ -104,7 +104,7 @@ func apiConfMongodbPostHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
-	config.SetConfigMongodb(cfg)
+	config2.SetConfigMongodb(cfg)
 	c.JSON(http.StatusOK, cfg)
 }
 
