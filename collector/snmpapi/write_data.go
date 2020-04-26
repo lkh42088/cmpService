@@ -2,6 +2,7 @@ package snmpapi
 
 import (
 	client "github.com/influxdata/influxdb1-client/v2"
+	"nubes/collector/db/influx"
 	"nubes/collector/lib"
 	"time"
 )
@@ -35,5 +36,11 @@ func WriteMetric(s *SnmpDeviceTable) {
 	err := s.Store.Client.Write(s.Store.Bp)
 	if err != nil {
 		lib.LogWarn("Influxdb Write Error: %s\n", err)
+		// Create database
+		err := influx.InfluxdbCreateDB(s.Store.Database)
+		if err != nil {
+			lib.LogWarn("Error : $s\n", err)
+			return
+		}
 	}
 }

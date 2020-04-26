@@ -19,6 +19,7 @@ type Config struct {
 	Mongotable string	`json:"mongotable"`
 	Influxip string		`json:"influxip"`
 	Influxdb string		`json:"influxdb"`
+	InfluxUser string	`json:"influxUser"`
 	Svcmgrip string		`json:"svcmgrip"`
 	Restip string		`json:"restip"`
 	Restport string		`json:"restport"`
@@ -33,8 +34,9 @@ func GetDefaultConfig() Config {
 	c.Mongoip =    "127.0.0.1"
 	c.Mongodb =    "collector"
 	c.Mongotable = "devices"
-	c.Influxip =   "192.168.10.19"
+	c.Influxip =   "127.0.0.1"
 	c.Influxdb =   "snmp_nodes"
+	c.InfluxUser = "nubes"
 	c.Svcmgrip =   "127.0.0.1"
 	c.Restip =     "127.0.0.1"
 	c.Restport =   "8884"
@@ -46,7 +48,6 @@ func CreateDefaultConfig() (config string) {
 	// It create default conf at current directory
 	dirName, _ := os.Getwd()
 	filepath := fmt.Sprintf("%s/%s", dirName, defaultConfigName)
-
 	file, err := os.OpenFile(filepath, os.O_CREATE|os.O_RDWR, os.FileMode(0777))
 	if err != nil {
 		log.Fatal("Failed to create collector default conf file (%s)\n", err)
