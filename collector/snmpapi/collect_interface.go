@@ -4,7 +4,7 @@ import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
 	"log"
-	"nubes/collector/lib"
+	"nubes/common/lib"
 	"strings"
 )
 
@@ -177,7 +177,7 @@ func (s *SnmpDevice) getIfDescr(){
 	}
 
 	for i, variable := range result.Variables {
-		lib.LogInfo("[device %s, community %s] %d: oid: %s ", s.Device.Ip, s.Device.SnmpCommunity, i, variable.Name)
+		lib.LogInfo("[collectdevice %s, community %s] %d: oid: %s ", s.Device.Ip, s.Device.SnmpCommunity, i, variable.Name)
 		switch variable.Type {
 		case g.OctetString:
 			s.IfTable.ifEntry[i].ifDescr = string(variable.Value.([]byte))

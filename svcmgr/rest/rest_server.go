@@ -21,7 +21,7 @@ type HandlerInterface interface {
 }
 
 type Handler struct {
-	db mariadblayer.DBLayer
+	db mariadblayer.MariaDBLayer
 }
 
 func NewHandler(db *mariadblayer.DBORM) (*Handler, error) {

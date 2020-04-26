@@ -1,12 +1,12 @@
-package influxdblayer
+package influx
 
 import (
 	client "github.com/influxdata/influxdb1-client/v2"
 	"log"
-	"nubes/collector/lib"
+	"nubes/common/lib"
 )
 
-type Config struct {
+type InfluxAccessor struct {
 	Url string
 	Username string
 	Password string
@@ -15,8 +15,15 @@ type Config struct {
 	Client client.Client
 }
 
-func Init(url string, user string, passwd string, db string) *Config {
-	config := Config {
+var Influx InfluxAccessor
+
+func SetInflux(c InfluxAccessor) {
+	Influx = c
+	lib.LogWarnln("Set InfluxDb:", Influx)
+}
+
+func NewInfluxCfg(url string, user string, passwd string, db string) *InfluxAccessor {
+	config := InfluxAccessor{
 		Url:      url,
 		Username: user,
 		Password: passwd,
@@ -27,7 +34,7 @@ func Init(url string, user string, passwd string, db string) *Config {
 		Database:         config.Database,
 	})
 	if err != nil {
-		lib.LogWarn("InfluxDB Init: Failed to get BatchPoints!!\n")
+		lib.LogWarn("InfluxDB NewInfluxCfg: Failed to get BatchPoints!!\n")
 	} else {
 		config.Bp = bp
 	}
@@ -43,3 +50,4 @@ func Init(url string, user string, passwd string, db string) *Config {
 	}
 	return &config
 }
+

@@ -1,4 +1,4 @@
-package device
+package collectdevice
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 )
 
 func TestDevice(t *testing.T) {
-	d := Device{
+	d := ColletDevice{
 		Ip:            "192.168.1.10",
 		Port:          500,
 		SnmpCommunity: "public",
@@ -26,7 +26,7 @@ func TestDevice(t *testing.T) {
 
 func TestDevice2(t *testing.T) {
 	b := []byte(`{"ip":"192.168.1.1","port":501,"community":"private"}`)
-	a := Device{}
+	a := ColletDevice{}
 	err := json.Unmarshal(b, &a)
 	if err != nil {
 		log.Println(err)
@@ -39,7 +39,7 @@ func TestDevice2(t *testing.T) {
 }
 
 func TestDevice3(t *testing.T) {
-	device := Device{
+	device := ColletDevice{
 		Ip:            "192.168.1.1",
 		Port:          30,
 		SnmpCommunity: "public",
@@ -47,8 +47,8 @@ func TestDevice3(t *testing.T) {
 	pbyte, _ := json.Marshal(device)
 	buff := bytes.NewBuffer(pbyte)
 	data := url.Values{}
-	data.Set("device", buff.String())
-	req, err := http.PostForm( "http://127.0.0.1:8884/api/v1/device", data)
+	data.Set("collectdevice", buff.String())
+	req, err := http.PostForm( "http://127.0.0.1:8884/api/v1/collectdevice", data)
 	if err != nil {
 		fmt.Println("err is ", err)
 	}
@@ -58,14 +58,14 @@ func TestDevice3(t *testing.T) {
 }
 
 func TestSNMPDevice1(t *testing.T) {
-	device := Device{
+	device := ColletDevice{
 		Ip:            "127.0.0.1",
 		Port:          161,
 		SnmpCommunity: "nubes",
 	}
 	pbyte, _ := json.Marshal(device)
 	buff := bytes.NewBuffer(pbyte)
-	req, err := http.Post( "http://127.0.0.1:8884/api/v1/device/json", "application/json", buff)
+	req, err := http.Post( "http://127.0.0.1:8884/api/v1/collectdevice/json", "application/json", buff)
 	if err != nil {
 		fmt.Println("err is ", err)
 	}
@@ -75,14 +75,14 @@ func TestSNMPDevice1(t *testing.T) {
 }
 
 func TestSNMPDevice2(t *testing.T) {
-	device := Device{
+	device := ColletDevice{
 		Ip:            "192.168.122.15",
 		Port:          161,
 		SnmpCommunity: "nubes",
 	}
 	pbyte, _ := json.Marshal(device)
 	buff := bytes.NewBuffer(pbyte)
-	req, err := http.Post( "http://127.0.0.1:8884/api/v1/device/json", "application/json", buff)
+	req, err := http.Post( "http://127.0.0.1:8884/api/v1/collectdevice/json", "application/json", buff)
 	if err != nil {
 		fmt.Println("err is ", err)
 	}
@@ -97,12 +97,12 @@ type ResponseError struct {
 
 type Response struct {
 	ID     ID            `json:"id,omitempty"`
-	Device Device        `json:"device"`
+	Device ColletDevice  `json:"collectdevice"`
 	Error  ResponseError `json:"error"`
 }
 
 func TestDevice5(t *testing.T) {
-	req, err := http.Get( "http://127.0.0.1:8884/api/v1/device/1")
+	req, err := http.Get( "http://127.0.0.1:8884/api/v1/collectdevice/1")
 	if err != nil {
 		fmt.Println("err is ", err)
 	}

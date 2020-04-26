@@ -9,10 +9,19 @@ import (
 
 var IsLogInfo bool = false
 var IsLogWarn bool = true
+var IsDebug bool = false
 
 func LogWarn(format string, a ...interface{}) {
 	_, file, line, _ := runtime.Caller(1)
 	info := fmt.Sprintf(format, a...)
+	if IsLogWarn {
+		fmt.Printf("%s:%d %v", file, line, info)
+	}
+}
+
+func LogWarnln(a ...interface{}) {
+	_, file, line, _ := runtime.Caller(1)
+	info := fmt.Sprintln(a...)
 	if IsLogWarn {
 		fmt.Printf("%s:%d %v", file, line, info)
 	}
@@ -37,7 +46,9 @@ func LogInfo(format string, a ...interface{}) {
 func Debug(format string, a ...interface{}) {
 	_, file, line, _ := runtime.Caller(1)
 	info := fmt.Sprintf(format, a...)
-	fmt.Printf("%s:%d %v", file, line, info)
+	if IsDebug {
+		fmt.Printf("%s:%d %v", file, line, info)
+	}
 }
 
 func Trace() {

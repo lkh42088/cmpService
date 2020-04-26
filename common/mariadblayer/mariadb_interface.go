@@ -2,7 +2,7 @@ package mariadblayer
 
 import "nubes/common/models"
 
-type DBLayer interface {
+type MariaDBLayer interface {
 	// Code
 	GetAllCodes() ([]models.Code, error)
 	AddCode(code models.Code) (models.Code, error)

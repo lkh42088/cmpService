@@ -11,7 +11,7 @@ import (
 func TestDeviceAddEntry_Server(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -54,14 +54,14 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 		MonitoringMethod: 9,
 	}
 	device, err = db.AddDeviceServer(device)
-	fmt.Println("device: ", device, "err:", err)
+	fmt.Println("collectdevice: ", device, "err:", err)
 }
 
 
 func TestDeviceAddEntry_Network(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -101,14 +101,14 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 		MonitoringMethod: 9,
 	}
 	device, err = db.AddDeviceNetwork(device)
-	fmt.Println("device: ", device, "err:", err)
+	fmt.Println("collectdevice: ", device, "err:", err)
 }
 
 
 func TestDeviceAddEntry_Part(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -146,5 +146,5 @@ func TestDeviceAddEntry_Part(t *testing.T) {
 		MonitoringMethod: 9,
 	}
 	device, err = db.AddDevicePart(device)
-	fmt.Println("device: ", device, "err:", err)
+	fmt.Println("collectdevice: ", device, "err:", err)
 }

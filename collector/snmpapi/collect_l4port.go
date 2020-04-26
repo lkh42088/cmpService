@@ -3,7 +3,7 @@ package snmpapi
 import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"nubes/collector/lib"
+	"nubes/common/lib"
 	"strconv"
 	"strings"
 )
@@ -96,7 +96,7 @@ func (s *SnmpDevice) GetL4UdpPort(oid OidType) func() L4UdpPort {
 		}
 
 		for _, variable := range result.Variables {
-			//common.LogInfo("SubTree [device %s, community %s] oid: %s ",
+			//common.LogInfo("SubTree [collectdevice %s, community %s] oid: %s ",
 			//	s.Device.Ip, s.Device.SnmpCommunity, variable.Name)
 
 			switch variable.Type {
