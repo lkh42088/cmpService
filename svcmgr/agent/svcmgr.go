@@ -47,9 +47,9 @@ func SetRestServer(db *mariadblayer.DBORM) {
 }
 
 /*func serveStatic(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("src/main/template/public/index.html")
+	t, err := template.ParseFiles("src/main/template/
+		fmt.Println(err)public/index.html")
 	if err != nil {
-		fmt.Println(err)
 	}
 	t.Execute(w, nil)
 }*/
