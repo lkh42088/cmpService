@@ -3,13 +3,13 @@ package influx
 import (
 	"fmt"
 	"github.com/influxdata/influxdb1-client/v2"
-	"nubes/collector/conf"
+	"nubes/collector/config"
 	"testing"
 )
 
 func TestCreateDB(t *testing.T) {
-	conf.ConfigPath = "/home/lkh/go/src/nubes/collector/collector.conf"
-	config := conf.ReadConfig()
+	config.CollectorConfigPath = "/home/lkh/go/src/nubes/collector/collector.conf"
+	config := config.ReadConfig(config.CollectorConfigPath)
 	var q client.Query
 	var c client.Client
 
@@ -21,6 +21,6 @@ func TestCreateDB(t *testing.T) {
 	if err != nil {
 		fmt.Printf("error: %s", err)
 	}
-	q.Command = "CREATE DATABASE " + config.Influxdb
+	q.Command = "CREATE DATABASE " + config.InfluxDb
 	c.Query(q)
 }
