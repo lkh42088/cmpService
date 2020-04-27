@@ -1,8 +1,8 @@
 package config
 
 import (
+	"nubes/collector/influx"
 	"nubes/collector/mongo"
-	"nubes/common/influx"
 	"nubes/common/lib"
 )
 

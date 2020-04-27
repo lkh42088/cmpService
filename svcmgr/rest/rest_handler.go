@@ -180,3 +180,19 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 	}
 }
 
+// Mornitoring
+func (h *Handler) GetDevicesMonitoring(c *gin.Context) {
+
+}
+
+func (h *Handler) AddDevicesMonitoring(c *gin.Context) {
+	var msg DeviceMonitoringRequest
+	err :=c.ShouldBindJSON(&msg)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, msg)
+}
+
+

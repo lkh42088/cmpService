@@ -10,6 +10,31 @@ import (
 	"testing"
 )
 
+func TestRestAddDeviceMonitoring(t *testing.T) {
+	msg := DeviceMonitoringRequest{
+		"id-0001",
+		"agent",
+	}
+	pbytes, _ := json.Marshal(msg)
+	buff := bytes.NewBuffer(pbytes)
+
+	restServer := "http://localhost:8081"
+	url := restServer + "/v1/devices/monitoring"
+
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("response:", string(data))
+}
+
 func TestRestAddCode(t *testing.T) {
 	code := models.Code{
 		CodeID:  0,
