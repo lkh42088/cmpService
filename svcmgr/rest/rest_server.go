@@ -55,8 +55,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	r.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 
 	// Monitoring
-	r.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
-	r.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
+	//r.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
+	//r.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
 	return r.Run(address)
 }
