@@ -48,7 +48,7 @@ func getTestJbhConfig() *config.DBConfig {
 }
 
 func getTestConfig() *config.DBConfig {
-	return getTestJbhConfig()
+	return getTestJebConfig()
 }
 
 func Migration(conf config.DBConfig) {

@@ -24,6 +24,7 @@ func TestCodeAddEntry(t *testing.T) {
 	}
 	code, err = db.AddCode(code)
 	fmt.Println("code: ", code, "err:", err)
+
 	code = models.Code{
 		Type:    "type2",
 		SubType: "subtype2",

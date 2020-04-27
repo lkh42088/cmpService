@@ -38,6 +38,38 @@ func TestWriteJungbhConfig(t *testing.T) {
 	fmt.Println(config)
 }
 
+
+func getJeeebConfig() *SvcmgrConfig {
+	maria := config.MariaDbConfig{
+		"192.168.227.129",
+		"nubes",
+		"nubes",
+		"nubes1510!",
+	}
+	// influx 는 사용안함...
+	influx := config.InfluxDbConfig{
+		"192.168.10.74",
+		"snmp_nodes",
+		"nubes",
+		"nubes1510",
+	}
+	return &SvcmgrConfig{
+		maria,
+		influx,
+		"0.0.0.0",
+		"8081",
+	}
+}
+
+func TestWriteJeeebConfig(t *testing.T) {
+	dirName, _ := os.Getwd()
+	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jeb.conf")
+	var cfg = getJeeebConfig()
+	fmt.Println(cfg)
+	config := lib.CreateConfig(path, cfg)
+	fmt.Println(config)
+}
+
 func TestWriteDefaultConfig(t *testing.T) {
 	dirName, _ := os.Getwd()
 	path := fmt.Sprintf("%s/../etc/%s", dirName, svcmgrConfigName)

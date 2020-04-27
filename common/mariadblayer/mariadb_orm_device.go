@@ -6,17 +6,17 @@ import (
 
 func (db *DBORM) GetAllDevicesServer(deviceType string, outFlag int) (devices []models.DeviceServer,
 	err error) {
-	return devices, db.Where("dvs_out_flag=?", outFlag).Find(&devices).Error
+	return devices, db.Where("out_flag=?", outFlag).Find(&devices).Error
 }
 
 func (db *DBORM) GetAllDevicesNetwork(deviceType string, outFlag int) (devices []models.DeviceNetwork,
 	err error) {
-	return devices, db.Where("dvn_out_flag=?", outFlag).Find(&devices).Error
+	return devices, db.Where("out_flag=?", outFlag).Find(&devices).Error
 }
 
 func (db *DBORM) GetAllDevicesPart(deviceType string, outFlag int) (devices []models.DevicePart,
 	err error) {
-	return devices, db.Where("dvp_out_flag=?", outFlag).Find(&devices).Error
+	return devices, db.Where("out_flag=?", outFlag).Find(&devices).Error
 }
 
 func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {
