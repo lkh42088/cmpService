@@ -3,9 +3,9 @@ package snmpapi
 import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"nubes/collector/db/influx"
-	"nubes/collector/lib"
-	"nubes/collector/mongodao"
+	"nubes/collector/config"
+	"nubes/collector/mongo"
+	"nubes/common/lib"
 	"runtime"
 	"strings"
 	"sync"
@@ -18,8 +18,8 @@ type System struct {
 	hostname string
 }
 
-var SnmpDevices = NewSnmpDeviceTable()
-var mutex sync.Mutex
+var RegularCollectTime = 5 * time.Second
+var snmpDevTbMutex sync.Mutex
 
 func getGOMAXPROCS() int {
 
@@ -27,35 +27,45 @@ func getGOMAXPROCS() int {
 	return runtime.GOMAXPROCS(0)
 }
 
-func ApplyMongoDB(snmpdevtable *SnmpDeviceTable) {
+func GetDevicesFromMongoDB(snmpdevtable *SnmpDeviceTable) {
 
-	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.Count, len(SnmpDevices.Devices))
-	if mongodao.Mongo != nil {
-		devices, _ := mongodao.Mongo.GetAll()
-		for _, dev := range devices {
-			snmpdev := SnmpDevice{}
-			snmpdev.Device = dev
-			fmt.Println("Apply Mongodb: ", dev)
-			snmpdevtable.Post(snmpdev)
-		}
+	if mongo.Mongo.Session == nil {
+		lib.LogWarn("Mongo session is NULL!\n")
+		return
 	}
-	fmt.Printf("Total: count %d, device slice %d\n", SnmpDevices.Count, len(SnmpDevices.Devices))
+
+	devices, _ := mongo.Mongo.GetAll()
+	for _, dev := range devices {
+		snmpdev := SnmpDevice{}
+		snmpdev.Device = dev
+		lib.LogWarnln("From MongoDB: ", dev)
+		snmpdevtable.Post(snmpdev)
+	}
+	lib.LogWarn("Total: count %d, collectdevice slice %d\n", SnmpDevTb.Count, len(SnmpDevTb.Devices))
 }
 
-func InfluxConfigure(config *influx.Config) {
-	SnmpDevices.Store = *config
-	return
+func ApplyChangeThings() {
+	// Snmp Devices
 }
 
-func CallApplyMongoDb() {
-	ApplyMongoDB(SnmpDevices)
+func InitConfig() {
+	// Snmpdev Table
+	SetSnmpDevTb(NewSnmpDeviceTable())
+
+	// InfluxDb
+	config.ConfigureInfluxDB()
+
+	// MongoDb
+	config.ConfigureMongoDB()
+	GetDevicesFromMongoDB(SnmpDevTb)
 }
 
-func RegularCollect(parentwg *sync.WaitGroup) {
+func Start(parentwg *sync.WaitGroup) {
 
 	for {
+		ApplyChangeThings()
+		time.Sleep(RegularCollectTime)
 		CollectSnmpInfo()
-		time.Sleep(5 * time.Second)
 	}
 
 	if parentwg != nil {
@@ -64,20 +74,20 @@ func RegularCollect(parentwg *sync.WaitGroup) {
 }
 
 func CollectSnmpInfo() {
-	devNum := len(SnmpDevices.Devices)
+	devNum := len(SnmpDevTb.Devices)
 	if devNum == 0 {
-		lib.LogInfoln("It does not exist device!")
+		lib.LogInfoln("It does not exist collectdevice!")
 		return
 	}
 
-	//common.LogInfo("deviceList: %d\n", len(SnmpDevices.devices))
+	//common.LogInfo("deviceList: %d\n", len(SnmpDevTb.devices))
 
 	var wg sync.WaitGroup
 
 	// sync Add
 	wg.Add(devNum)
 
-	for _, device := range SnmpDevices.Devices {
+	for _, device := range SnmpDevTb.Devices {
 		if "" == device.Device.Ip {
 
 			// sync Delete
@@ -99,22 +109,24 @@ func CollectSnmpInfo() {
 			err := dev.Snmp.Connect()
 			defer dev.Snmp.Conn.Close()
 			if err != nil {
-				lib.LogWarn("[device %s, comm %s] snmp connect: %s\n",
+				lib.LogWarn("[collectdevice %s, comm %s] snmp connect: %s\n",
 					dev.Snmp.Target, dev.Snmp.Community, err)
 			} else {
 				lib.LogInfoln("SNMP Get start", dev.Device.Ip)
 				getDeviceSnmpInfo(dev)
-				mutex.Lock()
-				SnmpDevices.Devices[dev.Device.GetIdString()] = *dev
-				mutex.Unlock()
+				snmpDevTbMutex.Lock()
+				SnmpDevTb.Devices[dev.Device.GetIdString()] = *dev
+				snmpDevTbMutex.Unlock()
 			}
 		}(device)
 	}
 	wg.Wait()
-	WriteMetric(SnmpDevices)
-	//SnmpDevices.String()
-	fmt.Printf("Total: count %d, device slice %d v0.9.5\n",
-		SnmpDevices.Count, len(SnmpDevices.Devices))
+
+	WriteMetric(SnmpDevTb)
+
+	//SnmpDevTb.String()
+	fmt.Printf("Total: count %d, collectdevice slice %d v0.9.5\n",
+		SnmpDevTb.Count, len(SnmpDevTb.Devices))
 }
 
 func ProcessSnmpAllDevice(deviceList []SnmpDevice) {
@@ -195,14 +207,14 @@ func getDeviceSnmpInfo(s *SnmpDevice) {
 	// Get IP Routing Table
 	s.GetIpRouteTable()
 
-	// Print device information
+	// Print collectdevice information
 	//s.String()
 }
 
 func (s *SnmpDevice) getIfTable() {
 	s.IfTable.ifNumber = s.getIfNumber()
 	if s.IfTable.ifNumber < 1 {
-		lib.LogInfo("device %s : ifNumber %d --> skip!\n", s.Device.Ip, s.IfTable.ifNumber)
+		lib.LogInfo("collectdevice %s : ifNumber %d --> skip!\n", s.Device.Ip, s.IfTable.ifNumber)
 		return
 	}
 
@@ -225,7 +237,7 @@ func (s *SnmpDevice) getSystemFromSnmp() error {
 
 	system := &s.System
 	for i, variable := range result.Variables {
-		lib.LogInfo("getSystemFromSnmp: [device %s, community %s] %d: oid: %s ",
+		lib.LogInfo("getSystemFromSnmp: [collectdevice %s, community %s] %d: oid: %s ",
 			s.Device.Ip, s.Device.SnmpCommunity, i, variable.Name)
 
 		switch variable.Type {

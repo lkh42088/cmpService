@@ -1,29 +1,29 @@
-package mongodao
+package mongo
 
 import (
 	"fmt"
 	"github.com/globalsign/mgo/bson"
-	"nubes/collector/device"
+	"nubes/collector/collectdevice"
 	"testing"
 )
 
 func TestMongoGetAll(t *testing.T) {
 	devices, _ := Mongo.GetAll()
 	for i, dev := range devices {
-		fmt.Println("Device ", dev, i)
+		fmt.Println("ColletDevice ", dev, i)
 	}
 }
 
 func TestMongoPost(t *testing.T) {
 	objId := bson.NewObjectId()
 	fmt.Println("objId:", objId)
-	d := device.Device{
-		Id:            device.ID(objId),
+	d := collectdevice.ColletDevice{
+		Id:            collectdevice.ID(objId),
 		Ip:            "192.168.10.115",
 		Port:          161,
 		SnmpCommunity: "nubes",
 	}
-	fmt.Println("device:", d)
+	fmt.Println("collectdevice:", d)
 	devId, err := Mongo.Post(&d)
 	fmt.Println("id:", fmt.Sprintf("%x",devId), err)
 	fmt.Println(bson.ObjectId(devId), err)
@@ -31,7 +31,7 @@ func TestMongoPost(t *testing.T) {
 
 func TestMongoDelete(t *testing.T) {
 	s := "5e79c9a4902ed2796f1878d0"
-	Mongo.Delete(device.ID(s))
+	Mongo.Delete(collectdevice.ID(s))
 }
 
 func TestMongoDeleteAll(t *testing.T) {

@@ -3,7 +3,7 @@ package snmpapi
 import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"nubes/collector/lib"
+	"nubes/common/lib"
 	"strconv"
 	"strings"
 )
@@ -61,6 +61,9 @@ func (s *SnmpDevice) GetL4TcpPort(oid OidType) func() L4TcpPort {
 					//common.LogInfo("%s, len %d\n", oidMap[oid], len(oidMap[oid]))
 					lib.LogInfo("%s\n", getOid)
 					byteoid := []byte(getOid)
+					if len(byteoid) < len(oidMap[oid]) + 1 {
+						break
+					}
 					cutPrefixOid := byteoid[len(oidMap[oid]) + 1 /* . */:]
 					//cutPrefixOid := strings.TrimLeft(getOid, oidMap[oid])
 					//common.LogInfo("%s\n", cutPrefixOid)
@@ -96,7 +99,7 @@ func (s *SnmpDevice) GetL4UdpPort(oid OidType) func() L4UdpPort {
 		}
 
 		for _, variable := range result.Variables {
-			//common.LogInfo("SubTree [device %s, community %s] oid: %s ",
+			//common.LogInfo("SubTree [collectdevice %s, community %s] oid: %s ",
 			//	s.Device.Ip, s.Device.SnmpCommunity, variable.Name)
 
 			switch variable.Type {
@@ -109,6 +112,9 @@ func (s *SnmpDevice) GetL4UdpPort(oid OidType) func() L4UdpPort {
 					//common.LogInfo("%s, len %d\n", oidMap[oid], len(oidMap[oid]))
 					//common.LogInfo("%s\n", getOid)
 					byteoid := []byte(getOid)
+					if len(byteoid) < len(oidMap[oid]) + 1 {
+						break
+					}
 					cutPrefixOid := byteoid[len(oidMap[oid]) + 1 /* . */:]
 					//cutPrefixOid := strings.TrimLeft(getOid, oidMap[oid])
 					//common.LogInfo("%s\n", cutPrefixOid)

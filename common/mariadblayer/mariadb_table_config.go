@@ -18,22 +18,22 @@ func CreateTable(db *gorm.DB) {
 	}
 
 	// Device
-	// -> device server
+	// -> collectdevice server
 	if db.HasTable(&models.DeviceServer{}) == false {
 		db.AutoMigrate(&models.DeviceServer{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB")
 	}
-	// -> device network
+	// -> collectdevice network
 	if db.HasTable(&models.DeviceNetwork{}) == false {
 		db.AutoMigrate(&models.DeviceNetwork{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB")
 	}
-	// -> device part
+	// -> collectdevice part
 	if db.HasTable(&models.DevicePart{}) == false {
 		db.AutoMigrate(&models.DevicePart{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB")
 	}
-	// -> device comment
+	// -> collectdevice comment
 	if db.HasTable(&models.DeviceComment{}) == false {
 		db.AutoMigrate(&models.DeviceComment{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB")
@@ -50,19 +50,19 @@ func DropTable(db *gorm.DB) {
 	}
 
 	// Device
-	// -> device server
+	// -> collectdevice server
 	if db.HasTable(&models.DeviceServer{}) {
 		db.DropTable(&models.DeviceServer{})
 	}
-	// -> device network
+	// -> collectdevice network
 	if db.HasTable(&models.DeviceNetwork{}) {
 		db.DropTable(&models.DeviceNetwork{})
 	}
-	// -> device part
+	// -> collectdevice part
 	if db.HasTable(&models.DevicePart{}) {
 		db.DropTable(&models.DevicePart{})
 	}
-	// -> device comment
+	// -> collectdevice comment
 	if db.HasTable(&models.DeviceComment{}) {
 		db.DropTable(&models.DeviceComment{})
 	}

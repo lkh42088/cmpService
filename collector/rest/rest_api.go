@@ -1,20 +1,14 @@
 package rest
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/globalsign/mgo"
-	"io/ioutil"
-	"log"
 	"net/http"
-	conf "nubes/collector/conf"
-	"nubes/collector/db/influx"
-	"nubes/collector/device"
-	"nubes/collector/lib"
-	"nubes/collector/mongodao"
+	"nubes/collector/collectdevice"
+	config2 "nubes/collector/config"
+	"nubes/collector/mongo"
 	"nubes/collector/snmpapi"
-	"strings"
+	"nubes/common/config"
 )
 
 type HandlerInterface interface {
@@ -28,211 +22,90 @@ type HandlerInterface interface {
 	apiRestConfigHandler(c *gin.Context)
 }
 
-// Avoid import cycle (rest <-> mongodao)
-type MongoUser interface {
-	Get(device.ID) (device.Device, error)
-	Put(device.ID, device.Device) error
-	Post(*device.Device) (device.ID, error)
-	DeleteAll() (*mgo.ChangeInfo, error)
-	Delete(device.ID) error
-	GetAll() ([]device.Device, error)
-}
-
-func MongoDBConfigChange() {
-	config := conf.ReadConfig()
-	if config.Mongoip == "" || config.Mongodb == "" || config.Mongotable == "" {
-		fmt.Println("NewmongoDB Readconf fail")
-		mongo := mongodao.New("127.0.0.1", "collector", "devices")
-		mongodao.SetMongo(mongo)
-	} else {
-		fmt.Printf("Mongo Config IP:%s DB:%s TABLE:%s\n",
-			config.Mongoip, config.Mongodb, config.Mongotable)
-		mongo := mongodao.New(config.Mongoip, config.Mongodb, config.Mongotable)
-		mongodao.SetMongo(mongo)
-	}
-	snmpapi.CallApplyMongoDb()
-	return
-}
-
-func InfluxDBConfigChange() {
-	var influxConfig *influx.Config
-	config := conf.ReadConfig()
-	if config.Influxip == "" || config.Influxdb == "" {
-		influxConfig = influx.Init(
-			"http://192.168.10.19:8086",
-			"nubes",
-			"",
-			"snmp_nodes")
-	} else {
-		path := "http://" + config.Influxip + ":8086"
-		influxConfig = influx.Init(
-			path,
-			"nubes",
-			//"",	// id
-			"",
-			config.Influxdb)
-	}
-
-	fmt.Println(influxConfig)
-	snmpapi.InfluxConfigure(influxConfig)
-}
-
-func RestAPIServerRestart() {
-	// For Rest API Restart
-}
-
-/// REST-GET
 func apiDeviceGetAllHandler(c *gin.Context) {
-	d, err := mongodao.Mongo.GetAll()
-	if d != nil {
-		fmt.Println("devices:", d)
+	d, err := mongo.Mongo.GetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
 	}
-	response := Responses{
-		Device: d,
-		Error:  ResponseError{err},
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, d)
 	return
 }
 
 func apiDeviceGetHandler(c *gin.Context) {
-	id := device.ID(c.Param("get"))
-	d, err := mongodao.Mongo.Get(id)
-	response := Response{
-		ID:	id,
-		Device: d,
-		Error:  ResponseError{err},
+	id := collectdevice.ID(c.Param("id"))
+	d, err := mongo.Mongo.Get(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, d)
 	return
 }
 
-/// REST-POST
 func apiDevicePostHandler(c *gin.Context) {
 	devices, err := getDevices(c.Request)
-	var response Response
 	if err != nil {
-		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
 	for _, d := range devices {
 		fmt.Println(d)
-		id, err := mongodao.Mongo.Post(&d)
+		id, err := mongo.Mongo.Post(&d)
 		fmt.Println(id, err)
-		response = Response{
-			ID:     id,
-			Device: d,
-			Error:  ResponseError{},
-		}
 		if err != nil {
-			log.Println(err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 			return
 		}
 
 		d.Id = id
 		snmpdev := snmpapi.NewSnmpDevice(d)
-		snmpapi.SnmpDevices.Post(*snmpdev)
+		snmpapi.SnmpDevTb.Post(*snmpdev)
 	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, devices)
 	return
 }
 
-// Not used
-// Need to fix : not changing to GIN Module
-func apiDevicePostJsonHandler(c *gin.Context) {
-	//body, err := ioutil.ReadAll(&io.LimitedReader{r.Body, 1048657})
-	body, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		panic(err)
-	}
-	if err := c.Request.Body.Close(); err != nil {
-		panic(err)
-	}
-	dev := device.Device{}
-	if err :=json.Unmarshal(body, &dev); err != nil {
-		json.NewEncoder(c.Writer).Encode(Response {
-			"-1",
-			dev,
-			ResponseError{err},
-		})
-	}
-	lib.LogInfo("apiDevicePostJsonHandler..")
-	if dev.Ip == "" || dev.SnmpCommunity == "" {
-		json.NewEncoder(c.Writer).Encode(Response {
-			"-1",
-			dev,
-			ResponseError{err},
-		})
-	}
-	if _, err := mongodao.Mongo.Post(&dev); err != nil {
-		json.NewEncoder(c.Writer).Encode(Response {
-			"-1",
-			dev,
-			ResponseError{err},
-		})
-	}
-	fmt.Println("Post: ", dev)
-	snmpdev := snmpapi.NewSnmpDevice(dev)
-	snmpapi.SnmpDevices.Post(*snmpdev)
-	if err := json.NewEncoder(c.Writer).Encode(Response {
-		dev.GetIdString(),
-		dev, ResponseError{err},}); err != nil {
-		panic(err)
-	}
-}
-
-
-/// REST-DELETE
-// Not used
-func apiDeviceRemoveAllHandler(c *gin.Context) {
-	var err error
-	_, err = mongodao.Mongo.DeleteAll()
-	response := Response{
-		Error:  ResponseError{err},
-	}
-	c.JSON(http.StatusOK, response)
-}
-
-// /url/all : all delete
-// /url/id : specific id delete
 func apiDeviceRemoveHandler(c *gin.Context) {
-	id := device.ID(c.Param("del"))
-	var err error
-	if strings.ToUpper(string(id)) == "ALL" {
-		_, err = mongodao.Mongo.DeleteAll()
-		id = ""
-	} else {
-		err = mongodao.Mongo.Delete(id)
+	id := collectdevice.ID(c.Param("id"))
+	err := mongo.Mongo.Delete(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
 	}
-	response := Response{
-		ID:     id,
-		Error:  ResponseError{err},
-	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, id)
 }
 
-// REST CONFIG change
-func apiRestConfigHandler(c *gin.Context) {
-	key := c.Param("key")
-	config := c.Param("conf")
-	fmt.Printf("===== key:%s, conf:%s =====\n", key, config)
-	if conf.UpdateConfig(key, config) == nil {
-		// Apply conf
-		if strings.Contains(key, "mongo") {
-			MongoDBConfigChange()
-		} else if strings.Contains(key, "influx") {
-			InfluxDBConfigChange()
-		} else if strings.Contains(key, "rest") {
-			RestAPIServerRestart()
-		} else if strings.Contains(key, "svcmgr"){
-			// SvcmgrReconnect()
-		}
-		c.JSON(http.StatusOK, gin.H{"message": "Success conf change.\n"})
-	} else {
-		c.JSON(http.StatusInternalServerError,
-			gin.H{"message":"Config file cannot modify.\n"})
+func apiDeviceRemoveAllHandler(c *gin.Context) {
+	_, err := mongo.Mongo.DeleteAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
 	}
-	return
+	c.JSON(http.StatusOK, "")
 }
+
+func apiConfInfluxdbPostHandler(c *gin.Context) {
+	var cfg config.InfluxDbConfig
+	err := c.ShouldBindJSON(&cfg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+	config2.SetConfigInfluxdb(cfg)
+	c.JSON(http.StatusOK, cfg)
+}
+
+func apiConfMongodbPostHandler(c *gin.Context) {
+	var cfg config.MongoDbConfig
+	err := c.ShouldBindJSON(&cfg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+	config2.SetConfigMongodb(cfg)
+	c.JSON(http.StatusOK, cfg)
+}
+
+

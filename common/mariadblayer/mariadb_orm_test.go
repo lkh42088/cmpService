@@ -8,7 +8,20 @@ import (
 	"testing"
 )
 
-func getTestConfig() *config.DBConfig {
+func getTestDefaultConfig() *config.DBConfig {
+	config := config.DBConfig{
+		"mysql",
+		"nubes",
+		"nubes1510!",
+		"nubes",
+		"127.0.0.1",
+		3306,
+	}
+
+	return &config
+}
+
+func getTestJebConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
 		"nubes",
@@ -19,6 +32,23 @@ func getTestConfig() *config.DBConfig {
 	}
 
 	return &config
+}
+
+func getTestJbhConfig() *config.DBConfig {
+	config := config.DBConfig{
+		"mysql",
+		"nubes",
+		"nubes1510",
+		"nubes",
+		"192.168.10.115",
+		3306,
+	}
+
+	return &config
+}
+
+func getTestConfig() *config.DBConfig {
+	return getTestJbhConfig()
 }
 
 func Migration(conf config.DBConfig) {

@@ -7,8 +7,8 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"io/ioutil"
 	"net/http"
-	"nubes/collector/conf"
-	"nubes/collector/device"
+	"nubes/collector/config"
+	"nubes/collector/collectdevice"
 	"sync"
 	"testing"
 )
@@ -17,7 +17,7 @@ func TestRestRouter(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	//RestRouter(&wg)
-	RunAPI(&wg)
+	Start(&wg)
 	wg.Wait()
 }
 
@@ -60,7 +60,7 @@ func TestRestGet2(t *testing.T) {
 
 // postform : old version
 func TestRestPost(t *testing.T) {
-	dev := device.Device{
+	dev := collectdevice.ColletDevice{
 		Id:            "1",
 		Ip:            "192.168.122.19",
 		Port:          161,
@@ -81,7 +81,7 @@ func TestRestPost(t *testing.T) {
 
 // json : new version
 func TestRestPort2(t *testing.T) {
-	dev := []device.Device{
+	dev := []collectdevice.ColletDevice{
 		{
 			Id:            "1",
 			Ip:            "127.0.0.1",
@@ -130,30 +130,14 @@ func TestRestDelete(t *testing.T) {
 
 func TestId(t *testing.T) {
 	objID := bson.NewObjectId()
-	id := device.ID(fmt.Sprintf("%x",string(objID)))
+	id := collectdevice.ID(fmt.Sprintf("%x",string(objID)))
 	fmt.Printf("%s\n", id)
 	fmt.Printf("%s\n", string(objID))
 }
 
-func TestCreateConf(t *testing.T) {
-	conf.CreateDefaultConfig()
-}
-
-func TestWriteConf(t *testing.T) {
-	conf.ProcessConfig("/etc/collector/collector.conf")
-	conf.UpdateConfig("svcmgrip", "10.10.10.10")
-}
-
-func TestReadConf(t *testing.T) {
-	conf.ProcessConfig("/etc/collector/collector.conf")
-	config := conf.ReadConfig()
-	fmt.Println(config)
-}
-
 func TestInput(t *testing.T) {
-	var config conf.Config
-	conf.SetConfigByField("svcmgrip", "1.1.1.1", &config)
-
+	var config config.CollectorConfig
+	config.SetConfigByField("svcmgrip", "1.1.1.1", &config)
 	fmt.Println(config)
 }
 

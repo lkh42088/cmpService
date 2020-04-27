@@ -10,7 +10,7 @@ import (
 func TestCodeAddEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -37,7 +37,7 @@ func TestCodeAddEntry(t *testing.T) {
 func TestCodeGetEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -51,7 +51,7 @@ func TestCodeGetEntry(t *testing.T) {
 func TestCodeDeleteLastEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -77,7 +77,7 @@ func TestCodeDeleteLastEntry(t *testing.T) {
 func TestCodeDeletesEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -91,7 +91,7 @@ func TestCodeDeletesEntry(t *testing.T) {
 func TestSubCodeAddEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -119,7 +119,7 @@ func TestSubCodeAddEntry(t *testing.T) {
 func TestSubCodeGetEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -133,7 +133,7 @@ func TestSubCodeGetEntry(t *testing.T) {
 func TestSubCodeDeleteLastEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {
@@ -160,7 +160,7 @@ func TestSubCodeDeleteLastEntry(t *testing.T) {
 func TestSubCodeDeletesEntry(t *testing.T) {
 	config := getTestConfig()
 	options := db2.GetDataSourceName(config)
-	fmt.Println("conf:", config)
+	fmt.Println("config:", config)
 	fmt.Println("options:", options)
 	db, err := NewDBORM(config.DBDriver, options)
 	if err != nil {

@@ -6,16 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
-	conf "nubes/collector/conf"
-	"nubes/collector/device"
+	conf "nubes/collector/config"
+	"nubes/collector/collectdevice"
 	"sync"
 )
 
 const (
 	apiPathPrefix = "/api/v1"
-	idPattern = "/{id:[0-9a-f]+}"
-	apiDevice = "/device"
-	apiConfig = "/conf"
+	apiDevice = "/collectdevice"
+	apiConfig = "/config"
 )
 
 var Router *gin.Engine
@@ -31,8 +30,8 @@ func (err ResponseError) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("\"%v\"", err.Err)), nil
 }
 
-func getDevices(r *http.Request) ([]device.Device, error) {
-	var result []device.Device
+func getDevices(r *http.Request) ([]collectdevice.ColletDevice, error) {
+	var result []collectdevice.ColletDevice
 	resp, _ := ioutil.ReadAll(r.Body)
 	fmt.Println(string(resp))
 	err := json.Unmarshal(resp, &result)
@@ -44,51 +43,39 @@ func getDevices(r *http.Request) ([]device.Device, error) {
 }
 
 type Responses struct {
-	ID     device.ID     `json:"id,omitempty"`
-	Device []device.Device `json:"device"`
-	Error  ResponseError `json:"error"`
+	ID     collectdevice.ID             `json:"id,omitempty"`
+	Device []collectdevice.ColletDevice `json:"collectdevice"`
+	Error  ResponseError                `json:"error"`
 }
 
 type Response struct {
-	ID     device.ID     `json:"id,omitempty"`
-	Device device.Device `json:"device"`
-	Error  ResponseError `json:"error"`
+	ID     collectdevice.ID           `json:"id,omitempty"`
+	Device collectdevice.ColletDevice `json:"collectdevice"`
+	Error  ResponseError              `json:"error"`
 }
 
-func RestAPIConfigure() {
-	// MongoDB configure
-	MongoDBConfigChange()
-	// InfluxDB configure
-	InfluxDBConfigChange()
-}
-
-func RunAPI(parentwg *sync.WaitGroup) {
-	// Configure
-	RestAPIConfigure()
-
-	// Read REST api conf
-	config := conf.ReadConfig()
-	if config.Restip == "" || config.Restport == "" {
+func Start(parentwg *sync.WaitGroup) {
+	// Read REST api config
+	config := conf.ReadConfig(conf.CollectorConfigPath)
+	if config.RestServerIp == "" || config.RestServerPort == "" {
 		fmt.Println("===== Need to REST server configuration. =====")
 		return
 	}
-	address := config.Restip + ":" + config.Restport
+	address := config.RestServerIp + ":" + config.RestServerPort
 
 	// Activate GIN
 	router := gin.Default()
 
 	rg := router.Group(apiPathPrefix)
-	// GET
 	rg.GET(apiDevice, apiDeviceGetAllHandler)
-	rg.GET(apiDevice + "/:get", apiDeviceGetHandler)
-	// POST
+	rg.GET(apiDevice + "/:id", apiDeviceGetHandler)
 	rg.POST(apiDevice, apiDevicePostHandler)
-	// DELETE
-	rg.DELETE(apiDevice + "/all", apiDeviceRemoveAllHandler)
-	//rg.DELETE(apiDevice + "/:del", apiDeviceRemoveHandler)
+	rg.DELETE(apiDevice + "", apiDeviceRemoveAllHandler)
+	rg.DELETE(apiDevice + "/:id", apiDeviceRemoveHandler)
 
 	// REST CONFIG CHANGE
-	rg.POST(apiConfig + "/:key" + "/:conf", apiRestConfigHandler)
+	rg.POST(apiConfig + "influxdb", apiConfInfluxdbPostHandler)
+	rg.POST(apiConfig + "mongodb", apiConfMongodbPostHandler)
 
 	router.Run(address)
 	if parentwg != nil {
