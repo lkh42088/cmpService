@@ -19,7 +19,7 @@ type CollectorConfig struct {
 	RestServerPort 	string `json:"rest_server_port"`
 }
 
-const collectorConfigName = "collector.config"
+const collectorConfigName = "collector.conf"
 var CollectorConfigPath string
 
 //need to change default config

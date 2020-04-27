@@ -38,7 +38,7 @@ func getJungbhConfig() *CollectorConfig {
 
 func TestWriteJungbhConfig(t *testing.T) {
 	dirName, _ := os.Getwd()
-	path := fmt.Sprintf("%s/../etc/%s", dirName, "collector.jbh.config")
+	path := fmt.Sprintf("%s/../etc/%s", dirName, "collector.jbh.conf")
 	var cfg = getJungbhConfig()
 	fmt.Println(cfg)
 	config := lib.CreateConfig(path, cfg)
