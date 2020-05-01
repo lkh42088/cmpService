@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("file", "/etc/collector/collector.config",
+	configFile := flag.String("file", "/etc/collector/collector.conf",
 		"Input configuration file")
 	flag.Parse()
 	collect(*configFile)

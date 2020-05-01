@@ -11,7 +11,7 @@ func CreateConfig(path string, cfg interface{}) error {
 	var err error
 	var b []byte
 
-	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.FileMode(0777))
+	file, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.FileMode(0777))
 	if err != nil {
 		LogWarnln("Failed to create collector default config file", err)
 		return err
