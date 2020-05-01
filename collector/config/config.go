@@ -46,7 +46,7 @@ func GetDefaultConfig() *CollectorConfig {
 
 func CreateDefaultConfig(cfgPath string) (config string) {
 
-	file, err := os.OpenFile(cfgPath, os.O_CREATE|os.O_RDWR, os.FileMode(0777))
+	file, err := os.OpenFile(cfgPath, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.FileMode(0777))
 	if err != nil {
 		log.Fatal("Failed to create collector default config file", err)
 	}
