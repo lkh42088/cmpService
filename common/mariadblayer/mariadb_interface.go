@@ -17,5 +17,10 @@ type MariaDBLayer interface {
 	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
 	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
 	GetAllDevicesPart(deviceType string, outFlag int) ([]models.DevicePart, error)
+	// User
+	AddUser(user models.User) (models.User, error)
+	DeleteUser(user models.User) (models.User, error)
+	GetAllUsers() ([]models.User, error)
+	GetUser(id string) (models.User, error)
 }
 

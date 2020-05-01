@@ -2,18 +2,13 @@ package mariadblayer
 
 import (
 	"fmt"
-	db2 "nubes/common/db"
 	"nubes/common/models"
 	"testing"
 	"time"
 )
 
 func TestDeviceAddEntry_Server(t *testing.T) {
-	config := getTestConfig()
-	options := db2.GetDataSourceName(config)
-	fmt.Println("config:", config)
-	fmt.Println("options:", options)
-	db, err := NewDBORM(config.DBDriver, options)
+	db, err := getTestDb()
 	if err != nil {
 		return
 	}
@@ -138,11 +133,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 
 
 func TestDeviceAddEntry_Network(t *testing.T) {
-	config := getTestConfig()
-	options := db2.GetDataSourceName(config)
-	fmt.Println("config:", config)
-	fmt.Println("options:", options)
-	db, err := NewDBORM(config.DBDriver, options)
+	db, err := getTestDb()
 	if err != nil {
 		return
 	}
@@ -185,11 +176,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 
 
 func TestDeviceAddEntry_Part(t *testing.T) {
-	config := getTestConfig()
-	options := db2.GetDataSourceName(config)
-	fmt.Println("config:", config)
-	fmt.Println("options:", options)
-	db, err := NewDBORM(config.DBDriver, options)
+	db, err := getTestDb()
 	if err != nil {
 		return
 	}

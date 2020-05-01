@@ -1,8 +1,9 @@
 package rest
 
 import (
-	"github.com/gin-gonic/gin"
 	"nubes/common/mariadblayer"
+
+	"github.com/gin-gonic/gin"
 )
 
 type HandlerInterface interface {
@@ -22,6 +23,10 @@ type HandlerInterface interface {
 	GetDevicesMonitoring(c *gin.Context)
 	AddDevicesMonitoring(c *gin.Context)
 	DeleteDevicesMonitoring(c *gin.Context)
+	// Login
+	RegisterUser(c *gin.Context)
+	LoginUser(c *gin.Context)
+	GetSession(c *gin.Context)
 }
 
 type Handler struct {
@@ -35,42 +40,36 @@ func NewHandler(db *mariadblayer.DBORM) (*Handler, error) {
 }
 
 func RunAPI(address string, db *mariadblayer.DBORM) error {
-	r := gin.Default()
-	r.Use(CORSMiddlewre())
+	router := gin.Default()
+
+	// Middlewares
+	router.Use(ErrorHandler)
+	router.Use(CORSMiddlewre())
 	h, _ := NewHandler(db)
 
 	// Code
-	r.GET("/v1/codes", h.GetCodes)
-	r.POST("/v1/code", h.AddCode)
-	r.DELETE("/v1/code/:id", h.DeleteCode)
-	r.DELETE("/v1/codes", h.DeleteCodes)
+	router.GET("/v1/codes", h.GetCodes)
+	router.POST("/v1/code", h.AddCode)
+	router.DELETE("/v1/code/:id", h.DeleteCode)
+	router.DELETE("/v1/codes", h.DeleteCodes)
 
 	// SubCode
-	r.GET("/v1/subcodes", h.GetSubCodes)
-	r.POST("/v1/subcode", h.AddSubCode)
-	r.DELETE("/v1/subcode/:id", h.DeleteSubCode)
-	r.DELETE("/v1/subcodes", h.DeleteSubCodes)
+	router.GET("/v1/subcodes", h.GetSubCodes)
+	router.POST("/v1/subcode", h.AddSubCode)
+	router.DELETE("/v1/subcode/:id", h.DeleteSubCode)
+	router.DELETE("/v1/subcodes", h.DeleteSubCodes)
 
 	// Devices
-	r.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
+	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 
 	// Monitoring
-	//r.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
-	//r.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
+	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
+	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
-	return r.Run(address)
+	// Login
+	router.POST("/v1/register", h.RegisterUser)
+	router.POST("/v1/login", h.LoginUser)
+	router.GET("/v1/session", h.GetSession)
+	return router.Run(address)
 }
 
-func CORSMiddlewre() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Headers", "Contest-Type, Authorization, Origin")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "GET")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	}
-}

@@ -10,16 +10,17 @@ import (
 	"testing"
 )
 
+var restServer = "http://localhost:8081"
+
 func TestRestAddDeviceMonitoring(t *testing.T) {
+	url := restServer + "/v1/devices/monitoring"
+
 	msg := DeviceMonitoringRequest{
 		"id-0001",
 		"agent",
 	}
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-
-	restServer := "http://localhost:8081"
-	url := restServer + "/v1/devices/monitoring"
 
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
@@ -36,6 +37,8 @@ func TestRestAddDeviceMonitoring(t *testing.T) {
 }
 
 func TestRestAddCode(t *testing.T) {
+	url := restServer + "/v1/code"
+
 	code := models.Code{
 		CodeID:  0,
 		Type:    "type1",
@@ -45,9 +48,6 @@ func TestRestAddCode(t *testing.T) {
 	}
 	pbytes, _ := json.Marshal(code)
 	buff := bytes.NewBuffer(pbytes)
-
-	restServer := "http://localhost:8081"
-	url := restServer + "/v1/code"
 
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
@@ -64,7 +64,6 @@ func TestRestAddCode(t *testing.T) {
 }
 
 func TestRestGetCode(t *testing.T) {
-	restServer := "http://localhost:8081"
 	url := restServer + "/v1/codes"
 	response, err := http.Get(url)
 	if err != nil {
@@ -81,7 +80,6 @@ func TestRestGetCode(t *testing.T) {
 }
 
 func TestRestDeleteCode(t *testing.T) {
-	restServer := "http://localhost:8081"
 	url := restServer + "/v1/codes"
 	resquest, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
@@ -102,3 +100,53 @@ func TestRestDeleteCode(t *testing.T) {
 	}
 	fmt.Println("response", string(data))
 }
+
+func TestRegisterUser(t *testing.T) {
+	url := restServer + "/v1/register"
+	user := models.User{
+		ID:"andrew",
+		Password: "andrew1510",
+		Email: "andrew@nubes-bridge.com",
+		Name:"anrew",
+		Level: 1,
+	}
+	pbytes, _ := json.Marshal(user)
+	buff := bytes.NewBuffer(pbytes)
+
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error 1: ", err)
+		return
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
+		return
+	}
+	fmt.Println("response:", string(data))
+}
+
+func TestLoginUser(t *testing.T) {
+	url := restServer + "/v1/login"
+	user := models.User{
+		ID:"andrew",
+		Password: "andrew1510",
+	}
+	pbytes, _ := json.Marshal(user)
+	buff := bytes.NewBuffer(pbytes)
+
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error 1: ", err)
+		return
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
+		return
+	}
+	fmt.Println("response:", string(data))
+}
+

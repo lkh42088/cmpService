@@ -43,12 +43,24 @@ func getTestJbhConfig() *config.DBConfig {
 		"192.168.10.115",
 		3306,
 	}
-
 	return &config
 }
 
+func getTestDb() (*DBORM, error) {
+	// Jung Byeonghwa
+	config := getTestJbhConfig()
+	// Jee Eunbin
+	//config := getTestJebConfig()
+	options := db.GetDataSourceName(config)
+	db, err := NewDBORM(config.DBDriver, options)
+	return db, err
+}
+
 func getTestConfig() *config.DBConfig {
-	return getTestJebConfig()
+	// Jung Byeonghwa
+	return getTestJbhConfig()
+	// Jee Eunbin
+	//return getTestJebConfig()
 }
 
 func Migration(conf config.DBConfig) {
