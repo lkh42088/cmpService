@@ -38,3 +38,24 @@ func WriteMetric(s *SnmpDeviceTable) {
 		lib.LogWarn("InfluxDb Write Error: %s\n", err)
 	}
 }
+
+func WriteMetricFromStruct(s *SnmpDeviceTable) {
+	for i, dev := range s.Devices {
+		// IfTable
+		MakeBpForIfTable(i, &dev)
+		// IpTable
+		MakeBpForIpTable(i, &dev)
+		// Cpu
+		MakeBpForCpu(i, &dev)
+	}
+	// Store data
+	err := influx.Influx.Client.Write(influx.Influx.Bp)
+	if err != nil {
+		lib.LogWarn("InfluxDb Write Error: %s\n", err)
+	}
+}
+
+
+
+
+

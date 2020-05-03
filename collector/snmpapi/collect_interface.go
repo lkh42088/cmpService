@@ -35,7 +35,9 @@ type IfEntry struct {
 	ifOutQLen         int64       // 1.3.6.1.2.1.2.2.1.21  GAUGE
 	ifSpecific        int64       // 1.3.6.1.2.1.2.2.1.22  OBJECT IDENTIFIER (OID)
 
-	ifName            string
+	ifName            string	  // 1.3.6.1.2.1.31.1.1.1.1 DISPLAY STRING
+	ifHCInOctets	  uint64	  // 1.3.6.1.2.1.31.1.1.1.6 COUNT (Counter64)
+	ifHCOutOctets	  uint64	  // 1.3.6.1.2.1.31.1.1.1.10 COUNT (Counter64)
 }
 
 type IfTable struct {
@@ -161,6 +163,10 @@ func (s *SnmpDevice)insertIntegerIfEntry(num int, oid OidType, value int64) {
 		s.IfTable.ifEntry[num].ifOutQLen = value
 	case TypeOidIfSpecific:
 		s.IfTable.ifEntry[num].ifSpecific = value
+	case TypeOidIfHCInOctets:
+		s.IfTable.ifEntry[num].ifHCInOctets = uint64(value)
+	case TypeOidIfHCOutOctets:
+		s.IfTable.ifEntry[num].ifHCOutOctets = uint64(value)
 	default:
 		log.Fatalf("insertIntegerIfEntry() err: oid %d, value %d\n", oid, value)
 	}
@@ -234,7 +240,8 @@ func (ife *IfEntry) DumpWithNum(num int) {
 	fmt.Printf("U %d pkts, ", ife.ifInUcastPkts)
 	fmt.Printf("NU %d pkts, ", ife.ifInNUcastPkts)
 	fmt.Printf("D %d pkts, ", ife.ifInDiscards)
-	fmt.Printf("E %d pkts", ife.ifInErrors)
+	fmt.Printf("E %d pkts, ", ife.ifInErrors)
+	fmt.Printf("HC %d bytes", ife.ifHCInOctets)
 	fmt.Print("\n")
 
 	fmt.Print("         OUT ")
@@ -242,7 +249,8 @@ func (ife *IfEntry) DumpWithNum(num int) {
 	fmt.Printf("U %d pkts, ", ife.ifOutUcastPkts)
 	fmt.Printf("NU %d pkts, ", ife.ifOutNUcastPkts)
 	fmt.Printf("D %d pkts, ", ife.ifOutDiscards)
-	fmt.Printf("E %d pkts", ife.ifOutErrors)
+	fmt.Printf("E %d pkts, ", ife.ifOutErrors)
+	fmt.Printf("HC %d bytes", ife.ifHCOutOctets)
 	fmt.Print("\n")
 
 	fmt.Print("         OutQLen ")
@@ -264,7 +272,8 @@ func (ife *IfEntry) Dump() {
 	fmt.Printf("U %d, ", ife.ifInUcastPkts)
 	fmt.Printf("NU %d, ", ife.ifInNUcastPkts)
 	fmt.Printf("D %d, ", ife.ifInDiscards)
-	fmt.Printf("E %d", ife.ifInErrors)
+	fmt.Printf("E %d, ", ife.ifInErrors)
+	fmt.Printf("HC %d", ife.ifHCInOctets)
 	fmt.Print("\n")
 
 	fmt.Print("         OUT ")
@@ -272,7 +281,8 @@ func (ife *IfEntry) Dump() {
 	fmt.Printf("U %d, ", ife.ifOutUcastPkts)
 	fmt.Printf("NU %d, ", ife.ifOutNUcastPkts)
 	fmt.Printf("D %d, ", ife.ifOutDiscards)
-	fmt.Printf("E %d", ife.ifOutErrors)
+	fmt.Printf("E %d, ", ife.ifOutErrors)
+	fmt.Printf("HC %d", ife.ifHCOutOctets)
 	fmt.Print("\n")
 
 	fmt.Print("         OutQLen ")
