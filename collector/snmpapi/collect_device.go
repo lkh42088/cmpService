@@ -123,7 +123,7 @@ func CollectSnmpInfo() {
 	wg.Wait()
 
 	//WriteMetric(SnmpDevTb)
-	WriteMetricFromStruct(SnmpDevTb)
+	MakeBpFromSnmpStruct(SnmpDevTb)
 
 	//SnmpDevTb.String()
 	fmt.Printf("Total: count %d, collectdevice slice %d v0.9.5\n",

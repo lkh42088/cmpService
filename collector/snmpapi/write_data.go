@@ -4,6 +4,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 	"nubes/collector/influx"
 	"nubes/common/lib"
+	"sync"
 	"time"
 )
 
@@ -39,7 +40,7 @@ func WriteMetric(s *SnmpDeviceTable) {
 	}
 }
 
-func WriteMetricFromStruct(s *SnmpDeviceTable) {
+func MakeBpFromSnmpStruct(s *SnmpDeviceTable) {
 	for i, dev := range s.Devices {
 		// IfTable
 		MakeBpForIfTable(i, &dev)
@@ -48,10 +49,20 @@ func WriteMetricFromStruct(s *SnmpDeviceTable) {
 		// Cpu
 		MakeBpForCpu(i, &dev)
 	}
+}
+
+func WriteMetricInfluxDB(parentwg *sync.WaitGroup) {
 	// Store data
-	err := influx.Influx.Client.Write(influx.Influx.Bp)
-	if err != nil {
-		lib.LogWarn("InfluxDb Write Error: %s\n", err)
+	for {
+		time.Sleep(5 * time.Second)
+		err := influx.Influx.Client.Write(influx.Influx.Bp)
+		if err != nil {
+			lib.LogWarn("InfluxDb Write Error: %s\n", err)
+		}
+	}
+
+	if parentwg != nil {
+		parentwg.Done()
 	}
 }
 
