@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"nubes/common/lib"
 )
@@ -16,6 +17,11 @@ type User struct {
 
 func (User) TableName() string {
 	return "user_tb"
+}
+
+func (u User) String() string {
+	return fmt.Sprintf("userid %d, id %s, password %s, email %s, level %d",
+		u.UserID, u.ID, u.Password, u.Email, u.Level)
 }
 
 func HashPassword(user *User) {

@@ -25,7 +25,8 @@ type HandlerInterface interface {
 	DeleteDevicesMonitoring(c *gin.Context)
 	// Login
 	RegisterUser(c *gin.Context)
-	LoginUser(c *gin.Context)
+	LoginUserById(c *gin.Context)
+	LoginUserByEmail(c *gin.Context)
 	GetSession(c *gin.Context)
 }
 
@@ -67,9 +68,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
 	// Login
-	router.POST("/v1/register", h.RegisterUser)
-	router.POST("/v1/login", h.LoginUser)
-	router.GET("/v1/session", h.GetSession)
+	router.POST("/register", h.RegisterUser)
+	router.POST("/loginemail", h.LoginUserByEmail)
+	router.POST("/login", h.LoginUserById)
+	router.GET("/session", h.GetSession)
 	return router.Run(address)
 }
 
