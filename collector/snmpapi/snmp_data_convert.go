@@ -1,6 +1,7 @@
 package snmpapi
 
 import (
+	"fmt"
 	client "github.com/influxdata/influxdb1-client/v2"
 	"nubes/collector/collectdevice"
 	"nubes/collector/influx"
@@ -23,8 +24,8 @@ func RemoveUnnecessaryTable(name string) bool {
 
 func MakeTagForInfluxDB(id collectdevice.ID, ip string) map[string]string {
 	return map[string]string{
-		"ID": string(id),
-		"IP": ip,
+		"id": string(id),
+		"ip": ip,
 	}
 }
 
@@ -39,7 +40,8 @@ func MakeFieldForInfluxDB(data interface{}) map[string]interface{} {
 }
 
 func AddBpToInflux(name string,
-	tags map[string]string, fields map[string]interface{}) {
+	tags map[string]string, fields map[string]interface{}) error {
+
 	// Add batch point
 	eventTime := time.Now().Add(time.Second * -20)
 	point, err := client.NewPoint(
@@ -49,10 +51,10 @@ func AddBpToInflux(name string,
 		eventTime.Add(time.Second * 10),
 	)
 	if err != nil {
-		lib.LogWarn("Error: %s\n", err)
-		return
+		return fmt.Errorf("Error: %s\n", err)
 	}
 	influx.Influx.Bp.AddPoint(point)
+	return nil
 }
 
 // Add SNMP:IFTABLE Batch point
@@ -69,7 +71,9 @@ func MakeBpForIfTable(id collectdevice.ID, dev *SnmpDevice) {
 		fields := MakeFieldForInfluxDB(dev.IfTable.ifEntry[j])
 
 		// Add batch point
-		AddBpToInflux(name, tags, fields)
+		if AddBpToInflux(name, tags, fields) != nil {
+			lib.LogWarn("Failed to store IfTable info.")
+		}
 	}
 }
 
@@ -82,7 +86,9 @@ func MakeBpForIpTable(id collectdevice.ID, dev *SnmpDevice) {
 		fields := MakeFieldForInfluxDB(dev.IpTable.IpList[j])
 
 		// Add batch point
-		AddBpToInflux(name, tags, fields)
+		if AddBpToInflux(name, tags, fields) != nil {
+			lib.LogWarn("Failed to store IpTable info.")
+		}
 	}
 }
 
@@ -94,6 +100,8 @@ func MakeBpForCpu(id collectdevice.ID, dev *SnmpDevice) {
 	fields := MakeFieldForInfluxDB(dev.Cpu)
 
 	// Add batch point
-	AddBpToInflux(name, tags, fields)
+	if AddBpToInflux(name, tags, fields) != nil {
+		lib.LogWarn("Failed to store CPU info.")
+	}
 }
 

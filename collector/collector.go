@@ -6,6 +6,7 @@ import (
 	"nubes/collector/config"
 	"nubes/collector/rest"
 	"nubes/collector/snmpapi"
+	"nubes/collector/statistics"
 	"sync"
 )
 
@@ -24,13 +25,19 @@ func collect(configPath string) {
 	snmpapi.InitConfig()
 
 	fmt.Println("Start ++")
-	wg.Add(2)
+	wg.Add(4)
 
 	// Start restapi server
 	go rest.Start(&wg)
 
 	// Start snmp collection
 	go snmpapi.Start(&wg)
+
+	// Start statistics
+	go statistics.Start(&wg)
+
+	// Store to influxdb
+	go snmpapi.WriteMetricInfluxDB(&wg)
 
 	fmt.Println("End --")
 	wg.Wait()

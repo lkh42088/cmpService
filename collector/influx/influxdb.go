@@ -1,6 +1,7 @@
 package influx
 
 import (
+	"errors"
 	client "github.com/influxdata/influxdb1-client/v2"
 	"log"
 	"nubes/common/lib"
@@ -51,61 +52,76 @@ func NewInfluxCfg(url string, user string, passwd string, db string) *InfluxAcce
 	return &config
 }
 
-//func NewClient() client.Client {
-//	var c client.Client
-//	conf := config.ReadConfig(config.CollectorConfigPath)
-//	if conf.InfluxDb == ""  {
-//		lib.LogWarn("Collector config is empty.")
-//		return nil
-//	}
-//	addr := "http://" + conf.InfluxIp + ":8086"
-//
-//	c, err := client.NewHTTPClient(client.HTTPConfig{
-//		Addr:     addr,
-//		Username: conf.InfluxUser,
-//		Password: "",
-//	})
-//	if err != nil {
-//		lib.LogWarn("Client create error : %s", err)
-//		return nil
-//	}
-//	return c
-//}
-//
-//func InfluxdbCreateDB(dbname string) error {
-//	query := "CREATE DATABASE " + dbname
-//	err := InfluxdbQuery(query)
-//	if err != nil {
-//		return errors.New("Fail to create database in Influxdb.")
-//	}
-//	return nil
-//}
-//
-//func InfluxdbCheckDB(dbname string) error {
-//	query := "USE " + dbname
-//	err := InfluxdbQuery(query)
-//	if err != nil {
-//		return errors.New("Find to database in Influxdb.")
-//	}
-//	return nil
-//}
-//
-//func InfluxdbQuery(query string) error {
-//	if query == "" {
-//		return errors.New("Invalid query message.\n")
-//	}
-//
-//	var q client.Query
-//	var c client.Client
-//
-//	if c = NewClient(); c == nil {
-//		return errors.New("Fail to client create\n")
-//	}
-//
-//	q.Command = query
-//	if _, err := c.Query(q); err != nil {
-//		lib.LogWarn("Influxdb query error : %s", err)
-//		return err
-//	}
-//	return nil
-//}
+func NewClient() client.Client {
+	var c client.Client
+	if Influx.Url == ""  {
+		lib.LogWarn("Collector config is empty.\n")
+		return nil
+	}
+	c, err := client.NewHTTPClient(client.HTTPConfig{
+		Addr:     Influx.Url,
+		Username: Influx.Username,
+		Password: Influx.Password,
+	})
+	if err != nil {
+		lib.LogWarn("Client create error : %s\n", err)
+		return nil
+	}
+	return c
+}
+
+func InfluxdbCreateDB(dbname string) error {
+	query := "CREATE DATABASE " + dbname
+	_, err := InfluxdbQuery(query)
+	if err != nil {
+		return errors.New("Fail to create database in Influxdb.\n")
+	}
+	return nil
+}
+
+func InfluxdbCheckDB(dbname string) error {
+	query := "USE " + dbname
+	_, err := InfluxdbQuery(query)
+	if err != nil {
+		return errors.New("Find to database in Influxdb.\n")
+	}
+	return nil
+}
+
+func GetMeasurementsWithCondition(collector string, field string, where string) *client.Response {
+	query := "SELECT " + field + " FROM " + collector
+	query += " WHERE " + where
+	//fmt.Printf("Query: %s\n", query)
+	res, err := InfluxdbQuery(query)
+	if err != nil {
+		return nil
+	}
+	return res
+}
+
+func InfluxdbQuery(query string) (*client.Response, error) {
+	if query == "" {
+		return nil, errors.New("Invalid query message.\n")
+	}
+
+	var q client.Query
+	var c client.Client
+
+	if c = NewClient(); c == nil {
+		return nil, errors.New("Fail to client create\n")
+	}
+
+	q.Command = query
+	q.Database = Influx.Database
+	var res *client.Response
+	var err error
+	if res, err = c.Query(q); err != nil {
+		lib.LogWarn("Influxdb query error : %s\n", err)
+		return nil, err
+	}
+	if res != nil {
+		return res, nil
+	}
+	return nil, nil
+}
+
