@@ -7,6 +7,7 @@ import (
 	"nubes/collector/influx"
 	"nubes/common/lib"
 	"reflect"
+	"strings"
 	"time"
 )
 
@@ -45,7 +46,7 @@ func AddBpToInflux(name string,
 	// Add batch point
 	eventTime := time.Now().Add(time.Second * -20)
 	point, err := client.NewPoint(
-		name,
+		strings.ToLower(name),
 		tags,
 		fields,
 		eventTime.Add(time.Second * 10),
@@ -68,7 +69,33 @@ func MakeBpForIfTable(id collectdevice.ID, dev *SnmpDevice) {
 		// Table name, tags, fields
 		name := reflect.TypeOf(dev.IfTable).Name()
 		tags := MakeTagForInfluxDB(id, dev.Device.Ip)
-		fields := MakeFieldForInfluxDB(dev.IfTable.ifEntry[j])
+		//fields := MakeFieldForInfluxDB(dev.IfTable.ifEntry[j])
+		fields := map[string]interface{}{
+			"ifindex" 		: dev.IfTable.ifEntry[j].ifIndex,
+			"descr" 		: dev.IfTable.ifEntry[j].ifDescr,
+			"type" 			: dev.IfTable.ifEntry[j].ifType,
+			"mtu" 			: dev.IfTable.ifEntry[j].ifMTU,
+			"speed" 		: dev.IfTable.ifEntry[j].ifSpeed,
+			"physaddress" 	: dev.IfTable.ifEntry[j].ifPhysAddress,
+			"adminstatus" 	: dev.IfTable.ifEntry[j].ifAdminStatus,
+			"operstatus" 	: dev.IfTable.ifEntry[j].ifOperStatus,
+			"lastchange" 	: dev.IfTable.ifEntry[j].ifLastChange,
+			"in-octets" 	: dev.IfTable.ifEntry[j].ifInOctets,
+			"in-ucastpkts" 	: dev.IfTable.ifEntry[j].ifInUcastPkts,
+			"in-n-ucastpkts" : dev.IfTable.ifEntry[j].ifInNUcastPkts,
+			"in-discards" 	: dev.IfTable.ifEntry[j].ifInDiscards,
+			"in-errors" 	: dev.IfTable.ifEntry[j].ifInErrors,
+			"out-octets" 	: dev.IfTable.ifEntry[j].ifOutOctets,
+			"out-ucastpkts" : dev.IfTable.ifEntry[j].ifOutUcastPkts,
+			"out-n-ucastpkts" : dev.IfTable.ifEntry[j].ifOutNUcastPkts,
+			"out-discards" 	: dev.IfTable.ifEntry[j].ifOutDiscards,
+			"out-errors" 	: dev.IfTable.ifEntry[j].ifOutErrors,
+			"out-qlen" 		: dev.IfTable.ifEntry[j].ifOutQLen,
+			"ifspecific" 	: dev.IfTable.ifEntry[j].ifSpecific,
+			"ifname" 		: dev.IfTable.ifEntry[j].ifName,
+			"hc-in-octets" 	: dev.IfTable.ifEntry[j].ifHCInOctets,
+			"hc-out-octets" : dev.IfTable.ifEntry[j].ifHCOutOctets,
+		}
 
 		// Add batch point
 		if AddBpToInflux(name, tags, fields) != nil {
@@ -83,7 +110,12 @@ func MakeBpForIpTable(id collectdevice.ID, dev *SnmpDevice) {
 		// Table name, tags, fields
 		name := reflect.TypeOf(dev.IpTable).Name()
 		tags := MakeTagForInfluxDB(id, dev.Device.Ip)
-		fields := MakeFieldForInfluxDB(dev.IpTable.IpList[j])
+		//fields := MakeFieldForInfluxDB(dev.IpTable.IpList[j])
+		fields := map[string]interface{}{
+			"ipaddr"	: dev.IpTable.IpList[j].IpAddr,
+			"ifindex"	: dev.IpTable.IpList[j].IfIndex,
+			"newmask"	: dev.IpTable.IpList[j].NetMask,
+		}
 
 		// Add batch point
 		if AddBpToInflux(name, tags, fields) != nil {
@@ -97,7 +129,13 @@ func MakeBpForCpu(id collectdevice.ID, dev *SnmpDevice) {
 	// Table name, tags, fields
 	name := reflect.TypeOf(dev.Cpu).Name()
 	tags := MakeTagForInfluxDB(id, dev.Device.Ip)
-	fields := MakeFieldForInfluxDB(dev.Cpu)
+	//fields := MakeFieldForInfluxDB(dev.Cpu)
+	fields := map[string]interface{}{
+		"idle" 		: dev.Cpu.Idle,
+		"min1av" 	: dev.Cpu.min1av,
+		"min5av" 	: dev.Cpu.min5av,
+		"min10av" 	: dev.Cpu.min10av,
+	}
 
 	// Add batch point
 	if AddBpToInflux(name, tags, fields) != nil {

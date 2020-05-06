@@ -13,7 +13,7 @@ type IfEntry struct {
 	ifDescr           string      // 1.3.6.1.2.1.2.2.1.2   OCTET STRING 0..255
 	ifType            int         // 1.3.6.1.2.1.2.2.1.3   INTEGER
 	ifMTU             int         // 1.3.6.1.2.1.2.2.1.4   INTEGER
-	ifSpeed           int         // 1.3.6.1.2.1.2.2.1.5   Gauge
+	ifSpeed           int64       // 1.3.6.1.2.1.2.2.1.5   Gauge
 	ifPhysAddress     string      // 1.3.6.1.2.1.2.2.1.6   OCTET STRING
 	ifAdminStatus     int         // 1.3.6.1.2.1.2.2.1.7   INTEGER  { up(1), down(2), testing(3) }
 	ifOperStatus      int         // 1.3.6.1.2.1.2.2.1.8   INTEGER  { up(1), down(2), testing(3) }
@@ -36,8 +36,8 @@ type IfEntry struct {
 	ifSpecific        int64       // 1.3.6.1.2.1.2.2.1.22  OBJECT IDENTIFIER (OID)
 
 	ifName            string	  // 1.3.6.1.2.1.31.1.1.1.1 DISPLAY STRING
-	ifHCInOctets	  uint64	  // 1.3.6.1.2.1.31.1.1.1.6 COUNT (Counter64)
-	ifHCOutOctets	  uint64	  // 1.3.6.1.2.1.31.1.1.1.10 COUNT (Counter64)
+	ifHCInOctets	  int64	  	  // 1.3.6.1.2.1.31.1.1.1.6 COUNT (Counter64)
+	ifHCOutOctets	  int64	  	  // 1.3.6.1.2.1.31.1.1.1.10 COUNT (Counter64)
 }
 
 type IfTable struct {
@@ -128,7 +128,7 @@ func (s *SnmpDevice)insertIntegerIfEntry(num int, oid OidType, value int64) {
 	case TypeOidIfType:
 		s.IfTable.ifEntry[num].ifType = int(value)
 	case TypeOidIfSpeed:
-		s.IfTable.ifEntry[num].ifSpeed = int(value)
+		s.IfTable.ifEntry[num].ifSpeed = int64(value)
 	case TypeOidIfMtu:
 		s.IfTable.ifEntry[num].ifMTU = int(value)
 	case TypeOidIfAdminStatus:
@@ -164,9 +164,9 @@ func (s *SnmpDevice)insertIntegerIfEntry(num int, oid OidType, value int64) {
 	case TypeOidIfSpecific:
 		s.IfTable.ifEntry[num].ifSpecific = value
 	case TypeOidIfHCInOctets:
-		s.IfTable.ifEntry[num].ifHCInOctets = uint64(value)
+		s.IfTable.ifEntry[num].ifHCInOctets = int64(value)
 	case TypeOidIfHCOutOctets:
-		s.IfTable.ifEntry[num].ifHCOutOctets = uint64(value)
+		s.IfTable.ifEntry[num].ifHCOutOctets = int64(value)
 	default:
 		log.Fatalf("insertIntegerIfEntry() err: oid %d, value %d\n", oid, value)
 	}
