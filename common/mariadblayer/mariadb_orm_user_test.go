@@ -37,6 +37,6 @@ func TestGetUser(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	user, err := db.GetUser("jungbh")
+	user, err := db.GetUserById("jungbh")
 	fmt.Println(user)
 }
