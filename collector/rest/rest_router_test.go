@@ -142,9 +142,9 @@ func TestId(t *testing.T) {
 }
 
 func TestInput(t *testing.T) {
-	var config config.CollectorConfig
-	config.SetConfigByField("svcmgrip", "1.1.1.1", &config)
-	fmt.Println(config)
+	var conf config.CollectorConfig
+	config.SetConfigByField("svcmgrip", "1.1.1.1", &conf)
+	fmt.Println(conf)
 }
 
 const lbURL = "https://api.ucloudbiz.olleh.com/loadbalancer/v2/client/api"

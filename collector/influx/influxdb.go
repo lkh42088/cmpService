@@ -91,7 +91,7 @@ func InfluxdbCheckDB(dbname string) error {
 func GetMeasurementsWithCondition(collector string, field string, where string) *client.Response {
 	query := "SELECT " + field + " FROM " + collector
 	query += " WHERE " + where
-	//fmt.Printf("Query: %s\n", query)
+	//fmt.Printf("Query: %s\n", query)	// Need to debuggig
 	res, err := InfluxdbQuery(query)
 	if err != nil {
 		return nil

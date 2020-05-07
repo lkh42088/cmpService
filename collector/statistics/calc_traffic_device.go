@@ -1,6 +1,7 @@
 package statistics
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -8,7 +9,6 @@ import (
 	"nubes/collector/influx"
 	"nubes/collector/snmpapi"
 	"nubes/common/lib"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -18,22 +18,22 @@ type IfStat struct {
 	//time 			string		`influx:time`
 	id 				string		`influx:ID`
 	ip				string		`influx:IP`
-	ifIndex			string		`influx:ifIndex`
+	ifIndex			int64		`influx:ifIndex`
 	ifDescr			string		`influx:ifDescr`
-	ifHCInOctets	uint64		`influx:ifHCInOctets`
-	ifHCOutOctets	uint64		`influx:ifHCOutOctets`
+	ifHCInOctets	int64		`influx:ifHCInOctets`
+	ifHCOutOctets	int64		`influx:ifHCOutOctets`
 }
 
 var Avg []IfStat
 
-const iftable = "IfTable"
-const trafficField = `"ID","IP","ifIndex","ifDescr","ifHCInOctets","ifHCOutOctets"`
+const iftable = "iftable"
+const trafficField = `"id","ip","ifindex","descr","hc-in-octets","hc-out-octets"`
 const StatCollecTime = 300
 
 func GetdataAtInflux(id string) *client.Response {
 	dbname := iftable
 	field := trafficField
-	where := fmt.Sprintf(`"ID"='%s' AND time >= now() - 5m`, id)
+	where := fmt.Sprintf(`"id"='%s' AND time >= now() - 5m`, id)
 	res := influx.GetMeasurementsWithCondition(dbname, field, where)
 	//lib.LogWarn("data count : %d\n", len(res.Results[0].Series[0].Values))
 	return res
@@ -49,14 +49,12 @@ func ConvertTrafficData(res *client.Response) []IfStat {
 	stat := make([]IfStat, len(v))
 	for i, data := range v {
 		//stat[i].time = data[0].(string)	//remove time data
-		stat[i].id = data[1].(string)
-		stat[i].ip = data[2].(string)
-		stat[i].ifIndex = data[3].(string)
-		stat[i].ifDescr = data[4].(string)
-		num, _ := strconv.Atoi(data[5].(string))
-		stat[i].ifHCInOctets = uint64(num)
-		num, _ = strconv.Atoi(data[6].(string))
-		stat[i].ifHCOutOctets = uint64(num)
+		stat[i].id 					= data[1].(string)
+		stat[i].ip 					= data[2].(string)
+		stat[i].ifIndex, _ 			= data[3].(json.Number).Int64()
+		stat[i].ifDescr 			= data[4].(string)
+		stat[i].ifHCInOctets, _ 	= data[5].(json.Number).Int64()
+		stat[i].ifHCOutOctets, _ 	= data[6].(json.Number).Int64()
 	}
 	//lib.LogWarn("Last data : %d\n", stat[len(stat)-1].ifHCOutOctets)
 	return stat
@@ -86,7 +84,15 @@ func CalcTrafficPer5Min(stat []IfStat) (IfStat, error) {
 func StoreAvgData(stat IfStat) error {
 	name := "Average5min"
 	tags := snmpapi.MakeTagForInfluxDB(collectdevice.ID(stat.id), stat.ip)
-	fields := snmpapi.MakeFieldForInfluxDB(stat)
+	//fields := snmpapi.MakeFieldForInfluxDB(stat)
+	fields := map[string]interface{}{
+		"id" 		: stat.id,
+		"ip"		: stat.ip,
+		"ifindex"	: stat.ifIndex,
+		"ifdescr"	: stat.ifDescr,
+		"rxavg5min"	: stat.ifHCInOctets,
+		"txavg5min"	: stat.ifHCOutOctets,
+	}
 	if err := snmpapi.AddBpToInflux(name, tags, fields); err != nil {
 		return fmt.Errorf("StoreAvgData() Error: %s\n", err)
 	}

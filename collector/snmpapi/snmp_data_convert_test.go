@@ -2,6 +2,7 @@ package snmpapi
 
 import (
 	"nubes/collector/config"
+	"sync"
 	"testing"
 )
 
@@ -10,5 +11,7 @@ func TestConvertSnmpData(t *testing.T) {
 	InitConfig()
 	GetDevicesFromMongoDB(SnmpDevTb)
 	CollectSnmpInfo()
-	WriteMetricFromStruct(SnmpDevTb)
+
+	var wg *sync.WaitGroup
+	WriteMetricInfluxDB(wg)
 }
