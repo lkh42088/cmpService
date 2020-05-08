@@ -228,3 +228,49 @@ func TestKtRestApi(t *testing.T) {
 	response := KtRestGet(serverURL, listVM)
 	fmt.Println(response)
 }
+
+const resellerApiKey = "asfupvb9-abui-gaeu-z"
+const resellerURL = "https://ucloudbiz.kt.com/jv_ssl_key_openapi.jsp"
+const chargeVM = "startDate=2020-01&endDate=2020-03&type=serviceChargeInfoAccount&emailId=fin_bmetal1@vple.net"
+const chargeListVM = "startDate=2020-01&endDate=2020-03&resellerKey="+resellerApiKey+"&type=billingInfoListAccounts"
+
+func KtChargeGet(ktURL string, command string) string {
+	baseUrl, _ := url.Parse(resellerURL)
+	params := url.Values{}
+
+	// big
+	params.Add("command", "listCharges")
+	//params.Add("type", "billingInfoListAccounts")
+	//params.Add("type", "useServiceListAccounts")
+	params.Add("type", "serviceChargeInfoAccount")
+	params.Add("emailId", "fin_bmetal1@vple.net")
+	params.Add("startDate", "2020-04")
+	params.Add("endDate", "2020-04")
+	params.Add("resellerKey", resellerApiKey)
+	params.Add("response", "json")
+
+	baseUrl.RawQuery = params.Encode()
+
+	fmt.Printf("URL : %s\n", baseUrl.String())
+
+	//Send API Query
+	resp, err := http.Get(baseUrl.String())
+	if err != nil {
+		fmt.Println("error:", err)
+		return ""
+	}
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("error:", err)
+		return ""
+	}
+
+	return string(data)
+}
+
+func TestKtResellerRestApi(t *testing.T) {
+	response := KtChargeGet(resellerURL, chargeListVM)
+	fmt.Println(response)
+}
+
