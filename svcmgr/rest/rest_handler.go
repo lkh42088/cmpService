@@ -181,6 +181,56 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 	}
 }
 
+func (h *Handler) GetDevicesByIdx(c *gin.Context) {
+	fmt.Println("GetDevicesByIdx")
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+	/*	fmt.Println("GetDevicesByList1 : ",p)
+		deviceType, err := strconv.Atoi(p)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		fmt.Println("GetDevicesByList2")*/
+
+	f := c.Param("idx")
+	idx, err := strconv.Atoi(f)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	devicesServer, err := h.db.GetDeviceServer(deviceType, idx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	devicesNetwork, err := h.db.GetDeviceNetwork(deviceType, idx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	devicesPart, err := h.db.GetDevicePart(deviceType, idx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Println("type : ", deviceType, ", idx : ", idx)
+
+	if deviceType == "server" {
+		c.JSON(http.StatusOK, devicesServer)
+	} else if string(deviceType) == "network" {
+		c.JSON(http.StatusOK, devicesNetwork)
+	} else if string(deviceType) == "part" {
+		c.JSON(http.StatusOK, devicesPart)
+	}
+}
+
 // Mornitoring
 func (h *Handler) GetDevicesMonitoring(c *gin.Context) {
 
