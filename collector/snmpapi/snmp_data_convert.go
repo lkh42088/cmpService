@@ -8,6 +8,7 @@ import (
 	"nubes/common/lib"
 	"reflect"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -42,6 +43,7 @@ func MakeFieldForInfluxDB(data interface{}) map[string]interface{} {
 
 func AddBpToInflux(name string,
 	tags map[string]string, fields map[string]interface{}) error {
+	var mutex = &sync.Mutex{}
 
 	// Add batch point
 	eventTime := time.Now().Add(time.Second * -20)
@@ -54,7 +56,11 @@ func AddBpToInflux(name string,
 	if err != nil {
 		return fmt.Errorf("Error: %s\n", err)
 	}
+
+	mutex.Lock()
 	influx.Influx.Bp.AddPoint(point)
+	mutex.Unlock()
+
 	return nil
 }
 

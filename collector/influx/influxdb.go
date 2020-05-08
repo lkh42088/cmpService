@@ -31,7 +31,7 @@ func NewInfluxCfg(url string, user string, passwd string, db string) *InfluxAcce
 		Database: db,
 	}
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Precision:        "s",
+		Precision:        "ms",
 		Database:         config.Database,
 	})
 	if err != nil {
