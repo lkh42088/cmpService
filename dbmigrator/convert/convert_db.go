@@ -189,11 +189,10 @@ func sepIps(s string) string {
 
 func GetServerTbByDevice(device cbmodels.ServerDevice)(sd models.DeviceServer) {
 	sd.Idx = uint(device.CbDeviceID)
-	sd.OutFlag = false			// check
+	sd.OutFlag = true			// check
 	sd.Num = device.WrNum
 	sd.CommentCnt = device.WrComment
 	sd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-
 	sd.Option = device.WrOption
 	sd.Hit = device.WrHit
 	sd.RegisterId = device.MbId
@@ -230,7 +229,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(sd models.DeviceServer) {
 
 func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(nd models.DeviceNetwork) {
 	nd.Idx = uint(device.CbDeviceID)
-	nd.OutFlag = false			// Need to confirm
+	nd.OutFlag = true			// check
 	nd.Num = device.WrNum
 	nd.CommentCnt = device.WrComment
 	nd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
@@ -268,7 +267,7 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(nd models.DeviceNetwork
 
 func GetPartTbByDevice(device cbmodels.PartDevice)(pd models.DevicePart) {
 	pd.Idx = uint(device.CbDeviceID)
-	pd.OutFlag = false			// Need to confirm
+	pd.OutFlag = true			// check
 	pd.Num = device.WrNum
 	pd.CommentCnt = device.WrComment
 	pd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
