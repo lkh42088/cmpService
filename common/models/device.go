@@ -75,7 +75,7 @@ type DeviceNetwork struct {
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|'"`
 	Size             int       `gorm:"column:size_cd"`
 	FirmwareVersion  string    `gorm:"type:varchar(50);column:firmware_version"`
-	Warranty         string    `gorm:"type:varchar(255);column:warranty"`
+	//Warranty         string    `gorm:"type:varchar(255);column:warranty"`
 	MonitoringFlag   int       `gorm:"column:mornitoring_flag"`
 	MonitoringMethod int       `gorm:"column:mornitoring_method"`
 }

@@ -13,3 +13,15 @@ func (db *CBORM) GetAllSubItems() (subitems []cbmodels.SubItem, err error){
 func (db *CBORM) GetAllDevices() (devices []cbmodels.CbDevice, err error) {
 	return devices, db.Find(&devices).Error
 }
+
+func (db *CBORM) GetAllDevicesServerFromOldDB() (devices []cbmodels.ServerDevice, err error) {
+	return devices, db.Find(&devices).Error
+}
+
+func (db *CBORM) GetAllDevicesNetworkFromOldDB() (devices []cbmodels.NetworkDevice, err error) {
+	return devices, db.Find(&devices).Error
+}
+
+func (db *CBORM) GetAllDevicesPartFromOldDB() (devices []cbmodels.PartDevice, err error) {
+	return devices, db.Find(&devices).Error
+}

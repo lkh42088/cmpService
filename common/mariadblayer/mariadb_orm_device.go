@@ -45,3 +45,27 @@ func (db *DBORM) AddDeviceNetwork(device models.DeviceNetwork) (models.DeviceNet
 func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, error) {
 	return device, db.Create(&device).Error
 }
+
+func (db *DBORM) DeleteDeviceServer(sd models.DeviceServer) (models.DeviceServer, error) {
+	return sd, db.Delete(&sd).Error
+}
+
+func (db *DBORM) DeleteAllDevicesServer() error {
+	return db.Delete(&models.DeviceServer{}).Error
+}
+
+func (db *DBORM) DeleteDeviceNetwork(nd models.DeviceNetwork) (models.DeviceNetwork, error) {
+	return nd, db.Delete(&nd).Error
+}
+
+func (db *DBORM) DeleteAllDevicesNetwork() error {
+	return db.Delete(&models.DeviceNetwork{}).Error
+}
+
+func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, error) {
+	return pd, db.Delete(&pd).Error
+}
+
+func (db *DBORM) DeleteAllDevicesPart() error {
+	return db.Delete(&models.DevicePart{}).Error
+}
