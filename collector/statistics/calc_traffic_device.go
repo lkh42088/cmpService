@@ -26,7 +26,7 @@ type IfStat struct {
 
 var lastSelectTime sync.Map
 
-const StatCollectTime = 10
+const StatCollectTime = 300
 const periodTime = "5m30s"
 const iftable = "iftable"
 const trafficField = `"time","id","ip","ifindex","descr","hc-in-octets","hc-out-octets"`
