@@ -14,9 +14,24 @@ func (db *DBORM) GetAllDevicesNetwork(deviceType string, outFlag int) (devices [
 	return devices, db.Where("out_flag=?", outFlag).Find(&devices).Error
 }
 
-func (db *DBORM) GetAllDevicesPart(deviceType string, outFlag int) (devices []models.DevicePart,
+func (db *DBORM) GetAllDevicesPart(deviceType string, out_flag int) (devices []models.DevicePart,
 	err error) {
-	return devices, db.Where("out_flag=?", outFlag).Find(&devices).Error
+	return devices, db.Where("out_flag=?", out_flag).Find(&devices).Error
+}
+
+func (db *DBORM) GetDeviceServer(deviceType string, idx int) (device []models.DeviceServer,
+	err error) {
+	return device, db.Where("idx=?", idx).Find(&device).Error
+}
+
+func (db *DBORM) GetDeviceNetwork(deviceType string, idx int) (device []models.DeviceNetwork,
+	err error) {
+	return device, db.Where("idx=?", idx).Find(&device).Error
+}
+
+func (db *DBORM) GetDevicePart(deviceType string, idx int) (device []models.DevicePart,
+	err error) {
+	return device, db.Where("idx=?", idx).Find(&device).Error
 }
 
 func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {

@@ -62,6 +62,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Devices
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
+	router.GET("/v1/device/:type/:idx", h.GetDevicesByIdx)
 
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
