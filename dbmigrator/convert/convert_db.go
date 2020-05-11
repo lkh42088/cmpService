@@ -189,7 +189,7 @@ func sepIps(s string) string {
 
 func GetServerTbByDevice(device cbmodels.ServerDevice)(sd models.DeviceServer) {
 	sd.Idx = uint(device.CbDeviceID)
-	sd.OutFlag = true			// check
+	sd.OutFlag = false
 	sd.Num = device.WrNum
 	sd.CommentCnt = device.WrComment
 	sd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
@@ -201,9 +201,9 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(sd models.DeviceServer) {
 	sd.RegisterEmail = device.WrEmail
 	sd.RegisterDate = device.WrDatetime
 	sd.DeviceCode = device.Wr1
-	sd.Model = convInt(device.WrSubject)	// check
+	sd.Model = convInt(device.WrSubject)
 	sd.Contents = device.WrContent
-	sd.Customer = convInt(device.WrTrackback)	// check
+	sd.Customer = convInt(device.WrTrackback)
 	sd.Manufacture = convInt(device.WrLink1)
 	sd.DeviceType = convInt(device.WrLink2)
 	sd.WarehousingDate = device.WrLink1Hit
@@ -212,7 +212,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(sd models.DeviceServer) {
 	sd.OwnerCompany = device.Wr7
 	sd.HwSn = device.Wr9
 	sd.IDC = sepIdcRack(device.Wr10, 1)
-	sd.Rack = sepIdcRack(device.Wr10, 2)	// check
+	sd.Rack = sepIdcRack(device.Wr10, 2)
 	sd.Cost = device.Wr12
 	sd.Purpos = device.Wr13
 	sd.Ip = sepIps(device.WrHomepage)
@@ -221,15 +221,15 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(sd models.DeviceServer) {
 	sd.Cpu = device.Wr2
 	sd.Memory = device.Wr3
 	sd.Hdd = device.Wr4
-	sd.MonitoringFlag = 0		// check
-	sd.MonitoringMethod = 0	// check
+	sd.MonitoringFlag = 0
+	sd.MonitoringMethod = 0
 
 	return sd
 }
 
 func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(nd models.DeviceNetwork) {
 	nd.Idx = uint(device.CbDeviceID)
-	nd.OutFlag = true			// check
+	nd.OutFlag = false
 	nd.Num = device.WrNum
 	nd.CommentCnt = device.WrComment
 	nd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
@@ -241,9 +241,9 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(nd models.DeviceNetwork
 	nd.RegisterEmail = device.WrEmail
 	nd.RegisterDate = device.WrDatetime
 	nd.DeviceCode = device.Wr1
-	nd.Model = convInt(device.WrSubject)	// check
+	nd.Model = convInt(device.WrSubject)
 	nd.Contents = device.WrContent
-	nd.Customer = convInt(device.WrTrackback)	// check
+	nd.Customer = convInt(device.WrTrackback)
 	nd.Manufacture = convInt(device.WrLink1)
 	nd.DeviceType = convInt(device.WrLink2)
 	nd.WarehousingDate = device.WrLink1Hit
@@ -252,22 +252,21 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(nd models.DeviceNetwork
 	nd.OwnerCompany = device.Wr7
 	nd.HwSn = device.Wr9
 	nd.IDC = sepIdcRack(device.Wr10, 1)
-	nd.Rack = sepIdcRack(device.Wr10, 2)	// check
+	nd.Rack = sepIdcRack(device.Wr10, 2)
 	nd.Cost = device.Wr12
 	nd.Purpos = device.Wr13
 	nd.Ip = sepIps(device.WrHomepage)
 	nd.Size = convInt(device.Wr6)
 	nd.FirmwareVersion = device.Wr2
-	//nd.Warranty = device.?? 		// check
-	nd.MonitoringFlag = 0		// check
-	nd.MonitoringMethod = 0	// check
+	nd.MonitoringFlag = 0
+	nd.MonitoringMethod = 0
 
 	return nd
 }
 
 func GetPartTbByDevice(device cbmodels.PartDevice)(pd models.DevicePart) {
 	pd.Idx = uint(device.CbDeviceID)
-	pd.OutFlag = true			// check
+	pd.OutFlag = false
 	pd.Num = device.WrNum
 	pd.CommentCnt = device.WrComment
 	pd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
@@ -279,9 +278,9 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(pd models.DevicePart) {
 	pd.RegisterEmail = device.WrEmail
 	pd.RegisterDate = device.WrDatetime
 	pd.DeviceCode = device.Wr1
-	pd.Model = convInt(device.WrSubject)	// check
+	pd.Model = convInt(device.WrSubject)
 	pd.Contents = device.WrContent
-	pd.Customer = convInt(device.WrTrackback)	// check
+	pd.Customer = convInt(device.WrTrackback)
 	pd.Manufacture = convInt(device.WrLink1)
 	pd.DeviceType = convInt(device.WrLink2)
 	pd.WarehousingDate = device.WrLink1Hit
@@ -290,12 +289,12 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(pd models.DevicePart) {
 	pd.OwnerCompany = device.Wr7
 	pd.HwSn = device.Wr9
 	pd.IDC = sepIdcRack(device.Wr10, 1)
-	pd.Rack = sepIdcRack(device.Wr10, 2)	// check
+	pd.Rack = sepIdcRack(device.Wr10, 2)
 	pd.Cost = device.Wr12
 	pd.Purpos = device.Wr13
 	pd.Warranty = device.Wr2
-	pd.MonitoringFlag = 0		// check
-	pd.MonitoringMethod = 0	// check
+	pd.MonitoringFlag = 0
+	pd.MonitoringMethod = 0
 
 	return pd
 }
