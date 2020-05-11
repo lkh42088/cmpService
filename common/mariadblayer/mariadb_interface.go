@@ -17,18 +17,23 @@ type MariaDBLayer interface {
 	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
 	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
 	GetAllDevicesPart(deviceType string, outFlag int) ([]models.DevicePart, error)
+	GetAllDevicesComment(deviceType string, outFlag int) ([]models.DeviceComment, error)
 	GetDeviceServer(deviceType string, idx int) ([]models.DeviceServer, error)
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
+	GetDeviceComment(deviceType string, idx int) ([]models.DeviceComment, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
-	AddDeviceNetwork(server models.DeviceNetwork)(models.DeviceNetwork, error)
-	AddDevicePart(server models.DevicePart)(models.DevicePart, error)
+	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
+	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
+	AddDeviceComment(comment models.DeviceComment)(models.DeviceComment, error)
 	DeleteAllDevicesServer() error
 	DeleteAllDevicesNetwork() error
 	DeleteAllDevicesPart() error
+	DeleteAllDevicesComment() error
 	DeleteDeviceServer(server models.DeviceServer) (models.DeviceServer, error)
-	DeleteDeviceNetwork(server models.DeviceNetwork) (models.DeviceNetwork, error)
-	DeleteDevicePart(server models.DevicePart) (models.DevicePart, error)
+	DeleteDeviceNetwork(network models.DeviceNetwork) (models.DeviceNetwork, error)
+	DeleteDevicePart(part models.DevicePart) (models.DevicePart, error)
+	DeleteDeviceComment(comment models.DeviceComment) (models.DeviceComment, error)
 
 	// User
 	AddUser(user models.User) (models.User, error)

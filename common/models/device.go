@@ -3,8 +3,8 @@ package models
 import "time"
 
 type DeviceServer struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
+	Idx              uint      `gorm:"primary_key;column:idx;not null;type unsigned auto_increment"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:false"`
 	Num              int       `gorm:"column:num"`
 	CommentCnt       int       `gorm:"column:comment_cnt"`
 	CommentLastDate  time.Time `gorm:"column:comment_last_date"`
@@ -14,7 +14,7 @@ type DeviceServer struct {
 	Password         string    `gorm:"type:varchar(255);column:register_password"`
 	RegisterName     string    `gorm:"type:varchar(50);column:register_name"`
 	RegisterEmail    string    `gorm:"type:varchar(255);column:register_email"`
-	RegisterDate     time.Time `gorm:"column:register_date"`
+	RegisterDate     time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
 	DeviceCode       string    `gorm:"type:varchar(255);column:device_code"`
 	Model            int       `gorm:"column:model_cd"`
 	Contents         string    `gorm:"type:text;column:contents"`
@@ -45,8 +45,8 @@ func (DeviceServer) TableName() string {
 }
 
 type DeviceNetwork struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
+	Idx              uint      `gorm:"primary_key;column:idx;not null;type unsigned auto_increment"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:false"`
 	Num              int       `gorm:"column:num"`
 	CommentCnt       int       `gorm:"column:comment_cnt"`
 	CommentLastDate  time.Time `gorm:"column:comment_last_date"`
@@ -56,7 +56,7 @@ type DeviceNetwork struct {
 	Password         string    `gorm:"type:varchar(255);column:register_password"`
 	RegisterName     string    `gorm:"type:varchar(50);column:register_name"`
 	RegisterEmail    string    `gorm:"type:varchar(255);column:register_email"`
-	RegisterDate     time.Time `gorm:"column:register_date"`
+	RegisterDate     time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
 	DeviceCode       string    `gorm:"type:varchar(255);column:device_code"`
 	Model            int       `gorm:"column:model_cd"`
 	Contents         string    `gorm:"type:text;column:contents"`
@@ -85,8 +85,8 @@ func (DeviceNetwork) TableName() string {
 }
 
 type DevicePart struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
+	Idx              uint      `gorm:"primary_key;column:idx;not null;type unsigned auto_increment"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:false"`
 	Num              int       `gorm:"column:num"`
 	CommentCnt       int       `gorm:"column:comment_cnt"`
 	CommentLastDate  time.Time `gorm:"column:comment_last_date"`
@@ -96,7 +96,7 @@ type DevicePart struct {
 	Password         string    `gorm:"type:varchar(255);column:register_password"`
 	RegisterName     string    `gorm:"type:varchar(50);column:register_name"`
 	RegisterEmail    string    `gorm:"type:varchar(255);column:register_email"`
-	RegisterDate     time.Time `gorm:"column:register_date"`
+	RegisterDate     time.Time `gorm:"column:register_date; default:CURRENT_TIMESTAMP"`
 	DeviceCode       string    `gorm:"type:varchar(255);column:device_code"`
 	Model            int       `gorm:"column:model_cd"`
 	Contents         string    `gorm:"type:text;column:contents"`
@@ -122,14 +122,14 @@ func (DevicePart) TableName() string {
 }
 
 type DeviceComment struct {
-	Idx          uint      `gorm:"primary_key;column:idx;not null"`
+	Idx          uint      `gorm:"primary_key;column:idx;not null;type:unsigned auto_increment;"`
 	ParentTable  string    `gorm:"column:parent_table;not null"`
 	ForeignIdx   int       `gorm:"column:fk_idx;not null"`
 	Depth        int       `gorm:"column:depth"`
 	Contents     string    `gorm:"column:contents"`
 	RegisterId   string    `gorm:"type:varchar(50);column:register_id"`
 	RegisterName string    `gorm:"type:varchar(50);column:register_name"`
-	RegisterDate time.Time `gorm:"column:register_date"`
+	RegisterDate time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
 }
 
 func (DeviceComment) TableName() string {
