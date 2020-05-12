@@ -2,7 +2,6 @@ package rest
 
 import (
 	"nubes/common/mariadblayer"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +18,7 @@ type HandlerInterface interface {
 	DeleteSubCodes(c *gin.Context)
 	// Device
 	GetDevicesByList(c *gin.Context)
+	GetDeviceForPage(c *gin.Context)
 	// Monitoring
 	GetDevicesMonitoring(c *gin.Context)
 	AddDevicesMonitoring(c *gin.Context)
@@ -63,6 +63,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// Devices
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 	router.GET("/v1/device/:type/:idx", h.GetDevicesByIdx)
+	// Page
+	router.GET("/v1/page/:type/:size/:page/:order/:dir", h.GetDevicesForPage)
 
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)

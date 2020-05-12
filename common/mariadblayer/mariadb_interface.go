@@ -1,6 +1,8 @@
 package mariadblayer
 
-import "nubes/common/models"
+import (
+	"nubes/common/models"
+)
 
 type MariaDBLayer interface {
 	// Code
@@ -22,6 +24,9 @@ type MariaDBLayer interface {
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
 	GetDeviceComment(deviceType string, idx int) ([]models.DeviceComment, error)
+	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
+	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
