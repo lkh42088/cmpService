@@ -76,6 +76,10 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for i, old := range olds {
+		// input case depth == 0
+		if old.WrIsComment != 0 {
+			continue
+		}
 		sd, dc := GetServerTbByDevice(old)
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 100)
@@ -97,6 +101,10 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for i, old := range olds {
+		// input case depth == 0
+		if old.WrIsComment != 0 {
+			continue
+		}
 		nd, dc := GetNetworkTbByDevice(old)
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 100)
@@ -118,6 +126,10 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for i, old := range olds {
+		// input case depth == 0
+		if old.WrIsComment != 0 {
+			continue
+		}
 		pd, dc := GetPartTbByDevice(old)
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 100)
