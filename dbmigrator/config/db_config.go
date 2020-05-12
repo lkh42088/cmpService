@@ -6,10 +6,10 @@ import "nubes/common/config"
 func GetNewDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"root",
-		"Nubes1510!",
 		"nubes",
-		"192.168.121.154",
+		"nubes1510!",
+		"nubes",
+		"192.168.227.129",
 		3306,
 	}
 	return &config
@@ -22,7 +22,7 @@ func GetOldDatabaseConfig() *config.DBConfig {
 		"nubes",
 		"Nubes1510!",
 		"cdn_db_2020",
-		"192.168.121.155",
+		"192.168.227.138",
 		3306,
 	}
 	return &config
