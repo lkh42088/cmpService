@@ -1,10 +1,12 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type DeviceServer struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null;type unsigned auto_increment"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:false"`
+	Idx              uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
 	Num              int       `gorm:"column:num"`
 	CommentCnt       int       `gorm:"column:comment_cnt"`
 	CommentLastDate  time.Time `gorm:"column:comment_last_date"`
@@ -45,8 +47,8 @@ func (DeviceServer) TableName() string {
 }
 
 type DeviceNetwork struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null;type unsigned auto_increment"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:false"`
+	Idx              uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
 	Num              int       `gorm:"column:num"`
 	CommentCnt       int       `gorm:"column:comment_cnt"`
 	CommentLastDate  time.Time `gorm:"column:comment_last_date"`
@@ -85,8 +87,8 @@ func (DeviceNetwork) TableName() string {
 }
 
 type DevicePart struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null;type unsigned auto_increment"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:false"`
+	Idx              uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
 	Num              int       `gorm:"column:num"`
 	CommentCnt       int       `gorm:"column:comment_cnt"`
 	CommentLastDate  time.Time `gorm:"column:comment_last_date"`
@@ -122,7 +124,7 @@ func (DevicePart) TableName() string {
 }
 
 type DeviceComment struct {
-	Idx          uint      `gorm:"primary_key;column:idx;not null;type:unsigned auto_increment;"`
+	Idx          uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
 	ParentTable  string    `gorm:"column:parent_table;not null"`
 	ForeignIdx   int       `gorm:"column:fk_idx;not null"`
 	Depth        int       `gorm:"column:depth"`
@@ -135,3 +137,30 @@ type DeviceComment struct {
 func (DeviceComment) TableName() string {
 	return "device_comment_tb"
 }
+
+type PageCreteria struct {
+	Count		int
+	TotalPage	int
+	CurPage		int
+	Size 		int
+	OrderKey	string
+	Direction	int
+	DeviceType	string
+}
+
+type DeviceServerPage struct {
+	Page			PageCreteria
+	Devices 		[]DeviceServer
+}
+
+type DeviceNetworkPage struct {
+	Page			PageCreteria
+	Devices 		[]DeviceNetwork
+}
+
+type DevicePartPage struct {
+	Page			PageCreteria
+	Devices 		[]DevicePart
+}
+
+
