@@ -76,17 +76,15 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for i, old := range olds {
-		// input case depth == 0
-		if old.WrIsComment != 0 {
-			continue
-		}
-		sd, dc := GetServerTbByDevice(old)
+		// case depth == 0 : device table
+		// case depth != 0 : comment table
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 100)
 		}
-		//fmt.Println(num, ":", old, "-->", new)
-		ndb.AddDeviceServer(sd)
-		if dc.Depth != 0 {
+		sd, dc := GetServerTbByDevice(old)
+		if old.WrIsComment == 0 {
+			ndb.AddDeviceServer(sd)
+		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
 			ndb.AddDeviceComment(dc)
@@ -101,17 +99,15 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for i, old := range olds {
-		// input case depth == 0
-		if old.WrIsComment != 0 {
-			continue
-		}
-		nd, dc := GetNetworkTbByDevice(old)
+		// case depth == 0 : device table
+		// case depth != 0 : comment table
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 100)
 		}
-		//fmt.Println(num, ":", old, "-->", new)
-		ndb.AddDeviceNetwork(nd)
-		if dc.Depth != 0 {
+		nd, dc := GetNetworkTbByDevice(old)
+		if old.WrIsComment == 0 {
+			ndb.AddDeviceNetwork(nd)
+		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
 			ndb.AddDeviceComment(dc)
@@ -126,17 +122,15 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for i, old := range olds {
-		// input case depth == 0
-		if old.WrIsComment != 0 {
-			continue
-		}
-		pd, dc := GetPartTbByDevice(old)
+		// case depth == 0 : device table
+		// case depth != 0 : comment table
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 100)
 		}
-		//fmt.Println(num, ":", old, "-->", new)
-		ndb.AddDevicePart(pd)
-		if dc.Depth != 0 {
+		pd, dc := GetPartTbByDevice(old)
+		if old.WrIsComment == 0 {
+			ndb.AddDevicePart(pd)
+		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
 			ndb.AddDeviceComment(dc)
