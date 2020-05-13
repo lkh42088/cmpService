@@ -34,12 +34,12 @@ type DeviceServer struct {
 	Purpos           string    `gorm:"type:varchar(255);column:purpos"`
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|'"`
 	Size             int       `gorm:"column:size_cd"`
-	Spla             int       `gorm:"column:spla_cd"`
+	Spla             string    `gorm:"column:spla_cd;default:'|'"`
 	Cpu              string    `gorm:"type:varchar(255);column:cpu"`
 	Memory           string    `gorm:"type:varchar(255);column:memory"`
 	Hdd              string    `gorm:"type:varchar(255);column:hdd"`
-	MonitoringFlag   int       `gorm:"column:mornitoring_flag"`
-	MonitoringMethod int       `gorm:"column:mornitoring_method"`
+	MonitoringFlag   int       `gorm:"column:monitoring_flag"`
+	MonitoringMethod int       `gorm:"column:monitoring_method"`
 }
 
 func (DeviceServer) TableName() string {
@@ -77,9 +77,8 @@ type DeviceNetwork struct {
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|'"`
 	Size             int       `gorm:"column:size_cd"`
 	FirmwareVersion  string    `gorm:"type:varchar(50);column:firmware_version"`
-	//Warranty         string    `gorm:"type:varchar(255);column:warranty"`
-	MonitoringFlag   int       `gorm:"column:mornitoring_flag"`
-	MonitoringMethod int       `gorm:"column:mornitoring_method"`
+	MonitoringFlag   int       `gorm:"column:monitoring_flag"`
+	MonitoringMethod int       `gorm:"column:monitoring_method"`
 }
 
 func (DeviceNetwork) TableName() string {
@@ -115,8 +114,8 @@ type DevicePart struct {
 	Cost             string    `gorm:"type:varchar(255);column:cost"`
 	Purpos           string    `gorm:"type:varchar(255);column:purpos"`
 	Warranty         string    `gorm:"type:varchar(255);column:warranty"`
-	MonitoringFlag   int       `gorm:"column:mornitoring_flag"`
-	MonitoringMethod int       `gorm:"column:mornitoring_method"`
+	MonitoringFlag   int       `gorm:"column:monitoring_flag"`
+	MonitoringMethod int       `gorm:"column:monitoring_method"`
 }
 
 func (DevicePart) TableName() string {

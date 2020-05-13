@@ -286,7 +286,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.Purpos = device.Wr13
 	sd.Ip = sepIps(device.WrHomepage)
 	sd.Size = convInt(device.Wr6)
-	sd.Spla = convInt(strings.Trim(device.Wr11, ";"))
+	sd.Spla = strings.Replace(device.Wr11, ";", "|", -1)
 	sd.Cpu = device.Wr2
 	sd.Memory = device.Wr3
 	sd.Hdd = device.Wr4

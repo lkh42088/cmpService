@@ -34,9 +34,9 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		for _, v := range devicePage.Devices {
-			fmt.Printf("%v\n", v)
-		}
+		//for i, v := range devicePage.Devices {
+		//	fmt.Printf("%d %v\n", i+1, v)
+		//}
 		c.JSON(http.StatusOK, devicePage)
 	case "network":
 		devicePage, err := h.db.GetDevicesNetworkForPage(page)
@@ -44,9 +44,9 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		for _, v := range devicePage.Devices {
-			fmt.Printf("%v\n", v)
-		}
+		//for i, v := range devicePage.Devices {
+		//	fmt.Printf("%d %v\n", i+1, v)
+		//}
 		c.JSON(http.StatusOK, devicePage)
 	case "part":
 		devicePage, err := h.db.GetDevicesPartForPage(page)
@@ -54,9 +54,9 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		for _, v := range devicePage.Devices {
-			fmt.Printf("%v\n", v)
-		}
+		//for i, v := range devicePage.Devices {
+		//	fmt.Printf("%d %v\n", i+1, v)
+		//}
 		c.JSON(http.StatusOK, devicePage)
 	}
 }
