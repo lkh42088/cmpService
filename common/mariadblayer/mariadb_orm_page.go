@@ -43,7 +43,6 @@ func SetLimitNum(cri models.PageCreteria) models.PageCreteria {
 func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 	server models.DeviceServerPage, err error) {
 
-	SetLimitNum(cri)
 	beginNum := cri.Size * (cri.CurPage - 1)
 	db.Model(&server.Devices).Count(&cri.Count)
 	orderby := Orderby(cri.OrderKey, cri.Direction)
