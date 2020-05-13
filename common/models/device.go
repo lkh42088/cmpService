@@ -143,6 +143,7 @@ type PageCreteria struct {
 	TotalPage	int
 	CurPage		int
 	Size 		int
+	OutFlag		string
 	OrderKey	string
 	Direction	int
 	DeviceType	string

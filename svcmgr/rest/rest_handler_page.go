@@ -14,6 +14,7 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		return
 	}
 
+	// Parse params
 	size, _ := strconv.Atoi(c.Param("size"))
 	curpage, _ := strconv.Atoi(c.Param("page"))
 	dir, _ := strconv.Atoi(c.Param("dir"))
@@ -21,10 +22,10 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		DeviceType : c.Param("type"),
 		OrderKey: c.Param("order"),
 		Size: size,
+		OutFlag: c.Param("outFlag"),
 		CurPage: curpage,
 		Direction: dir,
 	}
-	fmt.Println("type : ", page.DeviceType, ", size : ", page.Size, ", page : ", page.CurPage)
 
 	switch page.DeviceType {
 	case "server":
@@ -33,7 +34,9 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		//fmt.Printf("%v\n", devicePage)
+		for _, v := range devicePage.Devices {
+			fmt.Printf("%v\n", v)
+		}
 		c.JSON(http.StatusOK, devicePage)
 	case "network":
 		devicePage, err := h.db.GetDevicesNetworkForPage(page)
@@ -41,7 +44,9 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		//fmt.Printf("%v\n", devicePage)
+		for _, v := range devicePage.Devices {
+			fmt.Printf("%v\n", v)
+		}
 		c.JSON(http.StatusOK, devicePage)
 	case "part":
 		devicePage, err := h.db.GetDevicesPartForPage(page)
@@ -49,7 +54,10 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		//fmt.Printf("%v\n", devicePage)
+		for _, v := range devicePage.Devices {
+			fmt.Printf("%v\n", v)
+		}
 		c.JSON(http.StatusOK, devicePage)
 	}
 }
+

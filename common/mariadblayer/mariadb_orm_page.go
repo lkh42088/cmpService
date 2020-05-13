@@ -26,6 +26,10 @@ func TotalPage(count int, size int) int {
 	return int(math.Ceil(float64(count) / float64(size)))
 }
 
+func CombineCondition(outFlag string) string {
+	return "out_flag = '" + outFlag + "'"
+}
+
 func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 	server models.DeviceServerPage, err error) {
 
@@ -37,6 +41,7 @@ func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 		Order(orderby).
 		Limit(cri.Size).
 		Offset(beginNum).
+		Where(CombineCondition(cri.OutFlag)).
 		Find(&server.Devices).Error
 	server.Page = cri
 	return server, err
@@ -53,6 +58,7 @@ func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
 		Order(orderby).
 		Limit(cri.Size).
 		Offset(beginNum).
+		Where(CombineCondition(cri.OutFlag)).
 		Find(&network.Devices).Error
 	network.Page = cri
 	return network, err
@@ -69,6 +75,7 @@ func (db *DBORM) GetDevicesPartForPage(cri models.PageCreteria) (
 		Order(orderby).
 		Limit(cri.Size).
 		Offset(beginNum).
+		Where(CombineCondition(cri.OutFlag)).
 		Find(&part.Devices).Error
 	part.Page = cri
 	return part, err
