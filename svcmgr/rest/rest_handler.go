@@ -10,6 +10,9 @@ import (
 )
 
 const defaultField = "device_code"
+const ServerTableName = "device_server_tb"
+const NetworkTableName = "device_network_tb"
+const PartTableName = "device_part_tb"
 
 func (h *Handler) GetCodes(c *gin.Context) {
 	fmt.Println("Getcodes")
@@ -233,6 +236,8 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 	}
 }
 
+// Search Devices
+// default field : device_code
 func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	if h.db == nil {
 		return
@@ -248,7 +253,7 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("[###] %v", devices)
+	//fmt.Println("[###] %v", devices)
 	c.JSON(http.StatusOK, devices)
 }
 
@@ -267,3 +272,32 @@ func (h *Handler) AddDevicesMonitoring(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
+// Add Device
+func (h *Handler) AddDevice(c *gin.Context) {
+	var dc interface{}
+	var tableName string
+	device := c.Param("type")
+	switch device {
+	case "server":
+		dc = new(models.DeviceServer)
+		tableName = ServerTableName
+	case "network":
+		dc = new(models.DeviceNetwork)
+		tableName = NetworkTableName
+	case "part":
+		dc = new(models.DevicePart)
+		tableName = PartTableName
+	}
+	err := c.ShouldBindJSON(&dc)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = h.db.AddDevice(dc, tableName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "OK")
+}

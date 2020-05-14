@@ -19,6 +19,7 @@ type HandlerInterface interface {
 	// Device
 	GetDevicesByList(c *gin.Context)
 	GetDevicesByCode(c *gin.Context)
+	AddDevice(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
 	// Monitoring
@@ -66,6 +67,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
 	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
+	router.POST("/v1/device/:type", h.AddDevice)
 
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)

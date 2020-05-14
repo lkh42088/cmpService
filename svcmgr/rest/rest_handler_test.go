@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"nubes/common/models"
 	"testing"
+	"time"
 )
 
 var restServer = "http://localhost:8081"
@@ -101,3 +102,58 @@ func TestRestDeleteCode(t *testing.T) {
 	fmt.Println("response", string(data))
 }
 
+
+func TestAddDevice(t *testing.T) {
+	commentlast, _ := time.Parse(time.RFC3339, "2019-12-22T10:28:44+09:00")
+	data := models.DeviceServer{
+		OutFlag:false,
+		Num:-5000,
+		CommentCnt:0,
+		CommentLastDate:commentlast,
+		Option:"",
+		Hit:0,
+		RegisterId:"hjt0601",
+		Password:"*6634B26806A7D3*Connect79D898CE68F4FE650D4D755264",
+		RegisterName:"Nubes",
+		RegisterEmail:"nubes@nubes-bridge.com",
+		DeviceCode:"CBS09999",
+		Model:83,
+		Contents:"\u003cbr /\u003e",
+		Customer:0,
+		Manufacture:56,
+		DeviceType:7,
+		WarehousingDate:"0",
+		RentDate:"|",
+		Ownership:"2|3",
+		OwnerCompany:"hddigital",
+		HwSn:"MY11353392",
+		IDC:16,
+		Rack:163,
+		Cost:"",
+		Purpos:"",
+		Ip:"220.90.201.198|",
+		Size:19,
+		Spla:"|",
+		Cpu:"",
+		Memory:"",
+		Hdd:"",
+		MonitoringFlag:0,
+		MonitoringMethod:0}
+
+	url := "http://0.0.0.0:8081/v1/device/server"
+	pbytes, _ := json.Marshal(data)
+	buff := bytes.NewBuffer(pbytes)
+
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error 1: ", err)
+		return
+	}
+	defer response.Body.Close()
+	d, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
+		return
+	}
+	fmt.Println("response:", string(d))
+}

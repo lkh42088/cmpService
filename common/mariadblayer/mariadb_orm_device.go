@@ -107,6 +107,10 @@ func (db *DBORM) GetDeviceWithCondition(device string, field string, condition s
 
 }
 
+func (db *DBORM) AddDevice(data interface{}, device string) error {
+	return db.Table(device).Create(data).Error
+}
+
 func GetWhereString(field string) string {
 	return field + " = ?"
 }
