@@ -91,6 +91,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/loginemail", h.LoginUserByEmail)
 	router.POST("/login", h.LoginUserById)
 	router.GET("/session", h.GetSession)
+
+	// Test
+	router.POST("/api/auth/login", h.LoginUserById)
+	router.GET("/api/auth/check", h.GetSession)
 	return router.Run(address)
 }
 
