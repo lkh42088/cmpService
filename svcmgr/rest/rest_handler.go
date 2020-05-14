@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const defaultField = "device_code"
+
 func (h *Handler) GetCodes(c *gin.Context) {
 	fmt.Println("Getcodes")
 	if h.db == nil {
@@ -229,6 +231,25 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 	} else if string(deviceType) == "part" {
 		c.JSON(http.StatusOK, devicesPart)
 	}
+}
+
+func (h *Handler) GetDevicesByCode(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+	field := c.Param("field")
+	if field == "" {
+		field = defaultField
+	}
+	code := c.Param("value")
+	devices, err := h.db.GetDeviceWithCondition(deviceType, field, code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("[###] %v", devices)
+	c.JSON(http.StatusOK, devices)
 }
 
 // Mornitoring

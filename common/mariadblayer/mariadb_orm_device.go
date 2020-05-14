@@ -1,6 +1,8 @@
 package mariadblayer
 
 import (
+	"errors"
+	"fmt"
 	"nubes/common/models"
 )
 
@@ -92,3 +94,34 @@ func (db *DBORM) DeleteDeviceComment(dc models.DeviceComment) (models.DeviceComm
 	return dc, db.Delete(&dc).Error
 }
 
+func (db *DBORM) GetDeviceWithCondition(device string, field string, condition string) (
+	interface{}, error) {
+	dbField := ConvertToColumn(field)
+	where := GetWhereString(dbField)
+	fmt.Println(where)
+	var dc interface{}
+	if GetTableConfig(&dc, device) == false {
+		return nil, errors.New("[Error] Need to device selection.")
+	}
+	return dc, db.Where(where, condition).Find(dc).Error
+
+}
+
+func GetWhereString(field string) string {
+	return field + " = ?"
+}
+
+func GetTableConfig(data *interface{}, device string) bool {
+	switch device {
+	case "server":
+		*data = &[]models.DeviceServer{}
+	case "network":
+		*data = &[]models.DeviceNetwork{}
+	case "part":
+		*data = &[]models.DevicePart{}
+	default:
+		return false
+
+	}
+	return true
+}

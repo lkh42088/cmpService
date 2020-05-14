@@ -27,6 +27,7 @@ type MariaDBLayer interface {
 	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
 	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
 	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
+	GetDeviceWithCondition(device string, field string, condition string) (interface{}, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)

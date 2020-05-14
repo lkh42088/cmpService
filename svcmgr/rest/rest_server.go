@@ -18,6 +18,8 @@ type HandlerInterface interface {
 	DeleteSubCodes(c *gin.Context)
 	// Device
 	GetDevicesByList(c *gin.Context)
+	GetDevicesByCode(c *gin.Context)
+	// Page
 	GetDeviceForPage(c *gin.Context)
 	// Monitoring
 	GetDevicesMonitoring(c *gin.Context)
@@ -62,7 +64,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Devices
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
-	router.GET("/v1/device/:type/:idx", h.GetDevicesByIdx)
+	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
+	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
+
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
