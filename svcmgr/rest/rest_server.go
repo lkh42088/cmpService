@@ -20,6 +20,10 @@ type HandlerInterface interface {
 	GetDevicesByList(c *gin.Context)
 	GetDevicesByCode(c *gin.Context)
 	AddDevice(c *gin.Context)
+	// Comment
+	GetCommentsByCode(c *gin.Context)
+	AddComment(c *gin.Context)
+	DeleteCommentsByCode(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
 	// Monitoring
@@ -68,6 +72,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
 	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
 	router.POST("/v1/device/:type", h.AddDevice)
+
+	// Comment
+	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)
+	router.POST("/v1/comments/:devicecode/:comment/:userid/:commentidx", h.AddComment)
+	router.POST("/v1/comments/:devicecode", h.DeleteCommentsByCode)
 
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)

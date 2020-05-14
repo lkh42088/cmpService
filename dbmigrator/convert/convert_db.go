@@ -87,7 +87,7 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
-			ndb.AddDeviceComment(dc)
+			ndb.AddComment(dc)
 		}
 	}
 }
@@ -110,7 +110,7 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
-			ndb.AddDeviceComment(dc)
+			ndb.AddComment(dc)
 		}
 	}
 }
@@ -133,7 +133,7 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
-			ndb.AddDeviceComment(dc)
+			ndb.AddComment(dc)
 		}
 	}
 }
@@ -154,7 +154,7 @@ func DeleteDeviceTb() {
 	newDb.DeleteAllDevicesPart()
 	newDb.DeleteAllDevicesNetwork()
 	newDb.DeleteAllDevicesServer()
-	newDb.DeleteAllDevicesComment()
+	newDb.DeleteAllComments()
 }
 
 func GetCodeByItem(item cbmodels.Item) (code models.Code) {
@@ -295,8 +295,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 
 	// Comment Table
 	//dc.Idx = uint(device.CbDeviceID)
-	dc.ParentTable = "device_server_tb"
-	dc.ForeignIdx = device.WrParent
+	dc.DeviceCode = device.Wr1
 	dc.Depth = device.WrIsComment
 	dc.Contents = device.WrContent
 	dc.RegisterId = device.MbId
@@ -341,8 +340,7 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.MonitoringFlag = 0
 	nd.MonitoringMethod = 0
 
-	dc.ParentTable = "device_network_tb"
-	dc.ForeignIdx = device.WrParent
+	dc.DeviceCode = device.Wr1
 	dc.Depth = device.WrIsComment
 	dc.Contents = device.WrContent
 	dc.RegisterId = device.MbId
@@ -385,8 +383,7 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.MonitoringFlag = 0
 	pd.MonitoringMethod = 0
 
-	dc.ParentTable = "device_part_tb"
-	dc.ForeignIdx = device.WrParent
+	dc.DeviceCode = device.Wr1
 	dc.Depth = device.WrIsComment
 	dc.Contents = device.WrContent
 	dc.RegisterId = device.MbId
