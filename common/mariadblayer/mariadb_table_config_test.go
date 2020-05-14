@@ -1,7 +1,7 @@
 package mariadblayer
 
 import (
-	db "nubes/common/db"
+	"nubes/common/db"
 	"testing"
 )
 

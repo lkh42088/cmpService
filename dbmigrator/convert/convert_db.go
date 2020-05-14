@@ -50,9 +50,9 @@ func ConvertItem(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for num, old := range olds {
-		new := GetCodeByItem(old)
-		fmt.Println(num, ":", old, "-->", new)
-		ndb.AddCode(new)
+		newDB := GetCodeByItem(old)
+		fmt.Println(num, ":", old, "-->", newDB)
+		ndb.AddCode(newDB)
 	}
 }
 
@@ -63,9 +63,9 @@ func ConvertItemSub(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		return
 	}
 	for num, old := range olds {
-		new := GetSubCodeByItemSub(old)
-		fmt.Println(num, ":", old, "-->", new)
-		ndb.AddSubCode(new)
+		newDB := GetSubCodeByItemSub(old)
+		fmt.Println(num, ":", old, "-->", newDB)
+		ndb.AddSubCode(newDB)
 	}
 }
 

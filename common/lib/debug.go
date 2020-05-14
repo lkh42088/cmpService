@@ -16,6 +16,8 @@ func LogWarn(format string, a ...interface{}) {
 	info := fmt.Sprintf(format, a...)
 	if IsLogWarn {
 		fmt.Printf("%s:%d %v", file, line, info)
+	} else {
+		return
 	}
 }
 
@@ -24,6 +26,8 @@ func LogWarnln(a ...interface{}) {
 	info := fmt.Sprintln(a...)
 	if IsLogWarn {
 		fmt.Printf("%s:%d %v", file, line, info)
+	} else {
+		return
 	}
 }
 
@@ -32,6 +36,8 @@ func LogInfoln(a ...interface{}) {
 	info := fmt.Sprintln(a...)
 	if IsLogInfo {
 		fmt.Printf("%s:%d %v", file, line, info)
+	} else {
+		return
 	}
 }
 
@@ -40,6 +46,8 @@ func LogInfo(format string, a ...interface{}) {
 	info := fmt.Sprintf(format, a...)
 	if IsLogInfo {
 		fmt.Printf("%s:%d %v", file, line, info)
+	} else {
+		return
 	}
 }
 
@@ -48,6 +56,8 @@ func Debug(format string, a ...interface{}) {
 	info := fmt.Sprintf(format, a...)
 	if IsDebug {
 		fmt.Printf("%s:%d %v", file, line, info)
+	} else {
+		return
 	}
 }
 

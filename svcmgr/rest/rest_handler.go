@@ -179,9 +179,9 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 
 	if deviceType == "server" {
 		c.JSON(http.StatusOK, devicesServer)
-	} else if string(deviceType) == "network" {
+	} else if deviceType == "network" {
 		c.JSON(http.StatusOK, devicesNetwork)
-	} else if string(deviceType) == "part" {
+	} else if deviceType == "part" {
 		c.JSON(http.StatusOK, devicesPart)
 	}
 }
@@ -229,9 +229,9 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 
 	if deviceType == "server" {
 		c.JSON(http.StatusOK, devicesServer)
-	} else if string(deviceType) == "network" {
+	} else if deviceType == "network" {
 		c.JSON(http.StatusOK, devicesNetwork)
-	} else if string(deviceType) == "part" {
+	} else if deviceType == "part" {
 		c.JSON(http.StatusOK, devicesPart)
 	}
 }

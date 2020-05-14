@@ -16,12 +16,12 @@ import (
 // Do not modify : changed influxdb table, mismatched convert form
 type IfStat struct {
 	time 			time.Time
-	id 				string		`influx:ID`
-	ip				string		`influx:IP`
-	ifIndex			int64		`influx:ifIndex`
-	ifDescr			string		`influx:ifDescr`
-	ifHCInOctets	int64		`influx:ifHCInOctets`
-	ifHCOutOctets	int64		`influx:ifHCOutOctets`
+	id 				string
+	ip				string
+	ifIndex			int64
+	ifDescr			string
+	ifHCInOctets	int64
+	ifHCOutOctets	int64
 }
 
 var lastSelectTime sync.Map

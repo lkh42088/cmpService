@@ -76,6 +76,9 @@ func TestRestPost(t *testing.T) {
 	buff := bytes.NewBuffer(pbytes)
 	url := "http://localhost:8884" + apiPathPrefix + apiDevice
 	resp, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		return
+	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

@@ -68,7 +68,7 @@ func UpdateConfig(path string, key string, value string) error {
 	var f *os.File
 	var err error
 
-	config := ReadConfig(path)
+	conf := ReadConfig(path)
 
 	// No param
 	if key == "" || value == "" {
@@ -85,14 +85,14 @@ func UpdateConfig(path string, key string, value string) error {
 	defer f.Close()
 
 	// Value Change
-	if SetConfigByField(key, value, &config) < 0 {
+	if SetConfigByField(key, value, &conf) < 0 {
 		lib.LogWarn("Invalid key name.\n")
 		return nil
 	}
 
 	// JSON transform
 	var b []byte
-	if b, err = json.Marshal(config) ; err != nil{
+	if b, err = json.Marshal(conf) ; err != nil{
 		lib.LogWarn("Failed Marshal!\n")
 		return err
 	}
