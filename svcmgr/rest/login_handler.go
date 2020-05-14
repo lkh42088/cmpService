@@ -95,8 +95,9 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	var loginUser models.User
 	c.Bind(&loginUser)
 
+	fmt.Println("LoginUser:", loginUser)
 	user, err := h.db.GetUserById(loginUser.ID)
-	fmt.Println("LoginUser:", user)
+	fmt.Println("in DB, LoginUser:", user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
 		return
@@ -126,7 +127,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 		Value: tokenString,
 		Expires: expirationTime,
 	})
-	fmt.Println(tokenString)
+	fmt.Println("Success: token - ",tokenString)
 	c.JSON(http.StatusOK,
 		gin.H{"success":true, "msg":"loggged in successfully", "user":claims.User,
 			"token":tokenString})

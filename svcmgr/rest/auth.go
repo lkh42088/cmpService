@@ -8,21 +8,24 @@ import (
 
 func AuthMiddleware(c *gin.Context, jwtKey[]byte) (jwt.MapClaims, bool) {
 	ck, err := c.Request.Cookie("token")
-	fmt.Println(ck, "coookie")
+	fmt.Println("AuthMiddleware:", ck)
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println("AuthMiddleware error:", err)
 		return nil, false
 	}
 	tokenString :=ck.Value
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok :=token.Method.(*jwt.SigningMethodHMAC); !ok {
+			fmt.Println("AuthMiddleware : failed")
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 		return jwtKey, nil
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println("AuthMiddleware : Success")
 		return claims, true
 	}
+	fmt.Println("AuthMiddleware : nil false")
 	return nil, false
 }
