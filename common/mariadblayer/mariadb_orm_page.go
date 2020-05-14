@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const limitNum = 1000
+//const limitNum = 1000
 // order direction
 // 0 : ASC
 // 1 : DESC
@@ -37,14 +37,13 @@ func CombineCondition(outFlag string) string {
 // NB specific code : row num 1000
 func SetThousandCount(cri *models.PageCreteria) {
 	// NB rule : 1000 data per 1 time
-	cri.Size = limitNum
-	if cri.CheckCnt <= limitNum {
+	if cri.CheckCnt < cri.Size {
 		if cri.CheckCnt > cri.Count {
 			return
 		}
 		cri.CheckCnt = 0
 	} else {
-		cri.CheckCnt = (cri.CheckCnt / limitNum) * limitNum
+		cri.CheckCnt = ((cri.CheckCnt / cri.Size) - 1) * cri.Size
 	}
 }
 
