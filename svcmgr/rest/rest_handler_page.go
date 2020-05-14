@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"nubes/common/models"
@@ -9,22 +8,22 @@ import (
 )
 
 func (h *Handler) GetDevicesForPage(c *gin.Context) {
-	fmt.Println("GetDevicesForPage")
+	//fmt.Println("GetDevicesForPage")
 	if h.db == nil {
 		return
 	}
 
 	// Parse params
 	size, _ := strconv.Atoi(c.Param("size"))
-	curpage, _ := strconv.Atoi(c.Param("page"))
+	cnt, _ := strconv.Atoi(c.Param("checkcnt"))
 	dir, _ := strconv.Atoi(c.Param("dir"))
 	page := models.PageCreteria{
 		DeviceType : c.Param("type"),
 		OrderKey: c.Param("order"),
 		Size: size,
 		OutFlag: c.Param("outFlag"),
-		CurPage: curpage,
 		Direction: dir,
+		CheckCnt: cnt,	// current row counter
 	}
 
 	switch page.DeviceType {
@@ -60,4 +59,5 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		c.JSON(http.StatusOK, devicePage)
 	}
 }
+
 

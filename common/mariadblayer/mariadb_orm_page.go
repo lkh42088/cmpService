@@ -2,8 +2,8 @@ package mariadblayer
 
 import (
 	"math"
+	"nubes/common/lib"
 	"nubes/common/models"
-	"fmt"
 	"strings"
 )
 
@@ -22,7 +22,7 @@ func Orderby(order_field string, direction int) string {
 	} else {
 		orderby += " DESC"
 	}
-	fmt.Println(orderby)
+	//fmt.Println(orderby)
 	return orderby
 }
 
@@ -34,25 +34,35 @@ func CombineCondition(outFlag string) string {
 	return "out_flag = '" + outFlag + "'"
 }
 
-func SetLimitNum(cri models.PageCreteria) models.PageCreteria {
-	// basic rule : 1000 data per 1 time
+// NB specific code : row num 1000
+func SetThousandCount(cri *models.PageCreteria) {
+	// NB rule : 1000 data per 1 time
 	cri.Size = limitNum
-	return cri
+	if cri.CheckCnt <= limitNum {
+		if cri.CheckCnt > cri.Count {
+			return
+		}
+		cri.CheckCnt = 0
+	} else {
+		cri.CheckCnt = (cri.CheckCnt / limitNum) * limitNum
+	}
 }
 
 func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 	server models.DeviceServerPage, err error) {
 
-	beginNum := cri.Size * (cri.CurPage - 1)
 	db.Model(&server.Devices).Count(&cri.Count)
 	orderby := Orderby(cri.OrderKey, cri.Direction)
-	cri.TotalPage = TotalPage(cri.Count, cri.Size)
+	SetThousandCount(&cri)
 	err = db.
 		Order(orderby).
 		Limit(cri.Size).
-		Offset(beginNum).
+		Offset(cri.CheckCnt).
 		Where(CombineCondition(cri.OutFlag)).
 		Find(&server.Devices).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
 	server.Page = cri
 	return server, err
 }
@@ -60,16 +70,18 @@ func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
 	network models.DeviceNetworkPage, err error) {
 
-	beginNum := cri.Size * (cri.CurPage - 1)
 	db.Model(&network.Devices).Count(&cri.Count)
 	orderby := Orderby(cri.OrderKey, cri.Direction)
-	cri.TotalPage = TotalPage(cri.Count, cri.Size)
+	SetThousandCount(&cri)
 	err = db.
 		Order(orderby).
 		Limit(cri.Size).
-		Offset(beginNum).
+		Offset(cri.CheckCnt).
 		Where(CombineCondition(cri.OutFlag)).
 		Find(&network.Devices).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
 	network.Page = cri
 	return network, err
 }
@@ -77,16 +89,18 @@ func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
 func (db *DBORM) GetDevicesPartForPage(cri models.PageCreteria) (
 	part models.DevicePartPage, err error) {
 
-	beginNum := cri.Size * (cri.CurPage - 1)
 	db.Model(&part.Devices).Count(&cri.Count)
 	orderby := Orderby(cri.OrderKey, cri.Direction)
-	cri.TotalPage = TotalPage(cri.Count, cri.Size)
+	SetThousandCount(&cri)
 	err = db.
 		Order(orderby).
 		Limit(cri.Size).
-		Offset(beginNum).
+		Offset(cri.CheckCnt).
 		Where(CombineCondition(cri.OutFlag)).
 		Find(&part.Devices).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
 	part.Page = cri
 	return part, err
 }
