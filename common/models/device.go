@@ -140,7 +140,7 @@ func (DeviceComment) TableName() string {
 type PageCreteria struct {
 	Count		int
 	TotalPage	int
-	CurPage		int
+	CheckCnt	int
 	Size 		int
 	OutFlag		string
 	OrderKey	string
