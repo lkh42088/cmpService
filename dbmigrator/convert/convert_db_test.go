@@ -10,6 +10,10 @@ func TestConvertDb(t *testing.T) {
 	RunConvertDb()
 }
 
+func TestDeleteDpb(t *testing.T) {
+	DeleteDeviceTb()
+}
+
 func TestClearNewMariadbDb(t *testing.T) {
 	DropNewMariadbTable()
 }

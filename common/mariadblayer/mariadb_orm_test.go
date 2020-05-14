@@ -48,7 +48,7 @@ func getTestJbhConfig() *config.DBConfig {
 
 func getTestDb() (*DBORM, error) {
 	// Jung Byeonghwa
-	config := getTestJbhConfig()
+	config := getTestJebConfig()
 	// Jee Eunbin
 	//config := getTestJebConfig()
 	options := db.GetDataSourceName(config)

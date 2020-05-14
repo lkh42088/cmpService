@@ -2,7 +2,6 @@ package rest
 
 import (
 	"nubes/common/mariadblayer"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +18,14 @@ type HandlerInterface interface {
 	DeleteSubCodes(c *gin.Context)
 	// Device
 	GetDevicesByList(c *gin.Context)
+	GetDevicesByCode(c *gin.Context)
+	AddDevice(c *gin.Context)
+	// Comment
+	GetCommentsByCode(c *gin.Context)
+	AddComment(c *gin.Context)
+	DeleteCommentsByCode(c *gin.Context)
+	// Page
+	GetDeviceForPage(c *gin.Context)
 	// Monitoring
 	GetDevicesMonitoring(c *gin.Context)
 	AddDevicesMonitoring(c *gin.Context)
@@ -62,6 +69,18 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Devices
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
+	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
+	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
+	router.POST("/v1/device/:type", h.AddDevice)
+
+	// Comment
+	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)
+	router.POST("/v1/comments/:devicecode/:comment/:userid/:commentidx", h.AddComment)
+	router.POST("/v1/comments/:devicecode", h.DeleteCommentsByCode)
+
+	// Page
+	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
+	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
 
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)

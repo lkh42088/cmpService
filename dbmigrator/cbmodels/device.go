@@ -21,7 +21,7 @@ type CbDeviceCommon struct {
 	WrLink1 string `gorm:"type:text;column:wr_link1"`
 	// type text
 	WrLink2     string `gorm:"type:text;column:wr_link2"`
-	WrLink1Hit  int    `gorm:"column:wr_link1_hit;not null;default:0"`
+	WrLink1Hit  string `gorm:"column:wr_link1_hit;not null;default:0"`
 	WrLink2Hit  int    `gorm:"column:wr_link2_hit;not null;default:0"`
 	WrTrackback string `gorm:"type:varchar(255);column:wr_trackback;not null;default:''"`
 	WrHit       int    `gorm:"column:wr_hit;not null;default:0"`
@@ -60,3 +60,28 @@ type CbDevice struct {
 func (CbDevice) TableName() string {
 	return "g4_write_ndevice"
 }
+
+type ServerDevice struct {
+	CbDevice
+}
+
+func (ServerDevice) TableName() string {
+	return "g4_write_device"
+}
+
+type NetworkDevice struct {
+	CbDevice
+}
+
+func (NetworkDevice) TableName() string {
+	return "g4_write_ndevice"
+}
+
+type PartDevice struct {
+	CbDevice
+}
+
+func (PartDevice) TableName() string {
+	return "g4_write_pdevice"
+}
+
