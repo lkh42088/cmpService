@@ -2,12 +2,12 @@ package convert
 
 import (
 	"fmt"
-	"nubes/common/db"
-	"nubes/common/mariadblayer"
-	"nubes/common/models"
-	"nubes/dbmigrator/cbmodels"
-	"nubes/dbmigrator/config"
-	"nubes/dbmigrator/mysqllayer"
+	"cmpService/common/db"
+	"cmpService/common/mariadblayer"
+	"cmpService/common/models"
+	"cmpService/dbmigrator/cbmodels"
+	"cmpService/dbmigrator/config"
+	"cmpService/dbmigrator/mysqllayer"
 	"strconv"
 	"strings"
 	"time"

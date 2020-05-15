@@ -2,7 +2,7 @@ package mariadblayer
 
 import (
 	"github.com/jinzhu/gorm"
-	"nubes/common/models"
+	"cmpService/common/models"
 )
 
 func CreateTable(db *gorm.DB) {

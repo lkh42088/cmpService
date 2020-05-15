@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"nubes/common/mariadblayer"
+	"cmpService/common/mariadblayer"
 	"github.com/gin-gonic/gin"
 )
 

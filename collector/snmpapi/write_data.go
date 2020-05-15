@@ -2,8 +2,8 @@ package snmpapi
 
 import (
 	client "github.com/influxdata/influxdb1-client/v2"
-	"nubes/collector/influx"
-	"nubes/common/lib"
+	"cmpService/collector/influx"
+	"cmpService/common/lib"
 	"sync"
 	"time"
 )

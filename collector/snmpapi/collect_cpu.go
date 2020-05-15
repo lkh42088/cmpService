@@ -3,7 +3,7 @@ package snmpapi
 import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"nubes/common/lib"
+	"cmpService/common/lib"
 	"strings"
 )
 

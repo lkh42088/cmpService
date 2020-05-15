@@ -2,14 +2,14 @@ package config
 
 import (
 	"fmt"
-	"nubes/common/config"
-	"nubes/common/lib"
+	"cmpService/common/config"
+	"cmpService/common/lib"
 	"os"
 	"testing"
 )
 
 func TestGetConfig(t *testing.T) {
-	path := "/home/andrew/projects/go/src/nubes/collector/etc/collector.jbh.config"
+	path := "/home/andrew/projects/go/src/cmpService/collector/etc/collector.jbh.config"
 	config := ReadConfigByPath(path)
 	fmt.Println(config)
 }
@@ -24,7 +24,7 @@ func getJungbhConfig() *CollectorConfig {
 	influx := config.InfluxDbConfig{
 		"192.168.10.74",
 		"snmp_nodes",
-		"nubes",
+		"cmpService",
 		"nubes1510",
 	}
 	return &CollectorConfig{

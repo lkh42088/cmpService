@@ -1,7 +1,7 @@
 package mariadblayer
 
 import (
-	"nubes/common/models"
+	"cmpService/common/models"
 )
 
 const defaultFieldName = "device_code"

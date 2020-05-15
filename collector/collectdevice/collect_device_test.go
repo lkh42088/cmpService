@@ -61,7 +61,7 @@ func TestSNMPDevice1(t *testing.T) {
 	device := ColletDevice{
 		Ip:            "127.0.0.1",
 		Port:          161,
-		SnmpCommunity: "nubes",
+		SnmpCommunity: "cmpService",
 	}
 	pbyte, _ := json.Marshal(device)
 	buff := bytes.NewBuffer(pbyte)
@@ -78,7 +78,7 @@ func TestSNMPDevice2(t *testing.T) {
 	device := ColletDevice{
 		Ip:            "192.168.122.15",
 		Port:          161,
-		SnmpCommunity: "nubes",
+		SnmpCommunity: "cmpService",
 	}
 	pbyte, _ := json.Marshal(device)
 	buff := bytes.NewBuffer(pbyte)

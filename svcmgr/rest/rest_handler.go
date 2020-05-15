@@ -3,7 +3,7 @@ package rest
 import (
 	"fmt"
 	"net/http"
-	"nubes/common/models"
+	"cmpService/common/models"
 	"strconv"
 
 	"github.com/gin-gonic/gin"

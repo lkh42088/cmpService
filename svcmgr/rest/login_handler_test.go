@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"nubes/common/models"
+	"cmpService/common/models"
 	"testing"
 )
 
@@ -15,7 +15,7 @@ func TestRegisterUser(t *testing.T) {
 	user := models.User{
 		ID:"andrew",
 		Password: "andrew1510",
-		Email: "andrew@nubes-bridge.com",
+		Email: "andrew@cmpService-bridge.com",
 		Name:"anrew",
 		Level: 1,
 	}

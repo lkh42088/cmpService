@@ -5,10 +5,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"nubes/common/lib"
-	"nubes/common/models"
-	"nubes/svcmgr/errors"
-	"nubes/svcmgr/utils"
+	"cmpService/common/lib"
+	"cmpService/common/models"
+	"cmpService/svcmgr/errors"
+	"cmpService/svcmgr/utils"
 	"time"
 )
 

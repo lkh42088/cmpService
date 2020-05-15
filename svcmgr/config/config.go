@@ -6,9 +6,9 @@ import (
 	client "github.com/influxdata/influxdb1-client"
 	"io/ioutil"
 	"log"
-	"nubes/common/config"
-	"nubes/common/lib"
-	"nubes/common/mariadblayer"
+	"cmpService/common/config"
+	"cmpService/common/lib"
+	"cmpService/common/mariadblayer"
 	"os"
 )
 
@@ -37,14 +37,14 @@ var SvcmgrConfigPath string
 func GetDefaultConfig() *SvcmgrConfig {
 	maria := config.MariaDbConfig{
 		"127.0.0.1",
-		"nubes",
-		"nubes",
+		"cmpService",
+		"cmpService",
 		"nubes1510",
 	}
 	influx := config.InfluxDbConfig{
 		"192.168.10.19",
 		"snmp_nodes",
-		"nubes",
+		"cmpService",
 		"nubes1510",
 	}
 	return &SvcmgrConfig{

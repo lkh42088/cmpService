@@ -1,9 +1,9 @@
 package statistics
 
 import (
-	"nubes/collector/config"
-	"nubes/collector/influx"
-	"nubes/common/lib"
+	"cmpService/collector/config"
+	"cmpService/collector/influx"
+	"cmpService/common/lib"
 	"testing"
 )
 const homeid = "5eaeda991d41c85a06e98f1d"

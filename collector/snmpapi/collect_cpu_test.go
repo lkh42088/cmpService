@@ -9,7 +9,7 @@ import (
 func TestCpu(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {

@@ -1,7 +1,7 @@
 package snmpapi
 
 import (
-	"nubes/collector/config"
+	"cmpService/collector/config"
 	"sync"
 	"testing"
 )

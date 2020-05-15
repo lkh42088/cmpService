@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"nubes/common/config"
-	"nubes/common/lib"
+	"cmpService/common/config"
+	"cmpService/common/lib"
 	"os"
 	"testing"
 )
@@ -11,14 +11,14 @@ import (
 func getJungbhConfig() *SvcmgrConfig {
 	maria := config.MariaDbConfig{
 		"192.168.10.115",
-		"nubes",
-		"nubes",
+		"cmpService",
+		"cmpService",
 		"nubes1510",
 	}
 	influx := config.InfluxDbConfig{
 		"192.168.10.74",
 		"snmp_nodes",
-		"nubes",
+		"cmpService",
 		"nubes1510",
 	}
 	return &SvcmgrConfig{
@@ -42,15 +42,15 @@ func TestWriteJungbhConfig(t *testing.T) {
 func getJeeebConfig() *SvcmgrConfig {
 	maria := config.MariaDbConfig{
 		"192.168.227.129",
-		"nubes",
-		"nubes",
+		"cmpService",
+		"cmpService",
 		"nubes1510!",
 	}
 	// influx 는 사용안함...
 	influx := config.InfluxDbConfig{
 		"192.168.10.74",
 		"snmp_nodes",
-		"nubes",
+		"cmpService",
 		"nubes1510",
 	}
 	return &SvcmgrConfig{

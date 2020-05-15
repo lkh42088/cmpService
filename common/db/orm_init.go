@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"nubes/common/config"
+	"cmpService/common/config"
 )
 
 func Init(config *config.DBConfig) {

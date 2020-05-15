@@ -2,8 +2,8 @@ package mariadblayer
 
 import (
 	"fmt"
-	"nubes/common/db"
-	"nubes/common/models"
+	"cmpService/common/db"
+	"cmpService/common/models"
 	"testing"
 )
 
@@ -23,7 +23,7 @@ func TestAddUser(t *testing.T) {
 	user := models.User {
 		ID:"jungbh",
 		Password: "nubes1510",
-		Email: "jungbh@nubes-bridge.com",
+		Email: "jungbh@cmpService-bridge.com",
 		Name: "jungbh",
 		Level: 10,
 	}

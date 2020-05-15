@@ -2,10 +2,10 @@ package convert
 
 import (
 	"fmt"
-	"nubes/common/db"
-	"nubes/common/mariadblayer"
-	"nubes/dbmigrator/config"
-	"nubes/dbmigrator/mysqllayer"
+	"cmpService/common/db"
+	"cmpService/common/mariadblayer"
+	"cmpService/dbmigrator/config"
+	"cmpService/dbmigrator/mysqllayer"
 )
 
 func CreateNewMariadbTable() {

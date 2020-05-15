@@ -3,9 +3,9 @@ package snmpapi
 import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"nubes/collector/config"
-	"nubes/collector/mongo"
-	"nubes/common/lib"
+	"cmpService/collector/config"
+	"cmpService/collector/mongo"
+	"cmpService/common/lib"
 	"runtime"
 	"strings"
 	"sync"

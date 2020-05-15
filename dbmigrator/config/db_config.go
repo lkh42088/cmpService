@@ -1,14 +1,14 @@
 package config
 
-import "nubes/common/config"
+import "cmpService/common/config"
 
 // Mariadb of Customizing Contents Bridge
 func GetNewDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"nubes1510!",
-		"nubes",
+		"cmpService",
 		"192.168.227.129",
 		3306,
 	}
@@ -19,7 +19,7 @@ func GetNewDatabaseConfig() *config.DBConfig {
 func GetOldDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"Nubes1510!",
 		"cdn_db_2020",
 		"192.168.227.138",

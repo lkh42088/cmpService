@@ -9,7 +9,7 @@ import (
 func TestIpRouteTable(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "127.0.0.1"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 
 	// Init Snmp
 	s.InitDeviceSnmp()
@@ -28,7 +28,7 @@ func TestIpRouteTable(t *testing.T) {
 func TestIpRouteTableGetNext(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "127.0.0.1"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	oidstr := ".1.3.6.1.2.1.4.21.1.1"
 	oid := []string{oidstr}
 
@@ -55,7 +55,7 @@ func TestIpRouteTableGetNext(t *testing.T) {
 func BenchmarkIpRouteTable(b *testing.B) {
 	s := SnmpDevice{}
 	s.Device.Ip = "127.0.0.1"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 
 	// Init Snmp
 	s.InitDeviceSnmp()

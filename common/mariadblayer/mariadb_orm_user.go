@@ -1,6 +1,6 @@
 package mariadblayer
 
-import "nubes/common/models"
+import "cmpService/common/models"
 
 func (db *DBORM) GetAllUsers() (users []models.User, err error) {
 	return users, db.Find(&users).Error

@@ -2,8 +2,8 @@ package mariadblayer
 
 import (
 	"math"
-	"nubes/common/lib"
-	"nubes/common/models"
+	"cmpService/common/lib"
+	"cmpService/common/models"
 	"strings"
 )
 

@@ -1,6 +1,6 @@
 package mysqllayer
 
-import "nubes/dbmigrator/cbmodels"
+import "cmpService/dbmigrator/cbmodels"
 
 type CBDBLayer interface {
 	// Item

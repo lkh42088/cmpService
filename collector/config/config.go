@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"nubes/common/config"
-	"nubes/common/lib"
+	"cmpService/common/config"
+	"cmpService/common/lib"
 	"os"
 	"reflect"
 )
@@ -32,7 +32,7 @@ func GetDefaultConfig() *CollectorConfig {
 	influx := config.InfluxDbConfig{
 		"192.168.10.19",
 		"snmp_nodes",
-		"nubes",
+		"cmpService",
 		"nubes1510",
 	}
 	return &CollectorConfig{

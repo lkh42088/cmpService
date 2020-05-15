@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"nubes/common/config"
-	db2 "nubes/common/db"
-	"nubes/common/mariadblayer"
-	config2 "nubes/svcmgr/config"
-	"nubes/svcmgr/rest"
+	"cmpService/common/config"
+	db2 "cmpService/common/db"
+	"cmpService/common/mariadblayer"
+	config2 "cmpService/svcmgr/config"
+	"cmpService/svcmgr/rest"
 )
 
 func main () {

@@ -3,7 +3,7 @@ package mariadblayer
 import (
 	"errors"
 	"fmt"
-	"nubes/common/models"
+	"cmpService/common/models"
 )
 
 func (db *DBORM) GetAllDevicesServer(deviceType string, outFlag int) (devices []models.DeviceServer,

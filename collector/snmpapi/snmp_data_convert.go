@@ -3,9 +3,9 @@ package snmpapi
 import (
 	"fmt"
 	client "github.com/influxdata/influxdb1-client/v2"
-	"nubes/collector/collectdevice"
-	"nubes/collector/influx"
-	"nubes/common/lib"
+	"cmpService/collector/collectdevice"
+	"cmpService/collector/influx"
+	"cmpService/common/lib"
 	"reflect"
 	"strings"
 	"sync"

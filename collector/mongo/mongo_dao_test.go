@@ -3,7 +3,7 @@ package mongo
 import (
 	"fmt"
 	"github.com/globalsign/mgo/bson"
-	"nubes/collector/collectdevice"
+	"cmpService/collector/collectdevice"
 	"testing"
 )
 
@@ -21,7 +21,7 @@ func TestMongoPost(t *testing.T) {
 		Id:            collectdevice.ID(objId),
 		Ip:            "192.168.10.115",
 		Port:          161,
-		SnmpCommunity: "nubes",
+		SnmpCommunity: "cmpService",
 	}
 	fmt.Println("collectdevice:", d)
 	devId, err := Mongo.Post(&d)

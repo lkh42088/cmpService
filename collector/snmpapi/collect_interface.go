@@ -4,7 +4,7 @@ import (
 	"fmt"
 	g "github.com/soniah/gosnmp"
 	"log"
-	"nubes/common/lib"
+	"cmpService/common/lib"
 	"strings"
 )
 

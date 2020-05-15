@@ -4,7 +4,7 @@ import (
 	"errors"
 	client "github.com/influxdata/influxdb1-client/v2"
 	"log"
-	"nubes/common/lib"
+	"cmpService/common/lib"
 )
 
 type InfluxAccessor struct {

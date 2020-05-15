@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"nubes/common/models"
+	"cmpService/common/models"
 	"regexp"
 )
 

@@ -3,8 +3,8 @@ package mysqllayer
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"nubes/common/config"
-	config2 "nubes/dbmigrator/config"
+	"cmpService/common/config"
+	config2 "cmpService/dbmigrator/config"
 	"testing"
 )
 

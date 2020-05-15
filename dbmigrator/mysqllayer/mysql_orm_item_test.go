@@ -2,7 +2,7 @@ package mysqllayer
 
 import (
 	"fmt"
-	"nubes/common/db"
+	"cmpService/common/db"
 	"testing"
 )
 

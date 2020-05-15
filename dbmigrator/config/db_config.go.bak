@@ -1,6 +1,6 @@
 package config
 
-import "nubes/common/config"
+import "cmpService/common/config"
 
 // Mariadb of Customizing Contents Bridge
 func GetNewDatabaseConfig() *config.DBConfig {

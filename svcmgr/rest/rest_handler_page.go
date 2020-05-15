@@ -3,7 +3,7 @@ package rest
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"nubes/common/models"
+	"cmpService/common/models"
 	"strconv"
 )
 

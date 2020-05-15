@@ -1,9 +1,9 @@
 package config
 
 import (
-	"nubes/collector/influx"
-	"nubes/collector/mongo"
-	"nubes/common/lib"
+	"cmpService/collector/influx"
+	"cmpService/collector/mongo"
+	"cmpService/common/lib"
 )
 
 func ConfigureMongoDB() {

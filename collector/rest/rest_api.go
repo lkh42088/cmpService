@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"nubes/collector/collectdevice"
-	config2 "nubes/collector/config"
-	"nubes/collector/mongo"
-	"nubes/collector/snmpapi"
-	"nubes/common/config"
+	"cmpService/collector/collectdevice"
+	config2 "cmpService/collector/config"
+	"cmpService/collector/mongo"
+	"cmpService/collector/snmpapi"
+	"cmpService/common/config"
 )
 
 type HandlerInterface interface {

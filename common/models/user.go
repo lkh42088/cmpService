@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
-	"nubes/common/lib"
+	"cmpService/common/lib"
 )
 
 type User struct {

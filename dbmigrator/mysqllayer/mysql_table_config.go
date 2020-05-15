@@ -2,11 +2,11 @@ package mysqllayer
 
 import (
 	"github.com/jinzhu/gorm"
-	"nubes/dbmigrator/cbmodels"
+	"cmpService/dbmigrator/cbmodels"
 )
 
 // 192.168.10.33
-// nubes/Nubes1510!
+// cmpService/Nubes1510!
 // database: db_db
 func CreateCbTable(db *gorm.DB) {
 	if db.HasTable(&cbmodels.Item{}) == false {

@@ -2,7 +2,7 @@ package mongo
 
 import (
 	"github.com/globalsign/mgo"
-	"nubes/collector/collectdevice"
+	"cmpService/collector/collectdevice"
 )
 
 type MongoDBLayer interface {

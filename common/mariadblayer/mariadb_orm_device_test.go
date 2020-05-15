@@ -2,7 +2,7 @@ package mariadblayer
 
 import (
 	"fmt"
-	"nubes/common/models"
+	"cmpService/common/models"
 	"testing"
 	"time"
 )
@@ -22,7 +22,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 		RegisterId: "nhj_id",
 		Password: "password",
 		RegisterName: "nhj",
-		RegisterEmail: "nhj@nubes-bridge.com",
+		RegisterEmail: "nhj@cmpService-bridge.com",
 		RegisterDate: time.Now(),
 		DeviceCode: "CBSNUBES01_1",
 		Model: 1,
@@ -61,7 +61,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 		RegisterId: "yjs_id",
 		Password: "password",
 		RegisterName: "yjs",
-		RegisterEmail: "yjs@nubes-bridge.com",
+		RegisterEmail: "yjs@cmpService-bridge.com",
 		RegisterDate: time.Now(),
 		DeviceCode: "CBSNUBES02_1",
 		Model: 1,
@@ -100,7 +100,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 		RegisterId: "pms_id",
 		Password: "password",
 		RegisterName: "pms",
-		RegisterEmail: "pms@nubes-bridge.com",
+		RegisterEmail: "pms@cmpService-bridge.com",
 		RegisterDate: time.Now(),
 		DeviceCode: "CBSNUBES03_1",
 		Model: 1,
@@ -147,7 +147,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 		RegisterId: "EE_id",
 		Password: "password",
 		RegisterName: "EE",
-		RegisterEmail: "EE@nubes-bridge.com",
+		RegisterEmail: "EE@cmpService-bridge.com",
 		RegisterDate: time.Now(),
 		DeviceCode: "CBSNETWORK03",
 		Model: 1,
@@ -184,7 +184,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 		RegisterId: "JDG_id",
 		Password: "password",
 		RegisterName: "JDG_name",
-		RegisterEmail: "JDG@nubes-bridge.com",
+		RegisterEmail: "JDG@cmpService-bridge.com",
 		RegisterDate: time.Now(),
 		DeviceCode: "CBSNETWORK04",
 		Model: 1,
@@ -227,7 +227,7 @@ func TestDeviceAddEntry_Part(t *testing.T) {
 		RegisterId: "jjh_id",
 		Password: "password",
 		RegisterName: "jjh",
-		RegisterEmail: "jjh@nubes-bridge.com",
+		RegisterEmail: "jjh@cmpService-bridge.com",
 		RegisterDate: time.Now(),
 		DeviceCode: "CBSPART01",
 		Model: 1,

@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"nubes/collector/config"
-	"nubes/collector/rest"
-	"nubes/collector/snmpapi"
-	"nubes/collector/statistics"
+	"cmpService/collector/config"
+	"cmpService/collector/rest"
+	"cmpService/collector/snmpapi"
+	"cmpService/collector/statistics"
 	"sync"
 )
 

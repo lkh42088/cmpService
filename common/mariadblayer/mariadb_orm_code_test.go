@@ -2,8 +2,8 @@ package mariadblayer
 
 import (
 	"fmt"
-	db2 "nubes/common/db"
-	"nubes/common/models"
+	db2 "cmpService/common/db"
+	"cmpService/common/models"
 	"testing"
 )
 

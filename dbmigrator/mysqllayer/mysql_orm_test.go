@@ -1,11 +1,11 @@
 package mysqllayer
 
-import "nubes/common/config"
+import "cmpService/common/config"
 
 func getMysqlConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"Nubes1510!",
 		"cdn_db_2020",
 		"192.168.10.44",

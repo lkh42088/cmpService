@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"nubes/common/models"
+	"cmpService/common/models"
 	"testing"
 	"time"
 )
@@ -115,7 +115,7 @@ func TestAddDevice(t *testing.T) {
 		RegisterId:"hjt0601",
 		Password:"*6634B26806A7D3*Connect79D898CE68F4FE650D4D755264",
 		RegisterName:"Nubes",
-		RegisterEmail:"nubes@nubes-bridge.com",
+		RegisterEmail:"cmpService@cmpService-bridge.com",
 		DeviceCode:"CBS09999",
 		Model:83,
 		Contents:"\u003cbr /\u003e",

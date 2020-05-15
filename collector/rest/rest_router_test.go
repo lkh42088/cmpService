@@ -11,8 +11,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"nubes/collector/config"
-	"nubes/collector/collectdevice"
+	"cmpService/collector/config"
+	"cmpService/collector/collectdevice"
 	"sort"
 	"strings"
 	"sync"
@@ -70,7 +70,7 @@ func TestRestPost(t *testing.T) {
 		Id:            "1",
 		Ip:            "192.168.122.19",
 		Port:          161,
-		SnmpCommunity: "nubes",
+		SnmpCommunity: "cmpService",
 	}
 	pbytes, _ := json.Marshal(dev)
 	buff := bytes.NewBuffer(pbytes)
@@ -95,12 +95,12 @@ func TestRestPort2(t *testing.T) {
 			Id:            "1",
 			Ip:            "127.0.0.1",
 			Port:          161,
-			SnmpCommunity: "nubes",
+			SnmpCommunity: "cmpService",
 		}, {
 			Id:            "2",
 			Ip:            "211.211.211.211",
 			Port:          161,
-			SnmpCommunity: "nubes",
+			SnmpCommunity: "cmpService",
 		},
 	}
 	pbytes, _ := json.Marshal(dev)

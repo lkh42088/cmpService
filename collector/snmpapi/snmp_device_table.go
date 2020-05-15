@@ -2,8 +2,8 @@ package snmpapi
 
 import (
 	"fmt"
-	"nubes/collector/collectdevice"
-	"nubes/common/lib"
+	"cmpService/collector/collectdevice"
+	"cmpService/common/lib"
 )
 
 type SnmpDeviceTable struct {

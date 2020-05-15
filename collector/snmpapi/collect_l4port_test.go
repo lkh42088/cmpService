@@ -5,12 +5,12 @@ import (
 	"log"
 	"testing"
 )
-import "nubes/collector/snmpapi"
+import "cmpService/collector/snmpapi"
 
 func TestTcp(t *testing.T) {
 	s := snmpapi.SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
@@ -35,7 +35,7 @@ func TestTcp(t *testing.T) {
 func TestUdp(t *testing.T) {
 	s := snmpapi.SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
@@ -60,7 +60,7 @@ func TestUdp(t *testing.T) {
 func TestTcpSlice(t *testing.T) {
 	s := snmpapi.SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
@@ -93,7 +93,7 @@ func TestTcpSlice(t *testing.T) {
 func TestUdpSlice(t *testing.T) {
 	s := snmpapi.SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {

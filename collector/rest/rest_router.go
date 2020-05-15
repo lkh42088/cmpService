@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
-	conf "nubes/collector/config"
-	"nubes/collector/collectdevice"
+	conf "cmpService/collector/config"
+	"cmpService/collector/collectdevice"
 	"sync"
 )
 

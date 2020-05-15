@@ -3,17 +3,17 @@ package mariadblayer
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"nubes/common/config"
-	"nubes/common/db"
+	"cmpService/common/config"
+	"cmpService/common/db"
 	"testing"
 )
 
 func getTestDefaultConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"nubes1510!",
-		"nubes",
+		"cmpService",
 		"127.0.0.1",
 		3306,
 	}
@@ -24,9 +24,9 @@ func getTestDefaultConfig() *config.DBConfig {
 func getTestJebConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"nubes1510!",
-		"nubes",
+		"cmpService",
 		"192.168.227.129",
 		3306,
 	}
@@ -37,9 +37,9 @@ func getTestJebConfig() *config.DBConfig {
 func getTestJbhConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"nubes1510",
-		"nubes",
+		"cmpService",
 		"192.168.10.115",
 		3306,
 	}
@@ -97,9 +97,9 @@ func TestInit(t *testing.T) {
 func TestMigrtion(t *testing.T) {
 	config := config.DBConfig{
 		"mysql",
-		"nubes",
+		"cmpService",
 		"nubes1510",
-		"nubes",
+		"cmpService",
 		"192.168.122.127",
 		3306,
 	}

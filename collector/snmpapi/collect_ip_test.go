@@ -9,7 +9,7 @@ import (
 func TestIpTable(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
@@ -27,7 +27,7 @@ func TestIpTable(t *testing.T) {
 func TestIpEntry(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	var ret int
@@ -64,7 +64,7 @@ func TestIpEntry(t *testing.T) {
 func TestIpAddr(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
@@ -87,7 +87,7 @@ func TestIpAddr(t *testing.T) {
 func TestIpIfIndex(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
@@ -110,7 +110,7 @@ func TestIpIfIndex(t *testing.T) {
 func TestIpMask(t *testing.T) {
 	s := SnmpDevice{}
 	s.Device.Ip = "121.156.65.139"
-	s.Device.SnmpCommunity = "nubes"
+	s.Device.SnmpCommunity = "cmpService"
 	s.InitDeviceSnmp()
 	err := s.Snmp.Connect()
 	if err != nil {
