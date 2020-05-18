@@ -1,31 +1,39 @@
 package config
 
-import "cmpService/common/config"
+import (
+	"cmpService/common/config"
+	"cmpService/common/lib"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+)
 
-// Mariadb of Customizing Contents Bridge
-func AGetNewDatabaseConfig() *config.DBConfig {
-	config := config.DBConfig{
-		"mysql",
-		"nubes",
-		"Nubes1510!",
-		"nubes",
-		"192.168.227.129",
-		3306,
-	}
-	return &config
+type global_config struct {
+	NewDbConfig *config.DBConfig
+	OldDbConfig *config.DBConfig
 }
 
-// Mysql database of Contents Bridge
-func AGetOldDatabaseConfig() *config.DBConfig {
-	config := config.DBConfig{
-		"mysql",
-		"nubes",
-		"Nubes1510!",
-		"cdn_db_2020",
-		"192.168.227.138",
-		3306,
-	}
-	return &config
+type MigratorConfig struct {
+	NewDbIp string `json:"new_db_ip"`
+	NewDbName string `json:"new_db_name"`
+	NewDbUser string `json:"new_db_user"`
+	NewDbPassword string `json:"new_db_password"`
+	OldDbIp string `json:"old_db_ip"`
+	OldDbName string `json:"old_db_name"`
+	OldDbUser string `json:"old_db_user"`
+	OldDbPassword string `json:"old_db_password"`
+}
+
+var DbMigratorGlobalConfig = &global_config{}
+
+func SetOldDb(dbConfig *config.DBConfig) {
+	DbMigratorGlobalConfig.OldDbConfig = dbConfig
+}
+
+func SetNewDb(dbConfig *config.DBConfig) {
+	DbMigratorGlobalConfig.NewDbConfig = dbConfig
 }
 
 // Test Database of Contents Bridge
@@ -41,33 +49,59 @@ func GetTestCbDatabaseConfig() *config.DBConfig {
 	return &config
 }
 
-
-/*******************************************************************
-* Jungbh
-*******************************************************************/
 // Mariadb of Customizing Contents Bridge
 func GetNewDatabaseConfig() *config.DBConfig {
-	config := config.DBConfig{
-		"mysql",
-		"nubes",
-		"Nubes1510!",
-		"nubes",
-		"192.168.122.214",
-		3306,
-	}
-	return &config
+	return DbMigratorGlobalConfig.NewDbConfig
 }
 
 // Mysql database of Contents Bridge
 func GetOldDatabaseConfig() *config.DBConfig {
-	config := config.DBConfig{
-		"mysql",
-		"nubes",
-		"Nubes1510!",
-		"cdn_db_2020",
-		"192.168.122.30",
-		3306,
-	}
-	return &config
+	return DbMigratorGlobalConfig.OldDbConfig
 }
 
+func SetConfig(configPath string) {
+	if configPath == "" || lib.IsFileExists(configPath) == false {
+		dirName, _ := os.Getwd()
+		configPath=fmt.Sprintf("%s/etc/%s", dirName, "dbmigrator.conf")
+		if configPath == "" || lib.IsFileExists(configPath) == false {
+			log.Fatal("%% You MUST input config file path!")
+			return
+		}
+	}
+
+	cfg := ReadDbMigratorConfig(configPath)
+	newDb := &config.DBConfig{
+		DBDriver:"mysql",
+		Username:cfg.NewDbUser,
+		DBName:cfg.NewDbName,
+		Password:cfg.NewDbPassword,
+		Address:cfg.NewDbIp,
+		Port:3306,
+	}
+	oldDb := &config.DBConfig{
+		DBDriver: "mysql",
+		Username: cfg.OldDbUser,
+		Password: cfg.OldDbPassword,
+		DBName:   cfg.OldDbName,
+		Address:  cfg.OldDbIp,
+		Port:     3306,
+	}
+
+	SetNewDb(newDb)
+	SetOldDb(oldDb)
+}
+
+func ReadDbMigratorConfig(path string) (config MigratorConfig) {
+	// read file
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		lib.LogWarn("Fail to Read rest config file.(%s)\n", err)
+		return config
+	}
+	// JSON transform
+	err = json.Unmarshal(b, &config)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return config
+}
