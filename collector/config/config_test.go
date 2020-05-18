@@ -36,6 +36,36 @@ func getJungbhConfig() *CollectorConfig {
 	}
 }
 
+func TestWriteLkhConfig(t *testing.T) {
+	dirName, _ := os.Getwd()
+	path := fmt.Sprintf("%s/../etc/%s", dirName, "collector.lkh.conf")
+	var cfg = getLkhConfig()
+	fmt.Println(cfg)
+	config := lib.CreateConfig(path, cfg)
+	fmt.Println(config)
+}
+
+func getLkhConfig() *CollectorConfig {
+	mongo := config.MongoDbConfig{
+		"192.168.121.157",
+		"collector",
+		"devices",
+	}
+	influx := config.InfluxDbConfig{
+		"192.168.121.157",
+		"snmp_nodes",
+		"nubes",
+		"",
+	}
+	return &CollectorConfig{
+		mongo,
+		influx,
+		"127.0.0.1",
+		"0.0.0.0",
+		"8884",
+	}
+}
+
 func TestWriteJungbhConfig(t *testing.T) {
 	dirName, _ := os.Getwd()
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "collector.jbh.conf")

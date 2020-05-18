@@ -11,7 +11,7 @@ import (
 )
 
 func main () {
-	configFile := flag.String("file", "/etc/svcmgr/svcmgr.conf",
+	configFile := flag.String("file", "svcmgr.conf",
 		"Input configuration file")
 	flag.Parse()
 	config2.SetConfig(*configFile)

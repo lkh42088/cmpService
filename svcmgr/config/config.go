@@ -37,14 +37,14 @@ var SvcmgrConfigPath string
 func GetDefaultConfig() *SvcmgrConfig {
 	maria := config.MariaDbConfig{
 		"127.0.0.1",
-		"cmpService",
-		"cmpService",
+		"nubes",
+		"nubes",
 		"nubes1510",
 	}
 	influx := config.InfluxDbConfig{
 		"192.168.10.19",
 		"snmp_nodes",
-		"cmpService",
+		"nubes",
 		"nubes1510",
 	}
 	return &SvcmgrConfig{
