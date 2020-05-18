@@ -6,11 +6,11 @@ import "cmpService/common/config"
 func GetNewDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"cmpService",
-		"nubes1510!",
-		"cmpService",
-		"192.168.227.129",
-		3306,
+		"nubes",
+		"Nubes1510!",
+		"nubes",
+		"192.168.160.134",
+		43306,
 	}
 	return &config
 }
@@ -19,10 +19,10 @@ func GetNewDatabaseConfig() *config.DBConfig {
 func GetOldDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"cmpService",
+		"nubes",
 		"Nubes1510!",
 		"cdn_db_2020",
-		"192.168.227.138",
+		"192.168.160.130",
 		3306,
 	}
 	return &config
