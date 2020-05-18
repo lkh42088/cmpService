@@ -6,6 +6,7 @@ import (
 
 const defaultFieldName = "device_code"
 const idxFieldName = "idx"
+const contentsFieldName = "contents"
 
 func (db *DBORM) GetAllComments() (comments []models.DeviceComment, err error) {
 	return comments, db.Find(&comments).Error
@@ -16,8 +17,18 @@ func (db *DBORM) GetComments(code string) (comments []models.DeviceComment, err 
 	return comments, db.Where(where, code).Find(&comments).Error
 }
 
-func (db *DBORM) AddComment(comments models.DeviceComment) error {
-	return db.Create(comments).Error
+func (db *DBORM) GetCommentByIdx(idx int) (comment models.DeviceComment, err error) {
+	where := GetWhereString(idxFieldName)
+	return comment, db.Where(where, idx).Find(&comment).Error
+}
+
+func (db *DBORM) UpdateComment(comment models.DeviceComment) error {
+	where := GetWhereString(idxFieldName)
+	return db.Model(&comment).Where(where, comment.Idx).Update(contentsFieldName, comment.Contents).Error
+}
+
+func (db *DBORM) AddComment(comment models.DeviceComment) error {
+	return db.Create(comment).Error
 }
 
 func (db *DBORM) DeleteAllComments() error {
