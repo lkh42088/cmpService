@@ -16,6 +16,14 @@ import (
 var idx_comment uint = 0
 
 func RunConvertDb() {
+	convertInternal(ConvertItem)
+	convertInternal(ConvertItemSub)
+	convertInternal(ConvertDeviceServer)
+	convertInternal(ConvertDeviceNetwork)
+	convertInternal(ConvertDevicePart)
+}
+
+func convertInternal(convert func(*mysqllayer.CBORM, *mariadblayer.DBORM)) {
 	// Old Database: Mysql
 	oldConfig := config.GetOldDatabaseConfig()
 	oldOptions := db.GetDataSourceName(oldConfig)
@@ -36,11 +44,7 @@ func RunConvertDb() {
 	}
 	defer newDb.Close()
 
-	ConvertItem(oldDb, newDb)
-	ConvertItemSub(oldDb, newDb)
-	ConvertDeviceServer(oldDb, newDb)
-	ConvertDeviceNetwork(oldDb, newDb)
-	ConvertDevicePart(oldDb, newDb)
+	convert(oldDb, newDb)
 }
 
 func ConvertItem(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
@@ -79,13 +83,15 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 50)
 		}
 		sd, dc := GetServerTbByDevice(old)
 		if old.WrIsComment == 0 {
+			fmt.Println("server:", i, ": dev")
 			ndb.AddDeviceServer(sd)
 		} else  {
 			idx_comment++
+			fmt.Println("server:", i, ": comment, ", idx_comment)
 			dc.Idx = idx_comment
 			ndb.AddComment(dc)
 		}
@@ -106,10 +112,12 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		}
 		nd, dc := GetNetworkTbByDevice(old)
 		if old.WrIsComment == 0 {
+			fmt.Println("network:", i, ": dev")
 			ndb.AddDeviceNetwork(nd)
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
+			fmt.Println("network:", i, ": comment, ", idx_comment)
 			ndb.AddComment(dc)
 		}
 	}
@@ -129,10 +137,12 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		}
 		pd, dc := GetPartTbByDevice(old)
 		if old.WrIsComment == 0 {
+			fmt.Println("part:", i, ": dev")
 			ndb.AddDevicePart(pd)
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
+			fmt.Println("part:", i, ": comment, ", idx_comment)
 			ndb.AddComment(dc)
 		}
 	}
