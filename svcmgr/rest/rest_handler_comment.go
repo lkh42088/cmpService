@@ -1,9 +1,10 @@
 package rest
 
 import (
+	"cmpService/common/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"cmpService/common/models"
+	"strconv"
 )
 
 func (h *Handler) GetCommentsByCode(c *gin.Context) {
@@ -38,12 +39,16 @@ func (h *Handler) AddComment(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
-func (h *Handler) DeleteCommentsByCode(c *gin.Context) {
+func (h *Handler) DeleteCommentsByIdx(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
-	deviceCode := c.Param("devicecode")
-	err := h.db.DeleteComments(deviceCode)
+	idx, err := strconv.Atoi(c.Param("commentidx"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	err = h.db.DeleteComments(idx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

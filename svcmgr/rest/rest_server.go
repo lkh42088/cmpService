@@ -76,7 +76,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// Comment
 	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)
 	router.POST("/v1/comments/:devicecode/:comment/:userid/:commentidx", h.AddComment)
-	router.POST("/v1/comments/:devicecode", h.DeleteCommentsByCode)
+	router.POST("/v1/comment/:commentidx", h.DeleteCommentsByIdx)
 
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)

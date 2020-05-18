@@ -42,7 +42,7 @@ type MariaDBLayer interface {
 	GetComments(code string) ([]models.DeviceComment, error)
 	AddComment(comment models.DeviceComment) error
 	DeleteAllComments() error
-	DeleteComments(code string) error
+	DeleteComments(idx int) error
 
 	// User
 	AddUser(user models.User) (models.User, error)
