@@ -3,12 +3,12 @@ package config
 import "cmpService/common/config"
 
 // Mariadb of Customizing Contents Bridge
-func GetNewDatabaseConfig() *config.DBConfig {
+func AGetNewDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"cmpService",
-		"nubes1510!",
-		"cmpService",
+		"nubes",
+		"Nubes1510!",
+		"nubes",
 		"192.168.227.129",
 		3306,
 	}
@@ -16,10 +16,10 @@ func GetNewDatabaseConfig() *config.DBConfig {
 }
 
 // Mysql database of Contents Bridge
-func GetOldDatabaseConfig() *config.DBConfig {
+func AGetOldDatabaseConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",
-		"cmpService",
+		"nubes",
 		"Nubes1510!",
 		"cdn_db_2020",
 		"192.168.227.138",
@@ -40,3 +40,34 @@ func GetTestCbDatabaseConfig() *config.DBConfig {
 	}
 	return &config
 }
+
+
+/*******************************************************************
+* Jungbh
+*******************************************************************/
+// Mariadb of Customizing Contents Bridge
+func GetNewDatabaseConfig() *config.DBConfig {
+	config := config.DBConfig{
+		"mysql",
+		"nubes",
+		"Nubes1510!",
+		"nubes",
+		"192.168.122.214",
+		3306,
+	}
+	return &config
+}
+
+// Mysql database of Contents Bridge
+func GetOldDatabaseConfig() *config.DBConfig {
+	config := config.DBConfig{
+		"mysql",
+		"nubes",
+		"Nubes1510!",
+		"cdn_db_2020",
+		"192.168.122.30",
+		3306,
+	}
+	return &config
+}
+
