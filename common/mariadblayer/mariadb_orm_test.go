@@ -46,6 +46,18 @@ func getTestJbhConfig() *config.DBConfig {
 	return &config
 }
 
+func getTestJbhCBConfig() *config.DBConfig {
+	config := config.DBConfig{
+		"mysql",
+		"nubes",
+		"Nubes1510!",
+		"nubes",
+		"192.168.122.214",
+		3306,
+	}
+	return &config
+}
+
 func getTestDb() (*DBORM, error) {
 	// Jung Byeonghwa
 	config := getTestJebConfig()

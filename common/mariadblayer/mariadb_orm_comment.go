@@ -5,6 +5,7 @@ import (
 )
 
 const defaultFieldName = "device_code"
+const idxFieldName = "idx"
 
 func (db *DBORM) GetAllComments() (comments []models.DeviceComment, err error) {
 	return comments, db.Find(&comments).Error
@@ -23,10 +24,10 @@ func (db *DBORM) DeleteAllComments() error {
 	return db.Delete(&models.DeviceComment{}).Error
 }
 
-func (db *DBORM) DeleteComments(code string) error {
+func (db *DBORM) DeleteComments(idx int) error {
 	dc := models.DeviceComment{}
-	where := GetWhereString(defaultFieldName)
-	return db.Where(where, code).Delete(dc).Error
+	where := GetWhereString(idxFieldName)
+	return db.Where(where, idx).Delete(&dc).Error
 }
 
 

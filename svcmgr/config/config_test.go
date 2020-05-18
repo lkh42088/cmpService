@@ -11,14 +11,35 @@ import (
 func getJungbhConfig() *SvcmgrConfig {
 	maria := config.MariaDbConfig{
 		"192.168.10.115",
-		"cmpService",
-		"cmpService",
+		"nubes",
+		"nubes",
 		"nubes1510",
 	}
 	influx := config.InfluxDbConfig{
 		"192.168.10.74",
 		"snmp_nodes",
-		"cmpService",
+		"nubes",
+		"nubes1510",
+	}
+	return &SvcmgrConfig{
+		maria,
+		influx,
+		"0.0.0.0",
+		"8081",
+	}
+}
+
+func getJungbhCBConfig() *SvcmgrConfig {
+	maria := config.MariaDbConfig{
+		"192.168.122.214",
+		"nubes",
+		"nubes",
+		"Nubes1510!",
+	}
+	influx := config.InfluxDbConfig{
+		"192.168.122.214",
+		"snmp_nodes",
+		"nubes",
 		"nubes1510",
 	}
 	return &SvcmgrConfig{
@@ -65,6 +86,15 @@ func TestWriteJeeebConfig(t *testing.T) {
 	dirName, _ := os.Getwd()
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jeb.conf")
 	var cfg = getJeeebConfig()
+	fmt.Println(cfg)
+	config := lib.CreateConfig(path, cfg)
+	fmt.Println(config)
+}
+
+func TestWritejbhCBConfig(t *testing.T) {
+	dirName, _ := os.Getwd()
+	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jbhcb.conf")
+	var cfg = getJungbhCBConfig()
 	fmt.Println(cfg)
 	config := lib.CreateConfig(path, cfg)
 	fmt.Println(config)
