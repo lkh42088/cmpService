@@ -1,9 +1,9 @@
 package mariadblayer
 
 import (
-	"math"
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"math"
 	"strings"
 )
 
@@ -34,16 +34,15 @@ func CombineCondition(outFlag string) string {
 	return "out_flag = '" + outFlag + "'"
 }
 
-// NB specific code : row num 1000
+// NB specific code
 func SetThousandCount(cri *models.PageCreteria) {
-	// NB rule : 1000 data per 1 time
-	if cri.CheckCnt < cri.Size {
+	if cri.CheckCnt <= cri.Size {
 		if cri.CheckCnt > cri.Count {
 			return
 		}
 		cri.CheckCnt = 0
 	} else {
-		cri.CheckCnt = ((cri.CheckCnt / cri.Size) - 1) * cri.Size
+		cri.CheckCnt = ((cri.CheckCnt - 1) / cri.Size) * cri.Size
 	}
 }
 
