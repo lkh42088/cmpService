@@ -25,6 +25,11 @@ type HandlerInterface interface {
 	AddComment(c *gin.Context)
 	UpdateComment( c *gin.Context)
 	DeleteCommentByIdx(c *gin.Context)
+	// Log
+	GetLogsByCode(c *gin.Context)
+	AddLog(c *gin.Context)
+	UpdateLog( c *gin.Context)
+	DeleteLogByIdx(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
 	// Monitoring
@@ -77,9 +82,16 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Comment
 	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)
-	router.POST("/v1/comment/create/:device/:comment/:userid/:commentidx", h.AddComment)
+	router.POST("/v1/comment/create/:devicecode/:comment/:userid", h.AddComment)
 	router.PUT("/v1/comment/update/:comment/:userid/:commentidx", h.UpdateComment)
 	router.POST("/v1/comment/delete/:commentidx", h.DeleteCommentByIdx)
+
+	// log
+	router.GET("/v1/logs/:devicecode", h.GetLogsByCode)
+	router.POST("/v1/log/create/:devicecode/:comment/:userid", h.AddLog)
+	router.PUT("/v1/log/update/:workcode/:field/:change/:userid/:logidx", h.UpdateLog)
+	router.POST("/v1/log/delete/:logidx", h.DeleteLogByIdx)
+
 
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)

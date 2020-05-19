@@ -4,41 +4,37 @@ import (
 	"cmpService/common/models"
 )
 
-const defaultFieldName = "device_code"
-const idxFieldName = "idx"
-const contentsFieldName = "contents"
-
-func (db *DBORM) GetAllComments() (comments []models.DeviceComment, err error) {
-	return comments, db.Find(&comments).Error
+func (db *DBORM) GetAllLogs() (logs []models.DeviceLog, err error) {
+	return logs, db.Find(&logs).Error
 }
 
-func (db *DBORM) GetComments(code string) (comments []models.DeviceComment, err error) {
+func (db *DBORM) GetLogs(code string) (logs []models.DeviceLog, err error) {
 	where := GetWhereString(defaultFieldName)
-	return comments, db.Where(where, code).Find(&comments).Error
+	return logs, db.Where(where, code).Find(&logs).Error
 }
 
-func (db *DBORM) GetCommentByIdx(idx int) (comment models.DeviceComment, err error) {
+func (db *DBORM) GetLogByIdx(idx int) (log models.DeviceLog, err error) {
 	where := GetWhereString(idxFieldName)
-	return comment, db.Where(where, idx).Find(&comment).Error
+	return log, db.Where(where, idx).Find(&log).Error
 }
 
-func (db *DBORM) UpdateComment(comment models.DeviceComment) error {
+func (db *DBORM) UpdateLog(field string, change string, log models.DeviceLog) error {
 	where := GetWhereString(idxFieldName)
-	return db.Model(&comment).Where(where, comment.Idx).Update(contentsFieldName, comment.Contents).Error
+	return db.Model(&log).Where(where, log.Idx).Update(field, change).Error
 }
 
-func (db *DBORM) AddComment(comment models.DeviceComment) error {
-	return db.Create(comment).Error
+func (db *DBORM) AddLog(log models.DeviceLog) error {
+	return db.Create(&log).Error
 }
 
-func (db *DBORM) DeleteAllComments() error {
-	return db.Delete(&models.DeviceComment{}).Error
+func (db *DBORM) DeleteAllLogs() error {
+	return db.Delete(&models.DeviceLog{}).Error
 }
 
-func (db *DBORM) DeleteComments(idx int) error {
-	dc := models.DeviceComment{}
+func (db *DBORM) DeleteLog(idx int) error {
+	dl := models.DeviceLog{}
 	where := GetWhereString(idxFieldName)
-	return db.Where(where, idx).Delete(&dc).Error
+	return db.Where(where, idx).Delete(&dl).Error
 }
 
 

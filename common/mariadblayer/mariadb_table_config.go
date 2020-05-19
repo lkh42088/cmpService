@@ -38,6 +38,11 @@ func CreateTable(db *gorm.DB) {
 		db.AutoMigrate(&models.DeviceComment{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.DeviceComment{})
 	}
+	// -> collectdevice log
+	if db.HasTable(&models.DeviceLog{}) == false {
+		db.AutoMigrate(&models.DeviceLog{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.DeviceLog{})
+	}
 
 	// Login
 	if db.HasTable(&models.User{}) == false {
@@ -70,6 +75,11 @@ func DropTable(db *gorm.DB) {
 	// -> collectdevice comment
 	if db.HasTable(&models.DeviceComment{}) {
 		db.DropTable(&models.DeviceComment{})
+	}
+
+	// -> collectdevice log
+	if db.HasTable(&models.DeviceLog{}) {
+		db.DropTable(&models.DeviceLog{})
 	}
 
 	// Login

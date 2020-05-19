@@ -46,6 +46,15 @@ type MariaDBLayer interface {
 	DeleteAllComments() error
 	DeleteComments(idx int) error
 
+	// Log
+	GetAllLogs() ([]models.DeviceLog, error)
+	GetLogs(code string) ([]models.DeviceLog, error)
+	GetLogByIdx(idx int) (models.DeviceLog, error)
+	UpdateLog(field string, change string, comment models.DeviceLog) error
+	AddLog(comment models.DeviceLog) error
+	DeleteAllLogs() error
+	DeleteLog(idx int) error
+
 	// User
 	AddUser(user models.User) (models.User, error)
 	DeleteUser(user models.User) (models.User, error)
