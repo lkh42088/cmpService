@@ -165,6 +165,7 @@ func DeleteDeviceTb() {
 	newDb.DeleteAllDevicesNetwork()
 	newDb.DeleteAllDevicesServer()
 	newDb.DeleteAllComments()
+	newDb.DeleteAllLogs()
 }
 
 func GetCodeByItem(item cbmodels.Item) (code models.Code) {

@@ -28,7 +28,7 @@ func (db *DBORM) UpdateComment(comment models.DeviceComment) error {
 }
 
 func (db *DBORM) AddComment(comment models.DeviceComment) error {
-	return db.Create(comment).Error
+	return db.Create(&comment).Error
 }
 
 func (db *DBORM) DeleteAllComments() error {

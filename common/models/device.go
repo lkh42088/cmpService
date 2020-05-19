@@ -132,6 +132,18 @@ type DeviceComment struct {
 	RegisterDate time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
 }
 
+type DeviceLog struct {
+	Idx          uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
+	DeviceCode   string    `gorm:"column:device_code;not null"`
+	WorkCode     int	   `gorm:"column:work_code;not null"`
+	Field 		 string    `grom:"column:field;"`
+	OldStatus    string    `gorm:"column:old_status"`
+	NewStatus    string	   `gorm:"column:new_status"`
+	RegisterId   string    `gorm:"type:varchar(50);column:register_id"`
+	RegisterName string    `gorm:"type:varchar(50);column:register_name"`
+	RegisterDate time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
+}
+
 func (DeviceComment) TableName() string {
 	return "device_comment_tb"
 }
