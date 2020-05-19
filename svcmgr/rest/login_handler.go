@@ -1,14 +1,14 @@
 package rest
 
 import (
-	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"cmpService/common/lib"
 	"cmpService/common/models"
 	"cmpService/svcmgr/errors"
 	"cmpService/svcmgr/utils"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 )
 
@@ -33,19 +33,27 @@ func (h *Handler) checkUserExists(user models.User) bool {
 func (h *Handler) RegisterUser(c *gin.Context) {
 	var user models.User
 	c.Bind(&user)
+	fmt.Println("RegisterUser: ", user)
 	exists := h.checkUserExists(user)
+	fmt.Println("exists:", exists)
 
 	valErr := utils.ValidateUser(user, errors.ValidationErrors)
 	if exists == true {
-		valErr = append(valErr, "email already exists")
+		valErr = append(valErr, "ID already exists")
 	}
-	fmt.Println(valErr)
+	fmt.Println("error:", valErr)
 	if len(valErr) > 0 {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":valErr})
 		return
 	}
 	models.HashPassword(&user)
-	h.db.AddUser(user)
+	adduser, err := h.db.AddUser(user)
+	if err != nil {
+		fmt.Println("err:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
+		return
+	}
+	fmt.Println("Add user:", adduser)
 	c.JSON(http.StatusOK, gin.H{"success":true, "msg":"User created successfully"})
 }
 
@@ -108,7 +116,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 		return
 	}
 
-	expirationTime := time.Now().Add(30 * time.Minute)
+	expirationTime := time.Now().Add(1 * time.Minute)
 	claims := &Claims{
 		User: models.User{
 			ID: user.ID,

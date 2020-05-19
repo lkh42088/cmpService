@@ -53,7 +53,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Middlewares
 	router.Use(ErrorHandler)
-	router.Use(CORSMiddlewre())
+	router.Use(CORSMiddleware())
 	h, _ := NewHandler(db)
 
 	// Code
@@ -96,6 +96,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Test
 	router.POST("/api/auth/login", h.LoginUserById)
+	router.POST("/api/auth/register", h.RegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
 	return router.Run(address)
 }
