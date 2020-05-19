@@ -77,7 +77,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
-func (h *Handler) DeleteCommentsByIdx(c *gin.Context) {
+func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
