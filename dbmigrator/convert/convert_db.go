@@ -307,7 +307,6 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	// Comment Table
 	//dc.Idx = uint(device.CbDeviceID)
 	dc.DeviceCode = device.Wr1
-	dc.Depth = device.WrIsComment
 	dc.Contents = device.WrContent
 	dc.RegisterId = device.MbId
 	dc.RegisterName = device.WrName
@@ -352,7 +351,6 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.MonitoringMethod = 0
 
 	dc.DeviceCode = device.Wr1
-	dc.Depth = device.WrIsComment
 	dc.Contents = device.WrContent
 	dc.RegisterId = device.MbId
 	dc.RegisterName = device.WrName
@@ -395,7 +393,6 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.MonitoringMethod = 0
 
 	dc.DeviceCode = device.Wr1
-	dc.Depth = device.WrIsComment
 	dc.Contents = device.WrContent
 	dc.RegisterId = device.MbId
 	dc.RegisterName = device.WrName
