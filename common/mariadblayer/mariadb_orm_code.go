@@ -4,6 +4,10 @@ import (
 	"cmpService/common/models"
 )
 
+const typeField = "c_type"
+const typeSubField = "c_type_sub"
+const nameField = "c_name"
+
 func (db *DBORM) GetAllCodes() (codes []models.Code, err error) {
 	return codes, db.Find(&codes).Error
 }
@@ -36,3 +40,9 @@ func (db *DBORM) DeleteSubCodes() error {
 	return db.Delete(&models.SubCode{}).Error
 }
 
+func (db *DBORM) GetCodeList(code string, subCode string) (codes []models.Code, err error) {
+	return codes, db.
+		Where(GetWhereString(typeSubField), subCode).
+		Where(GetWhereString(typeField), code).
+		Find(&codes).Error
+}

@@ -7,6 +7,7 @@ import (
 type MariaDBLayer interface {
 	// Code
 	GetAllCodes() ([]models.Code, error)
+	GetCodeList(code string, subCode string)([]models.Code, error)
 	AddCode(code models.Code) (models.Code, error)
 	DeleteCode(code models.Code) (models.Code, error)
 	DeleteCodes() error
@@ -45,6 +46,15 @@ type MariaDBLayer interface {
 	AddComment(comment models.DeviceComment) error
 	DeleteAllComments() error
 	DeleteComments(idx int) error
+
+	// Log
+	GetAllLogs() ([]models.DeviceLog, error)
+	GetLogs(code string) ([]models.DeviceLog, error)
+	GetLogByIdx(idx int) (models.DeviceLog, error)
+	UpdateLog(field string, change string, comment models.DeviceLog) error
+	AddLog(comment models.DeviceLog) error
+	DeleteAllLogs() error
+	DeleteLog(idx int) error
 
 	// User
 	AddUser(user models.User) (models.User, error)

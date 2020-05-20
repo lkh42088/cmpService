@@ -41,6 +41,28 @@ func (h *Handler) GetSubCodes(c *gin.Context) {
 	c.JSON(http.StatusOK, subcodes)
 }
 
+func (h *Handler) GetCodeList(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	code := c.Param("code")
+	subCode := c.Param("subcode")
+	codes, err := h.db.GetCodeList(code, subCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var list []string
+	for i, v := range codes {
+		fmt.Println(i, v.Name)
+		list = append(list, v.Name)
+	}
+
+	//fmt.Println(list)
+	c.JSON(http.StatusOK, list)
+}
+
 func (h *Handler) AddCode(c *gin.Context) {
 	if h.db == nil {
 		return
