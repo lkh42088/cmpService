@@ -7,6 +7,7 @@ import (
 type MariaDBLayer interface {
 	// Code
 	GetAllCodes() ([]models.Code, error)
+	GetCodeList(code string, subCode string)([]models.Code, error)
 	AddCode(code models.Code) (models.Code, error)
 	DeleteCode(code models.Code) (models.Code, error)
 	DeleteCodes() error

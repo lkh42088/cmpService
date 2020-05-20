@@ -8,6 +8,7 @@ import (
 type HandlerInterface interface {
 	// Code
 	GetCodes(c *gin.Context)
+	GetCodeList(c *gin.Context)
 	AddCode(c *gin.Context)
 	DeleteCode(c *gin.Context)
 	DeleteCodes(c *gin.Context)
@@ -63,6 +64,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Code
 	router.GET("/v1/codes", h.GetCodes)
+	router.GET("/v1/code/:code/:subcode", h.GetCodeList)
 	router.POST("/v1/code", h.AddCode)
 	router.DELETE("/v1/code/:id", h.DeleteCode)
 	router.DELETE("/v1/codes", h.DeleteCodes)
