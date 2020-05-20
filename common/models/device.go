@@ -125,7 +125,6 @@ func (DevicePart) TableName() string {
 type DeviceComment struct {
 	Idx          uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
 	DeviceCode   string    `gorm:"column:device_code;not null"`
-	Depth        int       `gorm:"column:depth"`
 	Contents     string    `gorm:"column:contents"`
 	RegisterId   string    `gorm:"type:varchar(50);column:register_id"`
 	RegisterName string    `gorm:"type:varchar(50);column:register_name"`

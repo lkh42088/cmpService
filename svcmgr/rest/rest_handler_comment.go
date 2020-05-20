@@ -2,10 +2,7 @@ package rest
 
 import (
 	"cmpService/common/models"
-	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -29,16 +26,19 @@ func (h *Handler) AddComment(c *gin.Context) {
 		return
 	}
 
-	// Search username query
-	// Need to code
-
-	comment := models.DeviceComment{
-		DeviceCode: c.Param("devicecode"),
-		Contents: c.Param("comment"),
-		RegisterId: c.Param("userid"),
-		//RegisterName:,
+	// data parsing
+	m, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
+		return
 	}
-	err := h.db.AddComment(comment)
+	comment := models.DeviceComment{
+		DeviceCode: m["deviceCode"].(string),
+		Contents: m["comment"].(string),
+		RegisterId: m["registerId"].(string),
+	}
+
+	err = h.db.AddComment(comment)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -46,47 +46,27 @@ func (h *Handler) AddComment(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
-type testComment struct {
-	idx 			int
-	registerid		string
-	comment 		string
-}
-
 func (h *Handler) UpdateComment(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
 
-	var m testComment
-	body, _ := ioutil.ReadAll(c.Request.Body)
-	err := json.Unmarshal(body, m)
-
-	encoder := json.NewEncoder(c.Writer)
-	var m2 testComment
-	encoder.Encode(m2)
-
-	var m3 testComment
-	err = c.ShouldBindJSON(&m3)
-
-	// test code by lkh
-	fmt.Printf("[TEST BODY] %v\n", c.Request.Body)
-	fmt.Printf("[TEST UNMARSHAL] %v\n", m)
-	fmt.Printf("[TEST ENCODE] %v\n", m2)
-	fmt.Printf("[TEST BIND] %v\n", m3)
-
-	idx, err := strconv.Atoi(c.Param("commentidx"))
+	// data parsing
+	m, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusNoContent, gin.H{"Error":err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
 		return
 	}
+
+	value, _ := m["idx"].(float64)
 	comment := models.DeviceComment{
-		Idx: uint(idx),
-		Contents: c.Param("comment"),
-		RegisterId: c.Param("userid"),
+		Idx: uint(int(value)),
+		Contents: m["comment"].(string),
+		RegisterId: m["registerId"].(string),
 	}
 
 	// User-Id check
-	content, err1 := h.db.GetCommentByIdx(idx)
+	content, err1 := h.db.GetCommentByIdx(int(comment.Idx))
 	if err1 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
