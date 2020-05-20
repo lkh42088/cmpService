@@ -132,6 +132,10 @@ type DeviceComment struct {
 	RegisterDate time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
 }
 
+func (DeviceComment) TableName() string {
+	return "device_comment_tb"
+}
+
 type DeviceLog struct {
 	Idx          uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment"`
 	DeviceCode   string    `gorm:"column:device_code;not null"`
@@ -144,8 +148,8 @@ type DeviceLog struct {
 	RegisterDate time.Time `gorm:"column:register_date;default:CURRENT_TIMESTAMP"`
 }
 
-func (DeviceComment) TableName() string {
-	return "device_comment_tb"
+func (DeviceLog) TableName() string {
+	return "device_log_tb"
 }
 
 type PageCreteria struct {

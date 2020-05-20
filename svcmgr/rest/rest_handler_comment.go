@@ -2,6 +2,7 @@ package rest
 
 import (
 	"cmpService/common/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -47,6 +48,10 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
+	// test code by lkh
+	fmt.Printf("[TEST BODY] %v\n", c.Request.Body)
+	fmt.Printf("[TEST FULL] %v\n", c.Request)
+
 	idx, err := strconv.Atoi(c.Param("commentidx"))
 	if err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"Error":err.Error()})
