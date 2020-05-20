@@ -137,7 +137,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	})
 	fmt.Println("Success: token - ",tokenString)
 	c.JSON(http.StatusOK,
-		gin.H{"success":true, "msg":"loggged in successfully", "user":claims.User,
+		gin.H{"success":true, "msg":"logged in successfully", "user":claims.User,
 			"token":tokenString})
 }
 
@@ -150,3 +150,10 @@ func (h *Handler) GetSession(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success":true, "user":user})
 }
 
+func (h *Handler) Logout(c *gin.Context) {
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:       "token",
+		MaxAge:     -1,
+	})
+	c.JSON(http.StatusNoContent, gin.H{"success":true, "msg":"logged out in successfully"})
+}

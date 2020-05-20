@@ -34,6 +34,7 @@ type HandlerInterface interface {
 	// Login
 	RegisterUser(c *gin.Context)
 	LoginUserById(c *gin.Context)
+	Logout(c *gin.Context)
 	LoginUserByEmail(c *gin.Context)
 	GetSession(c *gin.Context)
 }
@@ -96,6 +97,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Test
 	router.POST("/api/auth/login", h.LoginUserById)
+	router.POST("/api/auth/logout", h.Logout)
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
 	return router.Run(address)
