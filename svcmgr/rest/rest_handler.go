@@ -3,10 +3,9 @@ package rest
 import (
 	"cmpService/common/models"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 const defaultField = "device_code"
@@ -297,19 +296,16 @@ func (h *Handler) AddDevicesMonitoring(c *gin.Context) {
 // Add Device
 func (h *Handler) AddDevice(c *gin.Context) {
 	var dc interface{}
-	var tableName string
 	device := c.Param("type")
 	switch device {
 	case "server":
 		dc = new(models.DeviceServer)
-		tableName = ServerTableName
 	case "network":
 		dc = new(models.DeviceNetwork)
-		tableName = NetworkTableName
 	case "part":
 		dc = new(models.DevicePart)
-		tableName = PartTableName
 	}
+	tableName := GetDeviceTableName(device)
 	err := c.ShouldBindJSON(&dc)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -322,4 +318,38 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
+}
+
+// Update Device outFlag
+func (h *Handler) UpdateOutFlag(c *gin.Context) {
+
+	tableName := GetDeviceTableName(c.Param("type"))
+	flag, _ := strconv.Atoi(c.Param("outFlag"))
+	values, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
+		return
+	}
+
+	data := values["idx"].(string)
+	err = h.db.UpdateOutFlag(data, tableName, flag)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "OK")
+}
+
+func GetDeviceTableName(device string) string {
+	var tableName string
+
+	switch device {
+	case "server":
+		tableName = ServerTableName
+	case "network":
+		tableName = NetworkTableName
+	case "part":
+		tableName = PartTableName
+	}
+	return tableName
 }
