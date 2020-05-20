@@ -46,23 +46,33 @@ func (h *Handler) AddComment(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
+type testComment struct {
+	idx 			int
+	registerid		string
+	comment 		string
+}
+
 func (h *Handler) UpdateComment(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
 
-	var m models.DeviceComment
+	var m testComment
 	body, _ := ioutil.ReadAll(c.Request.Body)
 	err := json.Unmarshal(body, m)
 
 	encoder := json.NewEncoder(c.Writer)
-	var m2 models.DeviceComment
+	var m2 testComment
 	encoder.Encode(m2)
+
+	var m3 testComment
+	err = c.ShouldBindJSON(&m3)
 
 	// test code by lkh
 	fmt.Printf("[TEST BODY] %v\n", c.Request.Body)
 	fmt.Printf("[TEST UNMARSHAL] %v\n", m)
 	fmt.Printf("[TEST ENCODE] %v\n", m2)
+	fmt.Printf("[TEST BIND] %v\n", m3)
 
 	idx, err := strconv.Atoi(c.Param("commentidx"))
 	if err != nil {
