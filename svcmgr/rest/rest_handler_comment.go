@@ -2,8 +2,10 @@ package rest
 
 import (
 	"cmpService/common/models"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -48,9 +50,19 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
+
+	var m models.DeviceComment
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	err := json.Unmarshal(body, m)
+
+	encoder := json.NewEncoder(c.Writer)
+	var m2 models.DeviceComment
+	encoder.Encode(m2)
+
 	// test code by lkh
 	fmt.Printf("[TEST BODY] %v\n", c.Request.Body)
-	fmt.Printf("[TEST FULL] %v\n", c.Request)
+	fmt.Printf("[TEST UNMARSHAL] %v\n", m)
+	fmt.Printf("[TEST ENCODE] %v\n", m2)
 
 	idx, err := strconv.Atoi(c.Param("commentidx"))
 	if err != nil {
