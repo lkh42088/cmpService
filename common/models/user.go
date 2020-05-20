@@ -1,9 +1,9 @@
 package models
 
 import (
+	"cmpService/common/lib"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
-	"cmpService/common/lib"
 )
 
 type User struct {
@@ -20,8 +20,8 @@ func (User) TableName() string {
 }
 
 func (u User) String() string {
-	return fmt.Sprintf("userid %d, id %s, password %s, email %s, level %d",
-		u.UserID, u.ID, u.Password, u.Email, u.Level)
+	return fmt.Sprintf("userid %d, id %s, password %s, email %s, name %s, level %d",
+		u.UserID, u.ID, u.Password, u.Email, u.Name, u.Level)
 }
 
 func HashPassword(user *User) {

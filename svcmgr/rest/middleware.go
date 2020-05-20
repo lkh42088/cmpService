@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func CORSMiddlewre() gin.HandlerFunc {
+func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:4000")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -14,6 +14,7 @@ func CORSMiddlewre() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
 		if c.Request.Method == "OPTIONS" {
+			fmt.Println("CORSMiddleware: 204 error!")
 			c.AbortWithStatus(204)
 			return
 		}
