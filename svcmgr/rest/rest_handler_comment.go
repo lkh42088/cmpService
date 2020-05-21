@@ -2,7 +2,6 @@ package rest
 
 import (
 	"cmpService/common/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
