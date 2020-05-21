@@ -85,14 +85,14 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Comment
 	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)
-	router.POST("/v1/comment/create/:devicecode/:comment/:userid", h.AddComment)
+	router.POST("/v1/comment/create", h.AddComment)
 	router.PUT("/v1/comment/update", h.UpdateComment)
 	router.POST("/v1/comment/delete/:userid/:commentidx", h.DeleteCommentByIdx)
 
 	// log
 	router.GET("/v1/logs/:devicecode", h.GetLogsByCode)
-	router.POST("/v1/log/create/:devicecode/:comment/:userid", h.AddLog)
-	router.PUT("/v1/log/update/:workcode/:field/:change/:userid/:logidx", h.UpdateLog)
+	//router.POST("/v1/log/create/:devicecode/:comment/:userid", h.AddLog)
+	//router.PUT("/v1/log/update/:workcode/:field/:change/:userid/:logidx", h.UpdateLog)
 	router.POST("/v1/log/delete/:logidx", h.DeleteLogByIdx)
 
 
