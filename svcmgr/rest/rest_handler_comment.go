@@ -95,7 +95,6 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 
 	// User-Id check
 	userId := c.Param("userid")
-	fmt.Println(userId)
 	content, err1 := h.db.GetCommentByIdx(idx)
 	if err1 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
