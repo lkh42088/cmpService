@@ -6,7 +6,6 @@ import (
 
 const typeField = "c_type"
 const typeSubField = "c_type_sub"
-const nameField = "c_name"
 
 func (db *DBORM) GetAllCodes() (codes []models.Code, err error) {
 	return codes, db.Find(&codes).Error

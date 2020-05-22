@@ -81,7 +81,7 @@ func (db *DBORM) GetDeviceWithCondition(device string, field string, condition s
 	fmt.Println(where)
 	var dc interface{}
 	if GetTableConfig(&dc, device) == false {
-		return nil, errors.New("[Error] Need to device selection.")
+		return nil, errors.New("[Error] Need to device selection.\n")
 	}
 	return dc, db.Where(where, condition).Find(dc).Error
 

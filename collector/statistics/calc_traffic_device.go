@@ -110,7 +110,7 @@ func CalcTrafficPer5Min(stat []IfStat) (IfStat, error) {
 	rxAvg := (stat[last].ifHCInOctets - stat[dummyid].ifHCInOctets) / StatCollectTime
 	txAvg := (stat[last].ifHCOutOctets - stat[dummyid].ifHCOutOctets) / StatCollectTime
 	if rxAvg < 0 || txAvg < 0 {
-		return IfStat{}, errors.New("Data is overflow. Need to check.")
+		return IfStat{}, errors.New("ata is overflow. Need to check.\n")
 	}
 
 	 return IfStat{
