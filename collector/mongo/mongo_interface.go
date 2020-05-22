@@ -1,8 +1,8 @@
 package mongo
 
 import (
-	"github.com/globalsign/mgo"
 	"cmpService/collector/collectdevice"
+	"github.com/globalsign/mgo"
 )
 
 type MongoDBLayer interface {

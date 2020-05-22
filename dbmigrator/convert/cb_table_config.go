@@ -1,11 +1,11 @@
 package convert
 
 import (
-	"fmt"
 	"cmpService/common/db"
 	"cmpService/common/mariadblayer"
 	"cmpService/dbmigrator/config"
 	"cmpService/dbmigrator/mysqllayer"
+	"fmt"
 )
 
 func CreateNewMariadbTable() {

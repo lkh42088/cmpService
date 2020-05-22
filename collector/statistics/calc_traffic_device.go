@@ -1,14 +1,14 @@
 package statistics
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	client "github.com/influxdata/influxdb1-client/v2"
 	"cmpService/collector/collectdevice"
 	"cmpService/collector/influx"
 	"cmpService/collector/snmpapi"
 	"cmpService/common/lib"
+	"encoding/json"
+	"errors"
+	"fmt"
+	client "github.com/influxdata/influxdb1-client/v2"
 	"sync"
 	"time"
 )

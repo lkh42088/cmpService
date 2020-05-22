@@ -1,10 +1,10 @@
 package mysqllayer
 
 import (
-	"fmt"
-	"github.com/jinzhu/gorm"
 	"cmpService/common/config"
 	config2 "cmpService/dbmigrator/config"
+	"fmt"
+	"github.com/jinzhu/gorm"
 	"testing"
 )
 

@@ -1,8 +1,8 @@
 package mysqllayer
 
 import (
-	"fmt"
 	"cmpService/common/db"
+	"fmt"
 	"testing"
 )
 

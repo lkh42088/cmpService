@@ -305,7 +305,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	case "part":
 		dc = new(models.DevicePart)
 	}
-	tableName := GetDeviceTableName(device)
+	tableName := GetDeviceTable(c.Param("type"))
 	err := c.ShouldBindJSON(&dc)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -322,16 +322,18 @@ func (h *Handler) AddDevice(c *gin.Context) {
 
 // Update Device outFlag
 func (h *Handler) UpdateOutFlag(c *gin.Context) {
+	tableName := GetDeviceTable(c.Param("type"))
 
-	tableName := GetDeviceTableName(c.Param("type"))
 	flag, _ := strconv.Atoi(c.Param("outFlag"))
 	values, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
 		return
 	}
+	//fmt.Println(values)
 
 	data := values["idx"].(string)
+
 	err = h.db.UpdateOutFlag(data, tableName, flag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -340,7 +342,7 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
-func GetDeviceTableName(device string) string {
+func GetDeviceTable(device string) string {
 	var tableName string
 
 	switch device {

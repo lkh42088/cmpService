@@ -1,12 +1,12 @@
 package config
 
 import (
+	"cmpService/common/config"
+	"cmpService/common/lib"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"cmpService/common/config"
-	"cmpService/common/lib"
 	"os"
 	"reflect"
 )

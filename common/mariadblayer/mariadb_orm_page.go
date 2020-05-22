@@ -65,6 +65,40 @@ func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 	return server, err
 }
 
+func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
+	server models.DeviceServerPage, err error) {
+
+	db.Model(&models.DeviceServer{}).Count(&cri.Count)
+	orderBy := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+
+	err = db.
+		//Debug().
+		Select(SizeSelectQuery+","+PageSelectQuery).
+		Model(&models.DeviceServer{}).
+		Table(ServerTable).
+		Order(orderBy).
+		Limit(cri.Size).
+		Offset(cri.CheckCnt).
+		Where(CombineCondition(cri.OutFlag)).
+		Joins(ManufactureServerJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypeServerJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(SizeJoinQuery).
+		Find(&server.Devices).Error
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	server.Page = cri
+	return server, err
+}
+
 func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
 	network models.DeviceNetworkPage, err error) {
 
@@ -84,6 +118,40 @@ func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
 	return network, err
 }
 
+func (db *DBORM) GetDevicesNetworkWithJoin(cri models.PageCreteria) (
+	network models.DeviceNetworkPage, err error) {
+
+	db.Model(&models.DeviceNetwork{}).Count(&cri.Count)
+	orderBy := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+
+	err = db.
+		//Debug().
+		Select(SizeSelectQuery+","+PageSelectQuery).
+		Model(&models.DeviceNetwork{}).
+		Table(NetworkTable).
+		Order(orderBy).
+		Limit(cri.Size).
+		Offset(cri.CheckCnt).
+		Where(CombineCondition(cri.OutFlag)).
+		Joins(ManufactureNetworkJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypeNetworkJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(SizeJoinQuery).
+		Find(&network.Devices).Error
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	network.Page = cri
+	return network, err
+}
+
 func (db *DBORM) GetDevicesPartForPage(cri models.PageCreteria) (
 	part models.DevicePartPage, err error) {
 
@@ -99,6 +167,39 @@ func (db *DBORM) GetDevicesPartForPage(cri models.PageCreteria) (
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
+	part.Page = cri
+	return part, err
+}
+
+func (db *DBORM) GetDevicesPartWithJoin(cri models.PageCreteria) (
+	part models.DevicePartPage, err error) {
+
+	db.Model(&models.DevicePart{}).Count(&cri.Count)
+	orderBy := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+
+	err = db.
+		//Debug().
+		Select(PageSelectQuery).
+		Model(&models.DeviceNetwork{}).
+		Table(PartTable).
+		Order(orderBy).
+		Limit(cri.Size).
+		Offset(cri.CheckCnt).
+		Where(CombineCondition(cri.OutFlag)).
+		Joins(ManufacturePartJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypePartJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Find(&part.Devices).Error
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
 	part.Page = cri
 	return part, err
 }

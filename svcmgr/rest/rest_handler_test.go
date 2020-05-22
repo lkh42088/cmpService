@@ -2,11 +2,11 @@ package rest
 
 import (
 	"bytes"
+	"cmpService/common/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"cmpService/common/models"
 	"testing"
 	"time"
 )
@@ -107,11 +107,8 @@ func TestAddDevice(t *testing.T) {
 	commentlast, _ := time.Parse(time.RFC3339, "2019-12-22T10:28:44+09:00")
 	data := models.DeviceServer{
 		OutFlag:false,
-		Num:-5000,
 		CommentCnt:0,
 		CommentLastDate:commentlast,
-		Option:"",
-		Hit:0,
 		RegisterId:"hjt0601",
 		Password:"*6634B26806A7D3*Connect79D898CE68F4FE650D4D755264",
 		RegisterName:"Nubes",

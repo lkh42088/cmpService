@@ -1,8 +1,8 @@
 package mariadblayer
 
 import (
-	"fmt"
 	"cmpService/common/models"
+	"fmt"
 	"testing"
 	"time"
 )
@@ -14,11 +14,8 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 	}
 	device := models.DeviceServer{
 		OutFlag: false,
-		Num: 4,
 		CommentCnt: 0,
 		CommentLastDate: time.Now(),
-		Option: "option",
-		Hit: 1,
 		RegisterId: "nhj_id",
 		Password: "password",
 		RegisterName: "nhj",
@@ -53,11 +50,8 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 
 	device = models.DeviceServer{
 		OutFlag: false,
-		Num: 2,
 		CommentCnt: 0,
 		CommentLastDate: time.Now(),
-		Option: "option",
-		Hit: 2,
 		RegisterId: "yjs_id",
 		Password: "password",
 		RegisterName: "yjs",
@@ -92,11 +86,8 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 
 	device = models.DeviceServer{
 		OutFlag: false,
-		Num: 3,
 		CommentCnt: 0,
 		CommentLastDate: time.Now(),
-		Option: "option",
-		Hit: 3,
 		RegisterId: "pms_id",
 		Password: "password",
 		RegisterName: "pms",
@@ -139,11 +130,8 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 	}
 	device := models.DeviceNetwork{
 		OutFlag: false,
-		Num: 3,
 		CommentCnt: 0,
 		CommentLastDate: time.Now(),
-		Option: "option",
-		Hit: 99,
 		RegisterId: "EE_id",
 		Password: "password",
 		RegisterName: "EE",
@@ -176,11 +164,8 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 
 	device = models.DeviceNetwork{
 		OutFlag: false,
-		Num: 4,
 		CommentCnt: 0,
 		CommentLastDate: time.Now(),
-		Option: "option",
-		Hit: 3,
 		RegisterId: "JDG_id",
 		Password: "password",
 		RegisterName: "JDG_name",
@@ -219,11 +204,8 @@ func TestDeviceAddEntry_Part(t *testing.T) {
 	}
 	device := models.DevicePart{
 		OutFlag: false,
-		Num: 1,
 		CommentCnt: 0,
 		CommentLastDate: time.Now(),
-		Option: "option",
-		Hit: 1,
 		RegisterId: "jjh_id",
 		Password: "password",
 		RegisterName: "jjh",

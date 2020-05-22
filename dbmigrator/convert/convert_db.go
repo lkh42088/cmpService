@@ -15,6 +15,7 @@ import (
 
 var idx_comment uint = 0
 var idx_log uint = 0
+var idx_device uint = 0
 
 func RunConvertDb() {
 	convertInternal(ConvertItem)
@@ -80,6 +81,7 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		fmt.Println("ERROR:", err)
 		return
 	}
+	idx_device = 0
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
@@ -89,6 +91,8 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		sd, dc, lc := GetServerTbByDevice(old)
 		if old.WrIsComment == 0 {
 			fmt.Println("server:", i, ": dev")
+			idx_device++
+			sd.Idx = idx_device
 			ndb.AddDeviceServer(sd)
 		} else {
 			idx_comment++
@@ -114,6 +118,7 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		fmt.Println("ERROR:", err)
 		return
 	}
+	idx_device = 0
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
@@ -123,6 +128,8 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		nd, dc, lc := GetNetworkTbByDevice(old)
 		if old.WrIsComment == 0 {
 			fmt.Println("network:", i, ": dev")
+			idx_device++
+			nd.Idx = idx_device
 			ndb.AddDeviceNetwork(nd)
 		} else  {
 			idx_comment++
@@ -148,6 +155,7 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		fmt.Println("ERROR:", err)
 		return
 	}
+	idx_device = 0
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
@@ -157,6 +165,8 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		pd, dc, lc := GetPartTbByDevice(old)
 		if old.WrIsComment == 0 {
 			fmt.Println("part:", i, ": dev")
+			idx_device++
+			pd.Idx = idx_device
 			ndb.AddDevicePart(pd)
 		} else  {
 			idx_comment++
@@ -273,6 +283,14 @@ func convStr(i int) string {
 	return strings.TrimSpace(str)
 }
 
+func sepOwnership(s string, num int) string {
+	str := strings.Split(s, "|")
+	if len(str) >= num {
+		return str[num-1]
+	}
+	return ""
+}
+
 func sepIdcRack(s string, num int) int {
 	str := strings.Split(s, "|")
 	if len(str) >= num {
@@ -298,11 +316,8 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd models.DeviceServer, dc models.DeviceComment, lc []models.DeviceLog) {
 	sd.Idx = uint(device.CbDeviceID)
 	sd.OutFlag = false
-	sd.Num = device.WrNum
 	sd.CommentCnt = device.WrComment
 	sd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	sd.Option = device.WrOption
-	sd.Hit = device.WrHit
 	sd.RegisterId = device.MbId
 	sd.Password = device.WrPassword
 	sd.RegisterName = device.WrName
@@ -316,7 +331,8 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.DeviceType = convInt(device.WrLink2)
 	sd.WarehousingDate = device.WrLink1Hit
 	sd.RentDate = device.Wr8
-	sd.Ownership = device.Wr5
+	sd.Ownership = sepOwnership(device.Wr5, 1)
+	sd.OwnershipDiv = sepOwnership(device.Wr5, 2)
 	sd.OwnerCompany = device.Wr7
 	sd.HwSn = device.Wr9
 	sd.IDC = sepIdcRack(device.Wr10, 1)
@@ -347,11 +363,8 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd models.DeviceNetwork, dc models.DeviceComment, lc []models.DeviceLog) {
 	nd.Idx = uint(device.CbDeviceID)
 	nd.OutFlag = false
-	nd.Num = device.WrNum
 	nd.CommentCnt = device.WrComment
 	nd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	nd.Option = device.WrOption
-	nd.Hit = device.WrHit
 	nd.RegisterId = device.MbId
 	nd.Password = device.WrPassword
 	nd.RegisterName = device.WrName
@@ -365,7 +378,8 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.DeviceType = convInt(device.WrLink2)
 	nd.WarehousingDate = device.WrLink1Hit
 	nd.RentDate = device.Wr8
-	nd.Ownership = device.Wr5
+	nd.Ownership = sepOwnership(device.Wr5, 1)
+	nd.OwnershipDiv = sepOwnership(device.Wr5, 2)
 	nd.OwnerCompany = device.Wr7
 	nd.HwSn = device.Wr9
 	nd.IDC = sepIdcRack(device.Wr10, 1)
@@ -391,11 +405,8 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd models.DevicePart, dc models.DeviceComment, lc []models.DeviceLog) {
 	pd.Idx = uint(device.CbDeviceID)
 	pd.OutFlag = false
-	pd.Num = device.WrNum
 	pd.CommentCnt = device.WrComment
 	pd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	pd.Option = device.WrOption
-	pd.Hit = device.WrHit
 	pd.RegisterId = device.MbId
 	pd.Password = device.WrPassword
 	pd.RegisterName = device.WrName
@@ -409,7 +420,8 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.DeviceType = convInt(device.WrLink2)
 	pd.WarehousingDate = device.WrLink1Hit
 	pd.RentDate = device.Wr8
-	pd.Ownership = device.Wr5
+	pd.Ownership = sepOwnership(device.Wr5, 1)
+	pd.OwnershipDiv = sepOwnership(device.Wr5, 2)
 	pd.OwnerCompany = device.Wr7
 	pd.HwSn = device.Wr9
 	pd.IDC = sepIdcRack(device.Wr10, 1)

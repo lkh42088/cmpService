@@ -1,8 +1,8 @@
 package mysqllayer
 
 import (
-	"github.com/jinzhu/gorm"
 	"cmpService/dbmigrator/cbmodels"
+	"github.com/jinzhu/gorm"
 )
 
 // 192.168.10.33

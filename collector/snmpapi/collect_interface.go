@@ -1,10 +1,10 @@
 package snmpapi
 
 import (
+	"cmpService/common/lib"
 	"fmt"
 	g "github.com/soniah/gosnmp"
 	"log"
-	"cmpService/common/lib"
 	"strings"
 )
 

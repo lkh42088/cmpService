@@ -1,10 +1,10 @@
 package mariadblayer
 
 import (
-	"fmt"
-	"github.com/jinzhu/gorm"
 	"cmpService/common/config"
 	"cmpService/common/db"
+	"fmt"
+	"github.com/jinzhu/gorm"
 	"testing"
 )
 

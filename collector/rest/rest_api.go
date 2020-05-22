@@ -1,14 +1,14 @@
 package rest
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
 	"cmpService/collector/collectdevice"
 	config2 "cmpService/collector/config"
 	"cmpService/collector/mongo"
 	"cmpService/collector/snmpapi"
 	"cmpService/common/config"
+	"fmt"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type HandlerInterface interface {
