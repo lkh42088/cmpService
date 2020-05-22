@@ -1,11 +1,11 @@
 package snmpapi
 
 import (
-	"fmt"
-	g "github.com/soniah/gosnmp"
 	"cmpService/collector/config"
 	"cmpService/collector/mongo"
 	"cmpService/common/lib"
+	"fmt"
+	g "github.com/soniah/gosnmp"
 	"runtime"
 	"strings"
 	"sync"

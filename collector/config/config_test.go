@@ -1,9 +1,9 @@
 package config
 
 import (
-	"fmt"
 	"cmpService/common/config"
 	"cmpService/common/lib"
+	"fmt"
 	"os"
 	"testing"
 )

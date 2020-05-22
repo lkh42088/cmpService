@@ -10,7 +10,7 @@ import (
 func JsonUnmarshal(body io.ReadCloser) (m map[string]interface{}, err error) {
 	bodyByte, err := ioutil.ReadAll(body)
 	if err != nil {
-		return nil, errors.New("Request body is invalid.")
+		return nil, errors.New("Request body is invalid.\n")
 	}
 	mapData := make(map[string]interface{})
 	err = json.Unmarshal(bodyByte,&mapData)

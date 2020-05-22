@@ -1,10 +1,10 @@
 package db
 
 import (
+	"cmpService/common/config"
 	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"cmpService/common/config"
 )
 
 func Init(config *config.DBConfig) {

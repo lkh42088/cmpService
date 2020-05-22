@@ -1,9 +1,9 @@
 package mariadblayer
 
 import (
-	"fmt"
 	"cmpService/common/db"
 	"cmpService/common/models"
+	"fmt"
 	"testing"
 )
 

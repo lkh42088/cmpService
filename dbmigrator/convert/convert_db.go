@@ -1,19 +1,21 @@
 package convert
 
 import (
-	"fmt"
 	"cmpService/common/db"
 	"cmpService/common/mariadblayer"
 	"cmpService/common/models"
 	"cmpService/dbmigrator/cbmodels"
 	"cmpService/dbmigrator/config"
 	"cmpService/dbmigrator/mysqllayer"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
 )
 
 var idx_comment uint = 0
+var idx_log uint = 0
+var idx_device uint = 0
 
 func RunConvertDb() {
 	convertInternal(ConvertItem)
@@ -79,21 +81,33 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		fmt.Println("ERROR:", err)
 		return
 	}
+	idx_device = 0
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
 			time.Sleep(time.Millisecond * 50)
 		}
-		sd, dc := GetServerTbByDevice(old)
+		sd, dc, lc := GetServerTbByDevice(old)
 		if old.WrIsComment == 0 {
 			fmt.Println("server:", i, ": dev")
+			idx_device++
+			sd.Idx = idx_device
 			ndb.AddDeviceServer(sd)
-		} else  {
+		} else {
 			idx_comment++
 			fmt.Println("server:", i, ": comment, ", idx_comment)
 			dc.Idx = idx_comment
 			ndb.AddComment(dc)
+		}
+
+		if lc != nil {
+			for _, v := range lc {
+				idx_log++
+				v.Idx = idx_log
+				fmt.Println("log : ", idx_log)
+				ndb.AddLog(v)
+			}
 		}
 	}
 }
@@ -104,21 +118,33 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		fmt.Println("ERROR:", err)
 		return
 	}
+	idx_device = 0
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 50)
 		}
-		nd, dc := GetNetworkTbByDevice(old)
+		nd, dc, lc := GetNetworkTbByDevice(old)
 		if old.WrIsComment == 0 {
 			fmt.Println("network:", i, ": dev")
+			idx_device++
+			nd.Idx = idx_device
 			ndb.AddDeviceNetwork(nd)
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
 			fmt.Println("network:", i, ": comment, ", idx_comment)
 			ndb.AddComment(dc)
+		}
+
+		if lc != nil {
+			for _, v := range lc {
+				idx_log++
+				v.Idx = idx_log
+				fmt.Println("log : ", idx_log)
+				ndb.AddLog(v)
+			}
 		}
 	}
 }
@@ -129,21 +155,33 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		fmt.Println("ERROR:", err)
 		return
 	}
+	idx_device = 0
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
-			time.Sleep(time.Millisecond * 100)
+			time.Sleep(time.Millisecond * 50)
 		}
-		pd, dc := GetPartTbByDevice(old)
+		pd, dc, lc := GetPartTbByDevice(old)
 		if old.WrIsComment == 0 {
 			fmt.Println("part:", i, ": dev")
+			idx_device++
+			pd.Idx = idx_device
 			ndb.AddDevicePart(pd)
 		} else  {
 			idx_comment++
 			dc.Idx = idx_comment
 			fmt.Println("part:", i, ": comment, ", idx_comment)
 			ndb.AddComment(dc)
+		}
+
+		if lc != nil {
+			for _, v := range lc {
+				idx_log++
+				v.Idx = idx_log
+				fmt.Println("log : ", idx_log)
+				ndb.AddLog(v)
+			}
 		}
 	}
 }
@@ -245,6 +283,14 @@ func convStr(i int) string {
 	return strings.TrimSpace(str)
 }
 
+func sepOwnership(s string, num int) string {
+	str := strings.Split(s, "|")
+	if len(str) >= num {
+		return str[num-1]
+	}
+	return ""
+}
+
 func sepIdcRack(s string, num int) int {
 	str := strings.Split(s, "|")
 	if len(str) >= num {
@@ -267,14 +313,11 @@ func sepIps(s string) string {
 }
 
 func GetServerTbByDevice(device cbmodels.ServerDevice)(
-	sd models.DeviceServer, dc models.DeviceComment) {
+	sd models.DeviceServer, dc models.DeviceComment, lc []models.DeviceLog) {
 	sd.Idx = uint(device.CbDeviceID)
 	sd.OutFlag = false
-	sd.Num = device.WrNum
 	sd.CommentCnt = device.WrComment
 	sd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	sd.Option = device.WrOption
-	sd.Hit = device.WrHit
 	sd.RegisterId = device.MbId
 	sd.Password = device.WrPassword
 	sd.RegisterName = device.WrName
@@ -288,7 +331,8 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.DeviceType = convInt(device.WrLink2)
 	sd.WarehousingDate = device.WrLink1Hit
 	sd.RentDate = device.Wr8
-	sd.Ownership = device.Wr5
+	sd.Ownership = sepOwnership(device.Wr5, 1)
+	sd.OwnershipDiv = sepOwnership(device.Wr5, 2)
 	sd.OwnerCompany = device.Wr7
 	sd.HwSn = device.Wr9
 	sd.IDC = sepIdcRack(device.Wr10, 1)
@@ -312,18 +356,15 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	dc.RegisterName = device.WrName
 	dc.RegisterDate = device.WrDatetime
 
-	return sd, dc
+	return sd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
 func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
-	nd models.DeviceNetwork, dc models.DeviceComment) {
+	nd models.DeviceNetwork, dc models.DeviceComment, lc []models.DeviceLog) {
 	nd.Idx = uint(device.CbDeviceID)
 	nd.OutFlag = false
-	nd.Num = device.WrNum
 	nd.CommentCnt = device.WrComment
 	nd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	nd.Option = device.WrOption
-	nd.Hit = device.WrHit
 	nd.RegisterId = device.MbId
 	nd.Password = device.WrPassword
 	nd.RegisterName = device.WrName
@@ -337,7 +378,8 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.DeviceType = convInt(device.WrLink2)
 	nd.WarehousingDate = device.WrLink1Hit
 	nd.RentDate = device.Wr8
-	nd.Ownership = device.Wr5
+	nd.Ownership = sepOwnership(device.Wr5, 1)
+	nd.OwnershipDiv = sepOwnership(device.Wr5, 2)
 	nd.OwnerCompany = device.Wr7
 	nd.HwSn = device.Wr9
 	nd.IDC = sepIdcRack(device.Wr10, 1)
@@ -356,18 +398,15 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	dc.RegisterName = device.WrName
 	dc.RegisterDate = device.WrDatetime
 
-	return nd, dc
+	return nd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
 func GetPartTbByDevice(device cbmodels.PartDevice)(
-	pd models.DevicePart, dc models.DeviceComment) {
+	pd models.DevicePart, dc models.DeviceComment, lc []models.DeviceLog) {
 	pd.Idx = uint(device.CbDeviceID)
 	pd.OutFlag = false
-	pd.Num = device.WrNum
 	pd.CommentCnt = device.WrComment
 	pd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	pd.Option = device.WrOption
-	pd.Hit = device.WrHit
 	pd.RegisterId = device.MbId
 	pd.Password = device.WrPassword
 	pd.RegisterName = device.WrName
@@ -381,7 +420,8 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.DeviceType = convInt(device.WrLink2)
 	pd.WarehousingDate = device.WrLink1Hit
 	pd.RentDate = device.Wr8
-	pd.Ownership = device.Wr5
+	pd.Ownership = sepOwnership(device.Wr5, 1)
+	pd.OwnershipDiv = sepOwnership(device.Wr5, 2)
 	pd.OwnerCompany = device.Wr7
 	pd.HwSn = device.Wr9
 	pd.IDC = sepIdcRack(device.Wr10, 1)
@@ -398,6 +438,93 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	dc.RegisterName = device.WrName
 	dc.RegisterDate = device.WrDatetime
 
-	return pd, dc
+	return pd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
+type LogContents struct {
+	RegName			string
+	RegTime			time.Time
+	WorkCode		int
+	SubCode			string
+	OldStatus		string
+	NewStatus		string
+}
+
+const (
+	RegisteDevice = iota
+	ChangeInfomation
+	ExportDevice
+	MovedDevice
+)
+
+func ParseToLogContents(data string) (logs []LogContents) {
+	if data == "" || (!strings.Contains(data, "장비등록") && !strings.Contains(data, "정보변경")) {
+		return nil
+	}
+	tmpData := strings.Split(data, "]")
+	var log = LogContents{}
+
+	for i := 0; i < len(tmpData) - 1; i+=2 {
+		if !strings.Contains(tmpData[i+1], "장비등록") && !strings.Contains(tmpData[i+1], "정보변경") {
+			log.WorkCode = MovedDevice
+			logs = append(logs, log)
+			continue
+		}
+
+		log.RegName = strings.Replace(strings.TrimSpace(tmpData[i][0:]), "[", "", -1)
+		var err error
+		log.RegTime, err = time.Parse(TimeFormat,tmpData[i+1][8:27])
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		if strings.Contains(tmpData[i+1], "장비등록") {
+			log.WorkCode = RegisteDevice
+			logs = append(logs, log)
+			continue
+		} else {
+			log.WorkCode = ChangeInfomation
+			splitData := strings.Split(tmpData[i+1], "[")
+			sData := strings.Split(splitData[1], ":")
+			log.SubCode = sData[0]
+			lastData := strings.Split(sData[1], "-->")
+			if len(lastData) < 2 {
+				log.NewStatus = lastData[0]
+			} else {
+				log.OldStatus = lastData[0]
+				log.NewStatus = lastData[1]
+			}
+		}
+		logs = append(logs, log)
+	}
+
+	return logs
+}
+
+func GetLogList(isComment int, deviceCode string, userId string, contents string) (
+	lc []models.DeviceLog) {
+	if isComment == 1 {
+		lists := ParseToLogContents(contents)
+		if lists == nil {
+			return nil
+		}
+		for _, list := range lists{
+			if list.WorkCode == 0 {
+				continue
+			}
+			var data = models.DeviceLog{}
+			data.WorkCode = list.WorkCode
+			data.Field = list.SubCode
+			data.OldStatus = list.OldStatus
+			data.NewStatus = list.NewStatus
+			data.DeviceCode = deviceCode
+			data.RegisterId = userId
+			data.RegisterName = list.RegName
+			data.RegisterDate = list.RegTime
+			lc = append(lc, data)
+		}
+	} else {
+		return nil
+	}
+	return lc
+}

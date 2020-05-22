@@ -1,10 +1,12 @@
 package mariadblayer
 
 import (
+	"cmpService/common/models"
 	"errors"
 	"fmt"
-	"cmpService/common/models"
 )
+
+const outFlagField = "out_flag"
 
 func (db *DBORM) GetAllDevicesServer(deviceType string, outFlag int) (devices []models.DeviceServer,
 	err error) {
@@ -79,7 +81,7 @@ func (db *DBORM) GetDeviceWithCondition(device string, field string, condition s
 	fmt.Println(where)
 	var dc interface{}
 	if GetTableConfig(&dc, device) == false {
-		return nil, errors.New("[Error] Need to device selection.")
+		return nil, errors.New("[Error] Need to device selection.\n")
 	}
 	return dc, db.Where(where, condition).Find(dc).Error
 
@@ -87,6 +89,11 @@ func (db *DBORM) GetDeviceWithCondition(device string, field string, condition s
 
 func (db *DBORM) AddDevice(data interface{}, device string) error {
 	return db.Table(device).Create(data).Error
+}
+
+// Update OutFlag
+func (db *DBORM) UpdateOutFlag(idxs string, device string, flag int) error {
+	return db.Table(device).Where("idx IN ("+ idxs + ")").Update(outFlagField, flag).Error
 }
 
 func GetWhereString(field string) string {

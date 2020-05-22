@@ -1,9 +1,9 @@
 package snmpapi
 
 import (
+	"cmpService/collector/collectdevice"
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"cmpService/collector/collectdevice"
 )
 
 type ID string

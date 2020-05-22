@@ -2,6 +2,8 @@ package rest
 
 import (
 	"bytes"
+	"cmpService/collector/collectdevice"
+	"cmpService/collector/config"
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/base64"
@@ -11,8 +13,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"cmpService/collector/config"
-	"cmpService/collector/collectdevice"
 	"sort"
 	"strings"
 	"sync"

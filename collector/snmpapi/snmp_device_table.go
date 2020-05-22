@@ -1,9 +1,9 @@
 package snmpapi
 
 import (
-	"fmt"
 	"cmpService/collector/collectdevice"
 	"cmpService/common/lib"
+	"fmt"
 )
 
 type SnmpDeviceTable struct {

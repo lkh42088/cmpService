@@ -1,11 +1,11 @@
 package snmpapi
 
 import (
-	"fmt"
-	client "github.com/influxdata/influxdb1-client/v2"
 	"cmpService/collector/collectdevice"
 	"cmpService/collector/influx"
 	"cmpService/common/lib"
+	"fmt"
+	client "github.com/influxdata/influxdb1-client/v2"
 	"reflect"
 	"strings"
 	"sync"

@@ -70,8 +70,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	if err1 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}
-	if content.RegisterId != comment.RegisterId {
+	} else if content.RegisterId != comment.RegisterId {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can modify data by create user."})
 		return
 	}
@@ -93,6 +92,18 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// User-Id check
+	userId := c.Param("userid")
+	content, err1 := h.db.GetCommentByIdx(idx)
+	if err1 != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	} else if content.RegisterId != userId {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can modify data by create user."})
+		return
+	}
+
 	err = h.db.DeleteComments(idx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

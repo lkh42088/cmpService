@@ -1,12 +1,12 @@
 package main
 
 import (
-	"flag"
-	"fmt"
 	"cmpService/collector/config"
 	"cmpService/collector/rest"
 	"cmpService/collector/snmpapi"
 	"cmpService/collector/statistics"
+	"flag"
+	"fmt"
 	"sync"
 )
 

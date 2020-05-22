@@ -23,20 +23,26 @@ type MariaDBLayer interface {
 	GetDeviceServer(deviceType string, idx int) ([]models.DeviceServer, error)
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
-	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
-	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
-	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
 	GetDeviceWithCondition(device string, field string, condition string) (interface{}, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
 	AddDevice(data interface{}, tableName string) error
+	UpdateOutFlag(data string, tableName string, flag int) error
 	DeleteAllDevicesServer() error
 	DeleteAllDevicesNetwork() error
 	DeleteAllDevicesPart() error
 	DeleteDeviceServer(server models.DeviceServer) (models.DeviceServer, error)
 	DeleteDeviceNetwork(network models.DeviceNetwork) (models.DeviceNetwork, error)
 	DeleteDevicePart(part models.DevicePart) (models.DevicePart, error)
+
+	// Page
+	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
+	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
+	GetDevicesServerWithJoin(creteria models.PageCreteria) (models.DeviceServerPage, error)
+	GetDevicesNetworkWithJoin(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesPartWithJoin(creteria models.PageCreteria) (models.DevicePartPage, error)
 
 	// Comment
 	GetAllComments() ([]models.DeviceComment, error)

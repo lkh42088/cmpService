@@ -1,8 +1,8 @@
 package mariadblayer
 
 import (
-	"github.com/jinzhu/gorm"
 	"cmpService/common/models"
+	"github.com/jinzhu/gorm"
 )
 
 func CreateTable(db *gorm.DB) {

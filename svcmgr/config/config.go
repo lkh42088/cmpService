@@ -1,14 +1,14 @@
 package config
 
 import (
+	"cmpService/common/config"
+	"cmpService/common/lib"
+	"cmpService/common/mariadblayer"
 	"encoding/json"
 	"fmt"
 	client "github.com/influxdata/influxdb1-client"
 	"io/ioutil"
 	"log"
-	"cmpService/common/config"
-	"cmpService/common/lib"
-	"cmpService/common/mariadblayer"
 	"os"
 )
 
