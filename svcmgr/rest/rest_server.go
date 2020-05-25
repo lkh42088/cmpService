@@ -66,7 +66,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Code
 	router.GET("/v1/codes", h.GetCodes)
-	router.GET("/v1/code/:code/:subcode", h.GetCodeList)
+	router.GET("/v1/codes/:code/:subcode", h.GetCodeList)
 	router.POST("/v1/code", h.AddCode)
 	router.DELETE("/v1/code/:id", h.DeleteCode)
 	router.DELETE("/v1/codes", h.DeleteCodes)
