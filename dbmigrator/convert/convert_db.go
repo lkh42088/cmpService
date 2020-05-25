@@ -92,7 +92,7 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		if old.WrIsComment == 0 {
 			fmt.Println("server:", i, ": dev")
 			idx_device++
-			sd.Idx = idx_device
+			sd.Dc.Idx = idx_device
 			ndb.AddDeviceServer(sd)
 		} else {
 			idx_comment++
@@ -129,7 +129,7 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		if old.WrIsComment == 0 {
 			fmt.Println("network:", i, ": dev")
 			idx_device++
-			nd.Idx = idx_device
+			nd.Dc.Idx = idx_device
 			ndb.AddDeviceNetwork(nd)
 		} else  {
 			idx_comment++
@@ -166,7 +166,7 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		if old.WrIsComment == 0 {
 			fmt.Println("part:", i, ": dev")
 			idx_device++
-			pd.Idx = idx_device
+			pd.Dc.Idx = idx_device
 			ndb.AddDevicePart(pd)
 		} else  {
 			idx_comment++
@@ -314,39 +314,39 @@ func sepIps(s string) string {
 
 func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd models.DeviceServer, dc models.DeviceComment, lc []models.DeviceLog) {
-	sd.Idx = uint(device.CbDeviceID)
-	sd.OutFlag = false
-	sd.CommentCnt = device.WrComment
-	sd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	sd.RegisterId = device.MbId
-	sd.Password = device.WrPassword
-	sd.RegisterName = device.WrName
-	sd.RegisterEmail = device.WrEmail
-	sd.RegisterDate = device.WrDatetime
-	sd.DeviceCode = device.Wr1
-	sd.Model = convInt(device.WrSubject)
-	sd.Contents = device.WrContent
-	sd.Customer = convInt(device.WrTrackback)
-	sd.Manufacture = convInt(device.WrLink1)
-	sd.DeviceType = convInt(device.WrLink2)
-	sd.WarehousingDate = device.WrLink1Hit
-	sd.RentDate = device.Wr8
-	sd.Ownership = sepOwnership(device.Wr5, 1)
-	sd.OwnershipDiv = sepOwnership(device.Wr5, 2)
-	sd.OwnerCompany = device.Wr7
-	sd.HwSn = device.Wr9
-	sd.IDC = sepIdcRack(device.Wr10, 1)
-	sd.Rack = sepIdcRack(device.Wr10, 2)
-	sd.Cost = device.Wr12
-	sd.Purpos = device.Wr13
+	sd.Dc.Idx = uint(device.CbDeviceID)
+	sd.Dc.OutFlag = false
+	sd.Dc.CommentCnt = device.WrComment
+	sd.Dc.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
+	sd.Dc.RegisterId = device.MbId
+	//sd.Password = device.WrPassword
+	//sd.RegisterName = device.WrName
+	//sd.RegisterEmail = device.WrEmail
+	sd.Dc.RegisterDate = device.WrDatetime
+	sd.Dc.DeviceCode = device.Wr1
+	sd.Dc.Model = convInt(device.WrSubject)
+	sd.Dc.Contents = device.WrContent
+	sd.Dc.Customer = convInt(device.WrTrackback)
+	sd.Dc.Manufacture = convInt(device.WrLink1)
+	sd.Dc.DeviceType = convInt(device.WrLink2)
+	sd.Dc.WarehousingDate = device.WrLink1Hit
+	sd.Dc.RentDate = device.Wr8
+	sd.Dc.Ownership = sepOwnership(device.Wr5, 1)
+	sd.Dc.OwnershipDiv = sepOwnership(device.Wr5, 2)
+	sd.Dc.OwnerCompany = device.Wr7
+	sd.Dc.HwSn = device.Wr9
+	sd.Dc.IDC = sepIdcRack(device.Wr10, 1)
+	sd.Dc.Rack = sepIdcRack(device.Wr10, 2)
+	sd.Dc.Cost = device.Wr12
+	sd.Dc.Purpos = device.Wr13
 	sd.Ip = sepIps(device.WrHomepage)
 	sd.Size = convInt(device.Wr6)
 	sd.Spla = strings.Replace(device.Wr11, ";", "|", -1)
 	sd.Cpu = device.Wr2
 	sd.Memory = device.Wr3
 	sd.Hdd = device.Wr4
-	sd.MonitoringFlag = 0
-	sd.MonitoringMethod = 0
+	sd.Dc.MonitoringFlag = 0
+	sd.Dc.MonitoringMethod = 0
 
 	// Comment Table
 	//dc.Idx = uint(device.CbDeviceID)
@@ -361,36 +361,36 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 
 func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd models.DeviceNetwork, dc models.DeviceComment, lc []models.DeviceLog) {
-	nd.Idx = uint(device.CbDeviceID)
-	nd.OutFlag = false
-	nd.CommentCnt = device.WrComment
-	nd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	nd.RegisterId = device.MbId
-	nd.Password = device.WrPassword
-	nd.RegisterName = device.WrName
-	nd.RegisterEmail = device.WrEmail
-	nd.RegisterDate = device.WrDatetime
-	nd.DeviceCode = device.Wr1
-	nd.Model = convInt(device.WrSubject)
-	nd.Contents = device.WrContent
-	nd.Customer = convInt(device.WrTrackback)
-	nd.Manufacture = convInt(device.WrLink1)
-	nd.DeviceType = convInt(device.WrLink2)
-	nd.WarehousingDate = device.WrLink1Hit
-	nd.RentDate = device.Wr8
-	nd.Ownership = sepOwnership(device.Wr5, 1)
-	nd.OwnershipDiv = sepOwnership(device.Wr5, 2)
-	nd.OwnerCompany = device.Wr7
-	nd.HwSn = device.Wr9
-	nd.IDC = sepIdcRack(device.Wr10, 1)
-	nd.Rack = sepIdcRack(device.Wr10, 2)
-	nd.Cost = device.Wr12
-	nd.Purpos = device.Wr13
+	nd.Dc.Idx = uint(device.CbDeviceID)
+	nd.Dc.OutFlag = false
+	nd.Dc.CommentCnt = device.WrComment
+	nd.Dc.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
+	nd.Dc.RegisterId = device.MbId
+	//nd.Password = device.WrPassword
+	//nd.RegisterName = device.WrName
+	//nd.RegisterEmail = device.WrEmail
+	nd.Dc.RegisterDate = device.WrDatetime
+	nd.Dc.DeviceCode = device.Wr1
+	nd.Dc.Model = convInt(device.WrSubject)
+	nd.Dc.Contents = device.WrContent
+	nd.Dc.Customer = convInt(device.WrTrackback)
+	nd.Dc.Manufacture = convInt(device.WrLink1)
+	nd.Dc.DeviceType = convInt(device.WrLink2)
+	nd.Dc.WarehousingDate = device.WrLink1Hit
+	nd.Dc.RentDate = device.Wr8
+	nd.Dc.Ownership = sepOwnership(device.Wr5, 1)
+	nd.Dc.OwnershipDiv = sepOwnership(device.Wr5, 2)
+	nd.Dc.OwnerCompany = device.Wr7
+	nd.Dc.HwSn = device.Wr9
+	nd.Dc.IDC = sepIdcRack(device.Wr10, 1)
+	nd.Dc.Rack = sepIdcRack(device.Wr10, 2)
+	nd.Dc.Cost = device.Wr12
+	nd.Dc.Purpos = device.Wr13
 	nd.Ip = sepIps(device.WrHomepage)
 	nd.Size = convInt(device.Wr6)
 	nd.FirmwareVersion = device.Wr2
-	nd.MonitoringFlag = 0
-	nd.MonitoringMethod = 0
+	nd.Dc.MonitoringFlag = 0
+	nd.Dc.MonitoringMethod = 0
 
 	dc.DeviceCode = device.Wr1
 	dc.Contents = device.WrContent
@@ -403,34 +403,34 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 
 func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd models.DevicePart, dc models.DeviceComment, lc []models.DeviceLog) {
-	pd.Idx = uint(device.CbDeviceID)
-	pd.OutFlag = false
-	pd.CommentCnt = device.WrComment
-	pd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
-	pd.RegisterId = device.MbId
-	pd.Password = device.WrPassword
-	pd.RegisterName = device.WrName
-	pd.RegisterEmail = device.WrEmail
-	pd.RegisterDate = device.WrDatetime
-	pd.DeviceCode = device.Wr1
-	pd.Model = convInt(device.WrSubject)
-	pd.Contents = device.WrContent
-	pd.Customer = convInt(device.WrTrackback)
-	pd.Manufacture = convInt(device.WrLink1)
-	pd.DeviceType = convInt(device.WrLink2)
-	pd.WarehousingDate = device.WrLink1Hit
-	pd.RentDate = device.Wr8
-	pd.Ownership = sepOwnership(device.Wr5, 1)
-	pd.OwnershipDiv = sepOwnership(device.Wr5, 2)
-	pd.OwnerCompany = device.Wr7
-	pd.HwSn = device.Wr9
-	pd.IDC = sepIdcRack(device.Wr10, 1)
-	pd.Rack = sepIdcRack(device.Wr10, 2)
-	pd.Cost = device.Wr12
-	pd.Purpos = device.Wr13
+	pd.Dc.Idx = uint(device.CbDeviceID)
+	pd.Dc.OutFlag = false
+	pd.Dc.CommentCnt = device.WrComment
+	pd.Dc.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
+	pd.Dc.RegisterId = device.MbId
+	//pd.Password = device.WrPassword
+	//pd.RegisterName = device.WrName
+	//pd.RegisterEmail = device.WrEmail
+	pd.Dc.RegisterDate = device.WrDatetime
+	pd.Dc.DeviceCode = device.Wr1
+	pd.Dc.Model = convInt(device.WrSubject)
+	pd.Dc.Contents = device.WrContent
+	pd.Dc.Customer = convInt(device.WrTrackback)
+	pd.Dc.Manufacture = convInt(device.WrLink1)
+	pd.Dc.DeviceType = convInt(device.WrLink2)
+	pd.Dc.WarehousingDate = device.WrLink1Hit
+	pd.Dc.RentDate = device.Wr8
+	pd.Dc.Ownership = sepOwnership(device.Wr5, 1)
+	pd.Dc.OwnershipDiv = sepOwnership(device.Wr5, 2)
+	pd.Dc.OwnerCompany = device.Wr7
+	pd.Dc.HwSn = device.Wr9
+	pd.Dc.IDC = sepIdcRack(device.Wr10, 1)
+	pd.Dc.Rack = sepIdcRack(device.Wr10, 2)
+	pd.Dc.Cost = device.Wr12
+	pd.Dc.Purpos = device.Wr13
 	pd.Warranty = device.Wr2
-	pd.MonitoringFlag = 0
-	pd.MonitoringMethod = 0
+	pd.Dc.MonitoringFlag = 0
+	pd.Dc.MonitoringMethod = 0
 
 	dc.DeviceCode = device.Wr1
 	dc.Contents = device.WrContent
@@ -518,8 +518,8 @@ func GetLogList(isComment int, deviceCode string, userId string, contents string
 			data.OldStatus = list.OldStatus
 			data.NewStatus = list.NewStatus
 			data.DeviceCode = deviceCode
-			data.RegisterId = userId
-			data.RegisterName = list.RegName
+			//data.RegisterId = userId
+			//data.RegisterName = list.RegName
 			data.RegisterDate = list.RegTime
 			lc = append(lc, data)
 		}
