@@ -1,9 +1,9 @@
 package mongo
 
 import (
+	"cmpService/collector/collectdevice"
 	"fmt"
 	"github.com/globalsign/mgo/bson"
-	"cmpService/collector/collectdevice"
 	"testing"
 )
 

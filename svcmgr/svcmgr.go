@@ -1,13 +1,13 @@
 package main
 
 import (
-	"flag"
-	"fmt"
 	"cmpService/common/config"
 	db2 "cmpService/common/db"
 	"cmpService/common/mariadblayer"
 	config2 "cmpService/svcmgr/config"
 	"cmpService/svcmgr/rest"
+	"flag"
+	"fmt"
 )
 
 func main () {

@@ -1,9 +1,9 @@
 package snmpapi
 
 import (
+	"cmpService/common/lib"
 	"fmt"
 	g "github.com/soniah/gosnmp"
-	"cmpService/common/lib"
 )
 
 type Memory struct {

@@ -1,10 +1,10 @@
 package influx
 
 import (
+	"cmpService/common/lib"
 	"errors"
 	client "github.com/influxdata/influxdb1-client/v2"
 	"log"
-	"cmpService/common/lib"
 )
 
 type InfluxAccessor struct {

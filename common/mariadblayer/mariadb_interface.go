@@ -23,9 +23,6 @@ type MariaDBLayer interface {
 	GetDeviceServer(deviceType string, idx int) ([]models.DeviceServer, error)
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
-	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
-	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
-	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
 	GetDeviceWithCondition(device string, field string, condition string) (interface{}, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
@@ -38,6 +35,14 @@ type MariaDBLayer interface {
 	DeleteDeviceServer(server models.DeviceServer) (models.DeviceServer, error)
 	DeleteDeviceNetwork(network models.DeviceNetwork) (models.DeviceNetwork, error)
 	DeleteDevicePart(part models.DevicePart) (models.DevicePart, error)
+
+	// Page
+	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
+	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
+	GetDevicesServerWithJoin(creteria models.PageCreteria) (models.DeviceServerPage, error)
+	GetDevicesNetworkWithJoin(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesPartWithJoin(creteria models.PageCreteria) (models.DevicePartPage, error)
 
 	// Comment
 	GetAllComments() ([]models.DeviceComment, error)
@@ -63,5 +68,12 @@ type MariaDBLayer interface {
 	GetAllUsers() ([]models.User, error)
 	GetUserById(id string) (models.User, error)
 	GetUserByEmail(id string) (models.User, error)
+
+	// User Email Authentication
+	GetAllUserEmailAuth() (objs []models.UserEmailAuth, err error)
+	GetUserEmailAuthByUniqId(uniqId string) (userEmailAuth models.UserEmailAuth, err error)
+	AddUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
+	DeleteUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
+	UpdateUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
 }
 

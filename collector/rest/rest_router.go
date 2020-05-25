@@ -1,13 +1,13 @@
 package rest
 
 import (
+	"cmpService/collector/collectdevice"
+	conf "cmpService/collector/config"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
-	conf "cmpService/collector/config"
-	"cmpService/collector/collectdevice"
 	"sync"
 )
 

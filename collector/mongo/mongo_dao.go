@@ -1,11 +1,11 @@
 package mongo
 
 import (
+	"cmpService/collector/collectdevice"
+	"cmpService/common/lib"
 	"fmt"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"cmpService/collector/collectdevice"
-	"cmpService/common/lib"
 )
 
 type MongoAccessor struct {

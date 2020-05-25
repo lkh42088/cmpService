@@ -2,11 +2,11 @@ package rest
 
 import (
 	"bytes"
+	"cmpService/common/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"cmpService/common/models"
 	"testing"
 )
 

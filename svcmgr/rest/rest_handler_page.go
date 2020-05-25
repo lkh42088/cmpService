@@ -1,9 +1,9 @@
 package rest
 
 import (
+	"cmpService/common/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"cmpService/common/models"
 	"strconv"
 )
 
@@ -28,7 +28,7 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 
 	switch page.DeviceType {
 	case "server":
-		devicePage, err := h.db.GetDevicesServerForPage(page)
+		devicePage, err := h.db.GetDevicesServerWithJoin(page)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -38,7 +38,7 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		//}
 		c.JSON(http.StatusOK, devicePage)
 	case "network":
-		devicePage, err := h.db.GetDevicesNetworkForPage(page)
+		devicePage, err := h.db.GetDevicesNetworkWithJoin(page)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -48,7 +48,7 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		//}
 		c.JSON(http.StatusOK, devicePage)
 	case "part":
-		devicePage, err := h.db.GetDevicesPartForPage(page)
+		devicePage, err := h.db.GetDevicesPartWithJoin(page)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

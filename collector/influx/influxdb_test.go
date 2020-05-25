@@ -1,9 +1,9 @@
 package influx
 
 import (
+	"cmpService/collector/config"
 	"fmt"
 	"github.com/influxdata/influxdb1-client/v2"
-	"cmpService/collector/config"
 	"testing"
 )
 

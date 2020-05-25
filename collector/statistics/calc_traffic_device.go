@@ -1,14 +1,14 @@
 package statistics
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	client "github.com/influxdata/influxdb1-client/v2"
 	"cmpService/collector/collectdevice"
 	"cmpService/collector/influx"
 	"cmpService/collector/snmpapi"
 	"cmpService/common/lib"
+	"encoding/json"
+	"errors"
+	"fmt"
+	client "github.com/influxdata/influxdb1-client/v2"
 	"sync"
 	"time"
 )
@@ -110,7 +110,7 @@ func CalcTrafficPer5Min(stat []IfStat) (IfStat, error) {
 	rxAvg := (stat[last].ifHCInOctets - stat[dummyid].ifHCInOctets) / StatCollectTime
 	txAvg := (stat[last].ifHCOutOctets - stat[dummyid].ifHCOutOctets) / StatCollectTime
 	if rxAvg < 0 || txAvg < 0 {
-		return IfStat{}, errors.New("Data is overflow. Need to check.")
+		return IfStat{}, errors.New("ata is overflow. Need to check.\n")
 	}
 
 	 return IfStat{

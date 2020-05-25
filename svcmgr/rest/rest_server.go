@@ -43,6 +43,7 @@ type HandlerInterface interface {
 	Logout(c *gin.Context)
 	LoginUserByEmail(c *gin.Context)
 	GetSession(c *gin.Context)
+	EmailConfirm(c *gin.Context)
 }
 
 type Handler struct {
@@ -115,6 +116,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/logout", h.Logout)
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
+	router.GET("/api/auth/emailconfirm/:secret", h.EmailConfirm)
 	return router.Run(address)
 }
 
