@@ -13,11 +13,11 @@ import (
 func TestRegisterUser(t *testing.T) {
 	url := restServer + "/v1/register"
 	user := models.User{
-		ID:"andrew",
-		Password: "andrew1510",
-		Email: "andrew@cmpService-bridge.com",
-		Name:"anrew",
-		Level: 1,
+		//ID:"andrew",
+		//Password: "andrew1510",
+		//Email: "andrew@cmpService-bridge.com",
+		//Name:"anrew",
+		//Level: 1,
 	}
 	pbytes, _ := json.Marshal(user)
 	buff := bytes.NewBuffer(pbytes)
@@ -39,8 +39,8 @@ func TestRegisterUser(t *testing.T) {
 func TestLoginUser(t *testing.T) {
 	url := restServer + "/login"
 	user := models.User{
-		ID:"andrew",
-		Password: "andrew1510",
+		//ID:"andrew",
+		//Password: "andrew1510",
 	}
 	pbytes, _ := json.Marshal(user)
 	buff := bytes.NewBuffer(pbytes)
