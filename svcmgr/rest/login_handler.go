@@ -109,8 +109,30 @@ func (h *Handler) LoginUserByEmail(c *gin.Context) {
 			"token":tokenString})
 }
 
+func (h *Handler) LoginEmailAuthConfirm (c *gin.Context) {
+	var loginMsg messages.UserLoginMessage
+	c.Bind(&loginMsg)
+
+	var restStatus int
+	if h.isConfirmEmailAuth(loginMsg.Id, loginMsg.Email) {
+		user, err := h.db.GetUserById(loginMsg.Id)
+		if err != nil {
+			restStatus = http.StatusUnprocessableEntity
+			c.JSON(restStatus, gin.H{"success":false, "errors":err})
+			return
+		}
+
+		// Token을 발급해서 응답한다.
+		responseWithToken(c, loginMsg.Id, loginMsg.Email, user.Name)
+		return
+	}
+	restStatus = messages.StatusFailedEmailAuth
+	c.JSON(restStatus, gin.H{"success":false, "errors":messages.RestStatusText(restStatus)})
+}
+
 func (h *Handler) LoginUserById(c *gin.Context) {
 	var loginMsg messages.UserLoginMessage
+	var restStatus int
 	c.Bind(&loginMsg)
 
 	user, err := h.db.GetUserById(loginMsg.Id)
@@ -120,8 +142,8 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	}
 	match := models.CheckPasswordHash(loginMsg.Password, user.Password)
 	if !match {
-		c.JSON(http.StatusUnauthorized, gin.H{"success":false,
-			"errors":"incorrect credentials"})
+		restStatus = http.StatusUnauthorized
+		c.JSON(restStatus, gin.H{"success":false, "errors":"incorrect credentials"})
 		return
 	}
 
@@ -129,26 +151,27 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	if user.EmailAuth {
 		// 이메일 발송
 		h.sendAuthMail(c, user.Name, user.Email)
-		c.JSON(messages.StatusEmailAuthConfirm,
-			gin.H{"success":false,
-				"msg":messages.RestStatusText(messages.StatusEmailAuthConfirm)})
+		restStatus = messages.StatusEmailAuthConfirm
+		c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 		return
 	} else if user.GroupEmailAuth {
 		if loginMsg.Email != "" {
-			// 그룹에 등록된 이메일지 Check
+			// 그룹에 등록된 이메일인지 Check
 			// userId, userEmail
-			checkGroupEmailAuth()
+			if h.checkGroupEmailAuth(loginMsg.Id, loginMsg.Email) == false {
+				restStatus = messages.StatusFailedNotHaveAuthEmail
+				c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
+				return
+			}
 
 			// 이메일 발송
 			h.sendAuthMail(c, user.Name, user.Email)
-			c.JSON(messages.StatusEmailAuthConfirm,
-				gin.H{"success":false,
-					"msg":messages.RestStatusText(messages.StatusEmailAuthConfirm)})
+			restStatus = messages.StatusEmailAuthConfirm
+			c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 		} else {
 			// 이메일 수신 후 발송
-			c.JSON(messages.StatusInputEmailAuth,
-				gin.H{"success":false,
-					"msg":messages.RestStatusText(messages.StatusInputEmailAuth)})
+			restStatus = messages.StatusInputEmailAuth
+			c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 		}
 		return
 	}
@@ -157,8 +180,29 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	responseWithToken(c, user.UserId, user.Email, user.Name)
 }
 
-func checkGroupEmailAuth() {
+func (h *Handler) isConfirmEmailAuth(userId, userEmail string) bool {
+	// 1. Get from DB
+	uniqId := userId + userEmail
+	userEmailAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+	if err != nil {
+		fmt.Println("err:", err, " userEmailAuth:", userEmailAuth)
+		return false
+	}
+	if userEmailAuth.EmailAuthConfirm {
+		return true
+	}
+	return false
+}
 
+func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
+	// 1. Get from DB
+	uniqId := userId + userEmail
+	userEmailAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+	if err != nil {
+		fmt.Println("err:", err, " userEmailAuth:", userEmailAuth)
+		return false
+	}
+	return true
 }
 
 func responseWithToken(c *gin.Context, userId, userEmail, userName string) {
