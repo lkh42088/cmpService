@@ -29,11 +29,11 @@ var smtpServer = utils.SmtpServer {
 var svcmgrAddress = "localhost"
 
 func (h *Handler) checkUserExists(user models.User) bool {
-	getuser, err := h.db.GetUserById(user.ID)
+	getuser, err := h.db.GetUserById(user.UserId)
 	if err != nil {
 		lib.LogWarnln(err)
 		return false
-	} else if user.ID == getuser.ID {
+	} else if user.UserId == getuser.UserId {
 		return true
 	}
 	return false
@@ -72,7 +72,7 @@ func (h *Handler) LoginUserByEmail(c *gin.Context) {
 
 	fmt.Println("LoginUser2:", loginUser)
 	user, err := h.db.GetUserByEmail(loginUser.Email)
-	fmt.Println("LoginUser2:", user.String())
+	fmt.Println("LoginUser2:", user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
 		return
@@ -86,7 +86,7 @@ func (h *Handler) LoginUserByEmail(c *gin.Context) {
 	expirationTime := time.Now().Add(30 * time.Minute)
 	claims := &Claims{
 		User: models.User{
-			ID: user.ID,
+			UserId: user.UserId,
 			Email: user.Email,
 			Name: user.Name,
 		},
@@ -113,7 +113,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	c.Bind(&loginUser)
 
 	fmt.Println("LoginUser:", loginUser)
-	user, err := h.db.GetUserById(loginUser.ID)
+	user, err := h.db.GetUserById(loginUser.UserId)
 	fmt.Println("in DB, LoginUser:", user)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
@@ -128,7 +128,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	expirationTime := time.Now().Add(1 * time.Minute)
 	claims := &Claims{
 		User: models.User{
-			ID: user.ID,
+			UserId: user.UserId,
 			Email: user.Email,
 			Name: user.Name,
 		},

@@ -2,20 +2,41 @@ package models
 
 import (
 	"cmpService/common/lib"
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
 
 type User struct {
-	UserID int `gorm:"primary_key;column:idx" json:"-"`
-	ID string `gorm:"type:varchar(32);column:id" json:"username"`
-	Password string `gorm:"type:varchar(255);column:password" json:"password"`
-	Email string `gorm:"type:varchar(64);column:email" json:"email"`
-	Name string `gorm:"type:varchar(20);column:name" json:"name"`
-	Level int `gorm:"column:level" json:"level"`
-	HaveEmailAuth bool `gorm:"column:have_email_auth" json:"haveEmailAuth"`
-	HaveGroupEmailAuth bool `gorm:"column:have_group_email_auth" json:"haveGroupEmailAuth"`
+	Idx				uint		`gorm:"primary_key;column:idx;auto_increment;comment:'INDEX'"`
+	UserId 			string		`gorm:"primary_key;type:varchar(50);column:user_id;comment:'유저 ID'"`
+	Password		string		`gorm:"type:varchar(255);column:user_password;comment:'패스워드'"`
+	Name			string		`gorm:"type:varchar(255);column:user_name;comment:'유저 이름'"`
+	Company			string		`gorm:"type:varchar(255);column:user_company;comment:'유저 회사명'"`
+	Email			string		`gorm:"type:varchar(255);column:user_email;comment:'이메일'"`
+	Homepage		string		`gorm:"type:varchar(255);column:user_homepage;comment:'홈페이지'"`
+	AuthLevel		int			`gorm:"type:int(11);column:user_auth_level;comment:'회원 권한 등급'"`
+	Tel				string		`gorm:"type:varchar(15);column:user_tel;comment:'전화 번호'"`
+	HP				string		`gorm:"type:varchar(15);column:user_hp;comment:'핸드폰 번호'"`
+	Zipcode			string		`gorm:"type:varchar(15);column:user_zip;comment:'우편 번호'"`
+	Address			string		`gorm:"type:varchar(255);column:user_addr;comment:'주소'"`
+	AddressDetail	string		`gorm:"type:varchar(255);column:user_addr_detail;comment:'상세 주소'"`
+	IP				string		`gorm:"type:varchar(15);column:user_ip;comment:'IP'"`
+	TermDate		time.Time	`gorm:"type:datetime;column:user_termination_date;comment:'퇴직 일자'"`
+	BlockDate		time.Time	`gorm:"type:datetime;column:user_block_date;comment:'접근 차단 일자'"`
+	Memo			string		`gorm:"type:varchar(255);column:user_memo;comment:'메모'"`
+	AccumulateStats	bool		`gorm:"type:tinyint;column:user_accumulate_stats_flag;comment:'누적 통계 여부'"`
+	WorkScope		string		`gorm:"type:varchar(15);column:user_work_scope;comment:'업무 구분'"`
+	Department		string		`gorm:"type:varchar(15);column:user_department;comment:'부서'"`
+	Position		string		`gorm:"type:varchar(15);column:user_position;comment:'직급'"`
+	EmailAuth 		bool 		`gorm:"column:have_email_auth;comment:'개인 이메일 인증'"`
+	GroupEmailAuth 	bool 		`gorm:"column:have_group_email_auth;comment:'그룹 이메일 인증'"`
+	RegisterDate	time.Time	`gorm:"type:datetime;column:user_register_date;comment:'등록일'"`
+	LastAccessDate	time.Time	`gorm:"type:datetime;column:user_last_access_date;comment:'최근 로그인 날짜'"`
+	LastAccessIp	string		`gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'"`
+}
+
+func (User) TableName() string {
+	return "user_tb"
 }
 
 type UserEmailAuth struct {
@@ -40,43 +61,8 @@ type UserEmailAuthMsg struct {
 	Secret string `json:"secret"`
 }
 
-func (User) TableName() string {
-	return "user_tb"
-}
-
 func (UserEmailAuth) TableName() string {
 	return "user_email_auth_tb"
-}
-
-type UserMember struct {
-	Idx				uint		`gorm:"primary_key;column:idx;auto_increment;comment:'INDEX'"`
-	UserId 			string		`gorm:"primary_key;type:varchar(50);column:user_id;comment:'유저 ID'"`
-	Password		string		`gorm:"type:varchar(255);column:user_password;comment:'패스워드'"`
-	Name			string		`gorm:"type:varchar(255);column:user_name;comment:'유저 이름'"`
-	Company			string		`gorm:"type:varchar(255);column:user_company;comment:'유저 회사명'"`
-	Email			string		`gorm:"type:varchar(255);column:user_email;comment:'이메일'"`
-	Homepage		string		`gorm:"type:varchar(255);column:user_homepage;comment:'홈페이지'"`
-	AuthLevel		int			`gorm:"type:int(11);column:user_auth_level;comment:'회원 권한 등급'"`
-	Tel				string		`gorm:"type:varchar(15);column:user_tel;comment:'전화 번호'"`
-	HP				string		`gorm:"type:varchar(15);column:user_hp;comment:'핸드폰 번호'"`
-	Zipcode			string		`gorm:"type:varchar(15);column:user_zip;comment:'우편 번호'"`
-	Address			string		`gorm:"type:varchar(255);column:user_addr;comment:'주소'"`
-	AddressDetail	string		`gorm:"type:varchar(255);column:user_addr_detail;comment:'상세 주소'"`
-	IP				string		`gorm:"type:varchar(15);column:user_ip;comment:'IP'"`
-	TermDate		time.Time	`gorm:"type:datetime;column:user_termination_date;comment:'퇴직 일자'"`
-	BlockDate		time.Time	`gorm:"type:datetime;column:user_block_date;comment:'접근 차단 일자'"`
-	Memo			string		`gorm:"type:varchar(255);column:user_memo;comment:'메모'"`
-	AccumulateStats	bool		`gorm:"type:tinyint;column:user_accumulate_stats_flag;comment:'누적 통계 여부'"`
-	WorkScope		string		`gorm:"type:varchar(15);column:user_work_scope;comment:'업무 구분'"`
-	Department		string		`gorm:"type:varchar(15);column:user_department;comment:'부서'"`
-	Position		string		`gorm:"type:varchar(15);column:user_position;comment:'직급'"`
-	RegisterDate	time.Time	`gorm:"type:datetime;column:user_register_date;comment:'등록일'"`
-	LastAccessDate	time.Time	`gorm:"type:datetime;column:user_last_access_date;comment:'최근 로그인 날짜'"`
-	LastAccessIp	string		`gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'"`
-}
-
-func (UserMember) TableName() string {
-	return "user_member_tb"
 }
 
 type Customer struct {
@@ -124,11 +110,6 @@ type Auth struct {
 
 func (Auth) TableName() string {
 	return "auth_tb"
-}
-
-func (u User) String() string {
-	return fmt.Sprintf("userid %d, id %s, password %s, email %s, name %s, level %d",
-		u.UserID, u.ID, u.Password, u.Email, u.Name, u.Level)
 }
 
 func HashPassword(user *User) {

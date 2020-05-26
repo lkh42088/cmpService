@@ -467,7 +467,7 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	return pd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
-func GetUserTableByMember(m cbmodels.CbMember) (user models.UserMember) {
+func GetUserTableByMember(m cbmodels.CbMember) (user models.User) {
 	var zip string
 	var leaveDate time.Time
 	var interceptDate time.Time
@@ -478,7 +478,7 @@ func GetUserTableByMember(m cbmodels.CbMember) (user models.UserMember) {
 	}
 	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
 	interceptDate, _ = time.Parse(TimeSimpleFormat, m.InterceptDate)
-	user = models.UserMember{
+	user = models.User{
 		UserId:          m.Id,
 		Password:        m.Password,
 		Name:            m.Name,

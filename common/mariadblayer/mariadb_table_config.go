@@ -55,9 +55,9 @@ func CreateTable(db *gorm.DB) {
 	}
 
 	// User(temp), Customer, Auth
-	if db.HasTable(&models.UserMember{}) == false {
-		db.AutoMigrate(&models.UserMember{})
-		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.UserMember{})
+	if db.HasTable(&models.User{}) == false {
+		db.AutoMigrate(&models.User{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.User{})
 	}
 	if db.HasTable(&models.Customer{}) == false {
 		db.AutoMigrate(&models.Customer{})
@@ -118,9 +118,9 @@ func DropTable(db *gorm.DB) {
 		db.DropTable(&models.UserEmailAuth{})
 	}
 
-	// UserMember, Customer, Auth
-	if db.HasTable(&models.UserMember{}) {
-		db.DropTable(&models.UserMember{})
+	// User, Customer, Auth
+	if db.HasTable(&models.User{}) {
+		db.DropTable(&models.User{})
 	}
 	if db.HasTable(&models.Customer{}) {
 		db.DropTable(&models.Customer{})

@@ -24,13 +24,13 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 	return user, db.Delete(&user).Error
 }
 
-// UserMember, Customer, Auth
+// User, Customer, Auth
 func (db *DBORM) GetCustomersByName(name string) (customers []models.Customer, err error) {
 	name = "%" + name + "%"
 	return customers, db.Debug().Where("cs_company like ?", name).Find(&customers).Error
 }
 
-func (db *DBORM) AddUserMember(user models.UserMember) error {
+func (db *DBORM) AddUserMember(user models.User) error {
 	return db.Create(&user).Error
 }
 
@@ -43,7 +43,7 @@ func (db *DBORM) AddAuth(auth models.Auth) error {
 }
 
 func (db *DBORM) DeleteAllUserMember() error {
-	return db.Delete(&models.UserMember{}).Error
+	return db.Delete(&models.User{}).Error
 }
 
 func (db *DBORM) DeleteAllCustomer() error {
