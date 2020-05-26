@@ -1,6 +1,8 @@
 package mariadblayer
 
-import "cmpService/common/models"
+import (
+	"cmpService/common/models"
+)
 
 func (db *DBORM) GetAllUsers() (users []models.User, err error) {
 	return users, db.Find(&users).Error
@@ -23,6 +25,11 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 }
 
 // UserMember, Customer, Auth
+func (db *DBORM) GetCustomersByName(name string) (customers []models.Customer, err error) {
+	name = "%" + name + "%"
+	return customers, db.Debug().Where("cs_company like ?", name).Find(&customers).Error
+}
+
 func (db *DBORM) AddUserMember(user models.UserMember) error {
 	return db.Create(&user).Error
 }

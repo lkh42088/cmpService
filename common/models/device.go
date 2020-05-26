@@ -18,7 +18,7 @@ type DeviceCommon struct {
 	DeviceCode       string    `gorm:"primary_key;type:varchar(12);column:device_code;comment:'장비 코드'"`
 	Model            int       `gorm:"type:int(11);column:model_cd;comment:'모델 코드'"`
 	Contents         string    `gorm:"type:text;column:contents;comment:'내용'"`
-	Customer         int       `gorm:"type:int(11);column:customer_cd;comment:'고객사명'"`
+	Customer         string    `gorm:"type:varchar(50);column:customer_id;comment:'고객사명'"`
 	Manufacture      int       `gorm:"type_int(11);column:manufacture_cd;comment:'제조사'"`
 	DeviceType       int       `gorm:"type:int(11);column:device_type_cd;comment:'장비 구분'"`
 	WarehousingDate  string    `gorm:"type:varchar(10);column:warehousing_date;comment:'입고일'"`
@@ -85,7 +85,7 @@ type DeviceCommonResponse struct {
 	DeviceCode       string    `gorm:"primary_key;type:varchar(12);column:device_code"`
 	Model            string    `gorm:"column:model_cd"`
 	Contents         string    `gorm:"type:text;column:contents"`
-	Customer         string    `gorm:"column:customer_cd"`
+	Customer         string    `gorm:"column:customer_id"`
 	Manufacture      string    `gorm:"column:manufacture_cd"`
 	DeviceType       string    `gorm:"column:device_type_cd"`
 	WarehousingDate  string    `gorm:"type:varchar(10);column:warehousing_date"`

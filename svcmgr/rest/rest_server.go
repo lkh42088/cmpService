@@ -33,6 +33,8 @@ type HandlerInterface interface {
 	DeleteLogByIdx(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
+	// Customer
+	GetCustomersByName(c *gin.Context)
 	// Monitoring
 	GetDevicesMonitoring(c *gin.Context)
 	AddDevicesMonitoring(c *gin.Context)
@@ -100,6 +102,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
+
+	// Customer
+	router.GET("/v1/customers/:name", h.GetCustomersByName)
 
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)

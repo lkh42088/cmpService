@@ -23,7 +23,7 @@ type MariaDBLayer interface {
 	GetDeviceServer(deviceType string, idx int) ([]models.DeviceServer, error)
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
-	GetDeviceWithCondition(device string, field string, condition string) (interface{}, error)
+	GetDeviceWithJoin(device string, field string, condition string) (interface{}, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
@@ -63,6 +63,7 @@ type MariaDBLayer interface {
 	DeleteLog(idx int) error
 
 	// UserMember, Customer, Auth
+	GetCustomersByName(name string) ([]models.Customer, error)
 	AddUserMember(user models.UserMember) error
 	AddCustomer(customer models.Customer) error
 	AddAuth(auth models.Auth) error

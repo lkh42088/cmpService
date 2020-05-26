@@ -81,25 +81,25 @@ func (UserMember) TableName() string {
 
 type Customer struct {
 	Idx				uint		`gorm:"primary_key;column:idx;auto_increment;comment:'INDEX'"`
-	UserId 			string		`gorm:"primary_key;type:varchar(50);column:user_id;comment:'회사 ID'"`
-	Password		string		`gorm:"type:varchar(255);not null;column:user_password;comment:'패스워드'"`
-	Company			string		`gorm:"type:varchar(255);not null;column:user_company;comment:'회사명'"`
-	Email			string		`gorm:"type:varchar(255);column:user_email;comment:'이메일'"`
-	Homepage		string		`gorm:"type:varchar(255);column:user_homepage;comment:'홈페이지'"`
+	UserId 			string		`gorm:"primary_key;type:varchar(50);column:cs_id;comment:'회사 ID'"`
+	Password		string		`gorm:"type:varchar(255);not null;column:cs_password;comment:'패스워드'"`
+	Company			string		`gorm:"type:varchar(255);not null;column:cs_company;comment:'회사명'"`
+	Email			string		`gorm:"type:varchar(255);column:cs_email;comment:'이메일'"`
+	Homepage		string		`gorm:"type:varchar(255);column:cs_homepage;comment:'홈페이지'"`
 	AuthLevel		int			`gorm:"type:int(11);column:user_auth_level;default:0;comment:'고객 권한 등급'"`
-	Tel				string		`gorm:"type:varchar(15);column:user_tel;comment:'전화 번호'"`
-	HP				string		`gorm:"type:varchar(15);column:user_hp;comment:'핸드폰 번호'"`
-	Zipcode			string		`gorm:"type:varchar(15);not null;column:user_zip;comment:'우편 번호'"`
-	Address			string		`gorm:"type:varchar(255);not null;column:user_addr;comment:'주소'"`
-	AddressDetail	string		`gorm:"type:varchar(255);not null;column:user_addr_detail;comment:'상세 주소'"`
-	IP				string		`gorm:"type:varchar(15);column:user_ip;comment:'IP'"`
-	TermDate		time.Time	`gorm:"type:datetime;column:user_termination_date;comment:'해지 일자'"`
-	BlockDate		time.Time	`gorm:"type:datetime;column:user_block_date;comment:'접근 차단 일자'"`
-	Memo			string		`gorm:"type:varchar(255);column:user_memo;comment:'메모'"`
-	AccumulateStats	bool		`gorm:"type:tinyint;column:user_accumulate_stats_flag;default:0;comment:'누적 통계 여부'"`
-	RegisterDate	time.Time	`gorm:"type:datetime;column:user_register_date;default:CURRENT_TIMESTAMP;comment:'등록일'"`
-	LastAccessDate	time.Time	`gorm:"type:datetime;column:user_last_access_date;comment:'최근 로그인 날짜'"`
-	LastAccessIp	string		`gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'"`
+	Tel				string		`gorm:"type:varchar(15);column:cs_tel;comment:'전화 번호'"`
+	HP				string		`gorm:"type:varchar(15);column:cs_hp;comment:'핸드폰 번호'"`
+	Zipcode			string		`gorm:"type:varchar(15);not null;column:cs_zip;comment:'우편 번호'"`
+	Address			string		`gorm:"type:varchar(255);not null;column:cs_addr;comment:'주소'"`
+	AddressDetail	string		`gorm:"type:varchar(255);not null;column:cs_addr_detail;comment:'상세 주소'"`
+	IP				string		`gorm:"type:varchar(15);column:cs_ip;comment:'IP'"`
+	TermDate		time.Time	`gorm:"type:datetime;column:cs_termination_date;comment:'해지 일자'"`
+	BlockDate		time.Time	`gorm:"type:datetime;column:cs_block_date;comment:'접근 차단 일자'"`
+	Memo			string		`gorm:"type:varchar(255);column:cs_memo;comment:'메모'"`
+	AccumulateStats	bool		`gorm:"type:tinyint;column:cs_accumulate_stats_flag;default:0;comment:'누적 통계 여부'"`
+	RegisterDate	time.Time	`gorm:"type:datetime;column:cs_register_date;default:CURRENT_TIMESTAMP;comment:'등록일'"`
+	LastAccessDate	time.Time	`gorm:"type:datetime;column:cs_last_access_date;comment:'최근 로그인 날짜'"`
+	LastAccessIp	string		`gorm:"type:varchar(15);column:cs_last_access_ip;comment:'최근 접속 IP'"`
 }
 
 func (Customer) TableName() string {

@@ -269,9 +269,9 @@ func convertCodeSubtype(s string) string {
 	var codeSubType string
 	switch strings.TrimSpace(s) {
 	case "wr_51":
-		codeSubType = "ownership_cd_1"
+		codeSubType = "ownership_cd"
 	case "wr_52":
-		codeSubType = "ownership_cd_2"
+		codeSubType = "ownership_div_cd"
 	case "wr_6":
 		codeSubType = "size_cd"
 	case "wr_101":
@@ -352,7 +352,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.DeviceCode = device.Wr1
 	sd.Model = convInt(device.WrSubject)
 	sd.Contents = device.WrContent
-	sd.Customer = convInt(device.WrTrackback)
+	sd.Customer = device.WrTrackback
 	sd.Manufacture = convInt(device.WrLink1)
 	sd.DeviceType = convInt(device.WrLink2)
 	sd.WarehousingDate = device.WrLink1Hit
@@ -399,7 +399,7 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.DeviceCode = device.Wr1
 	nd.Model = convInt(device.WrSubject)
 	nd.Contents = device.WrContent
-	nd.Customer = convInt(device.WrTrackback)
+	nd.Customer = device.WrTrackback
 	nd.Manufacture = convInt(device.WrLink1)
 	nd.DeviceType = convInt(device.WrLink2)
 	nd.WarehousingDate = device.WrLink1Hit
@@ -441,7 +441,7 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.DeviceCode = device.Wr1
 	pd.Model = convInt(device.WrSubject)
 	pd.Contents = device.WrContent
-	pd.Customer = convInt(device.WrTrackback)
+	pd.Customer = device.WrTrackback
 	pd.Manufacture = convInt(device.WrLink1)
 	pd.DeviceType = convInt(device.WrLink2)
 	pd.WarehousingDate = device.WrLink1Hit
