@@ -12,8 +12,9 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 	if err != nil {
 		return
 	}
+
 	device := models.DeviceServer{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:         false,
 			CommentCnt:      0,
 			CommentLastDate: time.Now(),
@@ -48,7 +49,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 	fmt.Println("collectdevice: ", device, "err:", err)
 
 	device = models.DeviceServer{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:         false,
 			CommentCnt:      0,
 			CommentLastDate: time.Now(),
@@ -83,7 +84,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 	fmt.Println("collectdevice: ", device, "err:", err)
 
 	device = models.DeviceServer{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:         false,
 			CommentCnt:      0,
 			CommentLastDate: time.Now(),
@@ -126,7 +127,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 		return
 	}
 	device := models.DeviceNetwork{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:         false,
 			CommentCnt:      0,
 			CommentLastDate: time.Now(),
@@ -159,7 +160,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 
 
 	device = models.DeviceNetwork{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:         false,
 			CommentCnt:      0,
 			CommentLastDate: time.Now(),
@@ -198,7 +199,7 @@ func TestDeviceAddEntry_Part(t *testing.T) {
 		return
 	}
 	device := models.DevicePart{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:         false,
 			CommentCnt:      0,
 			CommentLastDate: time.Now(),

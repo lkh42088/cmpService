@@ -106,7 +106,7 @@ func TestRestDeleteCode(t *testing.T) {
 func TestAddDevice(t *testing.T) {
 	commentlast, _ := time.Parse(time.RFC3339, "2019-12-22T10:28:44+09:00")
 	data := models.DeviceServer{
-		Dc: models.DeviceCommon{
+		DeviceCommon: models.DeviceCommon{
 			OutFlag:false,
 			CommentCnt:0,
 			CommentLastDate:commentlast,

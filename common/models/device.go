@@ -11,7 +11,7 @@ import (
 type DeviceCommon struct {
 	Idx              uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment;comment:'INDEX'"`
 	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0;comment:'반출 여부'"`
-	CommentCnt       int       `gorm:"type:int911);column:comment_cnt;comment:'Comment 개수'"`
+	CommentCnt       int       `gorm:"type:int(11);column:comment_cnt;comment:'Comment 개수'"`
 	CommentLastDate  time.Time `gorm:"type:datetime;column:comment_last_date;comment:'마지막 Comment 등록'"`
 	RegisterId       string    `gorm:"type:varchar(50);column:register_id;comment:'등록자 ID'"`
 	RegisterDate     time.Time `gorm:"type:datetime;column:register_date;default:CURRENT_TIMESTAMP;comment:'등록일'"`
@@ -36,10 +36,10 @@ type DeviceCommon struct {
 }
 
 type DeviceServer struct {
-	Dc 				 DeviceCommon
-	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP"`
+	DeviceCommon
+	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'"`
 	Size             int       `gorm:"column:size_cd;comment:'크기'"`
-	Spla             string    `gorm:"column:spla_cd;default:'|'comment:'SPLA'"`
+	Spla             string    `gorm:"column:spla_cd;default:'|';comment:'SPLA'"`
 	Cpu              string    `gorm:"type:varchar(255);column:cpu;comment:'CPU'"`
 	Memory           string    `gorm:"type:varchar(255);column:memory;comment:'MEMORY'"`
 	Hdd              string    `gorm:"type:varchar(255);column:hdd;comment:'HDD'"`
@@ -53,7 +53,7 @@ func (DeviceServer) TableName() string {
 }
 
 type DeviceNetwork struct {
-	Dc 				 DeviceCommon
+	DeviceCommon
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'"`
 	Size             int       `gorm:"column:size_cd;comment:'크기'"`
 	FirmwareVersion  string    `gorm:"type:varchar(50);column:firmware_version;comment:'펌웨어 버전'"`
@@ -67,7 +67,7 @@ func (DeviceNetwork) TableName() string {
 }
 
 type DevicePart struct {
-	Dc 				 DeviceCommon
+	DeviceCommon
 	Warranty         string    `gorm:"type:varchar(255);column:warranty;comment:'WARRANTY'"`
 }
 
@@ -103,7 +103,7 @@ type DeviceCommonResponse struct {
 }
 
 type DeviceServerResponse struct {
-	Dc 				 DeviceCommonResponse
+	DeviceCommonResponse
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|'"`
 	Size             string    `gorm:"column:size_cd"`
 	Spla             string    `gorm:"column:spla_cd;default:'|'"`
@@ -116,14 +116,14 @@ type DeviceServerResponse struct {
 }
 
 type DeviceNetworkResponse struct {
-	Dc 				 DeviceCommonResponse
+	DeviceCommonResponse
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|'"`
 	Size             string    `gorm:"column:size_cd"`
 	FirmwareVersion  string    `gorm:"type:varchar(50);column:firmware_version"`
 }
 
 type DevicePartResponse struct {
-	Dc 				 DeviceCommonResponse
+	DeviceCommonResponse
 	Warranty         string    `gorm:"type:varchar(255);column:warranty"`
 }
 
@@ -151,7 +151,7 @@ type DeviceLog struct {
 	Idx          uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment;comment:'INDEX'"`
 	DeviceCode   string    `gorm:"column:device_code;not nul;comment:'장비 코드'"`
 	WorkCode     int	   `gorm:"column:work_code;not null;comment:'작업 코드'"`
-	Field 		 string    `grom:"column:field;comment:'변경 FIELD'"`
+	Field 		 string    `gorm:"column:field;comment:'변경 필드'"`
 	OldStatus    string    `gorm:"column:old_status;comment:'이전 상태'"`
 	NewStatus    string	   `gorm:"column:new_status;comment:'변경 상태'"`
 	LogLevel	 int	   `gorm:"type:int(11);not null;column:log_level_cd;comment:'로그 레벨'"`
