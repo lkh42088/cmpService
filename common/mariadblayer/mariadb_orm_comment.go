@@ -15,9 +15,10 @@ func (db *DBORM) GetAllComments() (comments []models.DeviceComment, err error) {
 func (db *DBORM) GetComments(code string) (comments []models.DeviceComment, err error) {
 	where := GetWhereString(defaultFieldName)
 	return comments, db.
+		//Debug().
 		Select(CommentSelectQuery).
+		Joins(CompanyAndCommentJoinQuery).
 		Where(where, code).
-		Joins(CompanyAndCommentJoinQuery).		//todo
 		Find(&comments).Error
 }
 

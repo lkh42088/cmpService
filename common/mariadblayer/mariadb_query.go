@@ -11,7 +11,7 @@ const (
 									  "c4.c_name as ownership_div_cd,c5.c_name as idc_cd," +
 									  "s2.csub_name as rack_cd,cp1.cp_name as user_id,d.*"
 	SizeSelectQuery					= "c6.c_name as size_cd"
-	CommentSelectQuery				= "cp2.cs_company as comment_register_id, device_comment_tb.*"
+	CommentSelectQuery				= "cp2.cp_name as comment_register_id, device_comment_tb.*"
 	//JOIN
 	ManufactureServerJoinQuery 		= "INNER JOIN code_tb AS c1 ON c1.c_type = 'device_server' AND c1.c_idx = d.manufacture_cd"
 	ManufactureNetworkJoinQuery 	= "INNER JOIN code_tb AS c1 ON c1.c_type = 'device_network' AND c1.c_idx = d.manufacture_cd"
@@ -26,5 +26,5 @@ const (
 	RackJoinQuery					= "INNER JOIN code_sub_tb AS s2 ON s2.csub_idx = d.rack_cd"
 	SizeJoinQuery					= "INNER JOIN code_tb AS c6 ON c6.c_type = 'total' AND c6.c_idx = d.size_cd"
 	CompanyLeftJoinQuery			= "LEFT OUTER JOIN user_tb u ON u.user_id = d.user_id LEFT OUTER JOIN company_tb cp1 ON cp1.cp_idx = u.cp_idx"
-	CompanyAndCommentJoinQuery		= "INNER JOIN company_tb AS cp2 ON cs2.cp_idx = device_comment_tb.comment_register_id"
+	CompanyAndCommentJoinQuery		= "LEFT OUTER JOIN user_tb u ON u.user_id = device_comment_tb.comment_register_id LEFT OUTER JOIN company_tb cp2 ON cp2.cp_idx = u.cp_idx"
 )
