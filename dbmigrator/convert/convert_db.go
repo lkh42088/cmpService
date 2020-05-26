@@ -23,6 +23,7 @@ func RunConvertDb() {
 	convertInternal(ConvertDeviceServer)
 	convertInternal(ConvertDeviceNetwork)
 	convertInternal(ConvertDevicePart)
+	convertInternal(ConvertMember)
 }
 
 func convertInternal(convert func(*mysqllayer.CBORM, *mariadblayer.DBORM)) {
@@ -186,6 +187,27 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 	}
 }
 
+func ConvertMember(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
+	olds, err := odb.GetAllMemberFromOldDB()
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		return
+	}
+	idx_device = 0
+	for i, old := range olds {
+		if i % 100 == 0 {
+			time.Sleep(time.Millisecond * 10)
+		}
+		if old.Level == 9 || old.Level == 10 {
+			m := GetUserTableByMember(old)
+			ndb.AddUserMember(m)
+		} else {
+			m := GetCustomerTableByMember(old)
+			ndb.AddCustomer(m)
+		}
+	}
+}
+
 func DeleteDeviceTb() {
 	// New Database: Mariadb
 	newConfig := config.GetNewDatabaseConfig()
@@ -204,6 +226,9 @@ func DeleteDeviceTb() {
 	newDb.DeleteAllDevicesServer()
 	newDb.DeleteAllComments()
 	newDb.DeleteAllLogs()
+	newDb.DeleteAllUserMember()
+	newDb.DeleteAllCustomer()
+	newDb.DeleteAllAuth()
 }
 
 func GetCodeByItem(item cbmodels.Item) (code models.Code) {
@@ -244,9 +269,9 @@ func convertCodeSubtype(s string) string {
 	var codeSubType string
 	switch strings.TrimSpace(s) {
 	case "wr_51":
-		codeSubType = "ownership_cd_1"
+		codeSubType = "ownership_cd"
 	case "wr_52":
-		codeSubType = "ownership_cd_2"
+		codeSubType = "ownership_div_cd"
 	case "wr_6":
 		codeSubType = "size_cd"
 	case "wr_101":
@@ -266,6 +291,7 @@ func convertCodeSubtype(s string) string {
 }
 
 const TimeFormat = "2006-01-02 15:04:05"
+const TimeSimpleFormat = "20060102"
 
 func convInt(s string) int {
 	num, err := strconv.Atoi(s)
@@ -319,14 +345,14 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.CommentCnt = device.WrComment
 	sd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
 	sd.RegisterId = device.MbId
-	sd.Password = device.WrPassword
-	sd.RegisterName = device.WrName
-	sd.RegisterEmail = device.WrEmail
+	//sd.Password = device.WrPassword
+	//sd.RegisterName = device.WrName
+	//sd.RegisterEmail = device.WrEmail
 	sd.RegisterDate = device.WrDatetime
 	sd.DeviceCode = device.Wr1
 	sd.Model = convInt(device.WrSubject)
 	sd.Contents = device.WrContent
-	sd.Customer = convInt(device.WrTrackback)
+	sd.Customer = device.WrTrackback
 	sd.Manufacture = convInt(device.WrLink1)
 	sd.DeviceType = convInt(device.WrLink2)
 	sd.WarehousingDate = device.WrLink1Hit
@@ -366,14 +392,14 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.CommentCnt = device.WrComment
 	nd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
 	nd.RegisterId = device.MbId
-	nd.Password = device.WrPassword
-	nd.RegisterName = device.WrName
-	nd.RegisterEmail = device.WrEmail
+	//nd.Password = device.WrPassword
+	//nd.RegisterName = device.WrName
+	//nd.RegisterEmail = device.WrEmail
 	nd.RegisterDate = device.WrDatetime
 	nd.DeviceCode = device.Wr1
 	nd.Model = convInt(device.WrSubject)
 	nd.Contents = device.WrContent
-	nd.Customer = convInt(device.WrTrackback)
+	nd.Customer = device.WrTrackback
 	nd.Manufacture = convInt(device.WrLink1)
 	nd.DeviceType = convInt(device.WrLink2)
 	nd.WarehousingDate = device.WrLink1Hit
@@ -408,14 +434,14 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.CommentCnt = device.WrComment
 	pd.CommentLastDate, _ = time.Parse(TimeFormat, device.WrLast)
 	pd.RegisterId = device.MbId
-	pd.Password = device.WrPassword
-	pd.RegisterName = device.WrName
-	pd.RegisterEmail = device.WrEmail
+	//pd.Password = device.WrPassword
+	//pd.RegisterName = device.WrName
+	//pd.RegisterEmail = device.WrEmail
 	pd.RegisterDate = device.WrDatetime
 	pd.DeviceCode = device.Wr1
 	pd.Model = convInt(device.WrSubject)
 	pd.Contents = device.WrContent
-	pd.Customer = convInt(device.WrTrackback)
+	pd.Customer = device.WrTrackback
 	pd.Manufacture = convInt(device.WrLink1)
 	pd.DeviceType = convInt(device.WrLink2)
 	pd.WarehousingDate = device.WrLink1Hit
@@ -439,6 +465,81 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	dc.RegisterDate = device.WrDatetime
 
 	return pd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
+}
+
+func GetUserTableByMember(m cbmodels.CbMember) (user models.UserMember) {
+	var zip string
+	var leaveDate time.Time
+	var interceptDate time.Time
+	if m.ZIP2 != "" {
+		zip = m.ZIP1 + "-" + m.ZIP2
+	} else {
+		zip = m.ZIP1
+	}
+	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
+	interceptDate, _ = time.Parse(TimeSimpleFormat, m.InterceptDate)
+	user = models.UserMember{
+		UserId:          m.Id,
+		Password:        m.Password,
+		Name:            m.Name,
+		Company:         m.Nick,
+		Email:           m.Email,
+		Homepage:        m.Homepage,
+		AuthLevel:       2,
+		Tel:             m.Tel,
+		HP:              m.HP,
+		Zipcode:         zip,
+		Address:         m.Addr1,
+		AddressDetail:   m.Addr2,
+		IP:              m.IP,
+		TermDate:        leaveDate,
+		BlockDate:       interceptDate,
+		Memo:            m.Memo,
+		AccumulateStats: false,
+		WorkScope:       m.Mb1,
+		Department:      m.Mb2,
+		Position:        m.Mb3,
+		RegisterDate:    m.Datetime,
+		LastAccessDate:  m.TodayLogin,
+		LastAccessIp:    m.LoginIp,
+	}
+
+	return user
+}
+
+func GetCustomerTableByMember(m cbmodels.CbMember) (cs models.Customer) {
+	var zip string
+	var leaveDate time.Time
+	var interceptDate time.Time
+	if m.ZIP2 != "" {
+		zip = m.ZIP1 + "-" + m.ZIP2
+	} else {
+		zip = m.ZIP1
+	}
+	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
+	interceptDate, _ = time.Parse(TimeSimpleFormat, m.InterceptDate)
+	cs = models.Customer{
+		UserId:          m.Id,
+		Password:        m.Password,
+		Company:         m.Nick,
+		Email:           m.Email,
+		Homepage:        m.Homepage,
+		AuthLevel:       5,
+		Tel:             m.Tel,
+		HP:              m.HP,
+		Zipcode:         zip,
+		Address:         m.Addr1,
+		AddressDetail:   m.Addr2,
+		IP:              m.IP,
+		TermDate:        leaveDate,
+		BlockDate:       interceptDate,
+		Memo:            m.Memo,
+		AccumulateStats: false,
+		RegisterDate:    m.Datetime,
+		LastAccessDate:  m.TodayLogin,
+		LastAccessIp:    m.LoginIp,
+	}
+	return cs
 }
 
 type LogContents struct {
@@ -518,8 +619,8 @@ func GetLogList(isComment int, deviceCode string, userId string, contents string
 			data.OldStatus = list.OldStatus
 			data.NewStatus = list.NewStatus
 			data.DeviceCode = deviceCode
-			data.RegisterId = userId
-			data.RegisterName = list.RegName
+			//data.RegisterId = userId
+			//data.RegisterName = list.RegName
 			data.RegisterDate = list.RegTime
 			lc = append(lc, data)
 		}

@@ -35,7 +35,6 @@ func (h *Handler) AddLog(c *gin.Context) {
 		//Field: c.Param(""),
 		//OldStatus: c.Param(""),
 		//NewStatus: c.Param(""),
-		RegisterId: c.Param("userid"),
 		//RegisterName:,
 	}
 	err := h.db.AddLog(log)
@@ -64,18 +63,6 @@ func (h *Handler) UpdateLog(c *gin.Context) {
 		Idx: uint(idx),
 		WorkCode: code,
 		Field: c.Param("field"),
-		RegisterId: c.Param("userid"),
-	}
-
-	// User-Id check
-	content, err1 := h.db.GetLogByIdx(idx)
-	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if content.RegisterId != log.RegisterId {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can modify data by create user."})
-		return
 	}
 
 	err = h.db.UpdateLog(log.Field, c.Param("change"), log)

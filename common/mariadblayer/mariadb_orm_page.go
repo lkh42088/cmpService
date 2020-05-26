@@ -89,6 +89,7 @@ func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
 		Joins(SizeJoinQuery).
+		Joins(CustomerJoinQuery).
 		Find(&server.Devices).Error
 
 	if err != nil {
@@ -142,6 +143,7 @@ func (db *DBORM) GetDevicesNetworkWithJoin(cri models.PageCreteria) (
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
 		Joins(SizeJoinQuery).
+		Joins(CustomerJoinQuery).
 		Find(&network.Devices).Error
 
 	if err != nil {
@@ -194,6 +196,7 @@ func (db *DBORM) GetDevicesPartWithJoin(cri models.PageCreteria) (
 		Joins(OwnershipDivJoinQuery).
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
+		Joins(CustomerJoinQuery).
 		Find(&part.Devices).Error
 
 	if err != nil {

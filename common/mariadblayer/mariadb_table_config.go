@@ -53,6 +53,30 @@ func CreateTable(db *gorm.DB) {
 		db.AutoMigrate(&models.UserEmailAuth{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.UserEmailAuth{})
 	}
+
+	// User(temp), Customer, Auth
+	if db.HasTable(&models.UserMember{}) == false {
+		db.AutoMigrate(&models.UserMember{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.UserMember{})
+	}
+	if db.HasTable(&models.Customer{}) == false {
+		db.AutoMigrate(&models.Customer{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.Customer{})
+	}
+	if db.HasTable(&models.Auth{}) == false {
+		db.AutoMigrate(&models.Auth{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.Auth{})
+	}
+
+	// IP, Subnet
+	if db.HasTable(&models.IpMgmt{}) == false {
+		db.AutoMigrate(&models.IpMgmt{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.IpMgmt{})
+	}
+	if db.HasTable(&models.SubnetMgmt{}) == false {
+		db.AutoMigrate(&models.SubnetMgmt{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.SubnetMgmt{})
+	}
 }
 
 func DropTable(db *gorm.DB) {
@@ -93,4 +117,24 @@ func DropTable(db *gorm.DB) {
 	if db.HasTable(&models.UserEmailAuth{}) {
 		db.DropTable(&models.UserEmailAuth{})
 	}
+
+	// UserMember, Customer, Auth
+	if db.HasTable(&models.UserMember{}) {
+		db.DropTable(&models.UserMember{})
+	}
+	if db.HasTable(&models.Customer{}) {
+		db.DropTable(&models.Customer{})
+	}
+	if db.HasTable(&models.Auth{}) {
+		db.DropTable(&models.Auth{})
+	}
+
+	// IP, Subnet
+	if db.HasTable(&models.IpMgmt{}) {
+		db.DropTable(&models.IpMgmt{})
+	}
+	if db.HasTable(&models.SubnetMgmt{}) {
+		db.DropTable(&models.SubnetMgmt{})
+	}
+
 }
