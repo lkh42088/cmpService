@@ -9,7 +9,7 @@ const (
 	PageSelectQuery 				= "c1.c_name as manufacture_cd,s1.csub_name as model_cd," +
 		 						  	  "c2.c_name as device_type_cd,c3.c_name as ownership_cd," +
 									  "c4.c_name as ownership_div_cd,c5.c_name as idc_cd," +
-									  "s2.csub_name as rack_cd,cp1.cp_name as cp_idx,d.*"
+									  "s2.csub_name as rack_cd,cp1.cp_name as user_id,d.*"
 	SizeSelectQuery					= "c6.c_name as size_cd"
 	CommentSelectQuery				= "cp2.cs_company as comment_register_id, device_comment_tb.*"
 	//JOIN
@@ -25,6 +25,6 @@ const (
 	IdcJoinQuery					= "INNER JOIN code_tb AS c5 ON c5.c_type = 'total' AND c5.c_idx = d.idc_cd"
 	RackJoinQuery					= "INNER JOIN code_sub_tb AS s2 ON s2.csub_idx = d.rack_cd"
 	SizeJoinQuery					= "INNER JOIN code_tb AS c6 ON c6.c_type = 'total' AND c6.c_idx = d.size_cd"
-	CompanyJoinQuery				= "INNER JOIN company_tb AS cp1 ON cs1.cp_idx = (select cp_idx from user_tb u inner join device_server_tb d on u.user_id = d.user_id)"
+	CompanyLeftJoinQuery			= "LEFT OUTER JOIN user_tb u ON u.user_id = d.user_id LEFT OUTER JOIN company_tb cp1 ON cp1.cp_idx = u.cp_idx"
 	CompanyAndCommentJoinQuery		= "INNER JOIN company_tb AS cp2 ON cs2.cp_idx = device_comment_tb.comment_register_id"
 )

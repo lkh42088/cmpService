@@ -83,10 +83,19 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 	}
 
 	manufacture, deviceType, tableName := GetDeviceQuery(device)
+	var selectString string
+	var sizeQueryString string
+	if device == "part" {
+		selectString = PageSelectQuery
+		sizeQueryString = ""
+	} else {
+		selectString = SizeSelectQuery+","+PageSelectQuery
+		sizeQueryString = SizeJoinQuery
+	}
 	return dc, db.
-		Select(SizeSelectQuery+","+PageSelectQuery).
+		//Debug().
+		Select(selectString).
 		Table(tableName).
-		Where(where, condition).
 		Joins(manufacture).
 		Joins(ModelJoinQuery).
 		Joins(deviceType).
@@ -94,8 +103,9 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		Joins(OwnershipDivJoinQuery).
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
-		Joins(SizeJoinQuery).
-		Joins(CompanyJoinQuery).
+		Joins(sizeQueryString).
+		Joins(CompanyLeftJoinQuery).
+		Where(where, condition).
 		Find(dc).Error
 
 }

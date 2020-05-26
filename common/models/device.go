@@ -9,7 +9,7 @@ import (
 // DEVICE TABLE
 /////
 type DeviceCommon struct {
-	Idx              uint      `gorm:"primary_key;column:idx;not null;unsigned;auto_increment;comment:'INDEX'"`
+	Idx              uint      `gorm:"primary_key;column:device_idx;not null;unsigned;auto_increment;comment:'INDEX'"`
 	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0;comment:'반출 여부'"`
 	CommentCnt       int       `gorm:"type:int(11);column:comment_cnt;comment:'Comment 개수'"`
 	CommentLastDate  time.Time `gorm:"type:datetime;column:comment_last_date;comment:'마지막 Comment 등록'"`
@@ -85,7 +85,7 @@ type DeviceCommonResponse struct {
 	DeviceCode       string    `gorm:"unique;type:varchar(12);column:device_code"`
 	Model            string    `gorm:"column:model_cd"`
 	Contents         string    `gorm:"type:text;column:contents"`
-	Customer         string    `gorm:"column:customer_id"`
+	Customer         string    `gorm:"column:user_id"`
 	Manufacture      string    `gorm:"column:manufacture_cd"`
 	DeviceType       string    `gorm:"column:device_type_cd"`
 	WarehousingDate  string    `gorm:"type:varchar(10);column:warehousing_date"`
