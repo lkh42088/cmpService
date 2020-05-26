@@ -24,18 +24,18 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 	return user, db.Delete(&user).Error
 }
 
-// User, Customer, Auth
-func (db *DBORM) GetCustomersByName(name string) (customers []models.Customer, err error) {
+// User, Company, Auth
+func (db *DBORM) GetCompaniesByName(name string) (companies []models.Company, err error) {
 	name = "%" + name + "%"
-	return customers, db.Debug().Where("cs_company like ?", name).Find(&customers).Error
+	return companies, db.Debug().Where("cp_name like ?", name).Find(&companies).Error
 }
 
 func (db *DBORM) AddUserMember(user models.User) error {
 	return db.Create(&user).Error
 }
 
-func (db *DBORM) AddCustomer(customer models.Customer) error {
-	return db.Create(&customer).Error
+func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
+	return company, db.Create(&company).Error
 }
 
 func (db *DBORM) AddAuth(auth models.Auth) error {
@@ -46,8 +46,8 @@ func (db *DBORM) DeleteAllUserMember() error {
 	return db.Delete(&models.User{}).Error
 }
 
-func (db *DBORM) DeleteAllCustomer() error {
-	return db.Delete(&models.Customer{}).Error
+func (db *DBORM) DeleteAllCompany() error {
+	return db.Delete(&models.Company{}).Error
 }
 
 func (db *DBORM) DeleteAllAuth() error {

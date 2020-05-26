@@ -114,7 +114,7 @@ func TestAddDevice(t *testing.T) {
 			DeviceCode:"CBS09999",
 			Model:83,
 			Contents:"\u003cbr /\u003e",
-			Customer:0,
+			Customer:"NB",
 			Manufacture:56,
 			DeviceType:7,
 			WarehousingDate:"0",

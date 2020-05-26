@@ -199,11 +199,13 @@ func ConvertMember(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 			time.Sleep(time.Millisecond * 10)
 		}
 		if old.Level == 9 || old.Level == 10 {
-			m := GetUserTableByMember(old)
+			m := GetUserTableByMember(old, 0)
 			ndb.AddUserMember(m)
 		} else {
-			m := GetCustomerTableByMember(old)
-			ndb.AddCustomer(m)
+			m := GetCompanyTableByMember(old, true)
+			cp, _ := ndb.AddCompany(m)
+			m2 := GetUserTableByMember(old, int(cp.Idx))
+			ndb.AddUserMember(m2)
 		}
 	}
 }
@@ -227,7 +229,7 @@ func DeleteDeviceTb() {
 	newDb.DeleteAllComments()
 	newDb.DeleteAllLogs()
 	newDb.DeleteAllUserMember()
-	newDb.DeleteAllCustomer()
+	newDb.DeleteAllCompany()
 	newDb.DeleteAllAuth()
 }
 
@@ -467,7 +469,7 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	return pd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
-func GetUserTableByMember(m cbmodels.CbMember) (user models.User) {
+func GetUserTableByMember(m cbmodels.CbMember, idx int) (user models.User) {
 	var zip string
 	var leaveDate time.Time
 	var interceptDate time.Time
@@ -476,29 +478,32 @@ func GetUserTableByMember(m cbmodels.CbMember) (user models.User) {
 	} else {
 		zip = m.ZIP1
 	}
+	level := 5		// auth level (company manager : 5)
+	if idx == 0 {
+		level = 2
+	}
 	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
 	interceptDate, _ = time.Parse(TimeSimpleFormat, m.InterceptDate)
 	user = models.User{
 		UserId:          m.Id,
 		Password:        m.Password,
 		Name:            m.Name,
-		Company:         m.Nick,
+		CompanyIdx:      idx,
 		Email:           m.Email,
-		Homepage:        m.Homepage,
-		AuthLevel:       2,
+		AuthLevel:       level,
 		Tel:             m.Tel,
 		HP:              m.HP,
 		Zipcode:         zip,
 		Address:         m.Addr1,
 		AddressDetail:   m.Addr2,
-		IP:              m.IP,
 		TermDate:        leaveDate,
 		BlockDate:       interceptDate,
 		Memo:            m.Memo,
-		AccumulateStats: false,
 		WorkScope:       m.Mb1,
 		Department:      m.Mb2,
 		Position:        m.Mb3,
+		EmailAuth:		 true,
+		GroupEmailAuth:  false,
 		RegisterDate:    m.Datetime,
 		LastAccessDate:  m.TodayLogin,
 		LastAccessIp:    m.LoginIp,
@@ -507,37 +512,27 @@ func GetUserTableByMember(m cbmodels.CbMember) (user models.User) {
 	return user
 }
 
-func GetCustomerTableByMember(m cbmodels.CbMember) (cs models.Customer) {
+func GetCompanyTableByMember(m cbmodels.CbMember, check bool) (cs models.Company) {
 	var zip string
 	var leaveDate time.Time
-	var interceptDate time.Time
 	if m.ZIP2 != "" {
 		zip = m.ZIP1 + "-" + m.ZIP2
 	} else {
 		zip = m.ZIP1
 	}
 	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
-	interceptDate, _ = time.Parse(TimeSimpleFormat, m.InterceptDate)
-	cs = models.Customer{
-		UserId:          m.Id,
-		Password:        m.Password,
-		Company:         m.Nick,
+	cs = models.Company{
+		Name: 	         m.Nick,
 		Email:           m.Email,
 		Homepage:        m.Homepage,
-		AuthLevel:       5,
 		Tel:             m.Tel,
 		HP:              m.HP,
 		Zipcode:         zip,
 		Address:         m.Addr1,
 		AddressDetail:   m.Addr2,
-		IP:              m.IP,
 		TermDate:        leaveDate,
-		BlockDate:       interceptDate,
+		IsCompany:		 check,
 		Memo:            m.Memo,
-		AccumulateStats: false,
-		RegisterDate:    m.Datetime,
-		LastAccessDate:  m.TodayLogin,
-		LastAccessIp:    m.LoginIp,
 	}
 	return cs
 }

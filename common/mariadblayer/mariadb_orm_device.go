@@ -95,7 +95,7 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
 		Joins(SizeJoinQuery).
-		Joins(CustomerJoinQuery).
+		Joins(CompanyJoinQuery).
 		Find(dc).Error
 
 }

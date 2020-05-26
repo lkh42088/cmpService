@@ -17,7 +17,7 @@ func (db *DBORM) GetComments(code string) (comments []models.DeviceComment, err 
 	return comments, db.
 		Select(CommentSelectQuery).
 		Where(where, code).
-		Joins(CustomerAndCommentJoinQuery).
+		Joins(CompanyAndCommentJoinQuery).		//todo
 		Find(&comments).Error
 }
 
