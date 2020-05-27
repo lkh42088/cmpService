@@ -149,11 +149,11 @@ func (DeviceComment) TableName() string {
 /////
 type DeviceLog struct {
 	Idx          uint      `gorm:"primary_key;column:log_idx;not null;unsigned;auto_increment;comment:'INDEX'"`
-	DeviceCode   string    `gorm:"column:device_code;not nul;comment:'장비 코드'"`
-	WorkCode     int	   `gorm:"column:log_work_code;not null;comment:'작업 코드'"`
-	Field 		 string    `gorm:"column:log_field;comment:'변경 필드'"`
-	OldStatus    string    `gorm:"column:log_old_status;comment:'이전 상태'"`
-	NewStatus    string	   `gorm:"column:log_new_status;comment:'변경 상태'"`
+	DeviceCode   string    `gorm:"type:varchar(12);column:device_code;not nul;comment:'장비 코드'"`
+	WorkCode     int	   `gorm:"type:int(11);column:log_work_cd;not null;comment:'작업 코드'"`
+	Field 		 string    `gorm:"type:varchar(50);column:log_field;comment:'변경 필드'"`
+	OldStatus    string    `gorm:"type:varchar(255);column:log_old_status;comment:'이전 상태'"`
+	NewStatus    string	   `gorm:"type:varchar(255);column:log_new_status;comment:'변경 상태'"`
 	LogLevel	 int	   `gorm:"type:int(11);not null;column:log_level_cd;comment:'로그 레벨'"`
 	RegisterDate time.Time `gorm:"column:log_register_date;default:CURRENT_TIMESTAMP;comment:'로그 발생일'"`
 }

@@ -9,8 +9,8 @@ import (
 type User struct {
 	Idx				uint		`gorm:"primary_key;column:user_idx;auto_increment;comment:'INDEX'"`
 	UserId 			string		`gorm:"unique;type:varchar(50);column:user_id;comment:'유저 ID'"`
-	Password		string		`gorm:"type:varchar(255);column:user_password;comment:'패스워드'"`
-	Name			string		`gorm:"type:varchar(255);column:user_name;comment:'유저 이름'"`
+	Password		string		`gorm:"type:varchar(255);not null;column:user_password;comment:'패스워드'"`
+	Name			string		`gorm:"type:varchar(255);not null;column:user_name;comment:'유저 이름'"`
 	CompanyIdx		int			`gorm:"type:int(11);column:cp_idx;comment:'회사 고유값'"`
 	Email			string		`gorm:"type:varchar(255);column:user_email;comment:'이메일'"`
 	AuthLevel		int			`gorm:"type:int(11);default:10;column:user_auth_level;comment:'회원 권한 등급'"`
@@ -21,13 +21,13 @@ type User struct {
 	AddressDetail	string		`gorm:"type:varchar(255);column:user_addr_detail;comment:'상세 주소'"`
 	TermDate		time.Time	`gorm:"type:datetime;column:user_termination_date;comment:'퇴직 일자'"`
 	BlockDate		time.Time	`gorm:"type:datetime;column:user_block_date;comment:'접근 차단 일자'"`
-	Memo			string		`gorm:"type:varchar(255);column:user_memo;comment:'메모'"`
+	Memo			string		`gorm:"type:text;column:user_memo;comment:'메모'"`
 	WorkScope		string		`gorm:"type:varchar(15);column:user_work_scope;comment:'업무 구분'"`
 	Department		string		`gorm:"type:varchar(15);column:user_department;comment:'부서'"`
 	Position		string		`gorm:"type:varchar(15);column:user_position;comment:'직급'"`
-	EmailAuth 		bool 		`gorm:"type:tinyint;default:0;column:user_email_auth_flag;comment:'개인 이메일 인증'"`
-	GroupEmailAuth 	bool 		`gorm:"type:tinyint;default:0;column:user_group_email_auth_flag;comment:'그룹 이메일 인증'"`
-	RegisterDate	time.Time	`gorm:"type:datetime;column:user_register_date;comment:'등록일'"`
+	EmailAuth 		bool 		`gorm:"type:tinyint(1);default:0;column:user_email_auth_flag;comment:'개인 이메일 인증'"`
+	GroupEmailAuth 	bool 		`gorm:"type:tinyint(1);default:0;column:user_group_email_auth_flag;comment:'그룹 이메일 인증'"`
+	RegisterDate	time.Time	`gorm:"type:datetime;default:CURRENT_TIMESTAMP;column:user_register_date;comment:'등록일'"`
 	LastAccessDate	time.Time	`gorm:"type:datetime;column:user_last_access_date;comment:'최근 로그인 날짜'"`
 	LastAccessIp	string		`gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'"`
 }
@@ -73,8 +73,8 @@ type Company struct {
 	Address			string		`gorm:"type:varchar(255);not null;column:cp_addr;comment:'주소'"`
 	AddressDetail	string		`gorm:"type:varchar(255);not null;column:cp_addr_detail;comment:'상세 주소'"`
 	TermDate		time.Time	`gorm:"type:datetime;column:cp_termination_date;comment:'해지 일자'"`
-	IsCompany		bool 		`gorm:"type:tinyint;column:cp_is_company;default:1;comment:'회사 여부'"`
-	Memo			string		`gorm:"type:varchar(255);column:cp_memo;comment:'메모'"`
+	IsCompany		bool 		`gorm:"type:tinyint(1);column:cp_is_company;default:1;comment:'회사 여부'"`
+	Memo			string		`gorm:"type:text;column:cp_memo;comment:'메모'"`
 }
 
 func (Company) TableName() string {
