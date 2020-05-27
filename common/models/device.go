@@ -75,12 +75,12 @@ func (DevicePart) TableName() string {
 }
 
 type DeviceCommonResponse struct {
-	Idx              uint      `gorm:"primary_key;column:device_idx;not null;unsigned;auto_increment"`
-	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0"`
-	CommentCnt       int       `gorm:"type:int(11);column:comment_cnt;comment"`
-	CommentLastDate  time.Time `gorm:"type:datetime;column:comment_last_date"`
+	Idx              uint      `gorm:"primary_key;column:device_idx;not null;unsigned;auto_increment" json:"type:uint"`
+	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0" json:"type:bool"`
+	CommentCnt       int       `gorm:"type:int(11);column:comment_cnt;comment" json:"type:int"`
+	CommentLastDate  time.Time `gorm:"type:datetime;column:comment_last_date" json:"type:datetime"`
 	RegisterId       string    `gorm:"type:varchar(50);column:register_id"`
-	RegisterDate     time.Time `gorm:"type:datetime;column:register_date;default:CURRENT_TIMESTAMP"`
+	RegisterDate     time.Time `gorm:"type:datetime;column:register_date;default:CURRENT_TIMESTAMP" json:"type:datetime"`
 	DeviceCode       string    `gorm:"unique;type:varchar(12);column:device_code"`
 	Model            string    `gorm:"column:model_cd"`
 	Contents         string    `gorm:"type:text;column:contents"`
@@ -97,8 +97,8 @@ type DeviceCommonResponse struct {
 	Rack             string    `gorm:"column:rack_cd"`
 	Cost             string    `gorm:"type:varchar(255);column:cost"`
 	Purpos           string    `gorm:"type:varchar(255);column:purpos"`
-	MonitoringFlag   int       `gorm:"type:tinyint;column:monitoring_flag"`
-	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method"`
+	MonitoringFlag   int       `gorm:"type:tinyint;column:monitoring_flag" json:"type:int"`
+	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method" json:"type:int"`
 }
 
 type DeviceServerResponse struct {
@@ -109,9 +109,9 @@ type DeviceServerResponse struct {
 	Cpu              string    `gorm:"type:varchar(255);column:cpu"`
 	Memory           string    `gorm:"type:varchar(255);column:memory"`
 	Hdd              string    `gorm:"type:varchar(255);column:hdd"`
-	RackCode		 int	   `gorm:"type:int(11);column:rack_code_cd"`
+	RackCode		 int	   `gorm:"type:int(11);column:rack_code_cd" json:"type:int"`
 	RackTag			 string	   `gorm:"type:varchar(255);column:rack_tag"`
-	RackLoc			 int	   `gorm:"type:int(11);column:rack_loc"`
+	RackLoc			 int	   `gorm:"type:int(11);column:rack_loc" json:"type:int"`
 }
 
 type DeviceNetworkResponse struct {
@@ -130,12 +130,12 @@ type DevicePartResponse struct {
 // COMMENT TABLE
 /////
 type DeviceComment struct {
-	Idx          uint      `gorm:"primary_key;column:comment_idx;not null;unsigned;auto_increment;comment:'INDEX'"`
+	Idx          uint      `gorm:"primary_key;column:comment_idx;not null;unsigned;auto_increment;comment:'INDEX'" json:"type:uint"`
 	DeviceCode   string    `gorm:"type:varchar(12);column:device_code;not null;comment:'장비 코드'"`
 	Contents     string    `gorm:"type:text;column:comment_contents;comment:'내용'"`
 	RegisterId   string    `gorm:"type:varchar(50);column:comment_register_id;comment:'작성자 ID'"`
 	RegisterName string    `gorm:"type:varchar(50);column:comment_register_name;comment:'작성자 이름'"`
-	RegisterDate time.Time `gorm:"column:comment_register_date;default:CURRENT_TIMESTAMP;comment:'작성일'"`
+	RegisterDate time.Time `gorm:"column:comment_register_date;default:CURRENT_TIMESTAMP;comment:'작성일'" json:"type:datetime"`
 }
 
 func (DeviceComment) TableName() string {
