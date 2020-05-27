@@ -101,6 +101,11 @@ func (Auth) TableName() string {
 	return "auth_tb"
 }
 
+type CompanyResponse struct {
+	Company
+	UserId 			string		`gorm:"unique;type:varchar(50);column:user_id" json:"userId"`
+}
+
 func HashPassword(user *User) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
@@ -114,4 +119,5 @@ func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
+
 

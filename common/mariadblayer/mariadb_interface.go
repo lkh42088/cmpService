@@ -63,7 +63,7 @@ type MariaDBLayer interface {
 	DeleteLog(idx int) error
 
 	// User, Customer, Auth
-	GetCompaniesByName(name string) ([]models.Company, error)
+	GetCompaniesByName(name string) ([]models.CompanyResponse, error)
 	GetUserByUserId(userId string) (models.User, error)
 	AddUserMember(user models.User) error
 	AddCompany(company models.Company) (models.Company, error)

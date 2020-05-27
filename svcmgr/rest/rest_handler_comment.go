@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"cmpService/common/lib"
 	"cmpService/common/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,7 +15,7 @@ func (h *Handler) GetCommentsByCode(c *gin.Context) {
 	deviceCode := c.Param("devicecode")
 	comments, err := h.db.GetComments(deviceCode)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get data."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
 	//fmt.Println("[###] %v", comments)
@@ -29,7 +30,7 @@ func (h *Handler) AddComment(c *gin.Context) {
 	// data parsing
 	m, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 
@@ -37,7 +38,7 @@ func (h *Handler) AddComment(c *gin.Context) {
 	userId := m["registerId"].(string)
 	user, err := h.db.GetUserByUserId(userId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":"Can't find register-id."})
+		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
 	}
 
@@ -50,7 +51,7 @@ func (h *Handler) AddComment(c *gin.Context) {
 
 	err = h.db.AddComment(comment)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add data."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
@@ -64,7 +65,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	// data parsing
 	m, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 
@@ -72,16 +73,15 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	comment := models.DeviceComment{
 		Idx: uint(int(value)),
 		Contents: m["comment"].(string),
-		RegisterId: m["registerId"].(string),
 	}
 
 	// User-Id check
 	content, err1 := h.db.GetCommentByIdx(int(comment.Idx))
 	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "No data to delete."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err1.Error()})
 		return
 	} else if content.RegisterId != comment.RegisterId {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can modify data by create user."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestDoNotCreateUser})
 		return
 	}
 
@@ -99,7 +99,7 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	}
 	idx, err := strconv.Atoi(c.Param("commentidx"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid parameter(comment-idx)."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 
@@ -107,16 +107,16 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	userId := c.Param("userid")
 	content, err1 := h.db.GetCommentByIdx(idx)
 	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "No data to delete."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err1.Error()})
 		return
 	} else if content.RegisterId != userId {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can delete data only create user."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestDoNotCreateUser})
 		return
 	}
 
 	err = h.db.DeleteComments(idx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete data."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, err)

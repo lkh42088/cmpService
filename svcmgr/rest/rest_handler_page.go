@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"cmpService/common/lib"
 	"cmpService/common/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -8,15 +9,26 @@ import (
 )
 
 func (h *Handler) GetDevicesForPage(c *gin.Context) {
-	//fmt.Println("GetDevicesForPage")
 	if h.db == nil {
 		return
 	}
 
 	// Parse params
-	size, _ := strconv.Atoi(c.Param("size"))
-	cnt, _ := strconv.Atoi(c.Param("checkcnt"))
-	dir, _ := strconv.Atoi(c.Param("dir"))
+	size, err := strconv.Atoi(c.Param("size"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+	cnt, err := strconv.Atoi(c.Param("checkcnt"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+	dir, err := strconv.Atoi(c.Param("dir"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
 	page := models.PageCreteria{
 		DeviceType : c.Param("type"),
 		OrderKey: c.Param("order"),

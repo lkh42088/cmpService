@@ -25,9 +25,15 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 }
 
 // User, Company, Auth
-func (db *DBORM) GetCompaniesByName(name string) (companies []models.Company, err error) {
+func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResponse, err error) {
 	name = "%" + name + "%"
-	return companies, db.Where("cp_name like ?", name).Find(&companies).Error
+	return companies, db.
+		//Debug().
+		Table("company_tb").
+		Select(CompanyAndUserIdSelectQuery).
+		Where("cp_name like ?", name).
+		Joins(CompanyAndUserJoinQuery).
+		Find(&companies).Error
 }
 
 func (db *DBORM) GetUserByUserId(userId string) (user models.User, err error) {
