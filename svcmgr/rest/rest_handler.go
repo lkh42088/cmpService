@@ -269,7 +269,7 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 		field = defaultField
 	}
 	code := c.Param("value")
-	devices, err := h.db.GetDeviceWithCondition(deviceType, field, code)
+	devices, err := h.db.GetDeviceWithJoin(deviceType, field, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

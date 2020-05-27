@@ -17,7 +17,7 @@ func ValidateUser(user models.User, err []string) []string {
 	if len(user.Password) < 4 {
 		err = append(err, "Invalid password, Password should be more than 4 characters")
 	}
-	if len(user.ID) < 1 {
+	if len(user.UserId) < 1 {
 		err = append(err, "Invalid id, please enter a name")
 	}
 	if len(user.Name) < 1 {

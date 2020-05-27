@@ -33,6 +33,8 @@ type HandlerInterface interface {
 	DeleteLogByIdx(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
+	// Company
+	GetCompaniesByName(c *gin.Context)
 	// Monitoring
 	GetDevicesMonitoring(c *gin.Context)
 	AddDevicesMonitoring(c *gin.Context)
@@ -101,6 +103,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
 
+	// Company
+	router.GET("/v1/companies/:name", h.GetCompaniesByName)
+
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
 	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
@@ -117,6 +122,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
 	router.GET("/api/auth/emailconfirm/:secret", h.EmailConfirm)
+	router.GET("/api/auth/emailconfirm/:id/:email/:secret", h.EmailConfirm)
 	return router.Run(address)
 }
 

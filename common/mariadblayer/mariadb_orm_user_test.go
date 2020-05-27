@@ -21,11 +21,11 @@ func TestAddUser(t *testing.T) {
 		return
 	}
 	user := models.User {
-		ID:"jungbh",
-		Password: "nubes1510",
-		Email: "jungbh@cmpService-bridge.com",
-		Name: "jungbh",
-		Level: 10,
+		//ID:"jungbh",
+		//Password: "nubes1510",
+		//Email: "jungbh@cmpService-bridge.com",
+		//Name: "jungbh",
+		//Level: 10,
 	}
 	user, err = db.AddUser(user)
 	fmt.Println(user)

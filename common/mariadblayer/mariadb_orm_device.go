@@ -3,7 +3,6 @@ package mariadblayer
 import (
 	"cmpService/common/models"
 	"errors"
-	"fmt"
 )
 
 const outFlagField = "out_flag"
@@ -74,16 +73,40 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 	return pd, db.Delete(&pd).Error
 }
 
-func (db *DBORM) GetDeviceWithCondition(device string, field string, condition string) (
+func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string) (
 	interface{}, error) {
 	dbField := ConvertToColumn(field)
 	where := GetWhereString(dbField)
-	fmt.Println(where)
 	var dc interface{}
 	if GetTableConfig(&dc, device) == false {
 		return nil, errors.New("[Error] Need to device selection.\n")
 	}
-	return dc, db.Where(where, condition).Find(dc).Error
+
+	manufacture, deviceType, tableName := GetDeviceQuery(device)
+	var selectString string
+	var sizeQueryString string
+	if device == "part" {
+		selectString = PageSelectQuery
+		sizeQueryString = ""
+	} else {
+		selectString = SizeSelectQuery+","+PageSelectQuery
+		sizeQueryString = SizeJoinQuery
+	}
+	return dc, db.
+		//Debug().
+		Select(selectString).
+		Table(tableName).
+		Joins(manufacture).
+		Joins(ModelJoinQuery).
+		Joins(deviceType).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(sizeQueryString).
+		Joins(CompanyLeftJoinQuery).
+		Where(where, condition).
+		Find(dc).Error
 
 }
 
@@ -103,14 +126,35 @@ func GetWhereString(field string) string {
 func GetTableConfig(data *interface{}, device string) bool {
 	switch device {
 	case "server":
-		*data = &[]models.DeviceServer{}
+		*data = &[]models.DeviceServerResponse{}
 	case "network":
-		*data = &[]models.DeviceNetwork{}
+		*data = &[]models.DeviceNetworkResponse{}
 	case "part":
-		*data = &[]models.DevicePart{}
+		*data = &[]models.DevicePartResponse{}
 	default:
 		return false
 
 	}
 	return true
+}
+
+func GetDeviceQuery(device string) (string, string, string) {
+	var manufacture string
+	var deviceType string
+	var tableName string
+	switch device {
+	case "server":
+		manufacture = ManufactureServerJoinQuery
+		deviceType = DeviceTypeServerJoinQuery
+		tableName = ServerTable
+	case "network":
+		manufacture = ManufactureNetworkJoinQuery
+		deviceType = DeviceTypeNetworkJoinQuery
+		tableName = NetworkTable
+	case "part":
+		manufacture = ManufacturePartJoinQuery
+		deviceType = DeviceTypePartJoinQuery
+		tableName = PartTable
+	}
+	return manufacture, deviceType, tableName
 }
