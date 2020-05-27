@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 const defaultField = "device_code"
@@ -295,20 +296,20 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	tableName := GetDeviceTable(c.Param("type"))
 
 	// data parsing
-	m, errtmp := JsonUnmarshal(c.Request.Body)
-	if errtmp != nil {
+	dataSet, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
-	fmt.Println("[JSON]", m)	// todo
+	fmt.Println("[JSON]", dataSet)	// todo
 
-	err := c.ShouldBindJSON(&dc)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
-		return
-	}
+	dc = DeviceDataParsing(c.Param("type"), dataSet)
 
-	fmt.Println("[BIND]", dc)	// todo
+	//err := c.ShouldBindJSON(&dc)
+	//if err != nil {
+	//	c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+	//	return
+	//}
 
 	err = h.db.AddDevice(dc, tableName)
 	if err != nil {
@@ -352,4 +353,69 @@ func GetDeviceTable(device string) string {
 		tableName = PartTableName
 	}
 	return tableName
+}
+
+func DeviceDataParsing(device string, data map[string]interface{}) interface{} {
+	if data == nil {
+		return nil
+	}
+
+	common := models.DeviceCommon{
+		OutFlag:          data["OutFlag"].(bool),
+		CommentCnt:       data["CommentCnt"].(int),
+		CommentLastDate:  data["CommentLastDate"].(time.Time),
+		RegisterId:       data["RegisterId"].(string),
+		RegisterDate:     time.Now(),
+		DeviceCode:       data["DeviceCode"].(string),
+		Model:            data["Model"].(int),
+		Contents:         data["Contents"].(string),
+		Customer:         data["Customer"].(string),
+		Manufacture:      data["Manufacture"].(int),
+		DeviceType:       data["DeviceType"].(int),
+		WarehousingDate:  data["WarehousingDate"].(string),
+		RentDate:         data["RentDate"].(string),
+		Ownership:        data["Ownership"].(string),
+		OwnershipDiv:     data["OwnershipDiv"].(string),
+		OwnerCompany:     data["OwnerCompany"].(string),
+		HwSn:             data["HwSn"].(string),
+		IDC:              data["IDC"].(int),
+		Rack:             data["Rack"].(int),
+		Cost:             data["Cost"].(string),
+		Purpos:           data["Purpos"].(string),
+		MonitoringFlag:   data["MonitoringFlag"].(int),
+		MonitoringMethod: data["MonitoringMethod"].(int),
+	}
+
+	var dc interface{}
+	switch device {
+	case "server":
+		dc = models.DeviceServer{
+			DeviceCommon: 	common,
+			Ip:           	data["Ip"].(string),
+			Size:         	data["Size"].(int),
+			Spla:         	data["Spla"].(string),
+			Cpu:          	data["Cpu"].(string),
+			Memory:       	data["Memory"].(string),
+			Hdd:          	data["Hdd"].(string),
+			RackTag:      	data["RackTag"].(string),
+			RackLoc:      	data["RackLoc"].(int),
+		}
+	case "network":
+		dc = models.DeviceNetwork{
+			DeviceCommon:  	common,
+			Ip:           	data["Ip"].(string),
+			Size:         	data["Size"].(int),
+			FirmwareVersion:data["FirmwareVersion"].(string),
+			RackTag:      	data["RackTag"].(string),
+			RackLoc:      	data["RackLoc"].(int),
+		}
+	case "part":
+		dc = models.DevicePart{
+			DeviceCommon: 	common,
+			Warranty:     	data["Warranty"].(string),
+			RackCode:     	0,
+		}
+	}
+
+	return dc
 }
