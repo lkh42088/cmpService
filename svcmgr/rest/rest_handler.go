@@ -293,9 +293,11 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		dc = new(models.DevicePart)
 	}
 	tableName := GetDeviceTable(c.Param("type"))
+	fmt.Println("[Req.Body]", c.Request.Body)
+	fmt.Println("[Req]", c.Request)			//todo
 	err := c.ShouldBindJSON(&dc)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
+		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
 	}
 

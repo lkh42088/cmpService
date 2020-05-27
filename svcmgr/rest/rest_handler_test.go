@@ -138,7 +138,7 @@ func TestAddDevice(t *testing.T) {
 		RackLoc:  0,
 	}
 
-	url := "http://0.0.0.0:8081/v1/device/server"
+	url := "http://0.0.0.0:8081/v1/device/create/server"
 	pbytes, _ := json.Marshal(data)
 	buff := bytes.NewBuffer(pbytes)
 
