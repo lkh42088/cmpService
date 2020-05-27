@@ -97,7 +97,7 @@ type DeviceCommonResponse struct {
 	Rack             string    `gorm:"column:rack_cd"`
 	Cost             string    `gorm:"type:varchar(255);column:cost"`
 	Purpos           string    `gorm:"type:varchar(255);column:purpos"`
-	MonitoringFlag   bool       `gorm:"type:tinyint(1);column:monitoring_flag" json:"type:bool"`
+	MonitoringFlag   bool      `gorm:"type:tinyint(1);column:monitoring_flag" json:"type:bool"`
 	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method" json:"type:int"`
 }
 
