@@ -14,7 +14,7 @@ func (h *Handler) GetCommentsByCode(c *gin.Context) {
 	deviceCode := c.Param("devicecode")
 	comments, err := h.db.GetComments(deviceCode)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get data."})
 		return
 	}
 	//fmt.Println("[###] %v", comments)
@@ -50,7 +50,7 @@ func (h *Handler) AddComment(c *gin.Context) {
 
 	err = h.db.AddComment(comment)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add data."})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
@@ -78,7 +78,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	// User-Id check
 	content, err1 := h.db.GetCommentByIdx(int(comment.Idx))
 	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No data to delete."})
 		return
 	} else if content.RegisterId != comment.RegisterId {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can modify data by create user."})
@@ -87,7 +87,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 
 	err = h.db.UpdateComment(comment)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to updata data."})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
@@ -99,7 +99,7 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	}
 	idx, err := strconv.Atoi(c.Param("commentidx"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid parameter(comment-idx)."})
 		return
 	}
 
@@ -107,16 +107,16 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	userId := c.Param("userid")
 	content, err1 := h.db.GetCommentByIdx(idx)
 	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No data to delete."})
 		return
 	} else if content.RegisterId != userId {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can modify data by create user."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can delete data only create user."})
 		return
 	}
 
 	err = h.db.DeleteComments(idx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete data."})
 		return
 	}
 	c.JSON(http.StatusOK, err)

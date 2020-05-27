@@ -43,7 +43,6 @@ type DeviceServer struct {
 	Cpu              string    `gorm:"type:varchar(255);column:cpu;comment:'CPU'"`
 	Memory           string    `gorm:"type:varchar(255);column:memory;comment:'MEMORY'"`
 	Hdd              string    `gorm:"type:varchar(255);column:hdd;comment:'HDD'"`
-	RackCode		 int	   `gorm:"type:int(11);column:rack_code_cd;comment:'Rack 코드'"`
 	RackTag			 string	   `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'"`
 	RackLoc			 int	   `gorm:"type:int(11);column:rack_loc;comment:'Rack 내 위치 번호'"`
 }
@@ -57,7 +56,6 @@ type DeviceNetwork struct {
 	Ip               string    `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'"`
 	Size             int       `gorm:"column:size_cd;comment:'크기'"`
 	FirmwareVersion  string    `gorm:"type:varchar(50);column:firmware_version;comment:'펌웨어 버전'"`
-	RackCode		 int	   `gorm:"type:int(11);column:rack_code_cd;comment:'Rack 코드'"`
 	RackTag			 string	   `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'"`
 	RackLoc			 int	   `gorm:"type:int(11);column:rack_loc;comment:'Rack 내 위치 번호'"`
 }
@@ -69,6 +67,7 @@ func (DeviceNetwork) TableName() string {
 type DevicePart struct {
 	DeviceCommon
 	Warranty         string    `gorm:"type:varchar(255);column:warranty;comment:'WARRANTY'"`
+	RackCode		 int	   `gorm:"type:int(11);column:rack_code_cd;comment:'Rack 사이즈 코드'"`
 }
 
 func (DevicePart) TableName() string {

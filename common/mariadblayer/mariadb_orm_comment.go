@@ -5,7 +5,7 @@ import (
 )
 
 const defaultFieldName = "device_code"
-const idxFieldName = "idx"
+const idxFieldName = "comment_idx"
 const contentsFieldName = "contents"
 
 func (db *DBORM) GetAllComments() (comments []models.DeviceComment, err error) {
