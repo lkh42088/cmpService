@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"cmpService/common/lib"
 	"cmpService/common/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -69,7 +70,7 @@ func (h *Handler) AddCode(c *gin.Context) {
 	var code models.Code
 	err := c.ShouldBindJSON(&code)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
 	code, err = h.db.AddCode(code)
@@ -87,7 +88,7 @@ func (h *Handler) AddSubCode(c *gin.Context) {
 	var subcode models.SubCode
 	err := c.ShouldBindJSON(&subcode)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
 	subcode, err = h.db.AddSubCode(subcode)
@@ -105,7 +106,7 @@ func (h *Handler) DeleteCode(c *gin.Context) {
 	p := c.Param("id")
 	id, err := strconv.Atoi(p)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 	code := models.Code{
@@ -122,7 +123,7 @@ func (h *Handler) DeleteSubCode(c *gin.Context) {
 	p := c.Param("id")
 	id, err := strconv.Atoi(p)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 	code := models.Code{
@@ -163,18 +164,11 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 		return
 	}
 	deviceType := c.Param("type")
-	/*	fmt.Println("GetDevicesByList1 : ",p)
-		deviceType, err := strconv.Atoi(p)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
-			return
-		}
-		fmt.Println("GetDevicesByList2")*/
 
 	f := c.Param("outFlag")
 	outFlag, err := strconv.Atoi(f)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 
@@ -213,18 +207,11 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 		return
 	}
 	deviceType := c.Param("type")
-	/*	fmt.Println("GetDevicesByList1 : ",p)
-		deviceType, err := strconv.Atoi(p)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
-			return
-		}
-		fmt.Println("GetDevicesByList2")*/
 
 	f := c.Param("idx")
 	idx, err := strconv.Atoi(f)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
 		return
 	}
 
@@ -287,7 +274,7 @@ func (h *Handler) AddDevicesMonitoring(c *gin.Context) {
 	var msg DeviceMonitoringRequest
 	err := c.ShouldBindJSON(&msg)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
 	c.JSON(http.StatusOK, msg)
@@ -308,7 +295,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	tableName := GetDeviceTable(c.Param("type"))
 	err := c.ShouldBindJSON(&dc)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
 
@@ -327,7 +314,7 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	flag, _ := strconv.Atoi(c.Param("outFlag"))
 	values, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
 	//fmt.Println(values)

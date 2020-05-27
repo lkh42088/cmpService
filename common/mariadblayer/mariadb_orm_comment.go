@@ -5,7 +5,7 @@ import (
 )
 
 const defaultFieldName = "device_code"
-const idxFieldName = "idx"
+const idxFieldName = "comment_idx"
 const contentsFieldName = "contents"
 
 func (db *DBORM) GetAllComments() (comments []models.DeviceComment, err error) {
@@ -17,7 +17,7 @@ func (db *DBORM) GetComments(code string) (comments []models.DeviceComment, err 
 	return comments, db.
 		//Debug().
 		Select(CommentSelectQuery).
-		Joins(CompanyAndCommentJoinQuery).
+		Joins(CompanyAndCommentLeftJoinQuery).
 		Where(where, code).
 		Find(&comments).Error
 }

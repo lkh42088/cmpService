@@ -69,22 +69,22 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// Code
 	router.GET("/v1/codes", h.GetCodes)
 	router.GET("/v1/codes/:code/:subcode", h.GetCodeList)
-	router.POST("/v1/code", h.AddCode)
-	router.DELETE("/v1/code/:id", h.DeleteCode)
-	router.DELETE("/v1/codes", h.DeleteCodes)
+	router.POST("/v1/code/create", h.AddCode)
+	router.DELETE("/v1/code/delete/:id", h.DeleteCode)
+	router.DELETE("/v1/codes/delete", h.DeleteCodes)
 
 	// SubCode
 	router.GET("/v1/subcodes", h.GetSubCodes)
-	router.POST("/v1/subcode", h.AddSubCode)
-	router.DELETE("/v1/subcode/:id", h.DeleteSubCode)
-	router.DELETE("/v1/subcodes", h.DeleteSubCodes)
+	router.POST("/v1/subcode/create", h.AddSubCode)
+	router.DELETE("/v1/subcode/delete/:id", h.DeleteSubCode)
+	router.DELETE("/v1/subcodes/delete", h.DeleteSubCodes)
 
 	// Devices
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
 	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
-	router.POST("/v1/device/:type", h.AddDevice)
-	router.PUT("/v1/device/:type/:outFlag", h.UpdateOutFlag)
+	router.POST("/v1/device/create/:type", h.AddDevice)
+	router.PUT("/v1/device/update/:type/:outFlag", h.UpdateOutFlag)
 
 	// Comment
 	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)
@@ -122,7 +122,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
 	router.GET("/api/auth/emailconfirm/:secret", h.EmailConfirm)
-	router.GET("/api/auth/emailconfirm/:id/:email/:secret", h.EmailConfirm)
+	router.GET("/api/auth/emailconfirm/:secret/:id/:email", h.EmailConfirm)
 	return router.Run(address)
 }
 

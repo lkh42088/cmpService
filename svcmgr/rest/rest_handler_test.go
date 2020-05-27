@@ -134,7 +134,6 @@ func TestAddDevice(t *testing.T) {
 		Cpu:"",
 		Memory:"",
 		Hdd:"",
-		RackCode: 0,
 		RackTag:  "",
 		RackLoc:  0,
 	}
