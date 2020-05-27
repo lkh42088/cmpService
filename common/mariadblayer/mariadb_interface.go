@@ -64,6 +64,7 @@ type MariaDBLayer interface {
 
 	// User, Customer, Auth
 	GetCompaniesByName(name string) ([]models.Company, error)
+	GetUserByUserId(userId string) (models.User, error)
 	AddUserMember(user models.User) error
 	AddCompany(company models.Company) (models.Company, error)
 	AddAuth(auth models.Auth) error

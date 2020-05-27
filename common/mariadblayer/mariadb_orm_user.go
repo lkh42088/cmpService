@@ -27,7 +27,11 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 // User, Company, Auth
 func (db *DBORM) GetCompaniesByName(name string) (companies []models.Company, err error) {
 	name = "%" + name + "%"
-	return companies, db.Debug().Where("cp_name like ?", name).Find(&companies).Error
+	return companies, db.Where("cp_name like ?", name).Find(&companies).Error
+}
+
+func (db *DBORM) GetUserByUserId(userId string) (user models.User, err error) {
+	return user, db.Where("user_id = ?", userId).Find(&user).Error
 }
 
 func (db *DBORM) AddUserMember(user models.User) error {

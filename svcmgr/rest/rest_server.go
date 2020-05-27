@@ -122,7 +122,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
 	router.GET("/api/auth/emailconfirm/:secret", h.EmailConfirm)
-	router.GET("/api/auth/emailconfirm/:id/:email/:secret", h.EmailConfirm)
+	router.GET("/api/auth/emailconfirm/:secret/:id/:email", h.EmailConfirm)
 	return router.Run(address)
 }
 

@@ -32,10 +32,20 @@ func (h *Handler) AddComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error":"Message parameter abnormal."})
 		return
 	}
+
+	// Find user name
+	userId := m["registerId"].(string)
+	user, err := h.db.GetUserByUserId(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":"Can't find register-id."})
+		return
+	}
+
 	comment := models.DeviceComment{
 		DeviceCode: m["deviceCode"].(string),
 		Contents: m["comment"].(string),
-		RegisterId: m["registerId"].(string),
+		RegisterId: userId,
+		RegisterName: user.Name,
 	}
 
 	err = h.db.AddComment(comment)
