@@ -126,7 +126,7 @@ func TestAddDevice(t *testing.T) {
 			Rack:163,
 			Cost:"",
 			Purpos:"",
-			MonitoringFlag:0,
+			MonitoringFlag:false,
 			MonitoringMethod:0},
 		Ip:"220.90.201.198|",
 		Size:19,
