@@ -359,14 +359,14 @@ func DeviceDataParsing(device string, data map[string]interface{}) interface{} {
 	if data == nil {
 		return nil
 	}
-	convertString, _ := strconv.Atoi(data["OutFlag"].(string))
-	outFlag := true
-	if convertString == 0 {
-		outFlag = false
-	}
+	//convertString, _ := strconv.Atoi(data["OutFlag"].(string))
+	//outFlag := true
+	//if convertString == 0 {
+	//	outFlag = false
+	//}
 
 	common := models.DeviceCommon{
-		OutFlag:          outFlag,
+		OutFlag:          data["OutFlag"].(bool),
 		CommentCnt:       data["CommentCnt"].(int),	//todo
 		CommentLastDate:  data["CommentLastDate"].(time.Time),
 		RegisterId:       data["RegisterId"].(string),
