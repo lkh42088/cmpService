@@ -359,14 +359,19 @@ func DeviceDataParsing(device string, data map[string]interface{}) interface{} {
 	if data == nil {
 		return nil
 	}
+	convertString, _ := strconv.Atoi(data["OutFlag"].(string))
+	outFlag := true
+	if convertString == 0 {
+		outFlag = false
+	}
 
 	common := models.DeviceCommon{
-		OutFlag:          data["OutFlag"].(bool),
-		CommentCnt:       data["CommentCnt"].(int),
+		OutFlag:          outFlag,
+		CommentCnt:       data["CommentCnt"].(int),	//todo
 		CommentLastDate:  data["CommentLastDate"].(time.Time),
 		RegisterId:       data["RegisterId"].(string),
 		RegisterDate:     time.Now(),
-		DeviceCode:       data["DeviceCode"].(string),
+		DeviceCode:       data["DeviceCode"].(string), //todo
 		Model:            data["Model"].(int),
 		Contents:         data["Contents"].(string),
 		Customer:         data["Customer"].(string),
@@ -413,9 +418,17 @@ func DeviceDataParsing(device string, data map[string]interface{}) interface{} {
 		dc = models.DevicePart{
 			DeviceCommon: 	common,
 			Warranty:     	data["Warranty"].(string),
-			RackCode:     	0,
+			RackCode:     	0,	// todo
 		}
 	}
 
 	return dc
 }
+
+//func MakeDeviceCode(device string) string {
+//	tableName := GetDeviceTable(device)
+//	code := GetLastDeviceCode(tableName)
+//	prifix := code[:2]
+//	num, err := strconv.Atoi(code[2:])
+//
+//}
