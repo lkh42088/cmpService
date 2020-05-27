@@ -293,13 +293,22 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		dc = new(models.DevicePart)
 	}
 	tableName := GetDeviceTable(c.Param("type"))
-	fmt.Println("[Req.Body]", c.Request.Body)
-	fmt.Println("[Req]", c.Request)			//todo
+
+	// data parsing
+	m, errtmp := JsonUnmarshal(c.Request.Body)
+	if errtmp != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+	fmt.Println("[JSON]", m)	// todo
+
 	err := c.ShouldBindJSON(&dc)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
 	}
+
+	fmt.Println("[BIND]", dc)	// todo
 
 	err = h.db.AddDevice(dc, tableName)
 	if err != nil {
