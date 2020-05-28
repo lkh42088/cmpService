@@ -63,18 +63,18 @@ func (UserEmailAuth) TableName() string {
 }
 
 type Company struct {
-	Idx				uint		`gorm:"primary_key;column:cp_idx;auto_increment;comment:'INDEX'" json:"Idx"`
-	Name			string		`gorm:"type:varchar(255);not null;column:cp_name;comment:'회사명'" json:"Name"`
-	Email			string		`gorm:"type:varchar(255);column:cp_email;comment:'이메일'" json:"Email"`
-	Homepage		string		`gorm:"type:varchar(255);column:cp_homepage;comment:'홈페이지'" json:"Homepage"`
-	Tel				string		`gorm:"type:varchar(15);column:cp_tel;comment:'전화 번호'" json:"Tel"`
-	HP				string		`gorm:"type:varchar(15);column:cp_hp;comment:'핸드폰 번호'" json:"Hp"`
-	Zipcode			string		`gorm:"type:varchar(15);not null;column:cp_zip;comment:'우편 번호'" json:"Zipcode"`
-	Address			string		`gorm:"type:varchar(255);not null;column:cp_addr;comment:'주소'" json:"Address"`
-	AddressDetail	string		`gorm:"type:varchar(255);not null;column:cp_addr_detail;comment:'상세 주소'" json:"AddressDetail"`
-	TermDate		time.Time	`gorm:"type:datetime;column:cp_termination_date;comment:'해지 일자'" json:"TermDate"`
-	IsCompany		bool 		`gorm:"type:tinyint(1);column:cp_is_company;default:1;comment:'회사 여부'" json:"IsCompany"`
-	Memo			string		`gorm:"type:text;column:cp_memo;comment:'메모'" json:"Memo"`
+	Idx				uint		`gorm:"primary_key;column:cp_idx;auto_increment;comment:'INDEX'" json:"idx"`
+	Name			string		`gorm:"type:varchar(255);not null;column:cp_name;comment:'회사명'" json:"name"`
+	Email			string		`gorm:"type:varchar(255);column:cp_email;comment:'이메일'" json:"email"`
+	Homepage		string		`gorm:"type:varchar(255);column:cp_homepage;comment:'홈페이지'" json:"homepage"`
+	Tel				string		`gorm:"type:varchar(15);column:cp_tel;comment:'전화 번호'" json:"tel"`
+	HP				string		`gorm:"type:varchar(15);column:cp_hp;comment:'핸드폰 번호'" json:"hp"`
+	Zipcode			string		`gorm:"type:varchar(15);not null;column:cp_zip;comment:'우편 번호'" json:"zipcode"`
+	Address			string		`gorm:"type:varchar(255);not null;column:cp_addr;comment:'주소'" json:"address"`
+	AddressDetail	string		`gorm:"type:varchar(255);not null;column:cp_addr_detail;comment:'상세 주소'" json:"addressDetail"`
+	TermDate		time.Time	`gorm:"type:datetime;column:cp_termination_date;comment:'해지 일자'" json:"termDate"`
+	IsCompany		bool 		`gorm:"type:tinyint(1);column:cp_is_company;default:1;comment:'회사 여부'" json:"isCompany"`
+	Memo			string		`gorm:"type:text;column:cp_memo;comment:'메모'" json:"memo"`
 }
 
 func (Company) TableName() string {
