@@ -81,9 +81,10 @@ type MariaDBLayer interface {
 
 	// User Email Authentication
 	GetAllUserEmailAuth() (objs []models.UserEmailAuth, err error)
-	GetUserEmailAuthByUniqId(uniqId string) (userEmailAuth models.UserEmailAuth, err error)
+	GetUserEmailAuthByIdAndEmail(id, email string) (userEmailAuth models.UserEmailAuth, err error)
 	AddUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
 	DeleteUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
+	DeleteUserEmailAuthByUserId(id string) ([]models.UserEmailAuth, error)
 	UpdateUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
 }
 

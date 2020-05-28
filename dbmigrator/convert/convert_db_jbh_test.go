@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-
 func TestJbhCreateNewMariadbDb(t *testing.T) {
 	config.SetConfig(getDbConfig("dbmigrator.jbh.conf"))
 	CreateNewMariadbTable()

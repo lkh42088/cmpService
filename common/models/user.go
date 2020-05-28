@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	Idx				uint		`gorm:"primary_key;column:user_idx;auto_increment;comment:'INDEX'"`
+	Idx				uint		`gorm:"primary_key;column:user_idx;not null;auto_increment;comment:'INDEX'"`
 	UserId 			string		`gorm:"unique;type:varchar(50);column:user_id;comment:'유저 ID'"`
 	Password		string		`gorm:"type:varchar(255);not null;column:user_password;comment:'패스워드'"`
 	Name			string		`gorm:"type:varchar(255);not null;column:user_name;comment:'유저 이름'"`
@@ -25,8 +25,8 @@ type User struct {
 	WorkScope		string		`gorm:"type:varchar(15);column:user_work_scope;comment:'업무 구분'"`
 	Department		string		`gorm:"type:varchar(15);column:user_department;comment:'부서'"`
 	Position		string		`gorm:"type:varchar(15);column:user_position;comment:'직급'"`
-	EmailAuth 		bool 		`gorm:"type:tinyint(1);default:0;column:user_email_auth_flag;comment:'개인 이메일 인증'"`
-	GroupEmailAuth 	bool 		`gorm:"type:tinyint(1);default:0;column:user_group_email_auth_flag;comment:'그룹 이메일 인증'"`
+	EmailAuth 		bool 		`gorm:"type:tinyint(1);default:false;column:user_email_auth_flag;comment:'개인 이메일 인증'"`
+	GroupEmailAuth 	bool 		`gorm:"type:tinyint(1);default:false;column:user_group_email_auth_flag;comment:'그룹 이메일 인증'"`
 	RegisterDate	time.Time	`gorm:"type:datetime;default:CURRENT_TIMESTAMP;column:user_register_date;comment:'등록일'"`
 	LastAccessDate	time.Time	`gorm:"type:datetime;column:user_last_access_date;comment:'최근 로그인 날짜'"`
 	LastAccessIp	string		`gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'"`
@@ -37,19 +37,16 @@ func (User) TableName() string {
 }
 
 type UserEmailAuth struct {
-	UserEmailAuthID int `gorm:"primary_key;column:idx"`
-	// Unique Id : UserId + Email
-	// e.g) UniqueId = adminhonggildong@conbridge.com
-	//      UserID = admin
-	//      Email = honggildong@conbridge.com
-	UniqId string `gorm:"type:varchar(128);column:uniqid"`
-	UserId string `gorm:"type:varchar(32);column:userid"`
-	Email string `gorm:"type:varchar(64);column:email"`
-	EmailAuthConfirm bool `gorm:"column:email_auth_confirm" json:"-"`
+	UserEmailAuthID uint `gorm:"primary_key;column:uea_idx:not null"`
+	User User `gorm:"foreignkey:Idx"`
+	UserIdx uint `gorm:"column:user_idx"`
+	UserId string `gorm:"type:varchar(32);column:uea_user_id"`
+	Email string `gorm:"type:varchar(64);column:uea_email"`
+	EmailAuthConfirm bool `gorm:"column:uea_confirm" json:"-"`
 	// EmailAuthStore : token + secret key
 	//   - token : when to login, generate JWT token
 	//   - secrete key : when to check email authentication, generate UUID as secret key
-	EmailAuthStore string `gorm:"type:varchar(255);column:email_auth_store" json:"-"`
+	EmailAuthStore string `gorm:"type:varchar(255);column:uea_store" json:"-"`
 }
 
 type UserEmailAuthMsg struct {
@@ -119,5 +116,4 @@ func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
-
 

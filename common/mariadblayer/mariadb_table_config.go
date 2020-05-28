@@ -51,14 +51,16 @@ func CreateTable(db *gorm.DB) {
 	}
 	if db.HasTable(&models.UserEmailAuth{}) == false {
 		db.AutoMigrate(&models.UserEmailAuth{})
+		db.Model(&models.UserEmailAuth{}).AddForeignKey("user_idx",
+			"user_tb(user_idx)", "RESTRICT", "RESTRICT") // or CASCADE
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.UserEmailAuth{})
 	}
 
 	// User(temp), Customer, Auth
-	if db.HasTable(&models.User{}) == false {
-		db.AutoMigrate(&models.User{})
-		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.User{})
-	}
+	//if db.HasTable(&models.User{}) == false {
+	//	db.AutoMigrate(&models.User{})
+	//	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.User{})
+	//}
 	if db.HasTable(&models.Company{}) == false {
 		db.AutoMigrate(&models.Company{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.Company{})
