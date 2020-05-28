@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"reflect"
 	"strconv"
 )
 
@@ -245,6 +246,7 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 }
 
 // Search Devices
+// With join
 // default field : device_code
 func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	if h.db == nil {
@@ -257,6 +259,22 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	}
 	code := c.Param("value")
 	devices, err := h.db.GetDeviceWithJoin(deviceType, field, code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	//fmt.Println("[###] %v", devices)
+	c.JSON(http.StatusOK, devices)
+}
+
+// Without join
+func (h *Handler) GetDeviceWithoutJoin(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+	code := c.Param("value")
+	devices, err := h.db.GetDeviceWithoutJoin(deviceType, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -298,6 +316,12 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	//fmt.Println(dc)		// data check
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		return
+	}
+
+	err = MakeDeviceCode(h, device, &dc)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -345,17 +369,40 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-func MakeDeviceCode(h *Handler, dc interface{}) (string, error) {
-	data, dbErr := h.db.GetLastDeviceCode(dc)
-	if dbErr != nil {
-		return "", dbErr
+func MakeDeviceCode(h *Handler, device string, dc *interface{}) error {
+	var code string
+	switch device {
+	case "server":
+		data, _ := h.db.GetLastDeviceCodeInServer()
+		code = data.DeviceCode
+	case "network":
+		data, _ := h.db.GetLastDeviceCodeInNetwork()
+		code = data.DeviceCode
+	case "part":
+		data, _ := h.db.GetLastDeviceCodeInPart()
+		code = data.DeviceCode
 	}
-	code := data.(models.DeviceServer).DeviceCode
-	prefix := code[:2]
-	num, err := strconv.Atoi(code[2:])
+	prefix := code[:3]
+	num, err := strconv.Atoi(code[3:])
 	if err != nil {
-		return "", err
+		return err
 	}
 	num++
-	return fmt.Sprintf("%s%5d", prefix, num), nil
+	code = fmt.Sprintf("%s%5d", prefix, num)
+	lib.LogWarn("[NEW Code] %s\n", code)
+
+	// find deviceCode field and set value
+	elements := reflect.ValueOf(*dc).Elem()
+	typeOf := reflect.TypeOf(*dc).Elem()
+	// find embedded struct : DeviceCommon
+	for i := 0; i < typeOf.NumField(); i++ {
+		if elements.Field(i).Kind() == reflect.Struct {
+			for j := 0; j < elements.Field(i).NumField(); j++ {
+				// DeviceCode field set value
+				elements.Field(i).FieldByName("DeviceCode").SetString(code)
+				return nil
+			}
+		}
+	}
+	return nil
 }

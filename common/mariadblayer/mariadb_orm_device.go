@@ -74,10 +74,28 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 
 }
 
-func (db *DBORM) GetLastDeviceCode(dc interface{}) (
+func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 	interface{}, error) {
-	err := db.Debug().Last(dc).Error
-	return dc, err
+	var dc interface{}
+	where := GetWhereString(defaultFieldName)
+	if GetTableConfig(&dc, device) == false {
+		return nil, errors.New("[Error] Need to device selection.\n")
+	}
+
+	_, _, tableName := GetDeviceQuery(device)
+	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInServer() (ds models.DeviceServer, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInNetwork() (ds models.DeviceNetwork, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInPart() (ds models.DevicePart, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
 }
 
 func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {

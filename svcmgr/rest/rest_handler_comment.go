@@ -27,27 +27,17 @@ func (h *Handler) AddComment(c *gin.Context) {
 		return
 	}
 
-	// data parsing
-	m, err := JsonUnmarshal(c.Request.Body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
-		return
-	}
+	var comment models.DeviceComment
+	c.ShouldBindJSON(&comment)
 
 	// Find user name
-	userId := m["registerId"].(string)
+	userId := comment.RegisterId
 	user, err := h.db.GetUserByUserId(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
 	}
-
-	comment := models.DeviceComment{
-		DeviceCode: m["deviceCode"].(string),
-		Contents: m["comment"].(string),
-		RegisterId: userId,
-		RegisterName: user.Name,
-	}
+	comment.RegisterName = user.Name
 
 	err = h.db.AddComment(comment)
 	if err != nil {
@@ -62,23 +52,13 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 		return
 	}
 
-	// data parsing
-	m, err := JsonUnmarshal(c.Request.Body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
-		return
-	}
-
-	value, _ := m["idx"].(float64)
-	comment := models.DeviceComment{
-		Idx: uint(int(value)),
-		Contents: m["comment"].(string),
-	}
+	var comment models.DeviceComment
+	c.ShouldBindJSON(&comment)
 
 	// User-Id check
-	content, err1 := h.db.GetCommentByIdx(int(comment.Idx))
-	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err1.Error()})
+	content, err := h.db.GetCommentByIdx(int(comment.Idx))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	} else if content.RegisterId != comment.RegisterId {
 		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestDoNotCreateUser})
@@ -87,7 +67,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 
 	err = h.db.UpdateComment(comment)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to updata data."})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update data."})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
