@@ -295,7 +295,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	tableName := GetDeviceTable(c.Param("type"))
 
 	err := c.ShouldBindJSON(&dc)
-	fmt.Println(dc)
+	//fmt.Println(dc)		// data check
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
@@ -345,10 +345,21 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-//func MakeDeviceCode(device string) string {
+//func MakeDeviceCode(device string) (string, error) {
 //	tableName := GetDeviceTable(device)
-//	code := GetLastDeviceCode(tableName)
-//	prifix := code[:2]
+//	code, dbErr := h.db.GetLastDeviceCode(tableName)
+//	if dbErr != nil {
+//		return "", dbErr
+//	}
+//	prefix := code[:2]
 //	num, err := strconv.Atoi(code[2:])
-//
+//	if err != nil {
+//		return "", err
+//	}
+//	num++
+//	code, err = fmt.Printf("%s%5d", prefix, num)
+//	if err != nil {
+//		return "", err
+//	}
+//	return code, nil
 //}

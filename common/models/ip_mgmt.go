@@ -3,18 +3,18 @@ package models
 import "time"
 
 type IpMgmt struct {
-	Idx				uint		`gorm:"primary_key;column:ip_idx;unsigned;auto_increment;comment:'INDEX'" json:"type:uint"`
-	DeviceCode		string		`gorm:"type:varchar(12);not null;column:device_code;comment:'장비 코드'"`
-	DevTag			string		`gorm:"type:varchar(50);not null;column:ip_dev_tag;comment:'DEVICE TAG'"`
-	NetworkId		int			`gorm:"type:int(11);not null;column:net_id_cd;comment:'네트워크 코드'" json:"type:int"`
-	DevIp			string		`gorm:"type:varchar(15);not null;column:ip;comment:'IP'"`
-	NatIp			string		`gorm:"type:varchar(15);column:ip_nat;comment:'NAT IP'"`
-	DevDesc			string		`gorm:"type:varchar(30);column:ip_pdesc;comment:'DEVICE 상세'"`
-	PortDesc		string		`gorm:"type:varchar(30);column:ip_port_desc;comment:'PORT 상세'"`
-	DevMemo			string		`gorm:"type:text;column:ip_memo;comment:'IP MEMO'"`
-	DevIpRegDate	time.Time	`gorm:"type:datetime;default:CURRENT_TIMESTAMP;column:ip_reg_date;comment:'IP 등록일'" json:"type:datetime"`
-	DevCommunity	string		`gorm:"type:varchar(50);not null;column:ip_comm;comment:'COMMUNITY'"`
-	DevUse			bool		`gorm:"type:tinyint(1);not null;default:1;column:ip_use_flag;comment:'사용 여부'" json:"type:datetime"`
+	Idx				uint		`gorm:"primary_key;column:ip_idx;unsigned;auto_increment;comment:'INDEX'" json:"idx"`
+	DeviceCode		string		`gorm:"type:varchar(12);not null;column:device_code;comment:'장비 코드'" json:"deviceCode"`
+	DevTag			string		`gorm:"type:varchar(50);not null;column:ip_dev_tag;comment:'DEVICE TAG'" json:"devTag"`
+	NetworkId		int			`gorm:"type:int(11);not null;column:net_id_cd;comment:'네트워크 코드'" json:"networkId"`
+	DevIp			string		`gorm:"type:varchar(15);not null;column:ip;comment:'IP'" json:"devIp"`
+	NatIp			string		`gorm:"type:varchar(15);column:ip_nat;comment:'NAT IP'" json:"natIp"`
+	DevDesc			string		`gorm:"type:varchar(30);column:ip_pdesc;comment:'DEVICE 상세'" json:"devDesc"`
+	PortDesc		string		`gorm:"type:varchar(30);column:ip_port_desc;comment:'PORT 상세'" json:"portDesc"`
+	DevMemo			string		`gorm:"type:text;column:ip_memo;comment:'IP MEMO'" json:"devMemo"`
+	DevIpRegDate	time.Time	`gorm:"type:datetime;default:CURRENT_TIMESTAMP;column:ip_reg_date;comment:'IP 등록일'" json:"devIpRegDate"`
+	DevCommunity	string		`gorm:"type:varchar(50);not null;column:ip_comm;comment:'COMMUNITY'" json:"devCommunity"`
+	DevUse			bool		`gorm:"type:tinyint(1);not null;default:1;column:ip_use_flag;comment:'사용 여부'" json:"devUse"`
 }
 
 func (IpMgmt) TableName() string {
@@ -22,14 +22,14 @@ func (IpMgmt) TableName() string {
 }
 
 type SubnetMgmt struct {
-	Idx				uint		`gorm:"primary_key;unsigned;auto_increment;column:sub_idx;comment:'INDEX'" json:"type:uint"`
-	DeviceCode		string		`gorm:"type:varchar(12);not null;column:device_code;comment:'장비 코드'"`
-	NetworkId		int			`gorm:"type:int(11);not null;column:net_id_cd;comment:'네트워크 코드'" json:"type:int"`
-	SubnetTag		string		`gorm:"type:varchar(255);not null;column:sub_tag;comment:'SUBNET TAG'"`
-	SubnetStart		string		`gorm:"type:varchar(15);not null;column:sub_ip_start;comment:'SUBNET START'"`
-	SubnetEnd		string		`gorm:"type:varchar(15);not null;column:sub_ip_end;comment:'SUBNET END'"`
-	SubnetMask		string		`gorm:"type:varchar(15);not null;column:sub_mask;comment:'SUBNET MASK'"`
-	Gateway			string		`gorm:"type:varchar(15);not null;column:sub_gateway;comment:'게이트웨이'"`
+	Idx				uint		`gorm:"primary_key;unsigned;auto_increment;column:sub_idx;comment:'INDEX'" json:"idx"`
+	DeviceCode		string		`gorm:"type:varchar(12);not null;column:device_code;comment:'장비 코드'" json:"deviceCode"`
+	NetworkId		int			`gorm:"type:int(11);not null;column:net_id_cd;comment:'네트워크 코드'" json:"networkId"`
+	SubnetTag		string		`gorm:"type:varchar(255);not null;column:sub_tag;comment:'SUBNET TAG'" json:"subnetTag"`
+	SubnetStart		string		`gorm:"type:varchar(15);not null;column:sub_ip_start;comment:'SUBNET START'" json:"subnetStart"`
+	SubnetEnd		string		`gorm:"type:varchar(15);not null;column:sub_ip_end;comment:'SUBNET END'" json:"subnetEnd"`
+	SubnetMask		string		`gorm:"type:varchar(15);not null;column:sub_mask;comment:'SUBNET MASK'" json:"subnetMask"`
+	Gateway			string		`gorm:"type:varchar(15);not null;column:sub_gateway;comment:'게이트웨이'" json:"gateway"`
 }
 
 func (SubnetMgmt) TableName() string {

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"fmt"
 )
 
 func (h *Handler) GetCommentsByCode(c *gin.Context) {
@@ -18,7 +19,7 @@ func (h *Handler) GetCommentsByCode(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
 		return
 	}
-	//fmt.Println("[###] %v", comments)
+	fmt.Println("[###] %v", comments)
 	c.JSON(http.StatusOK, comments)
 }
 

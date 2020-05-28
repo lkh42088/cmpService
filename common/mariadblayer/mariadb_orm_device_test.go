@@ -228,3 +228,14 @@ func TestDeviceAddEntry_Part(t *testing.T) {
 	device, err = db.AddDevicePart(device)
 	fmt.Println("collectdevice: ", device, "err:", err)
 }
+
+//func TestDBORM_GetLastDeviceCode(t *testing.T) {
+//	db, err := getTestDb()
+//	config := getTestLkhConfig()
+//	options := db.GetDataSourceName(config)
+//	db, err := NewDBORM(config.DBDriver, options)
+//	if err != nil {
+//		return
+//	}
+//	fmt.Println(db.GetLastDeviceCode("server"))
+//}
