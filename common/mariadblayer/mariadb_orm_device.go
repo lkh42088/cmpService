@@ -3,7 +3,6 @@ package mariadblayer
 import (
 	"cmpService/common/models"
 	"errors"
-	"reflect"
 )
 
 const outFlagField = "out_flag"
@@ -87,10 +86,16 @@ func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
 }
 
-func (db *DBORM) GetLastDeviceCode(dc interface{}) (interface{}, error) {
-	var ds interface{} = reflect.ValueOf(dc).Interface()
-	err := db.Debug().Last(&ds).Error
-	return ds, err
+func (db *DBORM) GetLastDeviceCodeInServer() (ds models.DeviceServer, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInNetwork() (ds models.DeviceNetwork, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInPart() (ds models.DevicePart, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
 }
 
 func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {
