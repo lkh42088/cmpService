@@ -24,6 +24,7 @@ type MariaDBLayer interface {
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
 	GetDeviceWithJoin(device string, field string, condition string) (interface{}, error)
+	GetDeviceWithoutJoin(device string, code string) (interface{}, error)
 	GetLastDeviceCode(dc interface{}) (interface{}, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)

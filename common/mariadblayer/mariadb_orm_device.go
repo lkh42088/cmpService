@@ -75,6 +75,18 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 
 }
 
+func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
+	interface{}, error) {
+	var dc interface{}
+	where := GetWhereString(defaultFieldName)
+	if GetTableConfig(&dc, device) == false {
+		return nil, errors.New("[Error] Need to device selection.\n")
+	}
+
+	_, _, tableName := GetDeviceQuery(device)
+	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
+}
+
 func (db *DBORM) GetLastDeviceCode(dc interface{}) (interface{}, error) {
 	var ds interface{} = reflect.ValueOf(dc).Interface()
 	err := db.Debug().Last(&ds).Error

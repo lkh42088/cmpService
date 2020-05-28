@@ -245,6 +245,7 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 }
 
 // Search Devices
+// With join
 // default field : device_code
 func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	if h.db == nil {
@@ -257,6 +258,22 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	}
 	code := c.Param("value")
 	devices, err := h.db.GetDeviceWithJoin(deviceType, field, code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	//fmt.Println("[###] %v", devices)
+	c.JSON(http.StatusOK, devices)
+}
+
+// Without join
+func (h *Handler) GetDeviceWithoutJoin(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+	code := c.Param("value")
+	devices, err := h.db.GetDeviceWithoutJoin(deviceType, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
