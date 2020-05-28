@@ -37,42 +37,6 @@ func (db *DBORM) GetDevicePart(deviceType string, idx int) (device []models.Devi
 	return device, db.Where("idx=?", idx).Find(&device).Error
 }
 
-func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {
-	return device, db.Create(&device).Error
-}
-
-func (db *DBORM) AddDeviceNetwork(device models.DeviceNetwork) (models.DeviceNetwork, error) {
-	return device, db.Create(&device).Error
-}
-
-func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, error) {
-	return device, db.Create(&device).Error
-}
-
-func (db *DBORM) DeleteAllDevicesServer() error {
-	return db.Delete(&models.DeviceServer{}).Error
-}
-
-func (db *DBORM) DeleteAllDevicesPart() error {
-	return db.Delete(&models.DevicePart{}).Error
-}
-
-func (db *DBORM) DeleteAllDevicesNetwork() error {
-	return db.Delete(&models.DeviceNetwork{}).Error
-}
-
-func (db *DBORM) DeleteDeviceServer(sd models.DeviceServer) (models.DeviceServer, error) {
-	return sd, db.Delete(&sd).Error
-}
-
-func (db *DBORM) DeleteDeviceNetwork(nd models.DeviceNetwork) (models.DeviceNetwork, error) {
-	return nd, db.Delete(&nd).Error
-}
-
-func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, error) {
-	return pd, db.Delete(&pd).Error
-}
-
 func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string) (
 	interface{}, error) {
 	dbField := ConvertToColumn(field)
@@ -110,8 +74,50 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 
 }
 
+func (db *DBORM) GetLastDeviceCode(dc interface{}) (
+	interface{}, error) {
+	err := db.Debug().Last(dc).Error
+	return dc, err
+}
+
+func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {
+	return device, db.Create(&device).Error
+}
+
+func (db *DBORM) AddDeviceNetwork(device models.DeviceNetwork) (models.DeviceNetwork, error) {
+	return device, db.Create(&device).Error
+}
+
+func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, error) {
+	return device, db.Create(&device).Error
+}
+
 func (db *DBORM) AddDevice(data interface{}, device string) error {
 	return db.Table(device).Create(data).Error
+}
+
+func (db *DBORM) DeleteAllDevicesServer() error {
+	return db.Delete(&models.DeviceServer{}).Error
+}
+
+func (db *DBORM) DeleteAllDevicesPart() error {
+	return db.Delete(&models.DevicePart{}).Error
+}
+
+func (db *DBORM) DeleteAllDevicesNetwork() error {
+	return db.Delete(&models.DeviceNetwork{}).Error
+}
+
+func (db *DBORM) DeleteDeviceServer(sd models.DeviceServer) (models.DeviceServer, error) {
+	return sd, db.Delete(&sd).Error
+}
+
+func (db *DBORM) DeleteDeviceNetwork(nd models.DeviceNetwork) (models.DeviceNetwork, error) {
+	return nd, db.Delete(&nd).Error
+}
+
+func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, error) {
+	return pd, db.Delete(&pd).Error
 }
 
 // Update OutFlag

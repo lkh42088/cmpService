@@ -373,7 +373,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.Cpu = device.Wr2
 	sd.Memory = device.Wr3
 	sd.Hdd = device.Wr4
-	sd.MonitoringFlag = 0
+	sd.MonitoringFlag = false
 	sd.MonitoringMethod = 0
 
 	// Comment Table
@@ -417,7 +417,7 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.Ip = sepIps(device.WrHomepage)
 	nd.Size = convInt(device.Wr6)
 	nd.FirmwareVersion = device.Wr2
-	nd.MonitoringFlag = 0
+	nd.MonitoringFlag = false
 	nd.MonitoringMethod = 0
 
 	dc.DeviceCode = device.Wr1
@@ -457,7 +457,7 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.Cost = device.Wr12
 	pd.Purpos = device.Wr13
 	pd.Warranty = device.Wr2
-	pd.MonitoringFlag = 0
+	pd.MonitoringFlag = false
 	pd.MonitoringMethod = 0
 
 	dc.DeviceCode = device.Wr1

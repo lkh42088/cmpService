@@ -126,7 +126,7 @@ func TestAddDevice(t *testing.T) {
 			Rack:163,
 			Cost:"",
 			Purpos:"",
-			MonitoringFlag:0,
+			MonitoringFlag:false,
 			MonitoringMethod:0},
 		Ip:"220.90.201.198|",
 		Size:19,
@@ -138,7 +138,7 @@ func TestAddDevice(t *testing.T) {
 		RackLoc:  0,
 	}
 
-	url := "http://0.0.0.0:8081/v1/device/server"
+	url := "http://0.0.0.0:8081/v1/device/create/server"
 	pbytes, _ := json.Marshal(data)
 	buff := bytes.NewBuffer(pbytes)
 

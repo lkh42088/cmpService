@@ -293,9 +293,11 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		dc = new(models.DevicePart)
 	}
 	tableName := GetDeviceTable(c.Param("type"))
+
 	err := c.ShouldBindJSON(&dc)
+	//fmt.Println(dc)		// data check
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
+		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
 	}
 
@@ -341,4 +343,19 @@ func GetDeviceTable(device string) string {
 		tableName = PartTableName
 	}
 	return tableName
+}
+
+func MakeDeviceCode(h *Handler, dc interface{}) (string, error) {
+	data, dbErr := h.db.GetLastDeviceCode(dc)
+	if dbErr != nil {
+		return "", dbErr
+	}
+	code := data.(models.DeviceServer).DeviceCode
+	prefix := code[:2]
+	num, err := strconv.Atoi(code[2:])
+	if err != nil {
+		return "", err
+	}
+	num++
+	return fmt.Sprintf("%s%5d", prefix, num), nil
 }

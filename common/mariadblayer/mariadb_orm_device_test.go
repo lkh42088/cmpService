@@ -35,7 +35,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 			Rack:            6,
 			Cost:            "원가",
 			Purpos:          "용도",
-			MonitoringFlag: 0,
+			MonitoringFlag: false,
 			MonitoringMethod: 9,
 		},
 		Ip: "255.255.255.2",
@@ -70,7 +70,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 			Rack:            6,
 			Cost:            "원가",
 			Purpos:          "용도",
-			MonitoringFlag: 0,
+			MonitoringFlag:  false,
 			MonitoringMethod: 9,
 		},
 		Ip: "255.255.255.2",
@@ -105,7 +105,7 @@ func TestDeviceAddEntry_Server(t *testing.T) {
 			Rack:            6,
 			Cost:            "원가",
 			Purpos:          "용도",
-			MonitoringFlag: 0,
+			MonitoringFlag: false,
 			MonitoringMethod: 9,
 		},
 		Ip: "255.255.255.2",
@@ -148,7 +148,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 			Rack:            6,
 			Cost:            "원가",
 			Purpos:          "용도",
-			MonitoringFlag: 0,
+			MonitoringFlag:  false,
 			MonitoringMethod: 9,
 		},
 		Ip: "255.255.255.22",
@@ -181,7 +181,7 @@ func TestDeviceAddEntry_Network(t *testing.T) {
 			Rack:            6,
 			Cost:            "JDG원TO가",
 			Purpos:          "JDG용TO도",
-			MonitoringFlag: 0,
+			MonitoringFlag:  false,
 			MonitoringMethod: 9,
 		},
 		Ip: "255.255.255.12",
@@ -220,11 +220,19 @@ func TestDeviceAddEntry_Part(t *testing.T) {
 			Rack:            6,
 			Cost:            "원가",
 			Purpos:          "용도",
-			MonitoringFlag: 0,
+			MonitoringFlag:  false,
 			MonitoringMethod: 9,
 		},
 		Warranty: "warranty",
 	}
 	device, err = db.AddDevicePart(device)
 	fmt.Println("collectdevice: ", device, "err:", err)
+}
+
+func TestDBORM_GetLastDeviceCode(t *testing.T) {
+	db, err := getTestLkhDb()
+	if err != nil {
+		return
+	}
+	fmt.Println(db.GetLastDeviceCode(models.DeviceServer{}))
 }
