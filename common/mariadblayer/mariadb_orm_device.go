@@ -76,7 +76,7 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 
 func (db *DBORM) GetLastDeviceCode(dc interface{}) (
 	interface{}, error) {
-	err := db.Debug().Last(dc).Error
+	err := db.Debug().Last(&dc).Scan(&dc).Error
 	return dc, err
 }
 
