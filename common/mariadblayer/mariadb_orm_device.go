@@ -74,11 +74,10 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 
 }
 
-func (db *DBORM) GetLastDeviceCode(tableName string) (deviceCode string, err error) {
-	return deviceCode, db.
-		Select(defaultFieldName).
-		Table(tableName).
-		Last(&deviceCode).Error
+func (db *DBORM) GetLastDeviceCode(dc interface{}) (
+	interface{}, error) {
+	err := db.Debug().Last(dc).Error
+	return dc, err
 }
 
 func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {

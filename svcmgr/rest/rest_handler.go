@@ -345,21 +345,17 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-func MakeDeviceCode(h *Handler, device string) (string, error) {
-	tableName := GetDeviceTable(device)
-	code, dbErr := h.db.GetLastDeviceCode(tableName)
+func MakeDeviceCode(h *Handler, dc interface{}) (string, error) {
+	data, dbErr := h.db.GetLastDeviceCode(dc)
 	if dbErr != nil {
 		return "", dbErr
 	}
+	code := data.(models.DeviceServer).DeviceCode
 	prefix := code[:2]
 	num, err := strconv.Atoi(code[2:])
 	if err != nil {
 		return "", err
 	}
 	num++
-	code = fmt.Sprintf("%s%5d", prefix, num)
-	if err != nil {
-		return "", err
-	}
-	return code, nil
+	return fmt.Sprintf("%s%5d", prefix, num), nil
 }

@@ -164,14 +164,14 @@ func (DeviceLog) TableName() string {
 }
 
 type PageCreteria struct {
-	Count		int
-	TotalPage	int
-	CheckCnt	int
-	Size 		int
-	OutFlag		string
-	OrderKey	string
-	Direction	int
-	DeviceType	string
+	Count		int			`json:"count"`
+	TotalPage	int			`json:"totalPage"`
+	CheckCnt	int			`json:"checkCnt"`
+	Size 		int			`json:"size"`
+	OutFlag		string		`json:"outFlag"`
+	OrderKey	string		`json:"orderKey"`
+	Direction	int			`json:"direction"`
+	DeviceType	string		`json:"deviceType"`
 }
 
 type DeviceServerPage struct {

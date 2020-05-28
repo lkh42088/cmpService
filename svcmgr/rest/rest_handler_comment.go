@@ -3,10 +3,10 @@ package rest
 import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"fmt"
 )
 
 func (h *Handler) GetCommentsByCode(c *gin.Context) {
