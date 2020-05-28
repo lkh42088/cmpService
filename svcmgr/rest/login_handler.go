@@ -29,25 +29,25 @@ var smtpServer = utils.SmtpServer {
 
 var svcmgrAddress = "localhost"
 
-func (h *Handler) checkUserExists(user models.User) bool {
-	getuser, err := h.db.GetUserById(user.UserId)
+func (h *Handler) checkUserExists(userId string) bool {
+	user, err := h.db.GetUserById(userId)
 	if err != nil {
 		lib.LogWarnln(err)
 		return false
-	} else if user.UserId == getuser.UserId {
+	} else if userId == user.UserId {
 		return true
 	}
 	return false
 }
 
 func (h *Handler) RegisterUser(c *gin.Context) {
-	var user models.User
-	c.Bind(&user)
-	fmt.Println("RegisterUser: ", user)
-	exists := h.checkUserExists(user)
+	var userMsg messages.UserRegisterMessage
+	c.Bind(&userMsg)
+	fmt.Println("Register Message: ", userMsg)
+	exists := h.checkUserExists(userMsg.Id)
 	fmt.Println("exists:", exists)
 
-	valErr := utils.ValidateUser(user, errors.ValidationErrors)
+	valErr := utils.ValidateUserbyMsg(userMsg, errors.ValidationErrors)
 	if exists == true {
 		valErr = append(valErr, "ID already exists")
 	}
@@ -56,8 +56,20 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":valErr})
 		return
 	}
+
+	user, emailAuthList := userMsg.Convert()
 	models.HashPassword(&user)
 	adduser, err := h.db.AddUser(user)
+	if len(emailAuthList) > 0 {
+		for _, emailAuth := range emailAuthList {
+			emailAuth.UserIdx = adduser.Idx
+			emailAuth, err := h.db.AddUserEmailAuth(emailAuth)
+			if err != nil {
+				fmt.Println("Failed to add emailAuth!")
+			}
+			fmt.Println("Add emailAuth: ", emailAuth)
+		}
+	}
 	if err != nil {
 		fmt.Println("err:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
@@ -66,6 +78,38 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	fmt.Println("Add user:", adduser)
 	c.JSON(http.StatusOK, gin.H{"success":true, "msg":"User created successfully"})
 }
+
+func (h *Handler) UnRegisterUser(c *gin.Context) {
+	var userMsg messages.UserRegisterMessage
+	c.Bind(&userMsg)
+	fmt.Println("UnRegister Message: ", userMsg)
+	user, err := h.db.GetUserById(userMsg.Id)
+	if err != nil || user.UserId != userMsg.Id {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":"Id dose not exist"})
+		return
+	}
+
+	if user.EmailAuth || user.GroupEmailAuth {
+		emailAuthList, err := h.db.DeleteUserEmailAuthByUserId(user.UserId)
+		if err != nil {
+			fmt.Println("err 1:", err)
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
+			return
+		}
+		fmt.Println("delete emailAuthList:", emailAuthList)
+	}
+
+	adduser, err := h.db.DeleteUser(user)
+	if err != nil {
+		fmt.Println("err 2:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
+		return
+	}
+
+	fmt.Println("Delete user:", adduser)
+	c.JSON(http.StatusOK, gin.H{"success":true, "msg":"User created successfully"})
+}
+
 
 func (h *Handler) LoginUserByEmail(c *gin.Context) {
 	var loginMsg messages.UserLoginMessage
@@ -182,8 +226,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 
 func (h *Handler) isConfirmEmailAuth(userId, userEmail string) bool {
 	// 1. Get from DB
-	uniqId := userId + userEmail
-	userEmailAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+	userEmailAuth, err := h.db.GetUserEmailAuthByIdAndEmail(userId, userEmail)
 	if err != nil {
 		fmt.Println("err:", err, " userEmailAuth:", userEmailAuth)
 		return false
@@ -196,8 +239,7 @@ func (h *Handler) isConfirmEmailAuth(userId, userEmail string) bool {
 
 func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
 	// 1. Get from DB
-	uniqId := userId + userEmail
-	userEmailAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+	userEmailAuth, err := h.db.GetUserEmailAuthByIdAndEmail(userId, userEmail)
 	if err != nil {
 		fmt.Println("err:", err, " userEmailAuth:", userEmailAuth)
 		return false
@@ -254,8 +296,7 @@ func (h *Handler) sendAuthMail(c *gin.Context, username, email string) {
 	fmt.Println("Email Authentication process....")
 
 	// 2. Get from DB
-	uniqId := username + email
-	userEmailAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+	userEmailAuth, err := h.db.GetUserEmailAuthByIdAndEmail(username, email)
 	fmt.Println("err:", err, " userEmailAuth:", userEmailAuth)
 	if err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{"success":false, "msg":"이 계정은 인증 DB에 존재하지 않음."})
@@ -329,8 +370,7 @@ func (h *Handler) GetSession(c *gin.Context) {
 	if haveEmailAuth || haveGroupEmailAuth {
 		fmt.Println("Email Authentication process....")
 		// Get from DB
-		uniqId := username + email
-		userAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+		userAuth, err := h.db.GetUserEmailAuthByIdAndEmail(username, email)
 		fmt.Println("err:", err, " userAuth:", userAuth)
 		if err != nil {
 			c.JSON(http.StatusNotAcceptable, gin.H{"success":false, "msg":"이 계정은 인증 DB에 존재하지 않음."})
@@ -368,8 +408,7 @@ func (h *Handler) EmailConfirm(c *gin.Context) {
 	fmt.Println("EmailConfirm: email - ", revEmail)
 
 	// Get from DB
-	uniqId := revId + revEmail
-	userAuth, err := h.db.GetUserEmailAuthByUniqId(uniqId)
+	userAuth, err := h.db.GetUserEmailAuthByIdAndEmail(revId, revEmail)
 	fmt.Println("err:", err, " userAuth:", userAuth)
 	if err != nil {
 		c.JSON(http.StatusNotAcceptable, gin.H{"success":false, "msg":"이 계정은 인증 DB에 존재하지 않음."})

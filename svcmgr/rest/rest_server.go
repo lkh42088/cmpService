@@ -98,7 +98,6 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//router.PUT("/v1/log/update/:workcode/:field/:change/:userid/:logidx", h.UpdateLog)
 	router.DELETE("/v1/logs/delete/:logidx", h.DeleteLogByIdx)
 
-
 	// Page
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
@@ -120,6 +119,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/login", h.LoginUserById)
 	router.POST("/api/auth/logout", h.Logout)
 	router.POST("/api/auth/register", h.RegisterUser)
+	router.POST("/api/auth/unregister", h.UnRegisterUser)
 	router.GET("/api/auth/check", h.GetSession)
 	router.GET("/api/auth/emailconfirm/:secret", h.EmailConfirm)
 	router.GET("/api/auth/emailconfirm/:secret/:id/:email", h.EmailConfirm)
