@@ -73,6 +73,7 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	comment := models.DeviceComment{
 		Idx: uint(int(value)),
 		Contents: m["comment"].(string),
+		RegisterId: m["registerId"].(string),
 	}
 
 	// User-Id check

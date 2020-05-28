@@ -144,7 +144,6 @@ func (DeviceComment) TableName() string {
 	return "device_comment_tb"
 }
 
-
 /////
 // Management LOG TABLE
 /////

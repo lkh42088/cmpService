@@ -234,5 +234,6 @@ func TestDBORM_GetLastDeviceCode(t *testing.T) {
 	if err != nil {
 		return
 	}
-	fmt.Println(db.GetLastDeviceCode(models.DeviceServer{}))
+	dc := models.DeviceServer{}
+	fmt.Println(db.GetLastDeviceCode(dc))
 }

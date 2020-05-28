@@ -26,6 +26,7 @@ const (
 	IdcJoinQuery					= "INNER JOIN code_tb AS c5 ON c5.c_type = 'total' AND c5.c_idx = d.idc_cd"
 	RackJoinQuery					= "INNER JOIN code_sub_tb AS s2 ON s2.csub_idx = d.rack_cd"
 	SizeJoinQuery					= "INNER JOIN code_tb AS c6 ON c6.c_type = 'total' AND c6.c_idx = d.size_cd"
+	CommentUserJoinQuery			= "INNER JOIN user_tb u ON u.user_id = device_comment_tb.comment_register_id"
 	CompanyLeftJoinQuery			= "LEFT OUTER JOIN user_tb u ON u.user_id = d.user_id LEFT OUTER JOIN company_tb cp1 ON cp1.cp_idx = u.cp_idx"
 	CompanyAndCommentLeftJoinQuery	= "LEFT OUTER JOIN user_tb u ON u.user_id = device_comment_tb.comment_register_id LEFT OUTER JOIN company_tb cp2 ON cp2.cp_idx = u.cp_idx"
 	CompanyAndUserJoinQuery			= "INNER JOIN user_tb u ON u.cp_idx = company_tb.cp_idx"
