@@ -16,7 +16,7 @@ import (
 var jwtKey = []byte("secret")
 
 type Claims struct {
-	models.User
+	User messages.UserInfo
 	jwt.StandardClaims
 }
 
@@ -130,10 +130,12 @@ func (h *Handler) LoginUserByEmail(c *gin.Context) {
 
 	expirationTime := time.Now().Add(30 * time.Minute)
 	claims := &Claims{
-		User: models.User{
-			UserId: user.UserId,
+		User: messages.UserInfo{
+			Id: user.UserId,
 			Email: user.Email,
 			Name: user.Name,
+			EmailAuthFlag: user.EmailAuth,
+			EmailAuthGroupFlag: user.GroupEmailAuth,
 		},
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
@@ -167,7 +169,7 @@ func (h *Handler) LoginEmailAuthConfirm (c *gin.Context) {
 		}
 
 		// Token을 발급해서 응답한다.
-		responseWithToken(c, loginMsg.Id, loginMsg.Email, user.Name)
+		responseWithToken(c, user, loginMsg.Email)
 		return
 	}
 	restStatus = messages.StatusFailedEmailAuth
@@ -179,13 +181,17 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	var restStatus int
 	c.Bind(&loginMsg)
 
+	fmt.Println("message:", loginMsg)
+	fmt.Println("id:", loginMsg.Id)
 	user, err := h.db.GetUserById(loginMsg.Id)
 	if err != nil {
+		fmt.Println("error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success":false, "errors":err})
 		return
 	}
 	match := models.CheckPasswordHash(loginMsg.Password, user.Password)
 	if !match {
+		fmt.Println("error 2")
 		restStatus = http.StatusUnauthorized
 		c.JSON(restStatus, gin.H{"success":false, "errors":"incorrect credentials"})
 		return
@@ -195,6 +201,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	if user.EmailAuth {
 		// 이메일 발송
 		h.sendAuthMail(c, user.Name, user.Email)
+		fmt.Println("error 3:")
 		restStatus = messages.StatusEmailAuthConfirm
 		c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 		return
@@ -203,6 +210,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 			// 그룹에 등록된 이메일인지 Check
 			// userId, userEmail
 			if h.checkGroupEmailAuth(loginMsg.Id, loginMsg.Email) == false {
+				fmt.Println("error 4:")
 				restStatus = messages.StatusFailedNotHaveAuthEmail
 				c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 				return
@@ -210,18 +218,21 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 
 			// 이메일 발송
 			h.sendAuthMail(c, user.Name, user.Email)
+			fmt.Println("error 5:")
 			restStatus = messages.StatusEmailAuthConfirm
 			c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 		} else {
 			// 이메일 수신 후 발송
+			fmt.Println("error 6:")
 			restStatus = messages.StatusInputEmailAuth
 			c.JSON(restStatus, gin.H{"success":false, "msg":messages.RestStatusText(restStatus)})
 		}
 		return
 	}
 
+	fmt.Println("success..")
 	// Token을 발급해서 응답한다.
-	responseWithToken(c, user.UserId, user.Email, user.Name)
+	responseWithToken(c, user, "")
 }
 
 func (h *Handler) isConfirmEmailAuth(userId, userEmail string) bool {
@@ -247,13 +258,16 @@ func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
 	return true
 }
 
-func responseWithToken(c *gin.Context, userId, userEmail, userName string) {
+func responseWithToken(c *gin.Context, user models.User, authEmail string) {
 	expirationTime := time.Now().Add(1 * time.Minute)
 	claims := &Claims{
-		User: models.User{
-			UserId: userId,
-			Email: userEmail,
-			Name: userName,
+		User: messages.UserInfo{
+			Id: user.UserId,
+			Email: user.Email,
+			Name: user.Name,
+			EmailAuthFlag: user.EmailAuth,
+			EmailAuthGroupFlag: user.GroupEmailAuth,
+			AuthEmail: authEmail,
 		},
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
@@ -269,18 +283,8 @@ func responseWithToken(c *gin.Context, userId, userEmail, userName string) {
 		Value: tokenString,
 		Expires: expirationTime,
 	})
-	userInfo, err := convertUser2Msg(claims.User)
 	c.JSON(http.StatusOK,
-		gin.H{"success":true, "msg":http.StatusText(http.StatusOK), "user":userInfo})
-}
-
-func convertUser2Msg(user models.User) (info messages.UserInfo, err error) {
-	info.Id = user.UserId
-	info.Name = user.Name
-	info.Email = user.Email
-	info.EmailAuthFlag = user.EmailAuth
-	info.EmailAuthGroupFlag = user.GroupEmailAuth
-	return info, err
+		gin.H{"success":true, "msg":http.StatusText(http.StatusOK), "user":claims.User})
 }
 
 func (h *Handler) sendAuthMail(c *gin.Context, username, email string) {
@@ -330,12 +334,14 @@ func (h *Handler) Logout(c *gin.Context) {
 }
 
 func (h *Handler) GetSession(c *gin.Context) {
-	user, isAuthenticated, token := AuthMiddleware(c, jwtKey)
+	user, isAuthenticated, _ := AuthMiddleware(c, jwtKey)
 	if !isAuthenticated {
 		c.JSON(http.StatusUnauthorized,
 			gin.H{"success":false, "msg":"unauthorized"})
 		return
 	}
+
+	/*
 
 	fmt.Println(">>> USER: ", user)
 	var username, email string
@@ -394,6 +400,7 @@ func (h *Handler) GetSession(c *gin.Context) {
 	}
 	err = utils.SendMail(smtpServer, emailmsg)
 	fmt.Println("SendMail: err ", err)
+	 */
 
 	c.JSON(http.StatusOK, gin.H{"success":true, "user":user})
 }

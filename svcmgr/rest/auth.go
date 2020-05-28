@@ -21,9 +21,9 @@ func AuthMiddleware(c *gin.Context, jwtKey[]byte) (jwt.MapClaims, bool, string) 
 		}
 		return jwtKey, nil
 	})
-	fmt.Println("AuthMiddleware token:", token)
-	fmt.Println("size (", len(token.Raw),") raw:", token.Raw)
-	fmt.Println("signature:", token.Signature)
+	//fmt.Println("AuthMiddleware token:", token)
+	//fmt.Println("size (", len(token.Raw),") raw:", token.Raw)
+	//fmt.Println("signature:", token.Signature)
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		fmt.Println("AuthMiddleware : Success")

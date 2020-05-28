@@ -101,7 +101,7 @@ func TestRegisterUserAuthGroup (t *testing.T) {
 func TestUnregisterUser(t *testing.T) {
 	url := restServer + "/api/auth/unregister"
 	userMsg := messages.UserRegisterMessage{
-		Id:                 "nubes",
+		Id:                 "nubes2",
 		Email:              "",
 		Name:               "",
 		EmailAuthFlag:      false,

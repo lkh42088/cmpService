@@ -13,18 +13,19 @@ type UserRegisterMessage struct {
 	Password           string   `json:"password"`
 	Email              string   `json:"email"`
 	Name               string   `json:"name"`
-	EmailAuthFlag      bool     `json:"email_auth_flag"`
-	EmailAuthGroupFlag bool     `json:"email_auth_group_flag"`
-	EmailAuthGroupList []string `json:"email_auth_group_list"`
+	EmailAuthFlag      bool     `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool     `json:"emailAuthGroupFlag"`
+	EmailAuthGroupList []string `json:"emailAuthGroupList"`
 }
 
 type UserInfo struct {
-	Id string `json:"id"`
-	Password string `json:"password"`
-	Email string `json:"email"`
-	Name string `json:"name"`
-	EmailAuthFlag bool `json:"email_auth_flag"`
-	EmailAuthGroupFlag bool `json:"email_auth_group_flag"`
+	Id string 					`json:"id"`
+	Password string 			`json:"password"`
+	Email string 				`json:"email"`
+	Name string 				`json:"name"`
+	EmailAuthFlag bool 			`json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool 	`json:"emailAuthGroupFlag"`
+	AuthEmail string 			`json:"authEmail"`
 }
 
 func GetUserEmailAuth(id, email string) (emailAuth models.UserEmailAuth) {
