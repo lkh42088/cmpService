@@ -345,21 +345,21 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-//func MakeDeviceCode(device string) (string, error) {
-//	tableName := GetDeviceTable(device)
-//	code, dbErr := h.db.GetLastDeviceCode(tableName)
-//	if dbErr != nil {
-//		return "", dbErr
-//	}
-//	prefix := code[:2]
-//	num, err := strconv.Atoi(code[2:])
-//	if err != nil {
-//		return "", err
-//	}
-//	num++
-//	code, err = fmt.Printf("%s%5d", prefix, num)
-//	if err != nil {
-//		return "", err
-//	}
-//	return code, nil
-//}
+func MakeDeviceCode(h *Handler, device string) (string, error) {
+	tableName := GetDeviceTable(device)
+	code, dbErr := h.db.GetLastDeviceCode(tableName)
+	if dbErr != nil {
+		return "", dbErr
+	}
+	prefix := code[:2]
+	num, err := strconv.Atoi(code[2:])
+	if err != nil {
+		return "", err
+	}
+	num++
+	code = fmt.Sprintf("%s%5d", prefix, num)
+	if err != nil {
+		return "", err
+	}
+	return code, nil
+}
