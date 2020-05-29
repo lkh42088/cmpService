@@ -17,7 +17,7 @@ const NetworkTableName = "device_network_tb"
 const PartTableName = "device_part_tb"
 
 func (h *Handler) GetCodes(c *gin.Context) {
-	fmt.Println("Getcodes")
+	//fmt.Println("Getcodes")
 	if h.db == nil {
 		return
 	}
@@ -26,7 +26,7 @@ func (h *Handler) GetCodes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(codes)
+	//fmt.Println(codes)
 
 	c.JSON(http.StatusOK, codes)
 }
@@ -57,7 +57,7 @@ func (h *Handler) GetCodeList(c *gin.Context) {
 
 	var list []string
 	for i, v := range codes {
-		fmt.Println(i, v.Name)
+		//fmt.Println(i, v.Name)
 		list = append(list, v.Name)
 	}
 
@@ -70,7 +70,6 @@ func (h *Handler) GetSubCodeList(c *gin.Context) {
 		return
 	}
 	cIdx := strings.Split(c.Param("c_idx"), ",")
-	fmt.Println(cIdx)
 	subCodes, err := h.db.GetSubCodeList(cIdx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -176,7 +175,7 @@ func (h *Handler) DeleteSubCodes(c *gin.Context) {
 
 // Device
 func (h *Handler) GetDevicesByList(c *gin.Context) {
-	fmt.Println("GetDevicesByList")
+	//fmt.Println("GetDevicesByList")
 	if h.db == nil {
 		return
 	}
@@ -207,7 +206,7 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("type : ", deviceType, ", outFlag : ", outFlag)
+	//fmt.Println("type : ", deviceType, ", outFlag : ", outFlag)
 
 	if deviceType == "server" {
 		c.JSON(http.StatusOK, devicesServer)
@@ -219,7 +218,7 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 }
 
 func (h *Handler) GetDevicesByIdx(c *gin.Context) {
-	fmt.Println("GetDevicesByIdx")
+	//fmt.Println("GetDevicesByIdx")
 	if h.db == nil {
 		return
 	}
@@ -250,7 +249,7 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("type : ", deviceType, ", idx : ", idx)
+	//fmt.Println("type : ", deviceType, ", idx : ", idx)
 
 	if deviceType == "server" {
 		c.JSON(http.StatusOK, devicesServer)
