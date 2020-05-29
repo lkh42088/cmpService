@@ -334,6 +334,35 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
+// Update Device
+func (h *Handler) UpdateDevice(c *gin.Context) {
+	var dc interface{}
+	device := c.Param("type")
+	idx := c.Param("idx")
+	switch device {
+	case "server":
+		dc = new(models.DeviceServer)
+	case "network":
+		dc = new(models.DeviceNetwork)
+	case "part":
+		dc = new(models.DevicePart)
+	}
+	tableName := GetDeviceTable(c.Param("type"))
+
+	err := c.ShouldBindJSON(&dc)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = h.db.UpdateDevice(dc, tableName, idx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "OK")
+}
+
 // Update Device outFlag
 func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	tableName := GetDeviceTable(c.Param("type"))

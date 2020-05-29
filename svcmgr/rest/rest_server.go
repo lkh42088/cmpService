@@ -22,6 +22,8 @@ type HandlerInterface interface {
 	GetDevicesByCode(c *gin.Context)
 	GetDeviceWithoutJoin(c *gin.Context)
 	AddDevice(c *gin.Context)
+	UpdateDevice(c *gin.Context)
+	UpdateOutFlag(c *gin.Context)
 	// Comment
 	GetCommentsByCode(c *gin.Context)
 	AddComment(c *gin.Context)
@@ -86,6 +88,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
 	router.GET("/v1/raw/device/:type/:value", h.GetDeviceWithoutJoin)
 	router.POST("/v1/device/create/:type", h.AddDevice)
+	router.PUT("/v1/device/update/:type/:idx", h.UpdateDevice)
 	router.PUT("/v1/devices/update/:type/:outFlag", h.UpdateOutFlag)
 
 	// Comment

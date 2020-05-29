@@ -138,6 +138,10 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 	return pd, db.Delete(&pd).Error
 }
 
+func (db *DBORM) UpdateDevice(data interface{}, device string, idx string) error {
+	return db.Table(device).Where("device_idx = ?", idx).Update(data).Error
+}
+
 // Update OutFlag
 func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
 	return db.Debug().Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
