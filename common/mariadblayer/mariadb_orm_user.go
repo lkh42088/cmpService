@@ -29,7 +29,7 @@ func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResp
 	name = "%" + name + "%"
 	return companies, db.
 		//Debug().
-		Table("company_tb").
+		Table(CompanyTable).
 		Select(CompanyAndUserIdSelectQuery).
 		Where("cp_name like ?", name).
 		Joins(CompanyAndUserJoinQuery).
@@ -37,7 +37,7 @@ func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResp
 }
 
 func (db *DBORM) GetUserByUserId(userId string) (user models.User, err error) {
-	return user, db.Where("user_id = ?", userId).Find(&user).Error
+	return user, db.Where(models.User{UserId: userId}).Find(&user).Error
 }
 
 func (db *DBORM) AddUserMember(user models.User) error {

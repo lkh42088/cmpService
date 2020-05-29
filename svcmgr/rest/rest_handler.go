@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 const defaultField = "device_code"
@@ -343,10 +344,9 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
-	//fmt.Println(values)
+	//lib.LogInfo("[values] %s\n", values)
 
-	data := values["idx"].(string)
-
+	data := strings.Split(values["deviceCode"].(string), ",")
 	err = h.db.UpdateOutFlag(data, tableName, flag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

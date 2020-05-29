@@ -139,8 +139,8 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 }
 
 // Update OutFlag
-func (db *DBORM) UpdateOutFlag(idxs string, device string, flag int) error {
-	return db.Table(device).Where("idx IN ("+ idxs + ")").Update(outFlagField, flag).Error
+func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
+	return db.Debug().Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
 }
 
 func GetWhereString(field string) string {
