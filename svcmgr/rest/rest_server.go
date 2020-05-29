@@ -14,6 +14,7 @@ type HandlerInterface interface {
 	DeleteCodes(c *gin.Context)
 	// SubCode
 	GetSubCodes(c *gin.Context)
+	GetSubCodeList(c *gin.Context)
 	AddSubCode(c *gin.Context)
 	DeleteSubCode(c *gin.Context)
 	DeleteSubCodes(c *gin.Context)
@@ -79,6 +80,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// SubCode
 	router.GET("/v1/subcodes", h.GetSubCodes)
+	router.GET("/v1/subcodes/:c_idx", h.GetSubCodeList)
 	router.POST("/v1/subcode/create", h.AddSubCode)
 	router.DELETE("/v1/subcode/delete/:id", h.DeleteSubCode)
 	router.DELETE("/v1/subcodes/delete", h.DeleteSubCodes)

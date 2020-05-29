@@ -27,6 +27,16 @@ func (db *DBORM) GetAllSubCodes() (subCodes []models.SubCode, err error) {
 	return subCodes, db.Find(&subCodes).Error
 }
 
+func (db *DBORM) GetSubCodeList(cIdx []string) (subCodes []models.SubCodeResponse, err error) {
+	return subCodes, db.
+		//Debug().
+		Table(CodeSubRawTable).
+		Select(CodeAndSubCodeSelectQuery).
+		Joins(CodeAndSubCodeJoinQuery).
+		Where("c.c_idx IN (?)", cIdx).
+		Find(&subCodes).Error
+}
+
 func (db *DBORM) AddSubCode(subCode models.SubCode) (models.SubCode, error) {
 	return subCode, db.Create(&subCode).Error
 }

@@ -13,6 +13,7 @@ type MariaDBLayer interface {
 	DeleteCodes() error
 	// SubCode
 	GetAllSubCodes() ([]models.SubCode, error)
+	GetSubCodeList(cIdx []string) ([]models.SubCodeResponse, error)
 	AddSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error
