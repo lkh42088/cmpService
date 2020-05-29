@@ -56,7 +56,7 @@ func (h *Handler) GetCodeList(c *gin.Context) {
 	}
 
 	var list []string
-	for i, v := range codes {
+	for _, v := range codes {
 		//fmt.Println(i, v.Name)
 		list = append(list, v.Name)
 	}
