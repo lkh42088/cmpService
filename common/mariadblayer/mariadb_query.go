@@ -5,6 +5,7 @@ const (
 	ServerTable						= "device_server_tb d"
 	NetworkTable					= "device_network_tb d"
 	PartTable						= "device_part_tb d"
+	CompanyTable					= "company_tb cp"
 	// SELECT
 	PageSelectQuery 				= "c1.c_name as manufacture_cd,s1.csub_name as model_cd," +
 		 						  	  "c2.c_name as device_type_cd,c3.c_name as ownership_cd," +

@@ -32,7 +32,8 @@ type MariaDBLayer interface {
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
 	AddDevice(data interface{}, tableName string) error
-	UpdateOutFlag(data string, tableName string, flag int) error
+	UpdateDevice(device interface{}, tableName string, idx string) error
+	UpdateOutFlag(codes []string, tableName string, flag int) error
 	DeleteAllDevicesServer() error
 	DeleteAllDevicesNetwork() error
 	DeleteAllDevicesPart() error

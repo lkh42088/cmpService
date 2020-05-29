@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 const defaultField = "device_code"
@@ -333,6 +334,35 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
+// Update Device
+func (h *Handler) UpdateDevice(c *gin.Context) {
+	var dc interface{}
+	device := c.Param("type")
+	idx := c.Param("idx")
+	switch device {
+	case "server":
+		dc = new(models.DeviceServer)
+	case "network":
+		dc = new(models.DeviceNetwork)
+	case "part":
+		dc = new(models.DevicePart)
+	}
+	tableName := GetDeviceTable(c.Param("type"))
+
+	err := c.ShouldBindJSON(&dc)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = h.db.UpdateDevice(dc, tableName, idx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "OK")
+}
+
 // Update Device outFlag
 func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	tableName := GetDeviceTable(c.Param("type"))
@@ -343,10 +373,9 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
-	//fmt.Println(values)
+	//lib.LogInfo("[values] %s\n", values)
 
-	data := values["idx"].(string)
-
+	data := strings.Split(values["deviceCode"].(string), ",")
 	err = h.db.UpdateOutFlag(data, tableName, flag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
