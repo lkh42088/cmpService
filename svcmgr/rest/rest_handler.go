@@ -284,6 +284,57 @@ func (h *Handler) GetDeviceWithoutJoin(c *gin.Context) {
 	c.JSON(http.StatusOK, devices)
 }
 
+// Search device
+func (h *Handler) GetDevicesForSearch(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	device := c.Param("type")
+	switch device {
+	case "server":
+		dc := models.DeviceServer{}
+		err := c.ShouldBindJSON(&dc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		devices, err := h.db.GetDevicesServerForSearch(dc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devices)
+	case "network":
+		dc := models.DeviceNetwork{}
+		err := c.ShouldBindJSON(&dc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		devices, err := h.db.GetDevicesNetworkForSearch(dc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devices)
+	case "part":
+		dc := models.DevicePart{}
+		err := c.ShouldBindJSON(&dc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		devices, err := h.db.GetDevicesPartForSearch(dc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devices)
+	}
+	return
+}
+
 // Mornitoring
 func (h *Handler) GetDevicesMonitoring(c *gin.Context) {
 

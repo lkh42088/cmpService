@@ -9,41 +9,41 @@ import (
 // DEVICE TABLE
 /////
 type DeviceCommon struct {
-	Idx              uint      `gorm:"primary_key;column:device_idx;not null;unsigned;auto_increment;comment:'INDEX'" json:"type:uint"`
+	Idx              uint      `gorm:"primary_key;column:device_idx;not null;unsigned;auto_increment;comment:'INDEX'" json:"type:uint,omitempty"`
 	OutFlag          bool      `gorm:"type:tinyint(1);column:out_flag;default:0;comment:'반출 여부'" json:"type:bool"`
 	CommentCnt       int       `gorm:"type:int(11);column:comment_cnt;comment:'Comment 개수'" json:"type:int"`
-	CommentLastDate  time.Time `gorm:"type:datetime;column:comment_last_date;comment:'마지막 Comment 등록'" json:"type:datetime"`
-	RegisterId       string    `gorm:"type:varchar(50);column:register_id;comment:'등록자 ID'" json:"registerId"`
-	RegisterDate     time.Time `gorm:"type:datetime;column:register_date;default:CURRENT_TIMESTAMP;comment:'등록일'" json:"type:datetime"`
+	CommentLastDate  time.Time `gorm:"type:datetime;column:comment_last_date;comment:'마지막 Comment 등록'" json:"type:datetime,omitempty"`
+	RegisterId       string    `gorm:"type:varchar(50);column:register_id;comment:'등록자 ID'" json:"registerId,omitempty"`
+	RegisterDate     time.Time `gorm:"type:datetime;column:register_date;default:CURRENT_TIMESTAMP;comment:'등록일'" json:"type:datetime,omitempty"`
 	DeviceCode       string    `gorm:"unique;type:varchar(12);column:device_code;comment:'장비 코드'" json:"deviceCode"`
 	Model            int       `gorm:"type:int(11);column:model_cd;comment:'모델 코드'" json:"type:int"`
-	Contents         string    `gorm:"type:text;column:contents;comment:'내용'" json:"contents"`
-	Customer         string    `gorm:"type:varchar(50);column:user_id;comment:'고객사명'" json:"customer"`
+	Contents         string    `gorm:"type:text;column:contents;comment:'내용'" json:"contents,omitempty"`
+	Customer         string    `gorm:"type:varchar(50);column:user_id;comment:'고객사명'" json:"customer,omitempty"`
 	Manufacture      int       `gorm:"type_int(11);column:manufacture_cd;comment:'제조사'" json:"type:int"`
 	DeviceType       int       `gorm:"type:int(11);column:device_type_cd;comment:'장비 구분'" json:"type:int"`
-	WarehousingDate  string    `gorm:"type:varchar(10);column:warehousing_date;comment:'입고일'" json:"warehousingDate"`
-	RentDate         string    `gorm:"type:varchar(20);column:rent_date;default:'|';comment:'임대 기간'" json:"rentDate"`
-	Ownership        string    `gorm:"type:varchar(10);column:ownership_cd;comment:'소유권'" json:"ownership"`
-	OwnershipDiv     string    `gorm:"type:varchar(10);column:ownership_div_cd;comment:'소유 구분'" json:"ownershipDiv"`
-	OwnerCompany     string    `gorm:"type:varchar(255);column:owner_company;comment:'소유 회사'" json:"ownerCompany"`
-	HwSn             string    `gorm:"type:varchar(255);column:hw_sn;comment:'하드웨어 S/N'" json:"hwSn"`
+	WarehousingDate  string    `gorm:"type:varchar(10);column:warehousing_date;comment:'입고일'" json:"warehousingDate,omitempty"`
+	RentDate         string    `gorm:"type:varchar(20);column:rent_date;default:'|';comment:'임대 기간'" json:"rentDate,omitempty"`
+	Ownership        string    `gorm:"type:varchar(10);column:ownership_cd;comment:'소유권'" json:"ownership,omitempty"`
+	OwnershipDiv     string    `gorm:"type:varchar(10);column:ownership_div_cd;comment:'소유 구분'" json:"ownershipDiv,omitempty"`
+	OwnerCompany     string    `gorm:"type:varchar(255);column:owner_company;comment:'소유 회사'" json:"ownerCompany,omitempty"`
+	HwSn             string    `gorm:"type:varchar(255);column:hw_sn;comment:'하드웨어 S/N'" json:"hwSn,omitempty"`
 	IDC              int       `gorm:"type:int(11);column:idc_cd;comment:'IDC'" json:"type:int"`
 	Rack             int       `gorm:"type:int(11);column:rack_cd;comment:'Rack'" json:"type:int"`
 	Cost             string    `gorm:"type:varchar(255);column:cost;comment:'장비 원가'" json:"cost"`
-	Purpos           string    `gorm:"type:varchar(255);column:purpos;comment:'장비 용도'" json:"purpose"`
+	Purpos           string    `gorm:"type:varchar(255);column:purpos;comment:'장비 용도'" json:"purpose,omitempty"`
 	MonitoringFlag   bool      `gorm:"type:tinyint(1);column:monitoring_flag;comment:'모니터링 여부'" json:"type:bool"`
 	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method;comment:'모니터링 방식'" json:"type:int"`
 }
 
 type DeviceServer struct {
 	DeviceCommon
-	Ip           string `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'" json:"ip"`
+	Ip           string `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'" json:"ip,omitempty"`
 	Size         int    `gorm:"column:size_cd;comment:'크기'" json:"type:int"`
-	Spla         string `gorm:"column:spla_cd;default:'|';comment:'SPLA'" json:"spla"`
-	Cpu          string `gorm:"type:varchar(255);column:cpu;comment:'CPU'" json:"cpu"`
-	Memory       string `gorm:"type:varchar(255);column:memory;comment:'MEMORY'" json:"memory"`
-	Hdd          string `gorm:"type:varchar(255);column:hdd;comment:'HDD'" json:"hdd"`
-	RackTag      string `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'" json:"rackTag"`
+	Spla         string `gorm:"column:spla_cd;default:'|';comment:'SPLA'" json:"spla,omitempty"`
+	Cpu          string `gorm:"type:varchar(255);column:cpu;comment:'CPU'" json:"cpu,omitempty"`
+	Memory       string `gorm:"type:varchar(255);column:memory;comment:'MEMORY'" json:"memory,omitempty"`
+	Hdd          string `gorm:"type:varchar(255);column:hdd;comment:'HDD'" json:"hdd,omitempty"`
+	RackTag      string `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'" json:"rackTag,omitempty"`
 	RackLoc      int    `gorm:"type:int(11);column:rack_loc;comment:'Rack 내 위치 번호'" json:"type:int"`
 }
 
@@ -53,10 +53,10 @@ func (DeviceServer) TableName() string {
 
 type DeviceNetwork struct {
 	DeviceCommon
-	Ip              string `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'" json:"ip"`
+	Ip              string `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'" json:"ip,omitempty"`
 	Size            int    `gorm:"column:size_cd;comment:'크기'" json:"type:int"`
-	FirmwareVersion string `gorm:"type:varchar(50);column:firmware_version;comment:'펌웨어 버전'" json:"firmwareVersion"`
-	RackTag         string `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'" json:"rackTag"`
+	FirmwareVersion string `gorm:"type:varchar(50);column:firmware_version;comment:'펌웨어 버전'" json:"firmwareVersion,omitempty"`
+	RackTag         string `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'" json:"rackTag,omitempty"`
 	RackLoc         int    `gorm:"type:int(11);column:rack_loc;comment:'Rack 내 위치 번호'" json:"type:int"`
 }
 
@@ -66,7 +66,7 @@ func (DeviceNetwork) TableName() string {
 
 type DevicePart struct {
 	DeviceCommon
-	Warranty string `gorm:"type:varchar(255);column:warranty;comment:'WARRANTY'" json:"warranty"`
+	Warranty string `gorm:"type:varchar(255);column:warranty;comment:'WARRANTY'" json:"warranty,omitempty"`
 	RackCode int    `gorm:"type:int(11);column:rack_code_cd;comment:'Rack 사이즈 코드'" json:"type:int"`
 }
 

@@ -86,6 +86,56 @@ func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
 }
 
+func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.DeviceServerResponse, err error) {
+	return ds, db.
+		Debug().
+		Select(ServerSelectQuery).
+		Table(ServerRawTable).
+		Joins(ManufactureServerNoAliasJoinQuery).
+		Joins(ModelServerNoAliasJoinQuery).
+		Joins(DeviceTypeServerNoAliasJoinQuery).
+		Joins(OwnershipServerNoAliasJoinQuery).
+		Joins(OwnershipDivServerNoAliasJoinQuery).
+		Joins(IdcServerNoAliasJoinQuery).
+		Joins(RackServerNoAliasJoinQuery).
+		Joins(SizeServerNoAliasJoinQuery).
+		Joins(CompanyServerNoAliasLeftJoinQuery).
+		Where(&dc).Find(&ds).Error
+}
+
+func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []models.DeviceNetworkResponse, err error) {
+	return ds, db.
+		Debug().
+		Select(NetworkSelectQuery).
+		Table(NetworkRawTable).
+		Joins(ManufactureNetworkNoAliasJoinQuery).
+		Joins(ModelNetworkNoAliasJoinQuery).
+		Joins(DeviceTypeNetworkNoAliasJoinQuery).
+		Joins(OwnershipNetworkNoAliasJoinQuery).
+		Joins(OwnershipDivNetworkNoAliasJoinQuery).
+		Joins(IdcNetworkNoAliasJoinQuery).
+		Joins(RackNetworkNoAliasJoinQuery).
+		Joins(SizeNetworkNoAliasJoinQuery).
+		Joins(CompanyNetworkNoAliasLeftJoinQuery).
+		Where(&dc).Find(&ds).Error
+}
+
+func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.DevicePartResponse, err error) {
+	return ds, db.
+		Debug().
+		Select(PartSelectQuery).
+		Table(PartRawTable).
+		Joins(ManufacturePartNoAliasJoinQuery).
+		Joins(ModelPartNoAliasJoinQuery).
+		Joins(DeviceTypePartNoAliasJoinQuery).
+		Joins(OwnershipPartNoAliasJoinQuery).
+		Joins(OwnershipDivPartNoAliasJoinQuery).
+		Joins(IdcPartNoAliasJoinQuery).
+		Joins(RackPartNoAliasJoinQuery).
+		Joins(CompanyPartNoAliasLeftJoinQuery).
+		Where(&dc).Find(&ds).Error
+}
+
 func (db *DBORM) GetLastDeviceCodeInServer() (ds models.DeviceServer, err error) {
 	return ds, db.Order("device_code DESC").Last(&ds).Error
 }

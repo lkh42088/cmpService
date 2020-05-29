@@ -29,7 +29,7 @@ func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResp
 	name = "%" + name + "%"
 	return companies, db.
 		//Debug().
-		Table(CompanyTable).
+		Table(CompanyRawTable).
 		Select(CompanyAndUserIdSelectQuery).
 		Where("cp_name like ?", name).
 		Joins(CompanyAndUserJoinQuery).

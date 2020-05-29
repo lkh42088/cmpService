@@ -18,9 +18,9 @@ func Orderby(order_field string, direction int) string {
 	}
 	orderby := ConvertToColumn(order_field)
 	if direction == 0 {
-		orderby += " ASC"
+		orderby = "d." + orderby + " ASC"
 	} else {
-		orderby += " DESC"
+		orderby = "d." + orderby + " ASC"
 	}
 	//fmt.Println(orderby)
 	return orderby
@@ -212,7 +212,7 @@ func ConvertToColumn(field string) string {
 
 	switch col {
 	case "idx":
-		col = "idx"
+		col = "device_idx"
 	case "outflag":
 		col = "out_flag"
 	case "num":
@@ -221,18 +221,8 @@ func ConvertToColumn(field string) string {
 		col = "comment_cnt"
 	case "commentlastdate":
 		col = "comment_last_date"
-	case "option":
-		col = "option"
-	case "hit":
-		col = "hit"
 	case "registerid":
 		col = "register_id"
-	case "password":
-		col = "register_password"
-	case "registername":
-		col = "register_name"
-	case "registeremail":
-		col = "register_email"
 	case "registerdate":
 		col = "register_date"
 	case "devicecode":
@@ -242,7 +232,7 @@ func ConvertToColumn(field string) string {
 	case "contents":
 		col = "contents"
 	case "customer":
-		col = "customer_cd"
+		col = "user_id"
 	case "manufacture":
 		col = "manufacture_cd"
 	case "devicetype":
@@ -285,6 +275,12 @@ func ConvertToColumn(field string) string {
 		col = "firmware_version"
 	case "warranty":
 		col = "warranty"
+	case "rackcode":
+		col = "rack_code_cd"
+	case "racktag":
+		col = "rack_tag"
+	case "rackloc":
+		col = "rack_loc"
 	}
 	return col
 }
