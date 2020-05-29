@@ -3,9 +3,9 @@ package messages
 import "cmpService/common/models"
 
 type UserLoginMessage struct {
-	Id string `json:"id"`
+	Id       string `json:"id"`
 	Password string `json:"password"`
-	Email string `json:"email"`
+	Email    string `json:"email"`
 }
 
 type UserRegisterMessage struct {
@@ -19,13 +19,13 @@ type UserRegisterMessage struct {
 }
 
 type UserInfo struct {
-	Id string 					`json:"id"`
-	Password string 			`json:"password"`
-	Email string 				`json:"email"`
-	Name string 				`json:"name"`
-	EmailAuthFlag bool 			`json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool 	`json:"emailAuthGroupFlag"`
-	AuthEmail string 			`json:"authEmail"`
+	Id                 string `json:"id"`
+	Password           string `json:"password"`
+	Email              string `json:"email"`
+	Name               string `json:"name"`
+	EmailAuthFlag      bool   `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool   `json:"emailAuthGroupFlag"`
+	AuthEmail          string `json:"authEmail"`
 }
 
 func GetUserEmailAuth(id, email string) (emailAuth models.UserEmailAuth) {
@@ -36,7 +36,7 @@ func GetUserEmailAuth(id, email string) (emailAuth models.UserEmailAuth) {
 	return emailAuth
 }
 
-func (msg *UserRegisterMessage)Convert() (user models.User, emailAuthList []models.UserEmailAuth) {
+func (msg *UserRegisterMessage) Convert() (user models.User, emailAuthList []models.UserEmailAuth) {
 	// user
 	user.Name = msg.Name
 	user.Email = msg.Email
@@ -57,4 +57,3 @@ func (msg *UserRegisterMessage)Convert() (user models.User, emailAuthList []mode
 	}
 	return user, emailAuthList
 }
-

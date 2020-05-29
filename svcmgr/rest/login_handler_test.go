@@ -72,7 +72,7 @@ func TestRegisterUserAuth (t *testing.T) {
 func TestRegisterUserAuthGroup (t *testing.T) {
 	url := restServer + "/api/auth/register"
 	userMsg := messages.UserRegisterMessage{
-		Id:                 "nubes2",
+		Id:                 "nubes3",
 		Password:           "nubes1510",
 		Email:              "bhjung@nubes-bridge.com",
 		Name:               "정병화",

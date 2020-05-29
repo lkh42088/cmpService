@@ -110,19 +110,16 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
 	// Login
-	router.POST("/register", h.RegisterUser)
-	router.POST("/loginemail", h.LoginUserByEmail)
-	router.POST("/login", h.LoginUserById)
-	router.GET("/session", h.GetSession)
-
-	// Test
 	router.POST("/api/auth/login", h.LoginUserById)
+	router.POST("/api/auth/grouplogin", h.LoginGroupEmail)
+	router.POST("/api/auth/input_email", h.LoginUserById)
+	router.POST("/api/auth/confirm", h.LoginFrontConfirm)
+	router.POST("/api/auth/email_confirm", h.EmailConfirm)
+	router.GET("/api/auth/check", h.GetSession)
 	router.POST("/api/auth/logout", h.Logout)
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.POST("/api/auth/unregister", h.UnRegisterUser)
-	router.GET("/api/auth/check", h.GetSession)
-	router.GET("/api/auth/emailconfirm/:secret", h.EmailConfirm)
-	router.GET("/api/auth/emailconfirm/:secret/:id/:email", h.EmailConfirm)
+
 	return router.Run(address)
 }
 
