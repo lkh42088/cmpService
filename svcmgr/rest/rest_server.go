@@ -14,13 +14,18 @@ type HandlerInterface interface {
 	DeleteCodes(c *gin.Context)
 	// SubCode
 	GetSubCodes(c *gin.Context)
+	GetSubCodeList(c *gin.Context)
 	AddSubCode(c *gin.Context)
 	DeleteSubCode(c *gin.Context)
 	DeleteSubCodes(c *gin.Context)
 	// Device
 	GetDevicesByList(c *gin.Context)
 	GetDevicesByCode(c *gin.Context)
+	GetDevicesForSearch(c *gin.Context)
+	GetDeviceWithoutJoin(c *gin.Context)
 	AddDevice(c *gin.Context)
+	UpdateDevice(c *gin.Context)
+	UpdateOutFlag(c *gin.Context)
 	// Comment
 	GetCommentsByCode(c *gin.Context)
 	AddComment(c *gin.Context)
@@ -75,6 +80,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// SubCode
 	router.GET("/v1/subcodes", h.GetSubCodes)
+	router.GET("/v1/subcodes/:c_idx", h.GetSubCodeList)
 	router.POST("/v1/subcode/create", h.AddSubCode)
 	router.DELETE("/v1/subcode/delete/:id", h.DeleteSubCode)
 	router.DELETE("/v1/subcodes/delete", h.DeleteSubCodes)
@@ -83,8 +89,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
 	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
+	router.GET("/v1/devices/:type", h.GetDevicesForSearch)
+	router.GET("/v1/raw/device/:type/:value", h.GetDeviceWithoutJoin)
 	router.POST("/v1/device/create/:type", h.AddDevice)
-	router.PUT("/v1/device/update/:type/:outFlag", h.UpdateOutFlag)
+	router.PUT("/v1/device/update/:type/:idx", h.UpdateDevice)
+	router.PUT("/v1/devices/update/:type/:outFlag", h.UpdateOutFlag)
 
 	// Comment
 	router.GET("/v1/comments/:devicecode", h.GetCommentsByCode)

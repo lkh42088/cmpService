@@ -24,3 +24,9 @@ func (SubCode) TableName() string {
 	return "code_sub_tb"
 }
 
+type SubCodeResponse struct {
+	ID     uint   `gorm:"primary_key;column:csub_idx;not null;auto_increment" json:"id"`
+	Name   string `gorm:"type:varchar(200);column:csub_name" json:"name"`
+	Order  int    `gorm:"column:csub_order" json"order"`
+	Code   `json:"code"`
+}

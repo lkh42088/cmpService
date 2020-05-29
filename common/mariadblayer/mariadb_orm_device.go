@@ -74,10 +74,78 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 
 }
 
-func (db *DBORM) GetLastDeviceCode(dc interface{}) (
+func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 	interface{}, error) {
-	err := db.Debug().Last(&dc).Scan(&dc).Error
-	return dc, err
+	var dc interface{}
+	where := GetWhereString(defaultFieldName)
+	if GetTableConfig(&dc, device) == false {
+		return nil, errors.New("[Error] Need to device selection.\n")
+	}
+
+	_, _, tableName := GetDeviceQuery(device)
+	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
+}
+
+func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.DeviceServerResponse, err error) {
+	return ds, db.
+		Debug().
+		Select(ServerSelectQuery).
+		Table(ServerRawTable).
+		Joins(ManufactureServerNoAliasJoinQuery).
+		Joins(ModelServerNoAliasJoinQuery).
+		Joins(DeviceTypeServerNoAliasJoinQuery).
+		Joins(OwnershipServerNoAliasJoinQuery).
+		Joins(OwnershipDivServerNoAliasJoinQuery).
+		Joins(IdcServerNoAliasJoinQuery).
+		Joins(RackServerNoAliasJoinQuery).
+		Joins(SizeServerNoAliasJoinQuery).
+		Joins(CompanyServerNoAliasLeftJoinQuery).
+		Where(&dc).Find(&ds).Error
+}
+
+func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []models.DeviceNetworkResponse, err error) {
+	return ds, db.
+		Debug().
+		Select(NetworkSelectQuery).
+		Table(NetworkRawTable).
+		Joins(ManufactureNetworkNoAliasJoinQuery).
+		Joins(ModelNetworkNoAliasJoinQuery).
+		Joins(DeviceTypeNetworkNoAliasJoinQuery).
+		Joins(OwnershipNetworkNoAliasJoinQuery).
+		Joins(OwnershipDivNetworkNoAliasJoinQuery).
+		Joins(IdcNetworkNoAliasJoinQuery).
+		Joins(RackNetworkNoAliasJoinQuery).
+		Joins(SizeNetworkNoAliasJoinQuery).
+		Joins(CompanyNetworkNoAliasLeftJoinQuery).
+		Where(&dc).Find(&ds).Error
+}
+
+func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.DevicePartResponse, err error) {
+	return ds, db.
+		Debug().
+		Select(PartSelectQuery).
+		Table(PartRawTable).
+		Joins(ManufacturePartNoAliasJoinQuery).
+		Joins(ModelPartNoAliasJoinQuery).
+		Joins(DeviceTypePartNoAliasJoinQuery).
+		Joins(OwnershipPartNoAliasJoinQuery).
+		Joins(OwnershipDivPartNoAliasJoinQuery).
+		Joins(IdcPartNoAliasJoinQuery).
+		Joins(RackPartNoAliasJoinQuery).
+		Joins(CompanyPartNoAliasLeftJoinQuery).
+		Where(&dc).Find(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInServer() (ds models.DeviceServer, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInNetwork() (ds models.DeviceNetwork, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
+}
+
+func (db *DBORM) GetLastDeviceCodeInPart() (ds models.DevicePart, err error) {
+	return ds, db.Order("device_code DESC").Last(&ds).Error
 }
 
 func (db *DBORM) AddDeviceServer(device models.DeviceServer) (models.DeviceServer, error) {
@@ -120,9 +188,13 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 	return pd, db.Delete(&pd).Error
 }
 
+func (db *DBORM) UpdateDevice(data interface{}, device string, idx string) error {
+	return db.Table(device).Where("device_idx = ?", idx).Update(data).Error
+}
+
 // Update OutFlag
-func (db *DBORM) UpdateOutFlag(idxs string, device string, flag int) error {
-	return db.Table(device).Where("idx IN ("+ idxs + ")").Update(outFlagField, flag).Error
+func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
+	return db.Debug().Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
 }
 
 func GetWhereString(field string) string {

@@ -22,8 +22,10 @@ func (db *DBORM) GetCommentByIdx(idx int) (comment models.DeviceComment, err err
 }
 
 func (db *DBORM) UpdateComment(comment models.DeviceComment) error {
-	where := GetWhereString(idxFieldName)
-	return db.Model(&comment).Where(where, comment.Idx).Update(contentsFieldName, comment.Contents).Error
+	return db.
+		Model(&comment).
+		Where(models.DeviceComment{Idx: comment.Idx}).
+		Update(models.DeviceComment{Contents: comment.Contents}).Error
 }
 
 func (db *DBORM) AddComment(comment models.DeviceComment) error {

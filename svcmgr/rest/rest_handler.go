@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"reflect"
 	"strconv"
+	"strings"
 )
 
 const defaultField = "device_code"
@@ -15,7 +17,7 @@ const NetworkTableName = "device_network_tb"
 const PartTableName = "device_part_tb"
 
 func (h *Handler) GetCodes(c *gin.Context) {
-	fmt.Println("Getcodes")
+	//fmt.Println("Getcodes")
 	if h.db == nil {
 		return
 	}
@@ -24,7 +26,7 @@ func (h *Handler) GetCodes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(codes)
+	//fmt.Println(codes)
 
 	c.JSON(http.StatusOK, codes)
 }
@@ -55,12 +57,26 @@ func (h *Handler) GetCodeList(c *gin.Context) {
 
 	var list []string
 	for i, v := range codes {
-		fmt.Println(i, v.Name)
+		//fmt.Println(i, v.Name)
 		list = append(list, v.Name)
 	}
 
 	//fmt.Println(list)
 	c.JSON(http.StatusOK, list)
+}
+
+func (h *Handler) GetSubCodeList(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	cIdx := strings.Split(c.Param("c_idx"), ",")
+	subCodes, err := h.db.GetSubCodeList(cIdx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, subCodes)
 }
 
 func (h *Handler) AddCode(c *gin.Context) {
@@ -159,7 +175,7 @@ func (h *Handler) DeleteSubCodes(c *gin.Context) {
 
 // Device
 func (h *Handler) GetDevicesByList(c *gin.Context) {
-	fmt.Println("GetDevicesByList")
+	//fmt.Println("GetDevicesByList")
 	if h.db == nil {
 		return
 	}
@@ -190,7 +206,7 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("type : ", deviceType, ", outFlag : ", outFlag)
+	//fmt.Println("type : ", deviceType, ", outFlag : ", outFlag)
 
 	if deviceType == "server" {
 		c.JSON(http.StatusOK, devicesServer)
@@ -202,7 +218,7 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 }
 
 func (h *Handler) GetDevicesByIdx(c *gin.Context) {
-	fmt.Println("GetDevicesByIdx")
+	//fmt.Println("GetDevicesByIdx")
 	if h.db == nil {
 		return
 	}
@@ -233,7 +249,7 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("type : ", deviceType, ", idx : ", idx)
+	//fmt.Println("type : ", deviceType, ", idx : ", idx)
 
 	if deviceType == "server" {
 		c.JSON(http.StatusOK, devicesServer)
@@ -245,6 +261,7 @@ func (h *Handler) GetDevicesByIdx(c *gin.Context) {
 }
 
 // Search Devices
+// With join
 // default field : device_code
 func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	if h.db == nil {
@@ -263,6 +280,73 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 	}
 	//fmt.Println("[###] %v", devices)
 	c.JSON(http.StatusOK, devices)
+}
+
+// Without join
+func (h *Handler) GetDeviceWithoutJoin(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+	code := c.Param("value")
+	devices, err := h.db.GetDeviceWithoutJoin(deviceType, code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	//fmt.Println("[###] %v", devices)
+	c.JSON(http.StatusOK, devices)
+}
+
+// Search device
+func (h *Handler) GetDevicesForSearch(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	device := c.Param("type")
+	switch device {
+	case "server":
+		dc := models.DeviceServer{}
+		err := c.ShouldBindJSON(&dc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		devices, err := h.db.GetDevicesServerForSearch(dc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devices)
+	case "network":
+		dc := models.DeviceNetwork{}
+		err := c.ShouldBindJSON(&dc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		devices, err := h.db.GetDevicesNetworkForSearch(dc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devices)
+	case "part":
+		dc := models.DevicePart{}
+		err := c.ShouldBindJSON(&dc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			return
+		}
+		devices, err := h.db.GetDevicesPartForSearch(dc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devices)
+	}
+	return
 }
 
 // Mornitoring
@@ -301,7 +385,42 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		return
 	}
 
+	err = MakeDeviceCode(h, device, &dc)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	err = h.db.AddDevice(dc, tableName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "OK")
+}
+
+// Update Device
+func (h *Handler) UpdateDevice(c *gin.Context) {
+	var dc interface{}
+	device := c.Param("type")
+	idx := c.Param("idx")
+	switch device {
+	case "server":
+		dc = new(models.DeviceServer)
+	case "network":
+		dc = new(models.DeviceNetwork)
+	case "part":
+		dc = new(models.DevicePart)
+	}
+	tableName := GetDeviceTable(c.Param("type"))
+
+	err := c.ShouldBindJSON(&dc)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = h.db.UpdateDevice(dc, tableName, idx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -319,10 +438,9 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
 		return
 	}
-	//fmt.Println(values)
+	//lib.LogInfo("[values] %s\n", values)
 
-	data := values["idx"].(string)
-
+	data := strings.Split(values["deviceCode"].(string), ",")
 	err = h.db.UpdateOutFlag(data, tableName, flag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -345,17 +463,40 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-func MakeDeviceCode(h *Handler, dc interface{}) (string, error) {
-	data, dbErr := h.db.GetLastDeviceCode(dc)
-	if dbErr != nil {
-		return "", dbErr
+func MakeDeviceCode(h *Handler, device string, dc *interface{}) error {
+	var code string
+	switch device {
+	case "server":
+		data, _ := h.db.GetLastDeviceCodeInServer()
+		code = data.DeviceCode
+	case "network":
+		data, _ := h.db.GetLastDeviceCodeInNetwork()
+		code = data.DeviceCode
+	case "part":
+		data, _ := h.db.GetLastDeviceCodeInPart()
+		code = data.DeviceCode
 	}
-	code := data.(models.DeviceServer).DeviceCode
-	prefix := code[:2]
-	num, err := strconv.Atoi(code[2:])
+	prefix := code[:3]
+	num, err := strconv.Atoi(code[3:])
 	if err != nil {
-		return "", err
+		return err
 	}
 	num++
-	return fmt.Sprintf("%s%5d", prefix, num), nil
+	code = fmt.Sprintf("%s%5d", prefix, num)
+	lib.LogWarn("[NEW Code] %s\n", code)
+
+	// find deviceCode field and set value
+	elements := reflect.ValueOf(*dc).Elem()
+	typeOf := reflect.TypeOf(*dc).Elem()
+	// find embedded struct : DeviceCommon
+	for i := 0; i < typeOf.NumField(); i++ {
+		if elements.Field(i).Kind() == reflect.Struct {
+			for j := 0; j < elements.Field(i).NumField(); j++ {
+				// DeviceCode field set value
+				elements.Field(i).FieldByName("DeviceCode").SetString(code)
+				return nil
+			}
+		}
+	}
+	return nil
 }

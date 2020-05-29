@@ -13,6 +13,7 @@ type MariaDBLayer interface {
 	DeleteCodes() error
 	// SubCode
 	GetAllSubCodes() ([]models.SubCode, error)
+	GetSubCodeList(cIdx []string) ([]models.SubCodeResponse, error)
 	AddSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error
@@ -23,13 +24,20 @@ type MariaDBLayer interface {
 	GetDeviceServer(deviceType string, idx int) ([]models.DeviceServer, error)
 	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
 	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
+	GetDevicesServerForSearch(dc models.DeviceServer) ([]models.DeviceServerResponse, error)
+	GetDevicesNetworkForSearch(dc models.DeviceNetwork) ([]models.DeviceNetworkResponse, error)
+	GetDevicesPartForSearch(dc models.DevicePart) ([]models.DevicePartResponse, error)
 	GetDeviceWithJoin(device string, field string, condition string) (interface{}, error)
-	GetLastDeviceCode(dc interface{}) (interface{}, error)
+	GetDeviceWithoutJoin(device string, code string) (interface{}, error)
+	GetLastDeviceCodeInServer() (models.DeviceServer, error)
+	GetLastDeviceCodeInNetwork() (models.DeviceNetwork, error)
+	GetLastDeviceCodeInPart() (models.DevicePart, error)
 	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
 	AddDevice(data interface{}, tableName string) error
-	UpdateOutFlag(data string, tableName string, flag int) error
+	UpdateDevice(device interface{}, tableName string, idx string) error
+	UpdateOutFlag(codes []string, tableName string, flag int) error
 	DeleteAllDevicesServer() error
 	DeleteAllDevicesNetwork() error
 	DeleteAllDevicesPart() error
