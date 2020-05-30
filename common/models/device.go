@@ -155,6 +155,8 @@ type DeviceLog struct {
 	OldStatus    string    `gorm:"type:varchar(255);column:log_old_status;comment:'이전 상태'" json:"oldStatus"`
 	NewStatus    string    `gorm:"type:varchar(255);column:log_new_status;comment:'변경 상태'" json:"newStatus"`
 	LogLevel     int       `gorm:"type:int(11);not null;column:log_level_cd;comment:'로그 레벨'" json:"logLevel"`
+	RegisterId   string    `gorm:"type:varchar(50);column:log_register_id;comment:'로그 등록자 ID'" json:"registerId"`
+	RegisterName string    `gorm:"type:varchar(50);column:log_register_name;comment:'로그 등록자 이름'" json:"registerName"`
 	RegisterDate time.Time `gorm:"column:log_register_date;default:CURRENT_TIMESTAMP;comment:'로그 발생일'" json:"registerDate"`
 }
 

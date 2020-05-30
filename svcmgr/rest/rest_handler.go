@@ -3,6 +3,7 @@ package rest
 import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"cmpService/svcmgr/log"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -385,7 +386,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		return
 	}
 
-	err = MakeDeviceCode(h, device, &dc)
+	code, err := MakeDeviceCode(h, device, &dc)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -396,6 +397,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	log.RegisterDeviceLog(code)
 	c.JSON(http.StatusOK, "OK")
 }
 
@@ -463,7 +465,7 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-func MakeDeviceCode(h *Handler, device string, dc *interface{}) error {
+func MakeDeviceCode(h *Handler, device string, dc *interface{}) (string, error) {
 	var code string
 	switch device {
 	case "server":
@@ -479,7 +481,7 @@ func MakeDeviceCode(h *Handler, device string, dc *interface{}) error {
 	prefix := code[:3]
 	num, err := strconv.Atoi(code[3:])
 	if err != nil {
-		return err
+		return "", err
 	}
 	num++
 	code = fmt.Sprintf("%s%5d", prefix, num)
@@ -494,9 +496,9 @@ func MakeDeviceCode(h *Handler, device string, dc *interface{}) error {
 			for j := 0; j < elements.Field(i).NumField(); j++ {
 				// DeviceCode field set value
 				elements.Field(i).FieldByName("DeviceCode").SetString(code)
-				return nil
+				return code, nil
 			}
 		}
 	}
-	return nil
+	return code, nil
 }
