@@ -1,6 +1,23 @@
 package lib
 
 const (
+	_				= iota
+	LevelFatal
+	LevelError
+	LevelWarn
+	LevelInfo
+	LevelDebug
+)
+
+const (
+	_					= iota
+	RegisterDevice
+	ChangeInformation
+	ExportDevice
+	MovedDevice
+)
+
+const (
 	RestFailGetData				= "Failed to get data."
 	RestFailAddData				= "Failed to add data."
 	RestFailDeleteData			= "Failed to delete data"
