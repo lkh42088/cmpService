@@ -2,6 +2,7 @@ package convert
 
 import (
 	"cmpService/common/db"
+	"cmpService/common/lib"
 	"cmpService/common/mariadblayer"
 	"cmpService/common/models"
 	"cmpService/dbmigrator/cbmodels"
@@ -546,13 +547,6 @@ type LogContents struct {
 	NewStatus		string
 }
 
-const (
-	RegisteDevice = iota
-	ChangeInfomation
-	ExportDevice
-	MovedDevice
-)
-
 func ParseToLogContents(data string) (logs []LogContents) {
 	if data == "" || (!strings.Contains(data, "장비등록") && !strings.Contains(data, "정보변경")) {
 		return nil
@@ -562,7 +556,7 @@ func ParseToLogContents(data string) (logs []LogContents) {
 
 	for i := 0; i < len(tmpData) - 1; i+=2 {
 		if !strings.Contains(tmpData[i+1], "장비등록") && !strings.Contains(tmpData[i+1], "정보변경") {
-			log.WorkCode = MovedDevice
+			log.WorkCode = lib.MovedDevice
 			logs = append(logs, log)
 			continue
 		}
@@ -575,11 +569,11 @@ func ParseToLogContents(data string) (logs []LogContents) {
 			continue
 		}
 		if strings.Contains(tmpData[i+1], "장비등록") {
-			log.WorkCode = RegisteDevice
+			log.WorkCode = lib.RegisterDevice
 			logs = append(logs, log)
 			continue
 		} else {
-			log.WorkCode = ChangeInfomation
+			log.WorkCode = lib.ChangeInformation
 			splitData := strings.Split(tmpData[i+1], "[")
 			sData := strings.Split(splitData[1], ":")
 			log.SubCode = sData[0]

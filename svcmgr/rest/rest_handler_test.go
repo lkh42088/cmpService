@@ -155,3 +155,4 @@ func TestAddDevice(t *testing.T) {
 	}
 	fmt.Println("response:", string(d))
 }
+
