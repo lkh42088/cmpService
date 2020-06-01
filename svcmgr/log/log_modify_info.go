@@ -31,10 +31,11 @@ func DeviceInfoModify(dc interface{}, deviceType string, code string) error {
 				if newElem.Field(i).Field(j).String() == "" {
 					continue
 				}
-				if newElem.Field(i).Field(j) == oldElem.Field(i).Field(j) { //todo
+				if reflect.DeepEqual(newElem.Field(i).Field(j), oldElem.Field(i).Field(j)) { //todo
+					fmt.Printf("%+v\n", oldElem.Field(i).Field(j))
 					continue
 				}
-				field = newElem.Field(i).Type().Field(j).Name
+				field = newElem.Field(i).Type().Field(j).Name  //todo
 				oldStatus = oldElem.Field(i).Field(j).String() //todo
 				newStatus = newElem.Field(i).Field(j).String()
 				fmt.Println(newStatus, oldStatus, field)
@@ -43,17 +44,17 @@ func DeviceInfoModify(dc interface{}, deviceType string, code string) error {
 			if newElem.Field(i).String() == "" {
 				continue
 			}
-			if newElem.Field(i) == oldElem.Field(i) {
+			if reflect.DeepEqual(newElem.Field(i), oldElem.Field(i)) {
 				continue
 			}
-			field = newElem.Type().Field(i).Name
+			field = newElem.Type().Field(i).Name  //todo
 			oldStatus = oldElem.Field(i).String() //todo
 			newStatus = newElem.Field(i).String()
 			fmt.Println(newStatus, oldStatus, field)
 		}
 		switch deviceType {
 		case "server":
-			ds, ok := dc.(*models.DeviceServer)
+			ds, ok := oldDevice.(models.DeviceServer)
 			if !ok {
 				return errors.New("Can't data parse.\n")
 			}
@@ -67,12 +68,13 @@ func DeviceInfoModify(dc interface{}, deviceType string, code string) error {
 				NewStatus:    newStatus,
 				RegisterDate: time.Now(),
 			}
-			lib.LogInfo("%v\n", log)
+			lib.LogWarn("%v\n", log)
 		case "network":
-			dn, ok := dc.(*models.DeviceNetwork)
+			dn, ok := oldDevice.(models.DeviceNetwork)
 			if !ok {
 				return errors.New("Can't data parse.\n")
 			}
+			fmt.Println(dn)
 			log = models.DeviceLog{
 				DeviceCode:   dn.DeviceCode,
 				WorkCode:     lib.ChangeInformation,
@@ -83,9 +85,9 @@ func DeviceInfoModify(dc interface{}, deviceType string, code string) error {
 				NewStatus:    newStatus,
 				RegisterDate: time.Now(),
 			}
-			lib.LogInfo("%v\n", log)
+			lib.LogWarn("%v\n", log)
 		case "part":
-			dp, ok := dc.(*models.DevicePart)
+			dp, ok := oldDevice.(models.DevicePart)
 			if !ok {
 				return errors.New("Can't data parse.\n")
 			}
@@ -99,14 +101,14 @@ func DeviceInfoModify(dc interface{}, deviceType string, code string) error {
 				NewStatus:    newStatus,
 				RegisterDate: time.Now(),
 			}
-			lib.LogInfo("%v\n", log)
+			lib.LogWarn("%v\n", log)
 		default:
 			return errors.New("Device type is invalid.\n")
 		}
 
 		err := AutoAddLog(log)
 		if err != nil {
-			return errors.New("[RegisterDeviceLog] Failed to insert log message in DB")
+			return fmt.Errorf("[RegisterDeviceLog] error : %s\n", err)
 		}
 	}
 	return nil
