@@ -20,7 +20,7 @@ func Orderby(order_field string, direction int) string {
 	if direction == 0 {
 		orderby = "d." + orderby + " ASC"
 	} else {
-		orderby = "d." + orderby + " ASC"
+		orderby = "d." + orderby + " DESC"
 	}
 	//fmt.Println(orderby)
 	return orderby

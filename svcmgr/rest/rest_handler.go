@@ -392,11 +392,12 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		return
 	}
 
-	err = h.db.AddDevice(dc, tableName)
+	result, err := h.db.AddDevice(dc, tableName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println(result)
 	log.RegisterDeviceLog(code)
 	c.JSON(http.StatusOK, "OK")
 }

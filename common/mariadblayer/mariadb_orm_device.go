@@ -160,8 +160,8 @@ func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, err
 	return device, db.Create(&device).Error
 }
 
-func (db *DBORM) AddDevice(data interface{}, device string) error {
-	return db.Table(device).Create(data).Error
+func (db *DBORM) AddDevice(data interface{}, device string) (interface{}, error) {
+	return data, db.Table(device).Create(data).Error
 }
 
 func (db *DBORM) DeleteAllDevicesServer() error {
@@ -189,7 +189,7 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 }
 
 func (db *DBORM) UpdateDevice(data interface{}, device string, idx string) error {
-	return db.Table(device).Where("device_idx = ?", idx).Update(data).Error
+	return db.Table(device).Where("device_code = ?", idx).Update(data).Error
 }
 
 // Update OutFlag
