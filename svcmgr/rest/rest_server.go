@@ -92,7 +92,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/devices/:type", h.GetDevicesForSearch)
 	router.GET("/v1/raw/device/:type/:value", h.GetDeviceWithoutJoin)
 	router.POST("/v1/device/create/:type", h.AddDevice)
-	router.PUT("/v1/device/update/:type/:idx", h.UpdateDevice)
+	router.PUT("/v1/device/update/:type/:deviceCode", h.UpdateDevice)
 	router.PUT("/v1/devices/update/:type", h.UpdateOutFlag)
 
 	// Comment

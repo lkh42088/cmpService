@@ -62,9 +62,15 @@ func GetDevice(deviceType string, deviceCode string) interface{} {
 	db, _ := SetMariaDBForLog()
 	defer db.Close()
 
-	device, err := db.GetDeviceWithoutJoin(deviceType, deviceCode)
-	if err != nil {
-		lib.LogWarn("%s\n", err)
+	var device interface{}
+	switch deviceType {
+	case "server":
+		device, _ = db.GetDeviceServer(deviceCode)
+	case "network":
+		device, _ = db.GetDeviceNetwork(deviceCode)
+	case "part":
+		device, _ = db.GetDevicePart(deviceCode)
 	}
-	return &device
+
+	return device
 }

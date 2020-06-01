@@ -22,7 +22,7 @@ func DeviceRegLog(dc interface{}, deviceType string) error {
 			RegisterId: ds.RegisterId,
 			RegisterDate: time.Now(),
 		}
-		lib.LogInfo("%s\n", log)
+		lib.LogInfo("%v\n", log)
 	case "network":
 		dn, ok := dc.(*models.DeviceNetwork)
 		if !ok {
@@ -35,7 +35,7 @@ func DeviceRegLog(dc interface{}, deviceType string) error {
 			RegisterId: dn.RegisterId,
 			RegisterDate: time.Now(),
 		}
-		lib.LogInfo("%s\n", log)
+		lib.LogInfo("%v\n", log)
 	case "part":
 		dp, ok := dc.(*models.DevicePart)
 		if !ok {
@@ -48,7 +48,7 @@ func DeviceRegLog(dc interface{}, deviceType string) error {
 			RegisterId: dp.RegisterId,
 			RegisterDate: time.Now(),
 		}
-		lib.LogInfo("%s\n", log)
+		lib.LogInfo("%v\n", log)
 	default:
 		return errors.New("Device type is invalid.\n")
 	}

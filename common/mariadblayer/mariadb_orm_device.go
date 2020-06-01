@@ -22,19 +22,23 @@ func (db *DBORM) GetAllDevicesPart(deviceType string, out_flag int) (devices []m
 	return devices, db.Where("out_flag=?", out_flag).Find(&devices).Error
 }
 
-func (db *DBORM) GetDeviceServer(deviceType string, idx int) (device []models.DeviceServer,
-	err error) {
-	return device, db.Where("idx=?", idx).Find(&device).Error
+func (db *DBORM) GetDeviceServer(code string) (device models.DeviceServer, err error) {
+	return device, db.Where(models.DeviceServer{
+		DeviceCommon: models.DeviceCommon{DeviceCode: code},
+	}).Find(&device).Error
 }
 
-func (db *DBORM) GetDeviceNetwork(deviceType string, idx int) (device []models.DeviceNetwork,
+func (db *DBORM) GetDeviceNetwork(code string) (device models.DeviceNetwork,
 	err error) {
-	return device, db.Where("idx=?", idx).Find(&device).Error
+	return device, db.Where(models.DeviceNetwork{
+		DeviceCommon: models.DeviceCommon{DeviceCode: code},
+	}).Find(&device).Error
 }
 
-func (db *DBORM) GetDevicePart(deviceType string, idx int) (device []models.DevicePart,
-	err error) {
-	return device, db.Where("idx=?", idx).Find(&device).Error
+func (db *DBORM) GetDevicePart(code string) (device models.DevicePart, err error) {
+	return device, db.Where(models.DevicePart{
+		DeviceCommon: models.DeviceCommon{DeviceCode: code},
+	}).Find(&device).Error
 }
 
 func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string) (

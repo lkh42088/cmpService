@@ -218,48 +218,42 @@ func (h *Handler) GetDevicesByList(c *gin.Context) {
 	}
 }
 
-func (h *Handler) GetDevicesByIdx(c *gin.Context) {
-	//fmt.Println("GetDevicesByIdx")
-	if h.db == nil {
-		return
-	}
-	deviceType := c.Param("type")
-
-	f := c.Param("idx")
-	idx, err := strconv.Atoi(f)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
-		return
-	}
-
-	devicesServer, err := h.db.GetDeviceServer(deviceType, idx)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	devicesNetwork, err := h.db.GetDeviceNetwork(deviceType, idx)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	devicesPart, err := h.db.GetDevicePart(deviceType, idx)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	//fmt.Println("type : ", deviceType, ", idx : ", idx)
-
-	if deviceType == "server" {
-		c.JSON(http.StatusOK, devicesServer)
-	} else if deviceType == "network" {
-		c.JSON(http.StatusOK, devicesNetwork)
-	} else if deviceType == "part" {
-		c.JSON(http.StatusOK, devicesPart)
-	}
-}
+//func (h *Handler) GetDevicesByCode(c *gin.Context) {
+//	//fmt.Println("GetDevicesByIdx")
+//	if h.db == nil {
+//		return
+//	}
+//	deviceType := c.Param("type")
+//	code := c.Param("deviceCode")
+//
+//	devicesServer, err := h.db.GetDeviceServer(code)
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	devicesNetwork, err := h.db.GetDeviceNetwork(code)
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	devicesPart, err := h.db.GetDevicePart(code)
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	//fmt.Println("type : ", deviceType, ", idx : ", idx)
+//
+//	if deviceType == "server" {
+//		c.JSON(http.StatusOK, devicesServer)
+//	} else if deviceType == "network" {
+//		c.JSON(http.StatusOK, devicesNetwork)
+//	} else if deviceType == "part" {
+//		c.JSON(http.StatusOK, devicesPart)
+//	}
+//}
 
 // Search Devices
 // With join
@@ -409,7 +403,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 func (h *Handler) UpdateDevice(c *gin.Context) {
 	var dc interface{}
 	device := c.Param("type")
-	idx := c.Param("idx")
+	code := c.Param("deviceCode")
 	switch device {
 	case "server":
 		dc = new(models.DeviceServer)
@@ -426,14 +420,15 @@ func (h *Handler) UpdateDevice(c *gin.Context) {
 		return
 	}
 
-	err = h.db.UpdateDevice(dc, tableName, idx)
+	// need to first query : for diff info
+	if err = log.DeviceInfoModify(dc, device, code); err != nil {
+		lib.LogWarn("%s\n", err)
+	}
+
+	err = h.db.UpdateDevice(dc, tableName, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}
-
-	if err = log.DeviceInfoModify(dc, device); err != nil {
-		lib.LogWarn("%s\n", err)
 	}
 
 	c.JSON(http.StatusOK, "OK")
