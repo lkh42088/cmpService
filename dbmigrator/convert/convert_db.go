@@ -608,8 +608,8 @@ func GetLogList(isComment int, deviceCode string, userId string, contents string
 			data.OldStatus = list.OldStatus
 			data.NewStatus = list.NewStatus
 			data.DeviceCode = deviceCode
-			//data.RegisterId = userId
-			//data.RegisterName = list.RegName
+			data.RegisterId = userId
+			data.RegisterName = list.RegName
 			data.RegisterDate = list.RegTime
 			lc = append(lc, data)
 		}
