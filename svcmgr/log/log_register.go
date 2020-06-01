@@ -2,50 +2,60 @@ package log
 
 import (
 	"cmpService/common/lib"
-	"cmpService/common/mariadblayer"
 	"cmpService/common/models"
-	"fmt"
+	"errors"
 	"time"
 )
 
-type Handler struct {
-	db mariadblayer.MariaDBLayer
-}
-
-func NewHandler(db *mariadblayer.DBORM) (*Handler, error) {
-	h := new(Handler)
-	h.db = db
-	return h, nil
-}
-
-func (h *Handler) AutoAddLog(log models.DeviceLog) {
-	if h.db == nil {
-		return
+func DeviceRegLog(dc interface{}, deviceType string) error {
+	var log models.DeviceLog
+	switch deviceType {
+	case "server":
+		ds, ok := dc.(*models.DeviceServer)
+		if !ok {
+			return errors.New("Can't data parse.\n")
+		}
+		log = models.DeviceLog{
+			DeviceCode: ds.DeviceCode,
+			WorkCode:   lib.RegisterDevice,
+			LogLevel:   lib.LevelInfo,
+			RegisterId: ds.RegisterId,
+			RegisterDate: time.Now(),
+		}
+		lib.LogInfo("%s\n", log)
+	case "network":
+		dn, ok := dc.(*models.DeviceNetwork)
+		if !ok {
+			return errors.New("Can't data parse.\n")
+		}
+		log = models.DeviceLog{
+			DeviceCode: dn.DeviceCode,
+			WorkCode:   lib.RegisterDevice,
+			LogLevel:   lib.LevelInfo,
+			RegisterId: dn.RegisterId,
+			RegisterDate: time.Now(),
+		}
+		lib.LogInfo("%s\n", log)
+	case "part":
+		dp, ok := dc.(*models.DevicePart)
+		if !ok {
+			return errors.New("Can't data parse.\n")
+		}
+		log = models.DeviceLog{
+			DeviceCode: dp.DeviceCode,
+			WorkCode:   lib.RegisterDevice,
+			LogLevel:   lib.LevelInfo,
+			RegisterId: dp.RegisterId,
+			RegisterDate: time.Now(),
+		}
+		lib.LogInfo("%s\n", log)
+	default:
+		return errors.New("Device type is invalid.\n")
 	}
-	if log.DeviceCode == "" || log.WorkCode == 0 {
-		return
-	}
-	if err := h.db.AddLog(log); err != nil {
-		lib.LogWarn("[AutoAddLog] %s\n", err)
-		return
-	}
-	lib.LogInfo("[AutoAddLog] Log message stored(workCode=%d).\n", log.WorkCode)
-}
 
-func RegisterDeviceLog(code string) error {
-	log := models.DeviceLog{
-		DeviceCode:   code,
-		WorkCode:     lib.RegisterDevice,
-		LogLevel:     lib.LevelInfo,
-		RegisterId: "",   //todo
-		RegisterName: "",    //todo
-		RegisterDate: time.Now(),
+	err := AutoAddLog(log)
+	if err != nil {
+		return errors.New("[RegisterDeviceLog] Failed to insert log message in DB")
 	}
-	fmt.Println(log)
-	//err := AutoAddLog(log)
-	//if err != nil {
-	//	return errors.New("[RegisterDeviceLog] Failed to insert log message in DB")
-	//}
-
 	return nil
 }

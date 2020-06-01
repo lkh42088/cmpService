@@ -160,8 +160,8 @@ func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, err
 	return device, db.Create(&device).Error
 }
 
-func (db *DBORM) AddDevice(data interface{}, device string) (interface{}, error) {
-	return data, db.Table(device).Create(data).Error
+func (db *DBORM) AddDevice(data interface{}, device string)  error {
+	return db.Table(device).Create(data).Error
 }
 
 func (db *DBORM) DeleteAllDevicesServer() error {

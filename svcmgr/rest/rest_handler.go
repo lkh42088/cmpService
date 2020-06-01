@@ -386,19 +386,22 @@ func (h *Handler) AddDevice(c *gin.Context) {
 		return
 	}
 
-	code, err := MakeDeviceCode(h, device, &dc)
+	err = MakeDeviceCode(h, device, &dc)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := h.db.AddDevice(dc, tableName)
+	err = h.db.AddDevice(dc, tableName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(result)
-	log.RegisterDeviceLog(code)
+
+	if err = log.DeviceRegLog(dc, device); err != nil {
+		lib.LogWarn("%s\n", err)
+	}
+
 	c.JSON(http.StatusOK, "OK")
 }
 
@@ -428,6 +431,11 @@ func (h *Handler) UpdateDevice(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	if err = log.DeviceInfoModify(dc, device); err != nil {
+		lib.LogWarn("%s\n", err)
+	}
+
 	c.JSON(http.StatusOK, "OK")
 }
 
@@ -435,7 +443,6 @@ func (h *Handler) UpdateDevice(c *gin.Context) {
 func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	tableName := GetDeviceTable(c.Param("type"))
 
-	flag, _ := strconv.Atoi(c.Param("outFlag"))
 	values, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestFailConvertData})
@@ -443,12 +450,19 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	}
 	//lib.LogInfo("[values] %s\n", values)
 
+	flag := values["outFlag"].(float64)
+	userId := values["userId"].(string)
 	data := strings.Split(values["deviceCode"].(string), ",")
-	err = h.db.UpdateOutFlag(data, tableName, flag)
+	err = h.db.UpdateOutFlag(data, tableName, int(flag))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	if err = log.DeviceUpdateOutFlag(data, c.Param("type"), int(flag), userId); err != nil {
+		lib.LogWarn("%s\n", err)
+	}
+
 	c.JSON(http.StatusOK, "OK")
 }
 
@@ -466,7 +480,7 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-func MakeDeviceCode(h *Handler, device string, dc *interface{}) (string, error) {
+func MakeDeviceCode(h *Handler, device string, dc *interface{}) error {
 	var code string
 	switch device {
 	case "server":
@@ -482,10 +496,11 @@ func MakeDeviceCode(h *Handler, device string, dc *interface{}) (string, error) 
 	prefix := code[:3]
 	num, err := strconv.Atoi(code[3:])
 	if err != nil {
-		return "", err
+		return err
 	}
 	num++
 	code = fmt.Sprintf("%s%5d", prefix, num)
+	code = strings.Replace(code, " ", "0", -1)	// remove space
 	lib.LogWarn("[NEW Code] %s\n", code)
 
 	// find deviceCode field and set value
@@ -497,9 +512,9 @@ func MakeDeviceCode(h *Handler, device string, dc *interface{}) (string, error) 
 			for j := 0; j < elements.Field(i).NumField(); j++ {
 				// DeviceCode field set value
 				elements.Field(i).FieldByName("DeviceCode").SetString(code)
-				return code, nil
+				return nil
 			}
 		}
 	}
-	return code, nil
+	return nil
 }
