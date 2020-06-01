@@ -20,7 +20,7 @@ func Orderby(order_field string, direction int) string {
 	if direction == 0 {
 		orderby = "d." + orderby + " ASC"
 	} else {
-		orderby = "d." + orderby + " ASC"
+		orderby = "d." + orderby + " DESC"
 	}
 	//fmt.Println(orderby)
 	return orderby
@@ -90,6 +90,7 @@ func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 		Joins(RackJoinQuery).
 		Joins(SizeJoinQuery).
 		Joins(CompanyLeftJoinQuery).
+		Joins(OwnerCompanyLeftJoinQuery).
 		Find(&server.Devices).Error
 
 	if err != nil {
@@ -144,6 +145,7 @@ func (db *DBORM) GetDevicesNetworkWithJoin(cri models.PageCreteria) (
 		Joins(RackJoinQuery).
 		Joins(SizeJoinQuery).
 		Joins(CompanyLeftJoinQuery).
+		Joins(OwnerCompanyLeftJoinQuery).
 		Find(&network.Devices).Error
 
 	if err != nil {
@@ -197,6 +199,7 @@ func (db *DBORM) GetDevicesPartWithJoin(cri models.PageCreteria) (
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
 		Joins(CompanyLeftJoinQuery).
+		Joins(OwnerCompanyLeftJoinQuery).
 		Find(&part.Devices).Error
 
 	if err != nil {
