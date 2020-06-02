@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-
 /////
 // DEVICE TABLE
 /////
@@ -37,14 +36,14 @@ type DeviceCommon struct {
 
 type DeviceServer struct {
 	DeviceCommon
-	Ip           string `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'" json:"ip,omitempty"`
-	Size         int    `gorm:"column:size_cd;comment:'크기'" json:"type:int"`
-	Spla         string `gorm:"column:spla_cd;default:'|';comment:'SPLA'" json:"spla,omitempty"`
-	Cpu          string `gorm:"type:varchar(255);column:cpu;comment:'CPU'" json:"cpu,omitempty"`
-	Memory       string `gorm:"type:varchar(255);column:memory;comment:'MEMORY'" json:"memory,omitempty"`
-	Hdd          string `gorm:"type:varchar(255);column:hdd;comment:'HDD'" json:"hdd,omitempty"`
-	RackTag      string `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'" json:"rackTag,omitempty"`
-	RackLoc      int    `gorm:"type:int(11);column:rack_loc;comment:'Rack 내 위치 번호'" json:"type:int"`
+	Ip      string `gorm:"type:varchar(255);column:ip;default:'|';comment:'IP'" json:"ip,omitempty"`
+	Size    int    `gorm:"column:size_cd;comment:'크기'" json:"type:int"`
+	Spla    string `gorm:"column:spla_cd;default:'|';comment:'SPLA'" json:"spla,omitempty"`
+	Cpu     string `gorm:"type:varchar(255);column:cpu;comment:'CPU'" json:"cpu,omitempty"`
+	Memory  string `gorm:"type:varchar(255);column:memory;comment:'MEMORY'" json:"memory,omitempty"`
+	Hdd     string `gorm:"type:varchar(255);column:hdd;comment:'HDD'" json:"hdd,omitempty"`
+	RackTag string `gorm:"type:varchar(255);column:rack_tag;comment:'Rack 태그'" json:"rackTag,omitempty"`
+	RackLoc int    `gorm:"type:int(11);column:rack_loc;comment:'Rack 내 위치 번호'" json:"type:int"`
 }
 
 func (DeviceServer) TableName() string {
@@ -103,14 +102,16 @@ type DeviceCommonResponse struct {
 
 type DeviceServerResponse struct {
 	DeviceCommonResponse
-	Ip      string `gorm:"type:varchar(255);column:ip;default:'|'" json:"ip"`
-	Size    string `gorm:"column:size_cd" json:"size"`
-	Spla    string `gorm:"column:spla_cd;default:'|'" json:"spla"`
-	Cpu     string `gorm:"type:varchar(255);column:cpu" json:"cpu"`
-	Memory  string `gorm:"type:varchar(255);column:memory" json:"memory"`
-	Hdd     string `gorm:"type:varchar(255);column:hdd" json:"hdd"`
-	RackTag string `gorm:"type:varchar(255);column:rack_tag" json:"rackTag"`
-	RackLoc int    `gorm:"type:int(11);column:rack_loc" json:"rackLoc"`
+	Ip           string `gorm:"type:varchar(255);column:ip;default:'|'" json:"ip"`
+	Size         string `gorm:"column:size_cd" json:"size"`
+	Spla         string `gorm:"column:spla_cd;default:'|'" json:"spla"`
+	Cpu          string `gorm:"type:varchar(255);column:cpu" json:"cpu"`
+	Memory       string `gorm:"type:varchar(255);column:memory" json:"memory"`
+	Hdd          string `gorm:"type:varchar(255);column:hdd" json:"hdd"`
+	RackTag      string `gorm:"type:varchar(255);column:rack_tag" json:"rackTag"`
+	RackLoc      int    `gorm:"type:int(11);column:rack_loc" json:"rackLoc"`
+	Customer     string `gorm:"column:company_name" json:"customerName"`
+	OwnerCompany string `gorm:"type:varchar(255);column:owner_company_name" json:"ownerCompanyName"`
 }
 
 type DeviceNetworkResponse struct {
@@ -120,12 +121,16 @@ type DeviceNetworkResponse struct {
 	FirmwareVersion string `gorm:"type:varchar(50);column:firmware_version" json:"firmwareVersion"`
 	RackTag         string `gorm:"type:varchar(255);column:rack_tag" json:"rackTag"`
 	RackLoc         int    `gorm:"type:int(11);column:rack_loc" json:"rackLoc"`
+	Customer        string `gorm:"column:company_name" json:"customerName"`
+	OwnerCompany    string `gorm:"type:varchar(255);column:owner_company_name" json:"ownerCompanyName"`
 }
 
 type DevicePartResponse struct {
 	DeviceCommonResponse
-	Warranty string `gorm:"type:varchar(255);column:warranty" json:"warranty"`
-	RackCode int    `gorm:"type:int(11);column:rack_code_cd" json:"rackCode"`
+	Warranty     string `gorm:"type:varchar(255);column:warranty" json:"warranty"`
+	RackCode     int    `gorm:"type:int(11);column:rack_code_cd" json:"rackCode"`
+	Customer     string `gorm:"column:company_name" json:"customerName"`
+	OwnerCompany string `gorm:"type:varchar(255);column:owner_company_name" json:"ownerCompanyName"`
 }
 
 /////
