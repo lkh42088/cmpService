@@ -169,7 +169,7 @@ func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, err
 }
 
 func (db *DBORM) AddDevice(data interface{}, device string)  error {
-	return db.Table(device).Create(data).Error
+	return db.Table(GetTableName(device)).Create(data).Error
 }
 
 func (db *DBORM) DeleteAllDevicesServer() error {
@@ -196,13 +196,14 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 	return pd, db.Delete(&pd).Error
 }
 
-func (db *DBORM) UpdateDevice(data interface{}, device string, idx string) error {
-	return db.Table(device).Where("device_code = ?", idx).Update(data).Error
+func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string) (
+	interface{}, error) {
+	return data, db.Table(device).Where("device_code = ?", deviceCode).Update(data).Error
 }
 
 // Update OutFlag
 func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
-	return db.Debug().Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
+	return db.Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
 }
 
 func GetWhereString(field string) string {
@@ -222,6 +223,21 @@ func GetTableConfig(data *interface{}, device string) bool {
 
 	}
 	return true
+}
+
+func GetTableName(device string) string {
+	switch device {
+	case "server":
+		return ServerRawTable
+	case "network":
+		return NetworkRawTable
+	case "part":
+		return PartRawTable
+	default:
+		return ""
+
+	}
+	return ""
 }
 
 func GetDeviceQuery(device string) (string, string, string) {

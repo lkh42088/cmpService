@@ -29,7 +29,7 @@ func SetMariaDBForLog() (db *mariadblayer.DBORM, err error) {
 	return db, err
 }
 
-func AutoAddLog(log models.DeviceLog) error{
+func AutoAddLog(log models.DeviceLog) error {
 	//lib.LogWarn("Start AutoAddLog().\n")
 
 	go func() error {
@@ -73,4 +73,69 @@ func GetDevice(deviceType string, deviceCode string) interface{} {
 	}
 
 	return device
+}
+
+func ConvertFieldName(field string) string {
+	var convField string
+
+	switch field {
+	case "Model":
+		convField = "모델 코드"
+	case "Contents":
+		convField = "기타 사항"
+	case "Customer":
+		convField = "고객사명"
+	case "Manufacture":
+		convField = "제조사명"
+	case "DeviceType":
+		convField = "장비 구분"
+	case "WarehousingDate":
+		convField = "입고일"
+	case "RentDate":
+		convField = "임대 기간"
+	case "Ownership":
+		convField = "소유권"
+	case "OwnershipDiv":
+		convField = "소유 구분"
+	case "OwnerCompany":
+		convField = "소유 회사"
+	case "HwSn":
+		convField = "HW S/N"
+	case "IDC":
+		convField = "IDC"
+	case "Rack":
+		convField = "Rack"
+	case "Cost":
+		convField = "장비 원가"
+	case "Purpos":
+		convField = "용도"
+	case "MonitoringFlag":
+		convField = "모니터링 여부"
+	case "MonitoringMethod":
+		convField = "모니터링 방식"
+	case "Ip":
+		convField = "IP"
+	case "Size":
+		convField = "크기"
+	case "Spla":
+		convField = "SPLA"
+	case "Cpu":
+		convField = "CPU"
+	case "Memory":
+		convField = "MEMORY"
+	case "HDD":
+		convField = "HDD"
+	case "RackTag":
+		convField = "Rack 태그"
+	case "RackLoc":
+		convField = "Rack 내 위치 번호"
+	case "FirmwareVersion":
+		convField = "펌웨어 버전"
+	case "Warranty":
+		convField = "보증 기간"
+	case "RackCode":
+		convField = "Rack 사이즈 코드"
+	}
+
+	return convField
 }
