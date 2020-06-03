@@ -22,19 +22,23 @@ func (db *DBORM) GetAllDevicesPart(deviceType string, out_flag int) (devices []m
 	return devices, db.Where("out_flag=?", out_flag).Find(&devices).Error
 }
 
-func (db *DBORM) GetDeviceServer(deviceType string, idx int) (device []models.DeviceServer,
-	err error) {
-	return device, db.Where("idx=?", idx).Find(&device).Error
+func (db *DBORM) GetDeviceServer(code string) (device models.DeviceServer, err error) {
+	return device, db.Where(models.DeviceServer{
+		DeviceCommon: models.DeviceCommon{DeviceCode: code},
+	}).Find(&device).Error
 }
 
-func (db *DBORM) GetDeviceNetwork(deviceType string, idx int) (device []models.DeviceNetwork,
+func (db *DBORM) GetDeviceNetwork(code string) (device models.DeviceNetwork,
 	err error) {
-	return device, db.Where("idx=?", idx).Find(&device).Error
+	return device, db.Where(models.DeviceNetwork{
+		DeviceCommon: models.DeviceCommon{DeviceCode: code},
+	}).Find(&device).Error
 }
 
-func (db *DBORM) GetDevicePart(deviceType string, idx int) (device []models.DevicePart,
-	err error) {
-	return device, db.Where("idx=?", idx).Find(&device).Error
+func (db *DBORM) GetDevicePart(code string) (device models.DevicePart, err error) {
+	return device, db.Where(models.DevicePart{
+		DeviceCommon: models.DeviceCommon{DeviceCode: code},
+	}).Find(&device).Error
 }
 
 func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string) (
@@ -69,6 +73,7 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		Joins(RackJoinQuery).
 		Joins(sizeQueryString).
 		Joins(CompanyLeftJoinQuery).
+		Joins(OwnerCompanyLeftJoinQuery).
 		Where(where, condition).
 		Find(dc).Error
 
@@ -100,6 +105,7 @@ func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.
 		Joins(RackServerNoAliasJoinQuery).
 		Joins(SizeServerNoAliasJoinQuery).
 		Joins(CompanyServerNoAliasLeftJoinQuery).
+		Joins(OwnerCompanyServerNoAliasLeftJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
@@ -117,6 +123,7 @@ func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []model
 		Joins(RackNetworkNoAliasJoinQuery).
 		Joins(SizeNetworkNoAliasJoinQuery).
 		Joins(CompanyNetworkNoAliasLeftJoinQuery).
+		Joins(OwnerCompanyNetworkNoAliasLeftJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
@@ -133,6 +140,7 @@ func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.Devi
 		Joins(IdcPartNoAliasJoinQuery).
 		Joins(RackPartNoAliasJoinQuery).
 		Joins(CompanyPartNoAliasLeftJoinQuery).
+		Joins(OwnerCompanyPartNoAliasLeftJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
@@ -160,8 +168,8 @@ func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, err
 	return device, db.Create(&device).Error
 }
 
-func (db *DBORM) AddDevice(data interface{}, device string) error {
-	return db.Table(device).Create(data).Error
+func (db *DBORM) AddDevice(data interface{}, device string)  error {
+	return db.Table(GetTableName(device)).Create(data).Error
 }
 
 func (db *DBORM) DeleteAllDevicesServer() error {
@@ -188,13 +196,14 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 	return pd, db.Delete(&pd).Error
 }
 
-func (db *DBORM) UpdateDevice(data interface{}, device string, idx string) error {
-	return db.Table(device).Where("device_idx = ?", idx).Update(data).Error
+func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string) (
+	interface{}, error) {
+	return data, db.Table(device).Where("device_code = ?", deviceCode).Update(data).Error
 }
 
 // Update OutFlag
 func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
-	return db.Debug().Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
+	return db.Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
 }
 
 func GetWhereString(field string) string {
@@ -214,6 +223,21 @@ func GetTableConfig(data *interface{}, device string) bool {
 
 	}
 	return true
+}
+
+func GetTableName(device string) string {
+	switch device {
+	case "server":
+		return ServerRawTable
+	case "network":
+		return NetworkRawTable
+	case "part":
+		return PartRawTable
+	default:
+		return ""
+
+	}
+	return ""
 }
 
 func GetDeviceQuery(device string) (string, string, string) {

@@ -84,7 +84,7 @@ func ReadConfig(path string) (config SvcmgrConfig) {
 	}
 	// JSON transform
 	err = json.Unmarshal(b, &config)
-	fmt.Println(config)
+	//fmt.Println(config)
 	if err != nil {
 		fmt.Println(err)
 	}

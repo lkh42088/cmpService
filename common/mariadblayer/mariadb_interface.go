@@ -21,9 +21,9 @@ type MariaDBLayer interface {
 	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
 	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
 	GetAllDevicesPart(deviceType string, outFlag int) ([]models.DevicePart, error)
-	GetDeviceServer(deviceType string, idx int) ([]models.DeviceServer, error)
-	GetDeviceNetwork(deviceType string, idx int) ([]models.DeviceNetwork, error)
-	GetDevicePart(deviceType string, idx int) ([]models.DevicePart, error)
+	GetDeviceServer(code string) (models.DeviceServer, error)
+	GetDeviceNetwork(code string) (models.DeviceNetwork, error)
+	GetDevicePart(code string) (models.DevicePart, error)
 	GetDevicesServerForSearch(dc models.DeviceServer) ([]models.DeviceServerResponse, error)
 	GetDevicesNetworkForSearch(dc models.DeviceNetwork) ([]models.DeviceNetworkResponse, error)
 	GetDevicesPartForSearch(dc models.DevicePart) ([]models.DevicePartResponse, error)
@@ -36,7 +36,7 @@ type MariaDBLayer interface {
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
 	AddDevice(data interface{}, tableName string) error
-	UpdateDevice(device interface{}, tableName string, idx string) error
+	UpdateDevice(device interface{}, tableName string, deviceCode string) (interface{}, error)
 	UpdateOutFlag(codes []string, tableName string, flag int) error
 	DeleteAllDevicesServer() error
 	DeleteAllDevicesNetwork() error
