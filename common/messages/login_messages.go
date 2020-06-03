@@ -15,7 +15,12 @@ type UserRegisterMessage struct {
 	Name               string   `json:"name"`
 	EmailAuthFlag      bool     `json:"emailAuthFlag"`
 	EmailAuthGroupFlag bool     `json:"emailAuthGroupFlag"`
-	EmailAuthGroupList []string `json:"emailAuthGroupList"`
+	EmailAuthGroupList []EmailAuthEntry `json:"emailAuthGroupList"`
+}
+
+type EmailAuthEntry struct {
+	Id int `json:"id"`
+	Email string `json:"email"`
 }
 
 type UserInfo struct {
@@ -48,7 +53,7 @@ func (msg *UserRegisterMessage) Convert() (user models.User, emailAuthList []mod
 	// email auth
 	if user.GroupEmailAuth {
 		for _, email := range msg.EmailAuthGroupList {
-			emailAuth := GetUserEmailAuth(msg.Id, email)
+			emailAuth := GetUserEmailAuth(msg.Id, email.Email)
 			emailAuthList = append(emailAuthList, emailAuth)
 		}
 	} else if user.EmailAuth {
