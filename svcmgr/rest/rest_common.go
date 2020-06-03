@@ -41,6 +41,36 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
+func ConvertSplaString(h *Handler, dc interface{}, deviceType string) error {
+	var spla string
+	newDev := models.DeviceServerResponse{}
+	if deviceType == "server" {
+		newDev, _ = dc.(models.DeviceServerResponse)
+		fmt.Printf("%+v\n", newDev)
+		//fmt.Printf("%+v\n", dc)
+		if newDev.Spla == "|" {
+			return errors.New("[ConvertSplaString] Spla data is empty.\n")
+		}
+		spla = newDev.Spla
+	} else {
+		return errors.New("[ConvertSplaString] This device isn't server one.\n")
+	}
+	tmp := strings.Replace(spla, "|", ",", -1)
+	fmt.Println(tmp)
+
+	ds, err := h.db.GetDeviceWithSplaJoin(tmp)
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(ds); i++ {
+		spla += ds[i].Name + "|"
+	}
+
+	newDev.Spla = spla
+	return nil
+}
+
 func MakeDeviceCode(h *Handler, device string, dc *interface{}) (string, error) {
 	var code string
 	switch device {

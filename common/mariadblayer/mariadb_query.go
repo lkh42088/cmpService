@@ -9,6 +9,7 @@ const (
 	NetworkRawTable = "device_network_tb"
 	PartRawTable    = "device_part_tb"
 	CompanyRawTable = "company_tb"
+	CodeRawTable	= "code_tb"
 	CodeSubRawTable = "code_sub_tb"
 	// SELECT
 	PageSelectQuery             = "c1.c_name as manufacture_cd,s1.csub_name as model_cd,c2.c_name as device_type_cd,c3.c_name as ownership_cd,c4.c_name as ownership_div_cd,c5.c_name as idc_cd,s2.csub_name as rack_cd,cp1.cp_name as company_name,cp3.cp_name as owner_company_name,d.*"
@@ -68,4 +69,5 @@ const (
 	CompanyServerNoAliasLeftJoinQuery       = "LEFT OUTER JOIN user_tb u2 ON u2.user_id = device_server_tb.user_id LEFT OUTER JOIN company_tb cp1 ON cp1.cp_idx = u2.cp_idx"
 	CompanyNetworkNoAliasLeftJoinQuery      = "LEFT OUTER JOIN user_tb u2 ON u2.user_id = device_network_tb.user_id LEFT OUTER JOIN company_tb cp1 ON cp1.cp_idx = u2.cp_idx"
 	CompanyPartNoAliasLeftJoinQuery         = "LEFT OUTER JOIN user_tb u2 ON u2.user_id = device_part_tb.user_id LEFT OUTER JOIN company_tb cp1 ON cp1.cp_idx = u2.cp_idx"
+	//ServerAndCodeJoinQuery					= "INNER JOIN code_tb c7 ON c7.c_type_sub = 'spla_cd' AND c7.c_idx = device_server_tb.spla_cd"
 )

@@ -235,7 +235,10 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	//fmt.Println("[###] %v", devices)
+
+	_ = ConvertSplaString(h, devices, deviceType)	// no error check
+
+	fmt.Println("[###] %v", devices)
 	c.JSON(http.StatusOK, devices)
 }
 

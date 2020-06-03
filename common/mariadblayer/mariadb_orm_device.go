@@ -76,7 +76,6 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		Joins(OwnerCompanyLeftJoinQuery).
 		Where(where, condition).
 		Find(dc).Error
-
 }
 
 func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
@@ -89,6 +88,15 @@ func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 
 	_, _, tableName := GetDeviceQuery(device)
 	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
+}
+
+func (db *DBORM) GetDeviceWithSplaJoin(spla string) (codes []models.Code, err error) {
+	return codes, db.
+		Debug().
+		Table(CodeRawTable).
+		Where(models.Code{SubType: "spla_cd"}).
+		Where("c_idx IN (?)", spla).
+		Find(&codes).Error
 }
 
 func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.DeviceServerResponse, err error) {
