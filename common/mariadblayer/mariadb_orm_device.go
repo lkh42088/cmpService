@@ -72,8 +72,8 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
 		Joins(sizeQueryString).
-		Joins(CompanyLeftJoinQuery).
-		Joins(OwnerCompanyLeftJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
 		Where(where, condition).
 		Find(dc).Error
 }
@@ -112,8 +112,8 @@ func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.
 		Joins(IdcServerNoAliasJoinQuery).
 		Joins(RackServerNoAliasJoinQuery).
 		Joins(SizeServerNoAliasJoinQuery).
-		Joins(CompanyServerNoAliasLeftJoinQuery).
-		Joins(OwnerCompanyServerNoAliasLeftJoinQuery).
+		Joins(CompanyServerNoAliasJoinQuery).
+		Joins(OwnerCompanyServerNoAliasJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
@@ -130,8 +130,8 @@ func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []model
 		Joins(IdcNetworkNoAliasJoinQuery).
 		Joins(RackNetworkNoAliasJoinQuery).
 		Joins(SizeNetworkNoAliasJoinQuery).
-		Joins(CompanyNetworkNoAliasLeftJoinQuery).
-		Joins(OwnerCompanyNetworkNoAliasLeftJoinQuery).
+		Joins(CompanyNetworkNoAliasJoinQuery).
+		Joins(OwnerCompanyNetworkNoAliasJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
@@ -147,8 +147,8 @@ func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.Devi
 		Joins(OwnershipDivPartNoAliasJoinQuery).
 		Joins(IdcPartNoAliasJoinQuery).
 		Joins(RackPartNoAliasJoinQuery).
-		Joins(CompanyPartNoAliasLeftJoinQuery).
-		Joins(OwnerCompanyPartNoAliasLeftJoinQuery).
+		Joins(CompanyPartNoAliasJoinQuery).
+		Joins(OwnerCompanyPartNoAliasJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
