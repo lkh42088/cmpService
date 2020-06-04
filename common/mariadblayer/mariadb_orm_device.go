@@ -72,11 +72,10 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
 		Joins(sizeQueryString).
-		Joins(CompanyLeftJoinQuery).
-		Joins(OwnerCompanyLeftJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
 		Where(where, condition).
 		Find(dc).Error
-
 }
 
 func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
@@ -91,9 +90,18 @@ func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
 }
 
+func (db *DBORM) GetDeviceWithSplaJoin(spla []string) (codes []models.Code, err error) {
+	return codes, db.
+		//Debug().
+		Table(CodeRawTable).
+		Where(models.Code{SubType: "spla_cd"}).
+		Where("c_idx IN (?)", spla).
+		Find(&codes).Error
+}
+
 func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.DeviceServerResponse, err error) {
 	return ds, db.
-		Debug().
+		//Debug().
 		Select(ServerSelectQuery).
 		Table(ServerRawTable).
 		Joins(ManufactureServerNoAliasJoinQuery).
@@ -104,14 +112,14 @@ func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.
 		Joins(IdcServerNoAliasJoinQuery).
 		Joins(RackServerNoAliasJoinQuery).
 		Joins(SizeServerNoAliasJoinQuery).
-		Joins(CompanyServerNoAliasLeftJoinQuery).
-		Joins(OwnerCompanyServerNoAliasLeftJoinQuery).
+		Joins(CompanyServerNoAliasJoinQuery).
+		Joins(OwnerCompanyServerNoAliasJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
 func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []models.DeviceNetworkResponse, err error) {
 	return ds, db.
-		Debug().
+		//Debug().
 		Select(NetworkSelectQuery).
 		Table(NetworkRawTable).
 		Joins(ManufactureNetworkNoAliasJoinQuery).
@@ -122,14 +130,14 @@ func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []model
 		Joins(IdcNetworkNoAliasJoinQuery).
 		Joins(RackNetworkNoAliasJoinQuery).
 		Joins(SizeNetworkNoAliasJoinQuery).
-		Joins(CompanyNetworkNoAliasLeftJoinQuery).
-		Joins(OwnerCompanyNetworkNoAliasLeftJoinQuery).
+		Joins(CompanyNetworkNoAliasJoinQuery).
+		Joins(OwnerCompanyNetworkNoAliasJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
 func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.DevicePartResponse, err error) {
 	return ds, db.
-		Debug().
+		//Debug().
 		Select(PartSelectQuery).
 		Table(PartRawTable).
 		Joins(ManufacturePartNoAliasJoinQuery).
@@ -139,8 +147,8 @@ func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.Devi
 		Joins(OwnershipDivPartNoAliasJoinQuery).
 		Joins(IdcPartNoAliasJoinQuery).
 		Joins(RackPartNoAliasJoinQuery).
-		Joins(CompanyPartNoAliasLeftJoinQuery).
-		Joins(OwnerCompanyPartNoAliasLeftJoinQuery).
+		Joins(CompanyPartNoAliasJoinQuery).
+		Joins(OwnerCompanyPartNoAliasJoinQuery).
 		Where(&dc).Find(&ds).Error
 }
 
@@ -169,7 +177,7 @@ func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, err
 }
 
 func (db *DBORM) AddDevice(data interface{}, device string)  error {
-	return db.Table(device).Create(data).Error
+	return db.Table(GetTableName(device)).Create(data).Error
 }
 
 func (db *DBORM) DeleteAllDevicesServer() error {
@@ -196,13 +204,14 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 	return pd, db.Delete(&pd).Error
 }
 
-func (db *DBORM) UpdateDevice(data interface{}, device string, idx string) error {
-	return db.Table(device).Where("device_code = ?", idx).Update(data).Error
+func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string) (
+	interface{}, error) {
+	return data, db.Table(device).Where("device_code = ?", deviceCode).Update(data).Error
 }
 
 // Update OutFlag
 func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
-	return db.Debug().Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
+	return db.Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
 }
 
 func GetWhereString(field string) string {
@@ -222,6 +231,21 @@ func GetTableConfig(data *interface{}, device string) bool {
 
 	}
 	return true
+}
+
+func GetTableName(device string) string {
+	switch device {
+	case "server":
+		return ServerRawTable
+	case "network":
+		return NetworkRawTable
+	case "part":
+		return PartRawTable
+	default:
+		return ""
+
+	}
+	return ""
 }
 
 func GetDeviceQuery(device string) (string, string, string) {

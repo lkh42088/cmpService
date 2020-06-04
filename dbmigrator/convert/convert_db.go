@@ -336,7 +336,7 @@ func sepIps(s string) string {
 		return "|"
 	}
 	for _, v := range str {
-		result += v + "|"
+		result += strings.Trim(v, ",") + "|"
 	}
 	return result
 }

@@ -29,6 +29,7 @@ type MariaDBLayer interface {
 	GetDevicesPartForSearch(dc models.DevicePart) ([]models.DevicePartResponse, error)
 	GetDeviceWithJoin(device string, field string, condition string) (interface{}, error)
 	GetDeviceWithoutJoin(device string, code string) (interface{}, error)
+	GetDeviceWithSplaJoin(spla []string) ([]models.Code, error)
 	GetLastDeviceCodeInServer() (models.DeviceServer, error)
 	GetLastDeviceCodeInNetwork() (models.DeviceNetwork, error)
 	GetLastDeviceCodeInPart() (models.DevicePart, error)
@@ -36,7 +37,7 @@ type MariaDBLayer interface {
 	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
 	AddDevice(data interface{}, tableName string) error
-	UpdateDevice(device interface{}, tableName string, deviceCode string) error
+	UpdateDevice(device interface{}, tableName string, deviceCode string) (interface{}, error)
 	UpdateOutFlag(codes []string, tableName string, flag int) error
 	DeleteAllDevicesServer() error
 	DeleteAllDevicesNetwork() error
