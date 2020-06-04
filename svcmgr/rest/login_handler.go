@@ -273,7 +273,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	fmt.Println("id:", loginMsg.Id)
 	user, err := h.db.GetUserById(loginMsg.Id)
 	if err != nil {
-		fmt.Println("error 1:", err)
+		fmt.Println("[LoginUserById] error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
 		return
 	}

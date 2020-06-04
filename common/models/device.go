@@ -1,6 +1,8 @@
 package models
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -170,14 +172,24 @@ func (DeviceLog) TableName() string {
 }
 
 type PageCreteria struct {
-	Count      int    `json:"count"`
-	TotalPage  int    `json:"totalPage"`
-	CheckCnt   int    `json:"checkCnt"`
-	Size       int    `json:"size"`
-	OutFlag    string `json:"outFlag"`
-	OrderKey   string `json:"orderKey"`
-	Direction  int    `json:"direction"`
+	Count      int    `json:"count"` 		// 전체 row 개수 in DB
+	TotalPage  int    `json:"totalPage"` 	// 전체 페이지
+	CheckCnt   int    `json:"checkCnt"`     // Current row counter (offset)
+	Size       int    `json:"size"` 		// limit
+	OutFlag    string `json:"outFlag"`  	// 0: 반입, 1: 반출
+	OrderKey   string `json:"orderKey"`     // order field
+	Direction  int    `json:"direction"`  	// order : asc, desc
 	DeviceType string `json:"deviceType"`
+}
+
+func (p *PageCreteria) String() {
+	fmt.Printf("%v\n", p)
+	fmt.Printf("%+v\n", p)
+	data, err := json.Marshal(p)
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	fmt.Printf("%s\n", data)
 }
 
 type DeviceServerPage struct {

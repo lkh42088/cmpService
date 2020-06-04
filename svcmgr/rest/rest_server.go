@@ -45,12 +45,15 @@ type HandlerInterface interface {
 	AddDevicesMonitoring(c *gin.Context)
 	DeleteDevicesMonitoring(c *gin.Context)
 	// Login
-	RegisterUser(c *gin.Context)
 	LoginUserById(c *gin.Context)
 	Logout(c *gin.Context)
 	LoginUserByEmail(c *gin.Context)
 	GetSession(c *gin.Context)
 	EmailConfirm(c *gin.Context)
+	// User
+	RegisterUser(c *gin.Context)
+	UnRegisterUser(c *gin.Context)
+	GetUsersPage(c *gin.Context)
 }
 
 type Handler struct {
@@ -126,9 +129,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/email_confirm", h.EmailConfirm)
 	router.GET("/api/auth/check", h.GetSession)
 	router.POST("/api/auth/logout", h.Logout)
+
+	// User
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.POST("/api/auth/unregister", h.UnRegisterUser)
+	router.GET("/api/userlist/:rows/:offset", h.GetUsersPage)
 
 	return router.Run(address)
 }
-

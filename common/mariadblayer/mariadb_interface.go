@@ -87,6 +87,7 @@ type MariaDBLayer interface {
 	GetAllUsers() ([]models.User, error)
 	GetUserById(id string) (models.User, error)
 	GetUserByEmail(id string) (models.User, error)
+	GetUsersPage(paging models.Pagination) (models.UserPage, error)
 
 	// User Email Authentication
 	GetAllUserEmailAuth() (objs []models.UserEmailAuth, err error)

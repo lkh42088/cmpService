@@ -3,6 +3,7 @@ package rest
 import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -37,6 +38,8 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		Direction: dir,
 		CheckCnt: cnt,	// current row counter
 	}
+	fmt.Println("1. page:");
+	page.String()
 
 	switch page.DeviceType {
 	case "server":
@@ -48,6 +51,8 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		//for i, v := range devicePage.Devices {
 		//	fmt.Printf("%d %v\n", i+1, v)
 		//}
+		fmt.Println("2. page:");
+		devicePage.Page.String()
 		c.JSON(http.StatusOK, devicePage)
 	case "network":
 		devicePage, err := h.db.GetDevicesNetworkWithJoin(page)
@@ -58,6 +63,8 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		//for i, v := range devicePage.Devices {
 		//	fmt.Printf("%d %v\n", i+1, v)
 		//}
+		fmt.Println("2. page: .");
+		devicePage.Page.String()
 		c.JSON(http.StatusOK, devicePage)
 	case "part":
 		devicePage, err := h.db.GetDevicesPartWithJoin(page)
@@ -68,6 +75,8 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 		//for i, v := range devicePage.Devices {
 		//	fmt.Printf("%d %v\n", i+1, v)
 		//}
+		fmt.Println("2. page: ..");
+		devicePage.Page.String()
 		c.JSON(http.StatusOK, devicePage)
 	}
 }
