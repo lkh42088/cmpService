@@ -92,7 +92,7 @@ func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 
 func (db *DBORM) GetDeviceWithSplaJoin(spla []string) (codes []models.Code, err error) {
 	return codes, db.
-		Debug().
+		//Debug().
 		Table(CodeRawTable).
 		Where(models.Code{SubType: "spla_cd"}).
 		Where("c_idx IN (?)", spla).
@@ -101,7 +101,7 @@ func (db *DBORM) GetDeviceWithSplaJoin(spla []string) (codes []models.Code, err 
 
 func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.DeviceServerResponse, err error) {
 	return ds, db.
-		Debug().
+		//Debug().
 		Select(ServerSelectQuery).
 		Table(ServerRawTable).
 		Joins(ManufactureServerNoAliasJoinQuery).
@@ -119,7 +119,7 @@ func (db *DBORM) GetDevicesServerForSearch(dc models.DeviceServer) (ds []models.
 
 func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []models.DeviceNetworkResponse, err error) {
 	return ds, db.
-		Debug().
+		//Debug().
 		Select(NetworkSelectQuery).
 		Table(NetworkRawTable).
 		Joins(ManufactureNetworkNoAliasJoinQuery).
@@ -137,7 +137,7 @@ func (db *DBORM) GetDevicesNetworkForSearch(dc models.DeviceNetwork) (ds []model
 
 func (db *DBORM) GetDevicesPartForSearch(dc models.DevicePart) (ds []models.DevicePartResponse, err error) {
 	return ds, db.
-		Debug().
+		//Debug().
 		Select(PartSelectQuery).
 		Table(PartRawTable).
 		Joins(ManufacturePartNoAliasJoinQuery).

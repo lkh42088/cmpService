@@ -264,33 +264,20 @@ func (h *Handler) GetDevicesForSearch(c *gin.Context) {
 		return
 	}
 	device := c.Param("type")
-	///
 	mapDevice, err := JsonUnmarshal(c.Request.Body)
-	convertData := ConvertDeviceData(mapDevice, device, "")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
-	fmt.Printf("%+v\n", convertData)
+	convertData := ConvertDeviceData(mapDevice, device, "")
 	if convertData == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
-	///
+
 	switch device {
 	case "server":
-		//dc := models.DeviceServer{}
-		//err := c.ShouldBindJSON(&dc)
-		//if err != nil {
-		//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//	return
-		//}
-		////
-		//dc := []models.DeviceServer{}
-		//dc[0] = convertData.(models.DeviceServer)
 		devices, err := h.db.GetDevicesServerForSearch(*convertData.(*models.DeviceServer))
-		////
-		//devices, err := h.db.GetDevicesServerForSearch(dc)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -300,26 +287,14 @@ func (h *Handler) GetDevicesForSearch(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, devices)
 	case "network":
-		dc := models.DeviceNetwork{}
-		err := c.ShouldBindJSON(&dc)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		devices, err := h.db.GetDevicesNetworkForSearch(dc)
+		devices, err := h.db.GetDevicesNetworkForSearch(*convertData.(*models.DeviceNetwork))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, devices)
 	case "part":
-		dc := models.DevicePart{}
-		err := c.ShouldBindJSON(&dc)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		devices, err := h.db.GetDevicesPartForSearch(dc)
+		devices, err := h.db.GetDevicesPartForSearch(*convertData.(*models.DevicePart))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

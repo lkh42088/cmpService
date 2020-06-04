@@ -58,7 +58,7 @@ func ConvertSplaString(h *Handler, dc interface{}, idx int, deviceType string) e
 			return errors.New("[ConvertSplaString] Spla data is empty.\n")
 		}
 		spla = newDev.Spla
-		fmt.Println(spla)	//todo
+		//fmt.Println(spla)
 	} else {
 		return errors.New("[ConvertSplaString] This device isn't server one.\n")
 	}
@@ -138,7 +138,7 @@ func ConvertDeviceData(device map[string]interface{}, deviceType string, code st
 		if val, ok := device["rackLoc"]; ok {
 			dc.RackLoc, _ = strconv.Atoi(val.(string))
 		}
-		fmt.Println("device code:", dc.DeviceCode)
+		//fmt.Println("device code:", dc.DeviceCode)
 		return dc
 	case "network":
 		dc := new(models.DeviceNetwork)
