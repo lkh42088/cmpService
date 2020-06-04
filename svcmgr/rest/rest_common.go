@@ -42,7 +42,7 @@ func GetDeviceTable(device string) string {
 	return tableName
 }
 
-func ConvertSplaString(h *Handler, dc interface{}, deviceType string) error {
+func ConvertSplaString(h *Handler, dc interface{}, idx int, deviceType string) error {
 	var spla string
 	newDev := models.DeviceServerResponse{}
 	var ret []interface{}
@@ -53,11 +53,12 @@ func ConvertSplaString(h *Handler, dc interface{}, deviceType string) error {
 		for i := 0; i < o.Elem().Len(); i++ {
 			ret = append(ret, o.Elem().Index(i).Interface())
 		}
-		newDev = ret[0].(models.DeviceServerResponse)
+		newDev = ret[idx].(models.DeviceServerResponse)
 		if spla == "|" {
 			return errors.New("[ConvertSplaString] Spla data is empty.\n")
 		}
 		spla = newDev.Spla
+		fmt.Println(spla)	//todo
 	} else {
 		return errors.New("[ConvertSplaString] This device isn't server one.\n")
 	}
@@ -76,7 +77,7 @@ func ConvertSplaString(h *Handler, dc interface{}, deviceType string) error {
 
 	// Set data
 	elem := reflect.ValueOf(dc.(*[]models.DeviceServerResponse)).Elem()
-	elem.Index(0).FieldByName("Spla").SetString(spla)
+	elem.Index(idx).FieldByName("Spla").SetString(spla)
 	return nil
 }
 
@@ -176,10 +177,9 @@ func ConvertDeviceData(device map[string]interface{}, deviceType string, code st
 
 func ConvertDeviceCommon(device map[string]interface{}, code string) models.DeviceCommon {
 	if device == nil {
-		fmt.Println("test")
 		return models.DeviceCommon{}
 	}
-	fmt.Println(code)
+	//fmt.Println(code)
 
 	var commentLastDate time.Time
 	var dc models.DeviceCommon
@@ -206,7 +206,7 @@ func ConvertDeviceCommon(device map[string]interface{}, code string) models.Devi
 		dc.RegisterId = val.(string)
 	}
 
-	dc.RegisterDate = time.Now()
+	//dc.RegisterDate = time.Now()
 	dc.DeviceCode = code
 
 	if val, ok := device["model"]; ok {

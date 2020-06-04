@@ -236,7 +236,7 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 		return
 	}
 
-	_ = ConvertSplaString(h, devices, deviceType)	// no error check
+	_ = ConvertSplaString(h, devices, 0, deviceType)	// no error check
 
 	//fmt.Println("[###] %+v", devices)
 	c.JSON(http.StatusOK, devices)
@@ -263,20 +263,40 @@ func (h *Handler) GetDevicesForSearch(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
-
 	device := c.Param("type")
+	///
+	mapDevice, err := JsonUnmarshal(c.Request.Body)
+	convertData := ConvertDeviceData(mapDevice, device, "")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	fmt.Printf("%+v\n", convertData)
+	if convertData == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	///
 	switch device {
 	case "server":
-		dc := models.DeviceServer{}
-		err := c.ShouldBindJSON(&dc)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		devices, err := h.db.GetDevicesServerForSearch(dc)
+		//dc := models.DeviceServer{}
+		//err := c.ShouldBindJSON(&dc)
+		//if err != nil {
+		//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		//	return
+		//}
+		////
+		//dc := []models.DeviceServer{}
+		//dc[0] = convertData.(models.DeviceServer)
+		devices, err := h.db.GetDevicesServerForSearch(*convertData.(*models.DeviceServer))
+		////
+		//devices, err := h.db.GetDevicesServerForSearch(dc)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
+		}
+		for i, _ := range devices {
+			_ = ConvertSplaString(h, &devices, i, device) // no error check
 		}
 		c.JSON(http.StatusOK, devices)
 	case "network":
