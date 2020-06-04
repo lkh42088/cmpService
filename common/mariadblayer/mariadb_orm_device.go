@@ -90,7 +90,7 @@ func (db *DBORM) GetDeviceWithoutJoin(device string, code string) (
 	return dc, db.Table(tableName).Where(where, code).Find(dc).Error
 }
 
-func (db *DBORM) GetDeviceWithSplaJoin(spla string) (codes []models.Code, err error) {
+func (db *DBORM) GetDeviceWithSplaJoin(spla []string) (codes []models.Code, err error) {
 	return codes, db.
 		Debug().
 		Table(CodeRawTable).

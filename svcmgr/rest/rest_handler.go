@@ -238,7 +238,7 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 
 	_ = ConvertSplaString(h, devices, deviceType)	// no error check
 
-	fmt.Println("[###] %v", devices)
+	//fmt.Println("[###] %+v", devices)
 	c.JSON(http.StatusOK, devices)
 }
 

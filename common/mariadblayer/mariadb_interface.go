@@ -29,7 +29,7 @@ type MariaDBLayer interface {
 	GetDevicesPartForSearch(dc models.DevicePart) ([]models.DevicePartResponse, error)
 	GetDeviceWithJoin(device string, field string, condition string) (interface{}, error)
 	GetDeviceWithoutJoin(device string, code string) (interface{}, error)
-	GetDeviceWithSplaJoin(spla string) ([]models.Code, error)
+	GetDeviceWithSplaJoin(spla []string) ([]models.Code, error)
 	GetLastDeviceCodeInServer() (models.DeviceServer, error)
 	GetLastDeviceCodeInNetwork() (models.DeviceNetwork, error)
 	GetLastDeviceCodeInPart() (models.DevicePart, error)

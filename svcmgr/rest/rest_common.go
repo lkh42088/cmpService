@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -44,30 +45,38 @@ func GetDeviceTable(device string) string {
 func ConvertSplaString(h *Handler, dc interface{}, deviceType string) error {
 	var spla string
 	newDev := models.DeviceServerResponse{}
+	var ret []interface{}
+
+	// get spla value in interface{}
 	if deviceType == "server" {
-		newDev, _ = dc.(models.DeviceServerResponse)
-		fmt.Printf("%+v\n", newDev)
-		//fmt.Printf("%+v\n", dc)
-		if newDev.Spla == "|" {
+		o := reflect.ValueOf(dc)
+		for i := 0; i < o.Elem().Len(); i++ {
+			ret = append(ret, o.Elem().Index(i).Interface())
+		}
+		newDev = ret[0].(models.DeviceServerResponse)
+		if spla == "|" {
 			return errors.New("[ConvertSplaString] Spla data is empty.\n")
 		}
 		spla = newDev.Spla
 	} else {
 		return errors.New("[ConvertSplaString] This device isn't server one.\n")
 	}
-	tmp := strings.Replace(spla, "|", ",", -1)
-	fmt.Println(tmp)
+	tmp := strings.Split(spla, "|")
 
+	// Join code table
 	ds, err := h.db.GetDeviceWithSplaJoin(tmp)
 	if err != nil {
 		return err
 	}
 
+	spla = ""	// init
 	for i := 0; i < len(ds); i++ {
 		spla += ds[i].Name + "|"
 	}
 
-	newDev.Spla = spla
+	// Set data
+	elem := reflect.ValueOf(dc.(*[]models.DeviceServerResponse)).Elem()
+	elem.Index(0).FieldByName("Spla").SetString(spla)
 	return nil
 }
 
