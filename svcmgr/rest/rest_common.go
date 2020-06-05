@@ -81,7 +81,7 @@ func ConvertSplaString(h *Handler, dc interface{}, idx int, deviceType string) e
 	return nil
 }
 
-func MakeDeviceCode(h *Handler, device string, dc *interface{}) (string, error) {
+func MakeDeviceCode(h *Handler, device string) (string, error) {
 	var code string
 	switch device {
 	case "server":

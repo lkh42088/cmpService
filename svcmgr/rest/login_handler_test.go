@@ -78,7 +78,7 @@ func TestRegisterUserAuthGroup (t *testing.T) {
 		Name:               "정병화",
 		EmailAuthFlag:      false,
 		EmailAuthGroupFlag: true,
-		EmailAuthGroupList: []string{"bhjung@nubes-bridge.com", "byeonghwa.jung@gmail.com"},
+		//EmailAuthGroupList: []string{"bhjung@nubes-bridge.com", "byeonghwa.jung@gmail.com"},
 	}
 
 	pbytes, _ := json.Marshal(userMsg)
