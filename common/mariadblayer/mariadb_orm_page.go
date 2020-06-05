@@ -256,8 +256,8 @@ func ConvertToColumn(field string) string {
 		col = "rack_cd"
 	case "cost":
 		col = "cost"
-	case "purpos":
-		col = "purpos"
+	case "purpose":
+		col = "purpose"
 	case "ip":
 		col = "ip"
 	case "size":

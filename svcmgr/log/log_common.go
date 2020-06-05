@@ -107,7 +107,7 @@ func ConvertFieldName(field string) string {
 		convField = "Rack"
 	case "Cost":
 		convField = "장비 원가"
-	case "Purpos":
+	case "Purpose":
 		convField = "용도"
 	case "MonitoringFlag":
 		convField = "모니터링 여부"

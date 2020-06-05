@@ -321,18 +321,9 @@ func (h *Handler) AddDevicesMonitoring(c *gin.Context) {
 
 // Add Device
 func (h *Handler) AddDevice(c *gin.Context) {
-	var dc interface{}
 	device := c.Param("type")
-	switch device {
-	case "server":
-		dc = new(models.DeviceServer)
-	case "network":
-		dc = new(models.DeviceNetwork)
-	case "part":
-		dc = new(models.DevicePart)
-	}
 
-	code, err := MakeDeviceCode(h, device, &dc)
+	code, err := MakeDeviceCode(h, device)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
