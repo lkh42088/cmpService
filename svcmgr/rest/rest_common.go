@@ -53,6 +53,7 @@ func ConvertSplaString(h *Handler, dc interface{}, idx int, deviceType string) e
 		for i := 0; i < o.Elem().Len(); i++ {
 			ret = append(ret, o.Elem().Index(i).Interface())
 		}
+		//fmt.Println("idx:", idx)
 		newDev = ret[idx].(models.DeviceServerResponse)
 		if spla == "|" {
 			return errors.New("[ConvertSplaString] Spla data is empty.\n")
@@ -251,8 +252,8 @@ func ConvertDeviceCommon(device map[string]interface{}, code string) models.Devi
 	if val, ok := device["cost"]; ok {
 		dc.Cost = val.(string)
 	}
-	if val, ok := device["purpos"]; ok {
-		dc.Purpos = val.(string)
+	if val, ok := device["purpose"]; ok {
+		dc.Purpose = val.(string)
 	}
 	if val, ok := device["monitoringFlag"]; ok {
 		if val != "" {
