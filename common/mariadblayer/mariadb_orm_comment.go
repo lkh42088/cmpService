@@ -17,8 +17,7 @@ func (db *DBORM) GetComments(code string) (comments []models.DeviceComment, err 
 }
 
 func (db *DBORM) GetCommentByIdx(idx int) (comment models.DeviceComment, err error) {
-	where := GetWhereString(idxFieldName)
-	return comment, db.Where(where, idx).Find(&comment).Error
+	return comment, db.Where(models.DeviceComment{Idx: uint(idx)}).Find(&comment).Error
 }
 
 func (db *DBORM) UpdateComment(comment models.DeviceComment) error {
@@ -38,8 +37,7 @@ func (db *DBORM) DeleteAllComments() error {
 
 func (db *DBORM) DeleteComments(idx int) error {
 	dc := models.DeviceComment{}
-	where := GetWhereString(idxFieldName)
-	return db.Where(where, idx).Delete(&dc).Error
+	return db.Where(models.DeviceComment{Idx: uint(idx)}).Delete(&dc).Error
 }
 
 

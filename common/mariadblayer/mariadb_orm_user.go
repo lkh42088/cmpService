@@ -1,6 +1,7 @@
 package mariadblayer
 
 import (
+	"cmpService/common/lib"
 	"cmpService/common/models"
 )
 
@@ -34,6 +35,21 @@ func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResp
 		Where("cp_name like ?", name).
 		Joins(CompanyAndUserJoinQuery).
 		Find(&companies).Error
+}
+
+func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, err error) {
+	db.Model(&users.Users).Count(&paging.TotalCount)
+	err = db.
+		//Order("ASC").
+		Order("user_idx DESC").
+		Limit(paging.RowsPerPage).
+		Offset(paging.Offset).
+		Find(&users.Users).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	users.Page = paging
+	return users, err
 }
 
 func (db *DBORM) GetUserByUserId(userId string) (user models.User, err error) {

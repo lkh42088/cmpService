@@ -17,7 +17,7 @@ type SubCode struct {
 	Code   Code   `gorm:"foreignkey:CodeID" json:"code"`
 	CodeID uint   `gorm:"column:c_idx" json:"codeId"`
 	Name   string `gorm:"type:varchar(200);column:csub_name" json:"name"`
-	Order  int    `gorm:"column:csub_order" json"order"`
+	Order  int    `gorm:"column:csub_order" json:"order"`
 }
 
 func (SubCode) TableName() string {
@@ -27,6 +27,6 @@ func (SubCode) TableName() string {
 type SubCodeResponse struct {
 	ID     uint   `gorm:"primary_key;column:csub_idx;not null;auto_increment" json:"id"`
 	Name   string `gorm:"type:varchar(200);column:csub_name" json:"name"`
-	Order  int    `gorm:"column:csub_order" json"order"`
+	Order  int    `gorm:"column:csub_order" json:"order"`
 	Code   `json:"code"`
 }

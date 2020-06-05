@@ -6,110 +6,66 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"time"
 )
 
-func DeviceInfoModify(dc interface{}, deviceType string, code string) error {
-	var log models.DeviceLog
-	var field string
-	var oldStatus string
-	var newStatus string
-	oldDevice := GetDevice(deviceType, code)
-	//fmt.Printf("%+v\n", oldDevice)
+type CompareInfo struct {
+	NewDevice 	interface{}
+	OldDevice	interface{}
+	DeviceType	string
+	DeviceCode	string
+}
 
+type ChangeInfo struct {
+	Field 		string
+	OldStatus	string
+	NewStatus	string
+}
+
+func DeviceInfoModify(info CompareInfo) error {
+	changeInfo := ChangeInfo{}
 	// reflect.ValueOf(dc).Elem().Field(0) => DeviceCommonResponse
 	// reflect.ValueOf(dc).Elem().Field(1) => Ip
 	// ......
-	newElem := reflect.ValueOf(dc).Elem()
-	oldElem := reflect.ValueOf(oldDevice)
-	fmt.Printf("%+v\n", oldElem)
+	newElem := reflect.ValueOf(info.NewDevice).Elem()
+	oldElem := reflect.ValueOf(info.OldDevice)
+	//fmt.Printf("new %+v\n", newElem) //todo
 
 	for i := 0; i < newElem.NumField(); i++ {
-		//fmt.Println(newElem.Field(0).NumField(), newElem.Field(i).Type())
+		// nested struct check
 		if newElem.Field(i).Type().String() == "models.DeviceCommon" {
 			for j := 0; j < newElem.Field(i).NumField(); j++ {
-				if newElem.Field(i).Field(j).String() == "" {
+				// empty value remove & find change value
+				if newElem.Field(i).Field(j).String() == "" ||
+					newElem.Field(i).Field(j).Interface() == oldElem.Field(i).Field(j).Interface() {
 					continue
 				}
-				if reflect.DeepEqual(newElem.Field(i).Field(j), oldElem.Field(i).Field(j)) { //todo
-					fmt.Printf("%+v\n", oldElem.Field(i).Field(j))
+
+				changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
+					newElem.Field(i).Field(j).Interface(),
+					oldElem.Field(i).Field(j).Interface())
+				changeInfo.Field = ConvertFieldName(newElem.Field(i).Type().Field(j).Name)
+				if changeInfo.Field == "" {
 					continue
 				}
-				field = newElem.Field(i).Type().Field(j).Name  //todo
-				oldStatus = oldElem.Field(i).Field(j).String() //todo
-				newStatus = newElem.Field(i).Field(j).String()
-				fmt.Println(newStatus, oldStatus, field)
+				StoreLog(info, changeInfo)
+				changeInfo = ChangeInfo{} // init struct
 			}
 		} else {
-			if newElem.Field(i).String() == "" {
+			// extra field check
+			// empty value remove & find change value
+			if newElem.Field(i).String() == "" ||
+				newElem.Field(i).Interface() == oldElem.Field(i).Interface() {
 				continue
 			}
-			if reflect.DeepEqual(newElem.Field(i), oldElem.Field(i)) {
-				continue
-			}
-			field = newElem.Type().Field(i).Name  //todo
-			oldStatus = oldElem.Field(i).String() //todo
-			newStatus = newElem.Field(i).String()
-			fmt.Println(newStatus, oldStatus, field)
+			changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
+				newElem.Field(i).Interface(),
+				oldElem.Field(i).Interface())
+			changeInfo.Field = ConvertFieldName(newElem.Type().Field(i).Name)
 		}
-		switch deviceType {
-		case "server":
-			ds, ok := oldDevice.(models.DeviceServer)
-			if !ok {
-				return errors.New("Can't data parse.\n")
-			}
-			log = models.DeviceLog{
-				DeviceCode:   ds.DeviceCode,
-				WorkCode:     lib.ChangeInformation,
-				LogLevel:     lib.LevelInfo,
-				RegisterId:   ds.RegisterId,
-				Field:        field,
-				OldStatus:    oldStatus,
-				NewStatus:    newStatus,
-				RegisterDate: time.Now(),
-			}
-			lib.LogWarn("%v\n", log)
-		case "network":
-			dn, ok := oldDevice.(models.DeviceNetwork)
-			if !ok {
-				return errors.New("Can't data parse.\n")
-			}
-			fmt.Println(dn)
-			log = models.DeviceLog{
-				DeviceCode:   dn.DeviceCode,
-				WorkCode:     lib.ChangeInformation,
-				LogLevel:     lib.LevelInfo,
-				RegisterId:   dn.RegisterId,
-				Field:        field,
-				OldStatus:    oldStatus,
-				NewStatus:    newStatus,
-				RegisterDate: time.Now(),
-			}
-			lib.LogWarn("%v\n", log)
-		case "part":
-			dp, ok := oldDevice.(models.DevicePart)
-			if !ok {
-				return errors.New("Can't data parse.\n")
-			}
-			log = models.DeviceLog{
-				DeviceCode:   dp.DeviceCode,
-				WorkCode:     lib.ChangeInformation,
-				LogLevel:     lib.LevelInfo,
-				RegisterId:   dp.RegisterId,
-				Field:        field,
-				OldStatus:    oldStatus,
-				NewStatus:    newStatus,
-				RegisterDate: time.Now(),
-			}
-			lib.LogWarn("%v\n", log)
-		default:
-			return errors.New("Device type is invalid.\n")
-		}
-
-		err := AutoAddLog(log)
-		if err != nil {
-			return fmt.Errorf("[RegisterDeviceLog] error : %s\n", err)
-		}
+		StoreLog(info, changeInfo)
+		changeInfo = ChangeInfo{} // init struct
 	}
 	return nil
 }
@@ -137,7 +93,6 @@ func DeviceUpdateOutFlag(data []string, deviceType string, outFlag int, userId s
 				RegisterId:   userId,
 				RegisterDate: time.Now(),
 			}
-			lib.LogInfo("%v\n", log)
 		case "network":
 			dn, ok := dc.(models.DeviceNetworkResponse)
 			if !ok {
@@ -150,7 +105,6 @@ func DeviceUpdateOutFlag(data []string, deviceType string, outFlag int, userId s
 				RegisterId:   userId,
 				RegisterDate: time.Now(),
 			}
-			lib.LogInfo("%v\n", log)
 		case "part":
 			dp, ok := dc.(models.DevicePart)
 			if !ok {
@@ -163,7 +117,6 @@ func DeviceUpdateOutFlag(data []string, deviceType string, outFlag int, userId s
 				RegisterId:   userId,
 				RegisterDate: time.Now(),
 			}
-			lib.LogInfo("%v\n", log)
 		default:
 			return errors.New("Device type is invalid.\n")
 		}
@@ -174,5 +127,95 @@ func DeviceUpdateOutFlag(data []string, deviceType string, outFlag int, userId s
 		}
 	}
 
+	return nil
+}
+
+func SetLogValue(new interface{}, old interface{}) (newVal string, oldVal string) {
+	if new == nil || old == nil {
+		return "", ""
+	}
+	fmt.Printf(reflect.TypeOf(new).Kind().String()) //todo
+	switch reflect.TypeOf(new).Kind() {
+	case reflect.Int:
+		newVal = strconv.Itoa(int(reflect.ValueOf(new).Int()))
+		oldVal = strconv.Itoa(int(reflect.ValueOf(old).Int()))
+	case reflect.String:
+		newVal = reflect.ValueOf(new).String()
+		oldVal = reflect.ValueOf(old).String()
+	case reflect.Bool:
+		newVal = strconv.FormatBool(reflect.ValueOf(new).Bool())
+		oldVal = strconv.FormatBool(reflect.ValueOf(old).Bool())
+	default:
+		return "", ""
+	}
+	return newVal, oldVal
+}
+
+func StoreLog(info CompareInfo, v ChangeInfo) error {
+	var log models.DeviceLog
+
+	// empty value check
+	if v.Field == "" {
+		return nil
+	}
+
+	switch info.DeviceType {
+	case "server":
+		ds, ok := info.OldDevice.(models.DeviceServer)
+		if !ok {
+			return errors.New("Can't data parse.\n")
+		}
+		log = models.DeviceLog{
+			DeviceCode:   ds.DeviceCode, //todo
+			WorkCode:     lib.ChangeInformation,
+			LogLevel:     lib.LevelInfo,
+			RegisterId:   ds.RegisterId, //todo
+			Field:        v.Field,
+			OldStatus:    v.OldStatus,
+			NewStatus:    v.NewStatus,
+			RegisterDate: time.Now(),
+		}
+		lib.LogWarn("%+v\n", log)
+	case "network":
+		dn, ok := info.OldDevice.(models.DeviceNetwork)
+		if !ok {
+			return errors.New("Can't data parse.\n")
+		}
+		fmt.Println(dn)
+		log = models.DeviceLog{
+			DeviceCode:   dn.DeviceCode,
+			WorkCode:     lib.ChangeInformation,
+			LogLevel:     lib.LevelInfo,
+			RegisterId:   dn.RegisterId,
+			Field:        v.Field,
+			OldStatus:    v.OldStatus,
+			NewStatus:    v.NewStatus,
+			RegisterDate: time.Now(),
+		}
+		lib.LogWarn("%+v\n", log)
+	case "part":
+		dp, ok := info.OldDevice.(models.DevicePart)
+		if !ok {
+			return errors.New("Can't data parse.\n")
+		}
+		log = models.DeviceLog{
+			DeviceCode:   dp.DeviceCode,
+			WorkCode:     lib.ChangeInformation,
+			LogLevel:     lib.LevelInfo,
+			RegisterId:   dp.RegisterId,
+			Field:        v.Field,
+			OldStatus:    v.OldStatus,
+			NewStatus:    v.NewStatus,
+			RegisterDate: time.Now(),
+		}
+		lib.LogWarn("%+v\n", log)
+	default:
+		return errors.New("Device type is invalid.\n")
+	}
+
+	err := AutoAddLog(log)
+	if err != nil {
+		return fmt.Errorf("[RegisterDeviceLog] error : %s\n", err)
+	}
 	return nil
 }
