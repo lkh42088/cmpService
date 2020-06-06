@@ -395,10 +395,17 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	}
 	//lib.LogInfo("[values] %s\n", values)
 
-	flag := values["outFlag"].(float64)
+	var flag int
+	if val, ok := values["outFlag"]; ok {
+		flag, err = strconv.Atoi(val.(string))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
+	}
 	userId := values["userId"].(string)
 	data := strings.Split(values["deviceCode"].(string), ",")
-	err = h.db.UpdateOutFlag(data, tableName, int(flag))
+	err = h.db.UpdateOutFlag(data, tableName, flag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
