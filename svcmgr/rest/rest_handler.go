@@ -321,18 +321,9 @@ func (h *Handler) AddDevicesMonitoring(c *gin.Context) {
 
 // Add Device
 func (h *Handler) AddDevice(c *gin.Context) {
-	var dc interface{}
 	device := c.Param("type")
-	switch device {
-	case "server":
-		dc = new(models.DeviceServer)
-	case "network":
-		dc = new(models.DeviceNetwork)
-	case "part":
-		dc = new(models.DevicePart)
-	}
 
-	code, err := MakeDeviceCode(h, device, &dc)
+	code, err := MakeDeviceCode(h, device)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -404,10 +395,17 @@ func (h *Handler) UpdateOutFlag(c *gin.Context) {
 	}
 	//lib.LogInfo("[values] %s\n", values)
 
-	flag := values["outFlag"].(float64)
+	var flag int
+	if val, ok := values["outFlag"]; ok {
+		flag, err = strconv.Atoi(val.(string))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
+	}
 	userId := values["userId"].(string)
 	data := strings.Split(values["deviceCode"].(string), ",")
-	err = h.db.UpdateOutFlag(data, tableName, int(flag))
+	err = h.db.UpdateOutFlag(data, tableName, flag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

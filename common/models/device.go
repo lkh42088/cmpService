@@ -31,7 +31,7 @@ type DeviceCommon struct {
 	IDC              int       `gorm:"type:int(11);column:idc_cd;comment:'IDC'" json:"idc"`
 	Rack             int       `gorm:"type:int(11);column:rack_cd;comment:'Rack'" json:"rack"`
 	Cost             string    `gorm:"type:varchar(255);column:cost;comment:'장비 원가'" json:"cost"`
-	Purpos           string    `gorm:"type:varchar(255);column:purpos;comment:'장비 용도'" json:"purpose,omitempty"`
+	Purpose          string    `gorm:"type:varchar(255);column:purpose;comment:'장비 용도'" json:"purpose,omitempty"`
 	MonitoringFlag   bool      `gorm:"type:tinyint(1);column:monitoring_flag;comment:'모니터링 여부'" json:"monitoringFlag"`
 	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method;comment:'모니터링 방식'" json:"monitoringMethod"`
 }
@@ -97,7 +97,7 @@ type DeviceCommonResponse struct {
 	IDC              string    `gorm:"column:idc_cd" json:"idc"`
 	Rack             string    `gorm:"column:rack_cd" json:"rack"`
 	Cost             string    `gorm:"type:varchar(255);column:cost" json:"cost"`
-	Purpos           string    `gorm:"type:varchar(255);column:purpos" json:"purpose"`
+	Purpose           string    `gorm:"type:varchar(255);column:purpose" json:"purpose"`
 	MonitoringFlag   bool      `gorm:"type:tinyint(1);column:monitoring_flag" json:"monitoringFlag"`
 	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method" json:"monitoringMethod"`
 }

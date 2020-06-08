@@ -88,7 +88,7 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
-			time.Sleep(time.Millisecond * 50)
+			time.Sleep(time.Millisecond * 10)
 		}
 		sd, dc, lc := GetServerTbByDevice(old)
 		if old.WrIsComment == 0 {
@@ -125,7 +125,7 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
-			time.Sleep(time.Millisecond * 50)
+			time.Sleep(time.Millisecond * 10)
 		}
 		nd, dc, lc := GetNetworkTbByDevice(old)
 		if old.WrIsComment == 0 {
@@ -162,7 +162,7 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
 		if i % 100 == 0 {
-			time.Sleep(time.Millisecond * 50)
+			time.Sleep(time.Millisecond * 10)
 		}
 		pd, dc, lc := GetPartTbByDevice(old)
 		if old.WrIsComment == 0 {
@@ -367,7 +367,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	sd.IDC = sepIdcRack(device.Wr10, 1)
 	sd.Rack = sepIdcRack(device.Wr10, 2)
 	sd.Cost = device.Wr12
-	sd.Purpos = device.Wr13
+	sd.Purpose = device.Wr13
 	sd.Ip = sepIps(device.WrHomepage)
 	sd.Size = convInt(device.Wr6)
 	sd.Spla = strings.Replace(device.Wr11, ";", "|", -1)
@@ -414,7 +414,7 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	nd.IDC = sepIdcRack(device.Wr10, 1)
 	nd.Rack = sepIdcRack(device.Wr10, 2)
 	nd.Cost = device.Wr12
-	nd.Purpos = device.Wr13
+	nd.Purpose = device.Wr13
 	nd.Ip = sepIps(device.WrHomepage)
 	nd.Size = convInt(device.Wr6)
 	nd.FirmwareVersion = device.Wr2
@@ -456,7 +456,7 @@ func GetPartTbByDevice(device cbmodels.PartDevice)(
 	pd.IDC = sepIdcRack(device.Wr10, 1)
 	pd.Rack = sepIdcRack(device.Wr10, 2)
 	pd.Cost = device.Wr12
-	pd.Purpos = device.Wr13
+	pd.Purpose = device.Wr13
 	pd.Warranty = device.Wr2
 	pd.MonitoringFlag = false
 	pd.MonitoringMethod = 0
