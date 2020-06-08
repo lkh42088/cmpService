@@ -36,10 +36,23 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
 	page := models.Pagination{
-		TotalCount:   0,
-		RowsPerPage:  rowsPerPage,
-		Offset:       offset,
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
 	}
 	fmt.Println("1. page:")
 	page.String()

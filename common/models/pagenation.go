@@ -6,9 +6,11 @@ import (
 )
 
 type Pagination struct {
-	TotalCount   int `json:"count"`
-	RowsPerPage  int `json:"rows"`
-	Offset       int `json:"offset"`
+	TotalCount  int    `json:"count"`
+	RowsPerPage int    `json:"rows"`
+	Offset      int    `json:"offset"`
+	OrderBy     string `json:"orderBy"`
+	Order       string `json:"order"`
 }
 
 func (p Pagination) String() {
@@ -20,3 +22,4 @@ func (p Pagination) String() {
 	}
 	fmt.Printf("%s\n", data)
 }
+

@@ -7,6 +7,126 @@ import (
 	"time"
 )
 
+const (
+	UserOrmIdx            = "user_idx"
+	UserOrmUserId         = "user_id"
+	UserOrmPassword       = "user_password"
+	UserOrmName           = "user_name"
+	UserOrmCompanyIdx     = "cp_idx"
+
+	UserOrmEmail          = "user_email"
+	UserOrmAuthLevel      = "user_auth_level"
+	UserOrmTel            = "user_tel"
+	UserOrmHP             = "user_hp"
+	UserOrmZipcode        = "user_zip"
+
+	UserOrmAddress        = "user_addr"
+	UserOrmAddressDetail  = "user_addr_detail"
+	UserOrmTermDate       = "user_termination_date"
+	UserOrmBlockDate      = "user_block_date"
+	UserOrmMemo           = "user_memo"
+
+	UserOrmWorkScope      = "user_work_scope"
+	UserOrmDepartment     = "user_department"
+	UserOrmPosition       = "user_position"
+	UserOrmEmailAuth      = "user_email_auth_flag"
+	UserOrmGroupEmailAuth = "user_group_email_auth_flag"
+
+	UserOrmRegisterDate   = "user_register_date"
+	UserOrmLastAccessDate = "user_last_access_date"
+	UserOrmLastAccessIp   = "user_last_access_ip"
+)
+
+const (
+	UserJsonIdx            = "idx"
+	UserJsonUserId         = "userId"
+	UserJsonPassword       = "password"
+	UserJsonName           = "name"
+	UserJsonCompanyIdx     = "companyIdx"
+
+	UserJsonEmail          = "email"
+	UserJsonAuthLevel      = "authLevel"
+	UserJsonTel            = "tel"
+	UserJsonHP             = "hp"
+	UserJsonZipcode        = "zipcode"
+
+	UserJsonAddress        = "address"
+	UserJsonAddressDetail  = "addressDetail"
+	UserJsonTermDate       = "termDate"
+	UserJsonBlockDate      = "blockDate"
+	UserJsonMemo           = "memo"
+
+	UserJsonWorkScope      = "workScope"
+	UserJsonDepartment     = "department"
+	UserJsonPosition       = "position"
+	UserJsonEmailAuth      = "emailAuth"
+	UserJsonGroupEmailAuth = "groupEmailAuth"
+
+	UserJsonRegisterDate   = "registerDate"
+	UserJsonLastAccessDate = "lastAccessDate"
+	UserJsonLastAccessIp   = "lastAccessIp"
+)
+
+var UserOrmMap = map[string]string {
+	UserOrmIdx : UserJsonIdx,
+	UserOrmUserId : UserJsonUserId,
+	UserOrmPassword : UserJsonPassword,
+	UserOrmName : UserJsonName,
+	UserOrmCompanyIdx : UserJsonCompanyIdx,
+
+	UserOrmEmail : UserJsonEmail,
+	UserOrmAuthLevel : UserJsonAuthLevel,
+	UserOrmTel : UserJsonTel,
+	UserOrmHP : UserJsonHP,
+	UserOrmZipcode : UserJsonZipcode,
+
+	UserOrmAddress : UserJsonAddress,
+	UserOrmAddressDetail : UserJsonAddressDetail,
+	UserOrmTermDate : UserJsonTermDate,
+	UserOrmBlockDate : UserJsonBlockDate,
+	UserOrmMemo : UserJsonMemo ,
+
+	UserOrmWorkScope : UserJsonWorkScope,
+	UserOrmDepartment : UserJsonDepartment,
+	UserOrmPosition : UserJsonPosition,
+	UserOrmEmailAuth : UserJsonEmailAuth ,
+	UserOrmGroupEmailAuth : UserJsonGroupEmailAuth,
+
+	UserOrmRegisterDate : UserJsonRegisterDate,
+	UserOrmLastAccessDate : UserJsonLastAccessDate,
+	UserOrmLastAccessIp : UserJsonLastAccessIp,
+}
+
+var UserJsonMap = map[string]string {
+	UserJsonIdx : UserOrmIdx,
+	UserJsonUserId : UserOrmUserId,
+	UserJsonPassword : UserOrmPassword,
+	UserJsonName : UserOrmName,
+	UserJsonCompanyIdx : UserOrmCompanyIdx,
+
+	UserJsonEmail : UserOrmEmail,
+	UserJsonAuthLevel : UserOrmAuthLevel,
+	UserJsonTel : UserOrmTel,
+	UserJsonHP : UserOrmHP,
+	UserJsonZipcode : UserOrmZipcode,
+
+	UserJsonAddress : UserOrmAddress,
+	UserJsonAddressDetail : UserOrmAddressDetail,
+	UserJsonTermDate : UserOrmTermDate,
+	UserJsonBlockDate : UserOrmBlockDate,
+	UserJsonMemo : UserOrmMemo ,
+
+	UserJsonWorkScope : UserOrmWorkScope,
+	UserJsonDepartment : UserOrmDepartment,
+	UserJsonPosition : UserOrmPosition,
+	UserJsonEmailAuth : UserOrmEmailAuth ,
+	UserJsonGroupEmailAuth : UserOrmGroupEmailAuth,
+
+	UserJsonRegisterDate : UserOrmRegisterDate,
+	UserJsonLastAccessDate : UserOrmLastAccessDate,
+	UserJsonLastAccessIp : UserOrmLastAccessIp,
+}
+
 type User struct {
 	Idx            uint      `gorm:"primary_key;column:user_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
 	UserId         string    `gorm:"unique;type:varchar(50);column:user_id;comment:'유저 ID'" json:"userId"`
@@ -42,13 +162,16 @@ type UserPage struct {
 	Users []User     `json:"users"`
 }
 
-func (u *UserPage) ConvertToColumn(field string) string {
-	col := strings.ToLower(field)
-	switch col {
-	case "idx":
-		col = "idx"
+func (u UserPage) GetOrderBy(orderby, order string) string {
+	val, exists := UserJsonMap[orderby];
+	if !exists {
+		val = "user_id"
 	}
-	return col
+	order = strings.ToLower(order)
+	if !(order == "asc" || order == "desc") {
+		order = "asc"
+	}
+	return val + " " + order
 }
 
 type UserEmailAuth struct {

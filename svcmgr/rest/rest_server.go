@@ -133,7 +133,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// User
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.POST("/api/auth/unregister", h.UnRegisterUser)
-	router.GET("/api/userlist/:rows/:offset", h.GetUsersPage)
+	router.GET("/api/userlist/:rows/:offset/:orderby/:order", h.GetUsersPage)
 
 	return router.Run(address)
 }

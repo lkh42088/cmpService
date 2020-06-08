@@ -41,7 +41,8 @@ func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, 
 	db.Model(&users.Users).Count(&paging.TotalCount)
 	err = db.
 		//Order("ASC").
-		Order("user_idx DESC").
+		//Order("user_idx DESC").
+		Order(users.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).
 		Find(&users.Users).Error
