@@ -79,6 +79,7 @@ func CreateTable(db *gorm.DB) {
 		db.AutoMigrate(&models.SubnetMgmt{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.SubnetMgmt{})
 	}
+
 }
 
 func DropTable(db *gorm.DB) {

@@ -38,7 +38,7 @@ type HandlerInterface interface {
 	DeleteLogByIdx(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
-	// Company
+	// Companies
 	GetCompaniesByName(c *gin.Context)
 	// Monitoring
 	GetDevicesMonitoring(c *gin.Context)
@@ -54,6 +54,8 @@ type HandlerInterface interface {
 	RegisterUser(c *gin.Context)
 	UnRegisterUser(c *gin.Context)
 	GetUsersPage(c *gin.Context)
+	// Companies
+	GetCompaniesPage(c *gin.Context)
 }
 
 type Handler struct {
@@ -114,7 +116,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
 
-	// Company
+	// Companies
 	router.GET("/v1/companies/:name", h.GetCompaniesByName)
 
 	// Monitoring
@@ -130,10 +132,16 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/api/auth/check", h.GetSession)
 	router.POST("/api/auth/logout", h.Logout)
 
+	pagingParam := "/:rows/:offset/:orderby/:order"
+
 	// User
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.POST("/api/auth/unregister", h.UnRegisterUser)
-	router.GET("/api/userlist/:rows/:offset", h.GetUsersPage)
+	//router.GET("/api/userlist/:rows/:offset/:orderby/:order", h.GetUsersPage)
+	router.GET("/api/userlist" + pagingParam, h.GetUsersPage)
+
+	// Companies
+	router.GET("/v1/customers/companies" + pagingParam, h.GetCompaniesPage)
 
 	return router.Run(address)
 }

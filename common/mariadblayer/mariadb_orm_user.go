@@ -25,23 +25,10 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 	return user, db.Delete(&user).Error
 }
 
-// User, Company, Auth
-func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResponse, err error) {
-	name = "%" + name + "%"
-	return companies, db.
-		//Debug().
-		Table(CompanyRawTable).
-		Select(CompanyAndUserIdSelectQuery).
-		Where("cp_name like ?", name).
-		Joins(CompanyAndUserJoinQuery).
-		Find(&companies).Error
-}
-
 func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, err error) {
 	db.Model(&users.Users).Count(&paging.TotalCount)
 	err = db.
-		//Order("ASC").
-		Order("user_idx DESC").
+		Order(users.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).
 		Find(&users.Users).Error
@@ -60,20 +47,12 @@ func (db *DBORM) AddUserMember(user models.User) error {
 	return db.Create(&user).Error
 }
 
-func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
-	return company, db.Create(&company).Error
-}
-
 func (db *DBORM) AddAuth(auth models.Auth) error {
 	return db.Create(&auth).Error
 }
 
 func (db *DBORM) DeleteAllUserMember() error {
 	return db.Delete(&models.User{}).Error
-}
-
-func (db *DBORM) DeleteAllCompany() error {
-	return db.Delete(&models.Company{}).Error
 }
 
 func (db *DBORM) DeleteAllAuth() error {

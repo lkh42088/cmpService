@@ -36,10 +36,23 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
 	page := models.Pagination{
-		TotalCount:   0,
-		RowsPerPage:  rowsPerPage,
-		Offset:       offset,
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
 	}
 	fmt.Println("1. page:")
 	page.String()
@@ -51,4 +64,54 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 	users.Page.String()
 	fmt.Println("OK users:", len(users.Users))
 	c.JSON(http.StatusOK, users)
+}
+
+func getPagination(c *gin.Context) (p models.Pagination, err error){
+	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	offset, err := strconv.Atoi(c.Param("offset"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	p = models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
+	}
+	return p, err
+}
+
+func (h *Handler) GetCompaniesPage(c *gin.Context) {
+	page, err := getPagination(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	fmt.Println("1. page:")
+	page.String()
+	companies, err := h.db.GetCompaniesPage(page)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	fmt.Println("2. page:")
+	companies.Page.String()
+	fmt.Println("OK users:", len(companies.Companies))
+	c.JSON(http.StatusOK, companies)
 }

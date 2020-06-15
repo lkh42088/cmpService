@@ -34,6 +34,18 @@ func getTestJebConfig() *config.DBConfig {
 	return &config
 }
 
+func getTestJbhHomeConfig() *config.DBConfig {
+	config := config.DBConfig{
+		"mysql",
+		"nubes",
+		"Nubes1510!",
+		"nubes",
+		"192.168.62.129",
+		3306,
+	}
+	return &config
+}
+
 func getTestJbhConfig() *config.DBConfig {
 	config := config.DBConfig{
 		"mysql",

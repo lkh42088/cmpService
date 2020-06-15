@@ -7,6 +7,110 @@ import (
 	"time"
 )
 
+const (
+	UserOrmIdx            = "user_idx"
+	UserOrmUserId         = "user_id"
+	UserOrmPassword       = "user_password"
+	UserOrmName           = "user_name"
+	UserOrmCompanyIdx     = "cp_idx"
+	UserOrmEmail          = "user_email"
+	UserOrmAuthLevel      = "user_auth_level"
+	UserOrmTel            = "user_tel"
+	UserOrmHP             = "user_hp"
+	UserOrmZipcode        = "user_zip" // 5
+	UserOrmAddress        = "user_addr"
+	UserOrmAddressDetail  = "user_addr_detail"
+	UserOrmTermDate       = "user_termination_date"
+	UserOrmBlockDate      = "user_block_date"
+	UserOrmMemo           = "user_memo" // 10
+	UserOrmWorkScope      = "user_work_scope"
+	UserOrmDepartment     = "user_department"
+	UserOrmPosition       = "user_position"
+	UserOrmEmailAuth      = "user_email_auth_flag"
+	UserOrmGroupEmailAuth = "user_group_email_auth_flag" // 15
+	UserOrmRegisterDate   = "user_register_date"
+	UserOrmLastAccessDate = "user_last_access_date"
+	UserOrmLastAccessIp   = "user_last_access_ip"
+)
+
+const (
+	UserJsonIdx            = "idx"
+	UserJsonUserId         = "userId"
+	UserJsonPassword       = "password"
+	UserJsonName           = "name"
+	UserJsonCompanyIdx     = "companyIdx" // 5
+	UserJsonEmail          = "email"
+	UserJsonAuthLevel      = "authLevel"
+	UserJsonTel            = "tel"
+	UserJsonHP             = "hp"
+	UserJsonZipcode        = "zipcode" // 10
+	UserJsonAddress        = "address"
+	UserJsonAddressDetail  = "addressDetail"
+	UserJsonTermDate       = "termDate"
+	UserJsonBlockDate      = "blockDate"
+	UserJsonMemo           = "memo" // 15
+	UserJsonWorkScope      = "workScope"
+	UserJsonDepartment     = "department"
+	UserJsonPosition       = "position"
+	UserJsonEmailAuth      = "emailAuth"
+	UserJsonGroupEmailAuth = "groupEmailAuth" //20
+	UserJsonRegisterDate   = "registerDate"
+	UserJsonLastAccessDate = "lastAccessDate"
+	UserJsonLastAccessIp   = "lastAccessIp"
+)
+
+var UserOrmMap = map[string]string{
+	UserOrmIdx:            UserJsonIdx,
+	UserOrmUserId:         UserJsonUserId,
+	UserOrmPassword:       UserJsonPassword,
+	UserOrmName:           UserJsonName,
+	UserOrmCompanyIdx:     UserJsonCompanyIdx, /* 5*/
+	UserOrmEmail:          UserJsonEmail,
+	UserOrmAuthLevel:      UserJsonAuthLevel,
+	UserOrmTel:            UserJsonTel,
+	UserOrmHP:             UserJsonHP,
+	UserOrmZipcode:        UserJsonZipcode, /* 10 */
+	UserOrmAddress:        UserJsonAddress,
+	UserOrmAddressDetail:  UserJsonAddressDetail,
+	UserOrmTermDate:       UserJsonTermDate,
+	UserOrmBlockDate:      UserJsonBlockDate,
+	UserOrmMemo:           UserJsonMemo, /* 15 */
+	UserOrmWorkScope:      UserJsonWorkScope,
+	UserOrmDepartment:     UserJsonDepartment,
+	UserOrmPosition:       UserJsonPosition,
+	UserOrmEmailAuth:      UserJsonEmailAuth,
+	UserOrmGroupEmailAuth: UserJsonGroupEmailAuth, /* 20 */
+	UserOrmRegisterDate:   UserJsonRegisterDate,
+	UserOrmLastAccessDate: UserJsonLastAccessDate,
+	UserOrmLastAccessIp:   UserJsonLastAccessIp,
+}
+
+var UserJsonMap = map[string]string{
+	UserJsonIdx:            UserOrmIdx,
+	UserJsonUserId:         UserOrmUserId,
+	UserJsonPassword:       UserOrmPassword,
+	UserJsonName:           UserOrmName,
+	UserJsonCompanyIdx:     UserOrmCompanyIdx, // 5
+	UserJsonEmail:          UserOrmEmail,
+	UserJsonAuthLevel:      UserOrmAuthLevel,
+	UserJsonTel:            UserOrmTel,
+	UserJsonHP:             UserOrmHP,
+	UserJsonZipcode:        UserOrmZipcode, // 10
+	UserJsonAddress:        UserOrmAddress,
+	UserJsonAddressDetail:  UserOrmAddressDetail,
+	UserJsonTermDate:       UserOrmTermDate,
+	UserJsonBlockDate:      UserOrmBlockDate,
+	UserJsonMemo:           UserOrmMemo, // 15
+	UserJsonWorkScope:      UserOrmWorkScope,
+	UserJsonDepartment:     UserOrmDepartment,
+	UserJsonPosition:       UserOrmPosition,
+	UserJsonEmailAuth:      UserOrmEmailAuth,
+	UserJsonGroupEmailAuth: UserOrmGroupEmailAuth, // 20
+	UserJsonRegisterDate:   UserOrmRegisterDate,
+	UserJsonLastAccessDate: UserOrmLastAccessDate,
+	UserJsonLastAccessIp:   UserOrmLastAccessIp,
+}
+
 type User struct {
 	Idx            uint      `gorm:"primary_key;column:user_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
 	UserId         string    `gorm:"unique;type:varchar(50);column:user_id;comment:'유저 ID'" json:"userId"`
@@ -37,20 +141,6 @@ func (User) TableName() string {
 	return "user_tb"
 }
 
-type UserPage struct {
-	Page  Pagination `json:"page"`
-	Users []User     `json:"users"`
-}
-
-func (u *UserPage) ConvertToColumn(field string) string {
-	col := strings.ToLower(field)
-	switch col {
-	case "idx":
-		col = "idx"
-	}
-	return col
-}
-
 type UserEmailAuth struct {
 	UserEmailAuthID  uint   `gorm:"primary_key;column:uea_idx:not null"`
 	User             User   `gorm:"foreignkey:Idx"`
@@ -58,64 +148,11 @@ type UserEmailAuth struct {
 	UserId           string `gorm:"type:varchar(32);column:uea_user_id"`
 	Email            string `gorm:"type:varchar(64);column:uea_email"`
 	EmailAuthConfirm bool   `gorm:"column:uea_confirm" json:"-"`
-	// EmailAuthStore : token + secret key
-	//   - token : when to login, generate JWT token
-	//   - secrete key : when to check email authentication, generate UUID as secret key
 	EmailAuthStore string `gorm:"type:varchar(255);column:uea_store" json:"-"`
-}
-
-type UserEmailAuthMsg struct {
-	Id     string `json:"id"`
-	Email  string `json:"email"`
-	Secret string `json:"secret"`
 }
 
 func (UserEmailAuth) TableName() string {
 	return "user_email_auth_tb"
-}
-
-type Company struct {
-	Idx           uint      `gorm:"primary_key;column:cp_idx;auto_increment;comment:'INDEX'" json:"idx"`
-	Name          string    `gorm:"type:varchar(255);not null;column:cp_name;comment:'회사명'" json:"name"`
-	Email         string    `gorm:"type:varchar(255);column:cp_email;comment:'이메일'" json:"email"`
-	Homepage      string    `gorm:"type:varchar(255);column:cp_homepage;comment:'홈페이지'" json:"homepage"`
-	Tel           string    `gorm:"type:varchar(15);column:cp_tel;comment:'전화 번호'" json:"tel"`
-	HP            string    `gorm:"type:varchar(15);column:cp_hp;comment:'핸드폰 번호'" json:"hp"`
-	Zipcode       string    `gorm:"type:varchar(15);not null;column:cp_zip;comment:'우편 번호'" json:"zipcode"`
-	Address       string    `gorm:"type:varchar(255);not null;column:cp_addr;comment:'주소'" json:"address"`
-	AddressDetail string    `gorm:"type:varchar(255);not null;column:cp_addr_detail;comment:'상세 주소'" json:"addressDetail"`
-	TermDate      time.Time `gorm:"type:datetime;column:cp_termination_date;comment:'해지 일자'" json:"termDate"`
-	IsCompany     bool      `gorm:"type:tinyint(1);column:cp_is_company;default:1;comment:'회사 여부'" json:"isCompany"`
-	Memo          string    `gorm:"type:text;column:cp_memo;comment:'메모'" json:"memo"`
-}
-
-func (Company) TableName() string {
-	return "company_tb"
-}
-
-type Auth struct {
-	Level     int       `gorm:"primary_key;type:int(11);column:auth_level;comment:'권한 레벨'" json:"level"`
-	Tag       string    `gorm:"type:varchar(255);column:auth_tag;comment:'권한 이름'" json:"tag"`
-	Login     int       `gorm:"type:int(11);column:auth_login;default:0;comment:'로그인 권한'" json:"login"`
-	Device    int       `gorm:"type:int(11);column:auth_device;default:0;comment:'장비 권한'" json:"device"`
-	Stat      int       `gorm:"type:int(11);column:auth_stat;default:0;comment:'통계 권한'" json:"stat"`
-	Monitor   int       `gorm:"type:int(11);column:auth_monitor;default:0;comment:'모니터링 권한'" json:"monitor"`
-	Billing   int       `gorm:"type:int(11);column:auth_billing;default:0;comment:'빌링 권한'" json:"billing"`
-	Cloud     int       `gorm:"type:int(11);column:auth_cloud;default:0;comment:'Cloud 권한'" json:"cloud"`
-	Board     int       `gorm:"type:int(11);column:auth_board;default:0;comment:'게시판 권한'" json:"board"`
-	Manager   int       `gorm:"type:int(11);column:auth_manager;default:0;comment:'담당자 권한'" json:"manager"`
-	WorkBoard int       `gorm:"type:int(11);column:auth_work_board;default:0;comment:'작업 권한'" json:"workBoard"`
-	TempStart time.Time `gorm:"type:datetime;column:auth_temp_start;comment:'임시 권한 시작일'" json:"tempStart"`
-	TempEnd   time.Time `gorm:"type:datetime;column:auth_temp_end;comment:'임시 권한 만료일'" json:"tempEnd"`
-}
-
-func (Auth) TableName() string {
-	return "auth_tb"
-}
-
-type CompanyResponse struct {
-	Company
-	UserId string `gorm:"unique;type:varchar(50);column:user_id" json:"userId"`
 }
 
 func HashPassword(user *User) {
@@ -130,4 +167,27 @@ func HashPassword(user *User) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+type UserPage struct {
+	Page  Pagination `json:"page"`
+	Users []User     `json:"data"`
+}
+
+func (u UserPage) GetOrderBy(orderby, order string) string {
+	val, exists := UserJsonMap[orderby]
+	if !exists {
+		val = "user_id"
+	}
+	order = strings.ToLower(order)
+	if !(order == "asc" || order == "desc") {
+		order = "asc"
+	}
+	return val + " " + order
+}
+
+type UserEmailAuthMsg struct {
+	Id     string `json:"id"`
+	Email  string `json:"email"`
+	Secret string `json:"secret"`
 }
