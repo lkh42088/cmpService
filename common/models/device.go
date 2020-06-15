@@ -97,7 +97,7 @@ type DeviceCommonResponse struct {
 	IDC              string    `gorm:"column:idc_cd" json:"idc"`
 	Rack             string    `gorm:"column:rack_cd" json:"rack"`
 	Cost             string    `gorm:"type:varchar(255);column:cost" json:"cost"`
-	Purpose           string    `gorm:"type:varchar(255);column:purpose" json:"purpose"`
+	Purpose          string    `gorm:"type:varchar(255);column:purpose" json:"purpose"`
 	MonitoringFlag   bool      `gorm:"type:tinyint(1);column:monitoring_flag" json:"monitoringFlag"`
 	MonitoringMethod int       `gorm:"type:int(11);column:monitoring_method" json:"monitoringMethod"`
 }
@@ -172,14 +172,17 @@ func (DeviceLog) TableName() string {
 }
 
 type PageCreteria struct {
-	Count      int    `json:"count"` 		// 전체 row 개수 in DB
-	TotalPage  int    `json:"totalPage"` 	// 전체 페이지
-	CheckCnt   int    `json:"checkCnt"`     // Current row counter (offset)
-	Size       int    `json:"size"` 		// limit
-	OutFlag    string `json:"outFlag"`  	// 0: 반입, 1: 반출
-	OrderKey   string `json:"orderKey"`     // order field
-	Direction  int    `json:"direction"`  	// order : asc, desc
+	Count      int    `json:"count"`     // 전체 row 개수 in DB
+	TotalPage  int    `json:"totalPage"` // 전체 페이지
+	CheckCnt   int    `json:"checkCnt"`  // Current row counter (offset)
+	Size       int    `json:"size"`      // limit
+	OutFlag    string `json:"outFlag"`   // 0: 반입, 1: 반출
+	OrderKey   string `json:"orderKey"`  // order field
+	Direction  int    `json:"direction"` // order : asc, desc
 	DeviceType string `json:"deviceType"`
+	Row        int    `json:"row"`
+	Page       int    `json:"page"`
+	OffsetPage int    `json:"offsetPage"`
 }
 
 func (p *PageCreteria) String() {

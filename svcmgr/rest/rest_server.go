@@ -113,8 +113,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.DELETE("/v1/logs/delete/:logidx", h.DeleteLogByIdx)
 
 	// Page
-	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
-	router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage)
+	//
+	// API_ROUTE/page/ server / 0 / 1000 / 110 / deviceCode / 1
+	//router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
+	//router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage2)
+	router.GET("/v1/page/:type/:outFlag/:row/:page/:order/:dir/:offsetPage", h.GetDevicesForPage2)
 
 	// Companies
 	router.GET("/v1/companies/:name", h.GetCompaniesByName)

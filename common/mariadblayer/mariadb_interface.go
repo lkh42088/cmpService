@@ -11,12 +11,14 @@ type MariaDBLayer interface {
 	AddCode(code models.Code) (models.Code, error)
 	DeleteCode(code models.Code) (models.Code, error)
 	DeleteCodes() error
+
 	// SubCode
 	GetAllSubCodes() ([]models.SubCode, error)
 	GetSubCodeList(cIdx []string) ([]models.SubCodeResponse, error)
 	AddSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error
+
 	// Devices
 	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
 	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
@@ -50,6 +52,7 @@ type MariaDBLayer interface {
 	GetDevicesServerForPage(creteria models.PageCreteria) (models.DeviceServerPage, error)
 	GetDevicesNetworkForPage(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
 	GetDevicesPartForPage(creteria models.PageCreteria) (models.DevicePartPage, error)
+
 	GetDevicesServerWithJoin(creteria models.PageCreteria) (models.DeviceServerPage, error)
 	GetDevicesNetworkWithJoin(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
 	GetDevicesPartWithJoin(creteria models.PageCreteria) (models.DevicePartPage, error)

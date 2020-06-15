@@ -73,13 +73,13 @@ func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 	SetThousandCount(&cri)
 
 	err = db.
-		//Debug().
+		Debug().
 		Select(SizeSelectQuery+","+PageSelectQuery).
 		Model(&models.DeviceServer{}).
 		Table(ServerTable).
 		Order(orderBy).
-		Limit(cri.Size).
-		Offset(cri.CheckCnt).
+		Limit(cri.Row).
+		Offset(cri.OffsetPage).
 		Where(CombineCondition(cri.OutFlag)).
 		Joins(ManufactureServerJoinQuery).
 		Joins(ModelJoinQuery).
