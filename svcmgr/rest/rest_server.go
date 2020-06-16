@@ -56,6 +56,8 @@ type HandlerInterface interface {
 	GetUsersPage(c *gin.Context)
 	// Companies
 	GetCompaniesPage(c *gin.Context)
+	// Subnet
+	AddSubnet(c *gin.Context)
 }
 
 type Handler struct {
@@ -145,6 +147,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Companies
 	router.GET("/v1/customers/companies" + pagingParam, h.GetCompaniesPage)
+
+	// Subnet
+	router.POST("/v1/subnet/create", h.AddSubnet)
 
 	return router.Run(address)
 }

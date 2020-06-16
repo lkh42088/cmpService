@@ -24,7 +24,7 @@ func (IpMgmt) TableName() string {
 
 type SubnetMgmt struct {
 	Idx				uint		`gorm:"primary_key;unsigned;auto_increment;column:sub_idx;comment:'INDEX'" json:"idx"`
-	DeviceCode		string		`gorm:"type:varchar(12);not null;column:device_code;comment:'장비 코드'" json:"deviceCode"`
+	DeviceCode		string		`gorm:"type:varchar(12);column:device_code;comment:'장비 코드'" json:"deviceCode"`
 	SubnetTag		string		`gorm:"type:varchar(255);not null;column:sub_tag;comment:'SUBNET TAG'" json:"subnetTag"`
 	SubnetStart		string		`gorm:"type:varchar(15);not null;column:sub_ip_start;comment:'SUBNET START'" json:"subnetStart"`
 	SubnetEnd		string		`gorm:"type:varchar(15);not null;column:sub_ip_end;comment:'SUBNET END'" json:"subnetEnd"`
