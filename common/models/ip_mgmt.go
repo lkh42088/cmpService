@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type IpMgmt struct {
 	Idx				uint		`gorm:"primary_key;column:ip_idx;unsigned;auto_increment;comment:'INDEX'" json:"idx"`
@@ -34,4 +37,48 @@ type SubnetMgmt struct {
 
 func (SubnetMgmt) TableName() string {
 	return "subnet_tb"
+}
+
+type SubnetMgmtResponse struct {
+	Subnet			[]SubnetMgmt	`json:"data"`
+	Page 			Pagination		`json:"page"`
+}
+
+const (
+	JsonSubnetIdx = "idx"
+	JsonSubnetDeviceCode = "deviceCode"
+	JsonSubnetTag = "subnetTag"
+	JsonSubnetStart = "subnetStart"
+	JsonSubnetEnd = "subnetEnd"
+	JsonSubnetMask = "subnetMask"
+	JsonDefaultGateway = "gateway"
+	OrmSubnetIdx = "sub_idx"
+	OrmSubnetDeviceCode = "device_code"
+	OrmSubnetTag = "sub_tag"
+	OrmSubnetStart = "sub_ip_start"
+	OrmSubnetEnd = "sub_ip_end"
+	OrmSubnetMask = "sub_mask"
+	OrmDefaultGateway = "sub_gateway"
+)
+
+var SubnetJsonMap = map[string]string {
+	JsonSubnetIdx: OrmSubnetIdx,
+	JsonSubnetDeviceCode: OrmSubnetDeviceCode,
+	JsonSubnetTag: OrmSubnetTag,
+	JsonSubnetStart: OrmSubnetStart,
+	JsonSubnetEnd: OrmSubnetEnd,
+	JsonSubnetMask: OrmSubnetMask,
+	JsonDefaultGateway: OrmDefaultGateway,
+}
+
+func (s SubnetMgmtResponse) GetOrderBy(orderby, order string) string {
+	value, exists := SubnetJsonMap[orderby]
+	if !exists {
+		value = "sub_idx"
+	}
+	order = strings.ToLower(order)
+	if !(order == "asc" || order == "desc") {
+		order = "asc"
+	}
+	return value + " " + order
 }

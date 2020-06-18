@@ -105,5 +105,6 @@ type MariaDBLayer interface {
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error
+	GetSubnetPage(cri models.Pagination) (models.SubnetMgmtResponse, error)
 }
 
