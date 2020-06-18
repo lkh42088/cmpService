@@ -23,21 +23,23 @@ type HandlerInterface interface {
 	GetDevicesByCode(c *gin.Context)
 	GetDevicesForSearch(c *gin.Context)
 	GetDeviceWithoutJoin(c *gin.Context)
+
 	AddDevice(c *gin.Context)
 	UpdateDevice(c *gin.Context)
 	UpdateOutFlag(c *gin.Context)
 	// Comment
 	GetCommentsByCode(c *gin.Context)
 	AddComment(c *gin.Context)
-	UpdateComment( c *gin.Context)
+	UpdateComment(c *gin.Context)
 	DeleteCommentByIdx(c *gin.Context)
 	// Log
 	GetLogsByCode(c *gin.Context)
 	AddLog(c *gin.Context)
-	UpdateLog( c *gin.Context)
+	UpdateLog(c *gin.Context)
 	DeleteLogByIdx(c *gin.Context)
 	// Page
 	GetDeviceForPage(c *gin.Context)
+	GetDevicesForPageSearch(c *gin.Context)
 	// Companies
 	GetCompaniesByName(c *gin.Context)
 	// Monitoring
@@ -94,8 +96,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/devices/:type/:outFlag/list", h.GetDevicesByList)
 	router.GET("/v1/device/:type/:value/:field", h.GetDevicesByCode)
 	router.GET("/v1/device/:type/:value", h.GetDevicesByCode)
-	router.GET("/v1/search/devices/:type", h.GetDevicesForSearch)
 	router.GET("/v1/raw/device/:type/:value", h.GetDeviceWithoutJoin)
+	//router.GET("/v1/search/devices/:type", h.GetDevicesForSearch)
+
 	router.POST("/v1/device/create/:type", h.AddDevice)
 	router.PUT("/v1/device/update/:type/:deviceCode", h.UpdateDevice)
 	router.PUT("/v1/devices/update/:type", h.UpdateOutFlag)
@@ -117,7 +120,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// API_ROUTE/page/ server / 0 / 1000 / 110 / deviceCode / 1
 	//router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	//router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage2)
-	router.GET("/v1/page/:type/:outFlag/:row/:page/:order/:dir/:offsetPage", h.GetDevicesForPage2)
+	router.GET("/v1/page/:type/:outFlag/:row/:page/:order/:dir/:offsetPage", h.GetDevicesForPage)
+	//todo outFlag 삭제 필요
+	router.POST("/v1/search/devices/:type/:outFlag/:row/:page/:order/:dir/:offsetPage",
+		h.GetDevicesForPageSearch)
 
 	// Companies
 	router.GET("/v1/companies/:name", h.GetCompaniesByName)
@@ -141,10 +147,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/api/auth/register", h.RegisterUser)
 	router.POST("/api/auth/unregister", h.UnRegisterUser)
 	//router.GET("/api/userlist/:rows/:offset/:orderby/:order", h.GetUsersPage)
-	router.GET("/api/userlist" + pagingParam, h.GetUsersPage)
+	router.GET("/api/userlist"+pagingParam, h.GetUsersPage)
 
 	// Companies
-	router.GET("/v1/customers/companies" + pagingParam, h.GetCompaniesPage)
+	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
 
 	return router.Run(address)
 }

@@ -330,6 +330,7 @@ func (h *Handler) AddDevice(c *gin.Context) {
 	}
 
 	mapDevice, err := JsonUnmarshal(c.Request.Body)
+	//fmt.Printf("%+v [%+v]\n", mapDevice, err)
 	convertData := ConvertDeviceData(mapDevice, device, code)
 	if err != nil || convertData == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})

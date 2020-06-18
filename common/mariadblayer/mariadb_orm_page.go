@@ -4,6 +4,7 @@ import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -31,7 +32,146 @@ func TotalPage(count int, size int) int {
 }
 
 func CombineCondition(outFlag string) string {
-	return "out_flag = '" + outFlag + "'"
+	/*return "out_flag = '" + outFlag + "'"*/
+	return "out_flag in ('1', '0')"
+}
+
+func CombineConditionAssetServer(dc models.DeviceServer, division string, outFlag string) string {
+	IDC := strconv.Itoa(dc.IDC)
+	DeviceType := strconv.Itoa(dc.DeviceType)
+	Manufacture := strconv.Itoa(dc.Manufacture)
+	queryWhere := ""
+
+	if outFlag != "" {
+		queryWhere = "out_flag in (" + outFlag + ")"
+	} else {
+		queryWhere = "out_flag in ( 9 )"
+	}
+
+	if dc.Customer != "" {
+		if division == "count" {
+			queryWhere = queryWhere + " and user_id in (" + dc.Customer + ")"
+		} else if division == "list" {
+			queryWhere = queryWhere + " and d.user_id in (" + dc.Customer + ")"
+		}
+	}
+
+	if dc.DeviceCode != "" {
+		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
+	}
+
+	if dc.Ownership != "" && dc.Ownership != "0" {
+		queryWhere = queryWhere + " and ownership_cd = '" + dc.Ownership + "'"
+	}
+
+	if dc.OwnershipDiv != "" && dc.OwnershipDiv != "0" {
+		queryWhere = queryWhere + " and ownership_div_cd = '" + dc.OwnershipDiv + "'"
+	}
+
+	if IDC != "" && IDC != "0" {
+		queryWhere = queryWhere + " and idc_cd = '" + IDC + "'"
+	}
+
+	if DeviceType != "" && DeviceType != "0" {
+		queryWhere = queryWhere + " and device_type_cd = '" + DeviceType + "'"
+	}
+
+	if Manufacture != "" && Manufacture != "0" {
+		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
+	}
+	return queryWhere
+}
+
+func CombineConditionAssetNetwork(dc models.DeviceNetwork, division string, outFlag string) string {
+	IDC := strconv.Itoa(dc.IDC)
+	DeviceType := strconv.Itoa(dc.DeviceType)
+	Manufacture := strconv.Itoa(dc.Manufacture)
+	queryWhere := ""
+
+	if outFlag != "" {
+		queryWhere = "out_flag in (" + outFlag + ")"
+	} else {
+		queryWhere = "out_flag in ( 9 )"
+	}
+
+	if dc.Customer != "" {
+		if division == "count" {
+			queryWhere = queryWhere + " and user_id in (" + dc.Customer + ")"
+		} else if division == "list" {
+			queryWhere = queryWhere + " and d.user_id in (" + dc.Customer + ")"
+		}
+	}
+
+	if dc.DeviceCode != "" {
+		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
+	}
+
+	if dc.Ownership != "" && dc.Ownership != "0" {
+		queryWhere = queryWhere + " and ownership_cd = '" + dc.Ownership + "'"
+	}
+
+	if dc.OwnershipDiv != "" && dc.OwnershipDiv != "0" {
+		queryWhere = queryWhere + " and ownership_div_cd = '" + dc.OwnershipDiv + "'"
+	}
+
+	if IDC != "" && IDC != "0" {
+		queryWhere = queryWhere + " and idc_cd = '" + IDC + "'"
+	}
+
+	if DeviceType != "" && DeviceType != "0" {
+		queryWhere = queryWhere + " and device_type_cd = '" + DeviceType + "'"
+	}
+
+	if Manufacture != "" && Manufacture != "0" {
+		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
+	}
+	return queryWhere
+}
+
+func CombineConditionAssetPart(dc models.DevicePart, division string, outFlag string) string {
+	IDC := strconv.Itoa(dc.IDC)
+	DeviceType := strconv.Itoa(dc.DeviceType)
+	Manufacture := strconv.Itoa(dc.Manufacture)
+	queryWhere := ""
+
+	if outFlag != "" {
+		queryWhere = "out_flag in (" + outFlag + ")"
+	} else {
+		queryWhere = "out_flag in ( 9 )"
+	}
+
+	if dc.Customer != "" {
+		if division == "count" {
+			queryWhere = queryWhere + " and user_id in (" + dc.Customer + ")"
+		} else if division == "list" {
+			queryWhere = queryWhere + " and d.user_id in (" + dc.Customer + ")"
+		}
+	}
+
+	if dc.DeviceCode != "" {
+		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
+	}
+
+	if dc.Ownership != "" && dc.Ownership != "0" {
+		queryWhere = queryWhere + " and ownership_cd = '" + dc.Ownership + "'"
+	}
+
+	if dc.OwnershipDiv != "" && dc.OwnershipDiv != "0" {
+		queryWhere = queryWhere + " and ownership_div_cd = '" + dc.OwnershipDiv + "'"
+	}
+
+	if IDC != "" && IDC != "0" {
+		queryWhere = queryWhere + " and idc_cd = '" + IDC + "'"
+	}
+
+	if DeviceType != "" && DeviceType != "0" {
+		queryWhere = queryWhere + " and device_type_cd = '" + DeviceType + "'"
+	}
+
+	if Manufacture != "" && Manufacture != "0" {
+		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
+	}
+	return queryWhere
 }
 
 // NB specific code
@@ -65,22 +205,22 @@ func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 	return server, err
 }
 
-func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
+func (db *DBORM) GetDevicesServerSearchWithJoin(cri models.PageCreteria, dc models.DeviceServer) (
 	server models.DeviceServerPage, err error) {
 
-	db.Model(&models.DeviceServer{}).Count(&cri.Count)
+	db.Model(&models.DeviceServer{}).Where(CombineConditionAssetServer(dc, "count", cri.OutFlag)).Count(&cri.Count)
 	orderBy := Orderby(cri.OrderKey, cri.Direction)
 	SetThousandCount(&cri)
 
 	err = db.
-		Debug().
-		Select(SizeSelectQuery+","+PageSelectQuery).
+		//Debug().
+		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceServer{}).
 		Table(ServerTable).
 		Order(orderBy).
 		Limit(cri.Row).
 		Offset(cri.OffsetPage).
-		Where(CombineCondition(cri.OutFlag)).
+		Where(CombineConditionAssetServer(dc, "list", cri.OutFlag)).
 		Joins(ManufactureServerJoinQuery).
 		Joins(ModelJoinQuery).
 		Joins(DeviceTypeServerJoinQuery).
@@ -101,41 +241,22 @@ func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 	return server, err
 }
 
-func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
+func (db *DBORM) GetDevicesNetworkSearchWithJoin(cri models.PageCreteria, dc models.DeviceNetwork) (
 	network models.DeviceNetworkPage, err error) {
 
-	db.Model(&network.Devices).Count(&cri.Count)
-	orderby := Orderby(cri.OrderKey, cri.Direction)
-	SetThousandCount(&cri)
-	err = db.
-		Order(orderby).
-		Limit(cri.Size).
-		Offset(cri.CheckCnt).
-		Where(CombineCondition(cri.OutFlag)).
-		Find(&network.Devices).Error
-	if err != nil {
-		lib.LogWarn("[Error] %s\n", err)
-	}
-	network.Page = cri
-	return network, err
-}
-
-func (db *DBORM) GetDevicesNetworkWithJoin(cri models.PageCreteria) (
-	network models.DeviceNetworkPage, err error) {
-
-	db.Model(&models.DeviceNetwork{}).Count(&cri.Count)
+	db.Model(&models.DeviceNetwork{}).Where(CombineConditionAssetNetwork(dc, "count", cri.OutFlag)).Count(&cri.Count)
 	orderBy := Orderby(cri.OrderKey, cri.Direction)
 	SetThousandCount(&cri)
 
 	err = db.
 		//Debug().
-		Select(SizeSelectQuery+","+PageSelectQuery).
+		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceNetwork{}).
 		Table(NetworkTable).
 		Order(orderBy).
-		Limit(cri.Size).
-		Offset(cri.CheckCnt).
-		Where(CombineCondition(cri.OutFlag)).
+		Limit(cri.Row).
+		Offset(cri.OffsetPage).
+		Where(CombineConditionAssetNetwork(dc, "list", cri.OutFlag)).
 		Joins(ManufactureNetworkJoinQuery).
 		Joins(ModelJoinQuery).
 		Joins(DeviceTypeNetworkJoinQuery).
@@ -175,10 +296,10 @@ func (db *DBORM) GetDevicesPartForPage(cri models.PageCreteria) (
 	return part, err
 }
 
-func (db *DBORM) GetDevicesPartWithJoin(cri models.PageCreteria) (
+func (db *DBORM) GetDevicesPartSearchWithJoin(cri models.PageCreteria, dc models.DevicePart) (
 	part models.DevicePartPage, err error) {
 
-	db.Model(&models.DevicePart{}).Count(&cri.Count)
+	db.Model(&models.DevicePart{}).Where(CombineConditionAssetPart(dc, "count", cri.OutFlag)).Count(&cri.Count)
 	orderBy := Orderby(cri.OrderKey, cri.Direction)
 	SetThousandCount(&cri)
 
@@ -188,9 +309,9 @@ func (db *DBORM) GetDevicesPartWithJoin(cri models.PageCreteria) (
 		Model(&models.DeviceNetwork{}).
 		Table(PartTable).
 		Order(orderBy).
-		Limit(cri.Size).
-		Offset(cri.CheckCnt).
-		Where(CombineCondition(cri.OutFlag)).
+		Limit(cri.Row).
+		Offset(cri.OffsetPage).
+		Where(CombineConditionAssetPart(dc, "list", cri.OutFlag)).
 		Joins(ManufacturePartJoinQuery).
 		Joins(ModelJoinQuery).
 		Joins(DeviceTypePartJoinQuery).
@@ -286,4 +407,130 @@ func ConvertToColumn(field string) string {
 		col = "rack_loc"
 	}
 	return col
+}
+
+func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
+	server models.DeviceServerPage, err error) {
+
+	db.Model(&models.DeviceServer{}).Count(&cri.Count)
+	orderBy := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+
+	err = db.
+		Debug().
+		Select(SizeSelectQuery + "," + PageSelectQuery).
+		Model(&models.DeviceServer{}).
+		Table(ServerTable).
+		Order(orderBy).
+		Limit(cri.Row).
+		Offset(cri.OffsetPage).
+		Where(CombineCondition(cri.OutFlag)).
+		Joins(ManufactureServerJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypeServerJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(SizeJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
+		Find(&server.Devices).Error
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	server.Page = cri
+	return server, err
+}
+
+func (db *DBORM) GetDevicesNetworkForPage(cri models.PageCreteria) (
+	network models.DeviceNetworkPage, err error) {
+
+	db.Model(&network.Devices).Count(&cri.Count)
+	orderby := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+	err = db.
+		Order(orderby).
+		Limit(cri.Size).
+		Offset(cri.CheckCnt).
+		Where(CombineCondition(cri.OutFlag)).
+		Find(&network.Devices).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	network.Page = cri
+	return network, err
+}
+
+func (db *DBORM) GetDevicesNetworkWithJoin(cri models.PageCreteria) (
+	network models.DeviceNetworkPage, err error) {
+
+	db.Model(&models.DeviceNetwork{}).Count(&cri.Count)
+	orderBy := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+
+	err = db.
+		Debug().
+		Select(SizeSelectQuery + "," + PageSelectQuery).
+		Model(&models.DeviceNetwork{}).
+		Table(NetworkTable).
+		Order(orderBy).
+		Limit(cri.Row).
+		Offset(cri.OffsetPage).
+		Where(CombineCondition(cri.OutFlag)).
+		Joins(ManufactureNetworkJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypeNetworkJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(SizeJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
+		Find(&network.Devices).Error
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	network.Page = cri
+	return network, err
+}
+
+func (db *DBORM) GetDevicesPartWithJoin(cri models.PageCreteria) (
+	part models.DevicePartPage, err error) {
+
+	db.Model(&models.DevicePart{}).Count(&cri.Count)
+	orderBy := Orderby(cri.OrderKey, cri.Direction)
+	SetThousandCount(&cri)
+
+	err = db.
+		//Debug().
+		Select(PageSelectQuery).
+		Model(&models.DeviceNetwork{}).
+		Table(PartTable).
+		Order(orderBy).
+		Limit(cri.Row).
+		Offset(cri.OffsetPage).
+		Where(CombineCondition(cri.OutFlag)).
+		Joins(ManufacturePartJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypePartJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
+		Find(&part.Devices).Error
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	part.Page = cri
+	return part, err
 }
