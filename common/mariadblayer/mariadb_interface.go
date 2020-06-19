@@ -7,7 +7,7 @@ import (
 type MariaDBLayer interface {
 	// Code
 	GetAllCodes() ([]models.Code, error)
-	GetCodeList(code string, subCode string)([]models.Code, error)
+	GetCodeList(code string, subCode string) ([]models.Code, error)
 	AddCode(code models.Code) (models.Code, error)
 	DeleteCode(code models.Code) (models.Code, error)
 	DeleteCodes() error
@@ -35,9 +35,9 @@ type MariaDBLayer interface {
 	GetLastDeviceCodeInServer() (models.DeviceServer, error)
 	GetLastDeviceCodeInNetwork() (models.DeviceNetwork, error)
 	GetLastDeviceCodeInPart() (models.DevicePart, error)
-	AddDeviceServer(server models.DeviceServer)(models.DeviceServer, error)
-	AddDeviceNetwork(network models.DeviceNetwork)(models.DeviceNetwork, error)
-	AddDevicePart(part models.DevicePart)(models.DevicePart, error)
+	AddDeviceServer(server models.DeviceServer) (models.DeviceServer, error)
+	AddDeviceNetwork(network models.DeviceNetwork) (models.DeviceNetwork, error)
+	AddDevicePart(part models.DevicePart) (models.DevicePart, error)
 	AddDevice(data interface{}, tableName string) error
 	UpdateDevice(device interface{}, tableName string, deviceCode string) (interface{}, error)
 	UpdateOutFlag(codes []string, tableName string, flag int) error
@@ -56,6 +56,13 @@ type MariaDBLayer interface {
 	GetDevicesServerWithJoin(creteria models.PageCreteria) (models.DeviceServerPage, error)
 	GetDevicesNetworkWithJoin(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
 	GetDevicesPartWithJoin(creteria models.PageCreteria) (models.DevicePartPage, error)
+
+	GetDevicesServerSearchWithJoin(creteria models.PageCreteria,
+		dc models.DeviceServer) (models.DeviceServerPage, error)
+	GetDevicesNetworkSearchWithJoin(creteria models.PageCreteria,
+		dc models.DeviceNetwork) (models.DeviceNetworkPage, error)
+	GetDevicesPartSearchWithJoin(creteria models.PageCreteria,
+		dc models.DevicePart) (models.DevicePartPage, error)
 
 	// Comment
 	GetAllComments() ([]models.DeviceComment, error)
@@ -107,4 +114,3 @@ type MariaDBLayer interface {
 	AddSubnet(subnet models.SubnetMgmt) error
 	GetSubnetPage(cri models.Pagination) (models.SubnetMgmtResponse, error)
 }
-

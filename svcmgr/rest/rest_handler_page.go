@@ -5,6 +5,7 @@ import (
 	"cmpService/common/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -83,7 +84,18 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 }
 */
 
-func (h *Handler) GetDevicesForPage2(c *gin.Context) {
+func (h *Handler) GetDevicesForPageSearchTest(c *gin.Context) {
+	bodyByte, err := ioutil.ReadAll(c.Request.Body)
+	fmt.Printf("%+v\n", bodyByte)
+
+	mapTest, err := JsonUnmarshal(c.Request.Body)
+	fmt.Printf("%+v [%+v]\n", mapTest, err)
+
+	mapDevice, err := JsonUnmarshal(c.Request.Body)
+	fmt.Printf("%+v [%+v]\n", mapDevice, err)
+}
+
+func (h *Handler) GetDevicesForPage(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
@@ -131,7 +143,6 @@ func (h *Handler) GetDevicesForPage2(c *gin.Context) {
 		//for i, v := range devicePage.Devices {
 		//	fmt.Printf("%d %v\n", i+1, v)
 		//}
-		fmt.Println("2. page:");
 		devicePage.Page.String()
 		c.JSON(http.StatusOK, devicePage)
 	case "network":
@@ -140,10 +151,9 @@ func (h *Handler) GetDevicesForPage2(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		//for i, v := range devicePage.Devices {
-		//	fmt.Printf("%d %v\n", i+1, v)
-		//}
-		fmt.Println("2. page: .");
+		/*for i, v := range devicePage.Devices {
+			fmt.Printf("%d %v\n", i+1, v)
+		}*/
 		devicePage.Page.String()
 		c.JSON(http.StatusOK, devicePage)
 	case "part":
@@ -156,10 +166,118 @@ func (h *Handler) GetDevicesForPage2(c *gin.Context) {
 		//for i, v := range devicePage.Devices {
 		//	fmt.Printf("%d %v\n", i+1, v)
 		//}
-		fmt.Println("2. page: ..");
 		devicePage.Page.String()
 		c.JSON(http.StatusOK, devicePage)
 	}
 }
 
+func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
 
+	fmt.Println("deviceType---> ", deviceType)
+	// Parse params
+	row, err := strconv.Atoi(c.Param("row"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+	curpage, err := strconv.Atoi(c.Param("page"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+	dir, err := strconv.Atoi(c.Param("dir"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+	offsetPage, err := strconv.Atoi(c.Param("offsetPage"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		return
+	}
+
+	mapDevice, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestFailConvertData})
+		return
+	}
+
+	convertData := ConvertDeviceData(mapDevice, deviceType, mapDevice["deviceCode"].(string))
+	if convertData == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	var x interface{} = mapDevice["operatingFlag"]
+	operatingFlag := fmt.Sprintf("%v", x)
+
+	var y interface{} = mapDevice["carryingFlag"]
+	carryingFlag := fmt.Sprintf("%v", y)
+
+	fmt.Println("💃💃💃💃 operatingFlag : ", operatingFlag, "--> ", mapDevice["operatingFlag"].(bool));
+
+	fmt.Println("💃💃💃💃 carryingFlag : ", carryingFlag, "--> ", mapDevice["carryingFlag"].(bool));
+
+	/*0 : 반입, 1 : 반출*/
+	var outFlag string
+	if mapDevice["operatingFlag"].(bool) {
+		outFlag = "0"
+	}
+	fmt.Println("🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐 00 outFlag : ", outFlag);
+
+	if mapDevice["carryingFlag"].(bool) {
+		if outFlag != "" {
+			outFlag = outFlag + ", 1"
+		} else {
+			outFlag = "1"
+		}
+	}
+
+	fmt.Println("🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐 11 outFlag : ", outFlag);
+
+	page := models.PageCreteria{
+		DeviceType : c.Param("type"),
+		OrderKey: c.Param("order"),
+		Row: row,
+		OutFlag: outFlag,
+		Direction: dir,
+		Page: curpage,
+		OffsetPage: offsetPage,
+	}
+
+	switch deviceType {
+	case "server":
+		devicePage, err := h.db.GetDevicesServerSearchWithJoin(page, *convertData.(*models.DeviceServer))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		/*for i, v := range devicePage.Devices {
+			fmt.Printf("%d %v\n", i+1, v)
+		}*/
+		devicePage.Page.String()
+		c.JSON(http.StatusOK, devicePage)
+	case "network":
+		devicePage, err := h.db.GetDevicesNetworkSearchWithJoin(page, *convertData.(*models.DeviceNetwork))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		devicePage.Page.String()
+		c.JSON(http.StatusOK, devicePage)
+	case "part":
+		//devicePage, err := h.db.GetDevicesPartWithJoin(page)
+		devicePage, err := h.db.GetDevicesPartSearchWithJoin(page, *convertData.(*models.DevicePart))
+		if err != nil {
+
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		devicePage.Page.String()
+		c.JSON(http.StatusOK, devicePage)
+	}
+}
