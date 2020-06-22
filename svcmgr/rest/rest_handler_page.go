@@ -227,7 +227,6 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 	if mapDevice["operatingFlag"].(bool) {
 		outFlag = "0"
 	}
-	fmt.Println("🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐 00 outFlag : ", outFlag);
 
 	if mapDevice["carryingFlag"].(bool) {
 		if outFlag != "" {
@@ -236,8 +235,6 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 			outFlag = "1"
 		}
 	}
-
-	fmt.Println("🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐🖐 11 outFlag : ", outFlag);
 
 	page := models.PageCreteria{
 		DeviceType : c.Param("type"),

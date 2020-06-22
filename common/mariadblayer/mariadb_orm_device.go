@@ -214,6 +214,23 @@ func (db *DBORM) UpdateOutFlag(codes []string, device string, flag int) error {
 	return db.Table(device).Where("device_code IN (?)", codes).Update(outFlagField, flag).Error
 }
 
+//log search
+func (db *DBORM) GetDeviceLogs(code string) (logs []models.DeviceLog, err error) {
+	return logs, db.Where(models.DeviceLog{DeviceCode: code}).Find(&logs).Error
+}
+
+/*func (db *DBORM) GetDeviceLogInServer(code string) (logs []models.DeviceLog, err error) {
+	return logs, db.Where(models.DeviceLog{DeviceCode: code}).Find(&logs).Error
+}
+
+func (db *DBORM) GetDeviceLogInNetwork(code string) (comments []models.DeviceComment, err error) {
+	return comments, db.Where(models.DeviceLog{DeviceCode: code}).Find(&comments).Error
+}
+
+func (db *DBORM) GetDeviceLogInPart(code string) (comments []models.DeviceComment, err error) {
+	return comments, db.Where(models.DeviceLog{DeviceCode: code}).Find(&comments).Error
+}*/
+
 func GetWhereString(field string) string {
 	return field + " = ?"
 }

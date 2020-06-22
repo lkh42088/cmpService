@@ -304,6 +304,31 @@ func (h *Handler) GetDevicesForSearch(c *gin.Context) {
 	return
 }
 
+
+// Search device log
+func (h *Handler) GetDevicesByLog(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	deviceType := c.Param("type")
+	deviceCode := c.Param("value")
+
+	logs, err := h.db.GetDeviceLogs(deviceCode)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		return
+	}
+	//fmt.Println("[###] %v", comments)
+	c.JSON(http.StatusOK, logs)
+
+	switch deviceType {
+	case "server":
+	case "network":
+	case "part":
+	}
+	return
+}
+
 // Mornitoring
 func (h *Handler) GetDevicesMonitoring(c *gin.Context) {
 

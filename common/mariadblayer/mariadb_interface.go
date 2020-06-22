@@ -35,6 +35,8 @@ type MariaDBLayer interface {
 	GetLastDeviceCodeInServer() (models.DeviceServer, error)
 	GetLastDeviceCodeInNetwork() (models.DeviceNetwork, error)
 	GetLastDeviceCodeInPart() (models.DevicePart, error)
+	GetDeviceLogs(code string) ([]models.DeviceLog, error)
+
 	AddDeviceServer(server models.DeviceServer) (models.DeviceServer, error)
 	AddDeviceNetwork(network models.DeviceNetwork) (models.DeviceNetwork, error)
 	AddDevicePart(part models.DevicePart) (models.DevicePart, error)
