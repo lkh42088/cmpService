@@ -177,11 +177,11 @@ type UserPage struct {
 func (u UserPage) GetOrderBy(orderby, order string) string {
 	val, exists := UserJsonMap[orderby]
 	if !exists {
-		val = "user_id"
+		val = "user_idx"
 	}
 	order = strings.ToLower(order)
 	if !(order == "asc" || order == "desc") {
-		order = "asc"
+		order = "desc"
 	}
 	return val + " " + order
 }

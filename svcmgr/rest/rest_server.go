@@ -58,6 +58,8 @@ type HandlerInterface interface {
 	GetUsersPage(c *gin.Context)
 	// Companies
 	GetCompaniesPage(c *gin.Context)
+	AddCompany(c *gin.Context)
+	CheckDuplicatedCompany(c *gin.Context)
 }
 
 type Handler struct {
@@ -151,6 +153,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Companies
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
+	router.POST("/v1/customers/companies", h.AddCompany)
+	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
 
 	return router.Run(address)
 }
