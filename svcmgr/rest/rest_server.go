@@ -56,6 +56,7 @@ type HandlerInterface interface {
 	RegisterUser(c *gin.Context)
 	UnRegisterUser(c *gin.Context)
 	GetUsersPage(c *gin.Context)
+	CheckDuplicatedUser(c *gin.Context)
 	// Companies
 	GetCompaniesPage(c *gin.Context)
 	AddCompany(c *gin.Context)
@@ -149,14 +150,14 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	pagingParam := "/:rows/:offset/:orderby/:order"
 
 	// User
-	router.POST("/api/auth/register", h.RegisterUser)
-	router.POST("/api/auth/unregister", h.UnRegisterUser)
-	//router.GET("/api/userlist/:rows/:offset/:orderby/:order", h.GetUsersPage)
-	router.GET("/api/userlist"+pagingParam, h.GetUsersPage)
+	router.GET("/v1/users"+pagingParam, h.GetUsersPage)
+	router.POST("/v1/users/register", h.RegisterUser)
+	router.POST("/v1/users/unregister", h.UnRegisterUser)
+	router.POST("/v1/users/check-user", h.CheckDuplicatedUser)
 
 	// Companies
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
-	router.POST("/v1/customers/companies", h.AddCompany)
+	router.POST("/v1/customers/register", h.AddCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
 
 	return router.Run(address)

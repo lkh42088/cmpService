@@ -79,6 +79,18 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
 }
 
+func (h *Handler) CheckDuplicatedUser(c *gin.Context) {
+	var userMsg messages.UserRegisterMessage
+	c.Bind(&userMsg)
+	fmt.Println("Register Message: ", userMsg)
+	exists := h.checkUserExists(userMsg.Id)
+	if exists {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": ""})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
+}
+
 func (h *Handler) UnRegisterUser(c *gin.Context) {
 	var userMsg messages.UserRegisterMessage
 	c.Bind(&userMsg)
