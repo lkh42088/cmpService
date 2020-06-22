@@ -17,6 +17,10 @@ func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResp
 		Find(&companies).Error
 }
 
+func (db *DBORM) GetCompanyByName(name string) (company models.Company, err error) {
+	return company, db.Where("cp_name = ?", name).Find(&company).Error
+}
+
 func (db *DBORM) GetCompaniesPage(paging models.Pagination) (companies models.CompanyPage, err error) {
 	db.Model(&companies.Companies).Count(&paging.TotalCount)
 	err = db.

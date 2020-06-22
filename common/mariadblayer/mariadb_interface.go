@@ -85,14 +85,20 @@ type MariaDBLayer interface {
 	DeleteLog(idx int) error
 
 	// User, Customer, Auth
-	GetCompaniesByName(name string) ([]models.CompanyResponse, error)
 	GetUserByUserId(userId string) (models.User, error)
 	AddUserMember(user models.User) error
-	AddCompany(company models.Company) (models.Company, error)
 	AddAuth(auth models.Auth) error
 	DeleteAllUserMember() error
-	DeleteAllCompany() error
 	DeleteAllAuth() error
+
+	/**
+	 * Company
+	 */
+	GetCompaniesByName(name string) ([]models.CompanyResponse, error)
+	GetCompanyByName(name string) (models.Company, error)
+	AddCompany(company models.Company) (models.Company, error)
+	DeleteAllCompany() error
+	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
 
 	// User
 	AddUser(user models.User) (models.User, error)
@@ -101,7 +107,6 @@ type MariaDBLayer interface {
 	GetUserById(id string) (models.User, error)
 	GetUserByEmail(id string) (models.User, error)
 	GetUsersPage(paging models.Pagination) (models.UserPage, error)
-	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
 
 	// User Email Authentication
 	GetAllUserEmailAuth() (objs []models.UserEmailAuth, err error)
