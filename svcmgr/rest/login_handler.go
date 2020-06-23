@@ -58,6 +58,21 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	}
 
 	user, emailAuthList := userMsg.Convert()
+	if userMsg.CpIdx > 0 {
+		user.CompanyIdx = userMsg.CpIdx
+	} else if userMsg.CpName != "" {
+		// get company by name
+		company, err := h.db.GetCompanyByName(userMsg.CpName)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": valErr})
+			return
+		}
+		user.CompanyIdx = int(company.Idx)
+	} else {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": valErr})
+		return
+	}
+
 	models.HashPassword(&user)
 	adduser, err := h.db.AddUser(user)
 	if len(emailAuthList) > 0 {
@@ -76,7 +91,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 	fmt.Println("Add user:", adduser)
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": adduser})
 }
 
 func (h *Handler) CheckDuplicatedUser(c *gin.Context) {

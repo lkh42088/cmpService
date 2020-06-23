@@ -9,6 +9,8 @@ type UserLoginMessage struct {
 }
 
 type UserRegisterMessage struct {
+	CpName             string   `json:"cpName"`
+	CpIdx              int `json:"cpIdx"`
 	Id                 string   `json:"id"`
 	Password           string   `json:"password"`
 	Email              string   `json:"email"`

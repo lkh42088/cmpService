@@ -139,13 +139,13 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
 	// Login
-	router.POST("/api/auth/login", h.LoginUserById)
-	router.POST("/api/auth/grouplogin", h.LoginGroupEmail)
-	router.POST("/api/auth/input_email", h.LoginUserById)
-	router.POST("/api/auth/confirm", h.LoginFrontConfirm)
-	router.POST("/api/auth/email_confirm", h.EmailConfirm)
-	router.GET("/api/auth/check", h.GetSession)
-	router.POST("/api/auth/logout", h.Logout)
+	router.POST("/v1/auth/login", h.LoginUserById)
+	router.POST("/v1/auth/grouplogin", h.LoginGroupEmail)
+	router.POST("/v1/auth/input_email", h.LoginUserById)
+	router.POST("/v1/auth/confirm", h.LoginFrontConfirm)
+	router.POST("/v1/auth/email_confirm", h.EmailConfirm)
+	router.GET("/v1/auth/check", h.GetSession)
+	router.POST("/v1/auth/logout", h.Logout)
 
 	pagingParam := "/:rows/:offset/:orderby/:order"
 
