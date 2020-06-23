@@ -236,7 +236,7 @@ func (h *Handler) GetDevicesByCode(c *gin.Context) {
 		return
 	}
 
-	_ = ConvertSplaString(h, devices, 0, deviceType)	// no error check
+	_ = ConvertSplaString(h, devices, 0, deviceType) // no error check
 
 	//fmt.Println("[###] %+v", devices)
 	c.JSON(http.StatusOK, devices)
@@ -304,7 +304,6 @@ func (h *Handler) GetDevicesForSearch(c *gin.Context) {
 	return
 }
 
-
 // Search device log
 func (h *Handler) GetDevicesByLog(c *gin.Context) {
 	if h.db == nil {
@@ -315,7 +314,7 @@ func (h *Handler) GetDevicesByLog(c *gin.Context) {
 
 	logs, err := h.db.GetDeviceLogs(deviceCode)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	//fmt.Println("[###] %v", comments)

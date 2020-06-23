@@ -17,18 +17,18 @@ func (s *SmtpServer) Address() string {
 }
 
 type MailMsg struct {
-	To string
-	Header string
-	UserId string
-	Text   string
+	To       string
+	Header   string
+	UserId   string
+	Text     string
 	ServerIp string
-	Uuid   string
+	Uuid     string
 }
 
 func (m *MailMsg) GetMessage() []byte {
 	header := fmt.Sprintf("Subject: %s \r\n", m.Header)
-	body := fmt.Sprintf( "%s %s \r\n", m.UserId, m.Text)
-	body += fmt.Sprintf( "http://%s:4000/log_in/email/%s/%s \r\n", m.ServerIp, m.UserId, m.Uuid)
+	body := fmt.Sprintf("%s %s \r\n", m.UserId, m.Text)
+	body += fmt.Sprintf("http://%s:4000/log_in/email/%s/%s \r\n", m.ServerIp, m.UserId, m.Uuid)
 	msg := header + "\r\n" + body
 	return []byte(msg)
 }
@@ -45,7 +45,7 @@ func SendMail(server SmtpServer, msg MailMsg) error {
 func SendMailTest() {
 	smtpSvr := SmtpServer{
 		"smtp.gmail.com",
-		"587" ,
+		"587",
 		"nubesbh@gmail.com",
 		"tycp zngl ehop smvy",
 	}
@@ -62,7 +62,7 @@ func SendMailTest() {
 	body := "메일 시험입니다...\r\n"
 	msg := []byte(headerSubject + headerBlank + body)
 
-	err :=smtp.SendMail(smtpSvr.Address(), auth, mailAccount_from, mailAccount_to, msg)
+	err := smtp.SendMail(smtpSvr.Address(), auth, mailAccount_from, mailAccount_to, msg)
 	if err != nil {
 		fmt.Println("err: ", err)
 	}

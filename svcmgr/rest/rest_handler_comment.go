@@ -15,7 +15,7 @@ func (h *Handler) GetCommentsByCode(c *gin.Context) {
 	deviceCode := c.Param("devicecode")
 	comments, err := h.db.GetComments(deviceCode)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	//fmt.Println("[###] %v", comments)
@@ -34,14 +34,14 @@ func (h *Handler) AddComment(c *gin.Context) {
 	userId := comment.RegisterId
 	user, err := h.db.GetUserByUserId(userId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	comment.RegisterName = user.Name
 
 	err = h.db.AddComment(comment)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
@@ -58,10 +58,10 @@ func (h *Handler) UpdateComment(c *gin.Context) {
 	// User-Id check
 	content, err := h.db.GetCommentByIdx(int(comment.Idx))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	} else if content.RegisterId != comment.RegisterId {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestDoNotCreateUser})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": lib.RestDoNotCreateUser})
 		return
 	}
 
@@ -79,7 +79,7 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	}
 	idx, err := strconv.Atoi(c.Param("commentidx"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 
@@ -87,16 +87,16 @@ func (h *Handler) DeleteCommentByIdx(c *gin.Context) {
 	userId := c.Param("userid")
 	content, err1 := h.db.GetCommentByIdx(idx)
 	if err1 != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err1.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err1.Error()})
 		return
 	} else if content.RegisterId != userId {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestDoNotCreateUser})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": lib.RestDoNotCreateUser})
 		return
 	}
 
 	err = h.db.DeleteComments(idx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, err)
