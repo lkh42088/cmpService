@@ -115,3 +115,46 @@ func (h *Handler) GetCompaniesPage(c *gin.Context) {
 	fmt.Println("OK users:", len(companies.Companies))
 	c.JSON(http.StatusOK, companies)
 }
+
+func (h *Handler) checkCompanyExists(name string) bool {
+	company, err := h.db.GetCompanyByName(name)
+	if err != nil {
+		lib.LogWarnln(err)
+		return false
+	} else if name == company.Name {
+		return true
+	}
+	return true
+}
+
+func (h *Handler) AddCompany(c *gin.Context) {
+	var companyMsg models.Company
+	c.Bind(&companyMsg)
+	fmt.Println("recv company: ", companyMsg)
+	exists := h.checkCompanyExists(companyMsg.Name)
+	fmt.Println("exists: ", exists)
+
+	addCompany, err := h.db.AddCompany(companyMsg)
+	if err != nil {
+		fmt.Println("err:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		return
+	}
+	fmt.Println("Add company: ", addCompany)
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": addCompany})
+}
+
+func (h *Handler) CheckDuplicatedCompany(c *gin.Context) {
+	var companyMsg models.Company
+	c.Bind(&companyMsg)
+	fmt.Println("recv company: ", companyMsg)
+	fmt.Println("recv company name: ", companyMsg.Name)
+	exists := h.checkCompanyExists(companyMsg.Name)
+	if exists == true {
+		fmt.Println("It exists: ", exists)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": "It has been exists!"})
+		return
+	}
+	fmt.Println("It does not exists: ", exists)
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
+}
