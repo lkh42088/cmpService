@@ -25,7 +25,7 @@ type HandlerInterface interface {
 func apiDeviceGetAllHandler(c *gin.Context) {
 	d, err := mongo.Mongo.GetAll()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, d)
@@ -36,7 +36,7 @@ func apiDeviceGetHandler(c *gin.Context) {
 	id := collectdevice.ID(c.Param("id"))
 	d, err := mongo.Mongo.Get(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -47,7 +47,7 @@ func apiDeviceGetHandler(c *gin.Context) {
 func apiDevicePostHandler(c *gin.Context) {
 	devices, err := getDevices(c.Request)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	for _, d := range devices {
@@ -55,7 +55,7 @@ func apiDevicePostHandler(c *gin.Context) {
 		id, err := mongo.Mongo.Post(&d)
 		fmt.Println(id, err)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
@@ -71,7 +71,7 @@ func apiDeviceRemoveHandler(c *gin.Context) {
 	id := collectdevice.ID(c.Param("id"))
 	err := mongo.Mongo.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, id)
@@ -80,7 +80,7 @@ func apiDeviceRemoveHandler(c *gin.Context) {
 func apiDeviceRemoveAllHandler(c *gin.Context) {
 	_, err := mongo.Mongo.DeleteAll()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, "")
@@ -90,7 +90,7 @@ func apiConfInfluxdbPostHandler(c *gin.Context) {
 	var cfg config.InfluxDbConfig
 	err := c.ShouldBindJSON(&cfg)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	config2.SetConfigInfluxdb(cfg)
@@ -101,11 +101,9 @@ func apiConfMongodbPostHandler(c *gin.Context) {
 	var cfg config.MongoDbConfig
 	err := c.ShouldBindJSON(&cfg)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	config2.SetConfigMongodb(cfg)
 	c.JSON(http.StatusOK, cfg)
 }
-
-

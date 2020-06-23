@@ -12,7 +12,7 @@ type IpTable struct {
 }
 
 type IpAddrEntry struct {
-	IpAddr string
+	IpAddr  string
 	NetMask string
 	IfIndex int
 }
@@ -28,7 +28,7 @@ func (t *IpTable) String() {
 	}
 }
 
-func (t *IpTable)insertIpEntry2IfIndex(addr string, ifindex int) {
+func (t *IpTable) insertIpEntry2IfIndex(addr string, ifindex int) {
 	for i, ent := range t.IpList {
 		if ent.IpAddr == addr {
 			t.IpList[i].IfIndex = ifindex
@@ -43,7 +43,7 @@ func (t *IpTable)insertIpEntry2IfIndex(addr string, ifindex int) {
 	lib.LogInfo("new! --> ifindex\n")
 }
 
-func (t *IpTable)insertIpEntry2Ip(addr string) {
+func (t *IpTable) insertIpEntry2Ip(addr string) {
 	for i, ent := range t.IpList {
 		if ent.IpAddr == addr {
 			lib.LogInfo("%d find it! --> ip\n", i)
@@ -56,7 +56,7 @@ func (t *IpTable)insertIpEntry2Ip(addr string) {
 	lib.LogInfo("new! --> ip\n")
 }
 
-func (t *IpTable)insertIpEntry2Netmask(addr string, netmask string) {
+func (t *IpTable) insertIpEntry2Netmask(addr string, netmask string) {
 	for i, ent := range t.IpList {
 		if ent.IpAddr == addr {
 			t.IpList[i].NetMask = netmask
@@ -76,7 +76,7 @@ func (d *SnmpDevice) GetIpEntry(oid OidType) func() (ipEntry *IpAddrEntry, ret i
 	var num int = 0
 
 	return func() (ipEntry *IpAddrEntry, ret int) {
-		oids := []string{ oidstr, }
+		oids := []string{oidstr}
 		result, err := d.Snmp.GetNext(oids)
 		if err != nil {
 			lib.LogWarn("getCpu() : %v\n", err)
@@ -88,7 +88,7 @@ func (d *SnmpDevice) GetIpEntry(oid OidType) func() (ipEntry *IpAddrEntry, ret i
 				d.Device.Ip, d.Device.SnmpCommunity, variable.Name)
 
 			oidstr = variable.Name
-			if ! strings.Contains(variable.Name, oidMap[oid]) {
+			if !strings.Contains(variable.Name, oidMap[oid]) {
 				lib.LogInfo(" - unmatch oid %s --> skip!\n",
 					oidstr)
 				break
@@ -145,5 +145,3 @@ func (d *SnmpDevice) GetIpTable() {
 		}
 	}
 }
-
-

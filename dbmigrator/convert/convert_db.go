@@ -87,7 +87,7 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
-		if i % 100 == 0 {
+		if i%100 == 0 {
 			time.Sleep(time.Millisecond * 10)
 		}
 		sd, dc, lc := GetServerTbByDevice(old)
@@ -124,7 +124,7 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
-		if i % 100 == 0 {
+		if i%100 == 0 {
 			time.Sleep(time.Millisecond * 10)
 		}
 		nd, dc, lc := GetNetworkTbByDevice(old)
@@ -133,7 +133,7 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 			idx_device++
 			nd.Idx = idx_device
 			ndb.AddDeviceNetwork(nd)
-		} else  {
+		} else {
 			idx_comment++
 			dc.Idx = idx_comment
 			fmt.Println("network:", i, ": comment, ", idx_comment)
@@ -161,7 +161,7 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 	for i, old := range olds {
 		// case depth == 0 : device table
 		// case depth != 0 : comment table
-		if i % 100 == 0 {
+		if i%100 == 0 {
 			time.Sleep(time.Millisecond * 10)
 		}
 		pd, dc, lc := GetPartTbByDevice(old)
@@ -170,7 +170,7 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 			idx_device++
 			pd.Idx = idx_device
 			ndb.AddDevicePart(pd)
-		} else  {
+		} else {
 			idx_comment++
 			dc.Idx = idx_comment
 			fmt.Println("part:", i, ": comment, ", idx_comment)
@@ -196,7 +196,7 @@ func ConvertMember(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 	}
 	idx_device = 0
 	for i, old := range olds {
-		if i % 100 == 0 {
+		if i%100 == 0 {
 			time.Sleep(time.Millisecond * 10)
 		}
 		if old.Level == 9 || old.Level == 10 {
@@ -341,7 +341,7 @@ func sepIps(s string) string {
 	return result
 }
 
-func GetServerTbByDevice(device cbmodels.ServerDevice)(
+func GetServerTbByDevice(device cbmodels.ServerDevice) (
 	sd models.DeviceServer, dc models.DeviceComment, lc []models.DeviceLog) {
 	sd.Idx = uint(device.CbDeviceID)
 	sd.OutFlag = false
@@ -388,7 +388,7 @@ func GetServerTbByDevice(device cbmodels.ServerDevice)(
 	return sd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
-func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
+func GetNetworkTbByDevice(device cbmodels.NetworkDevice) (
 	nd models.DeviceNetwork, dc models.DeviceComment, lc []models.DeviceLog) {
 	nd.Idx = uint(device.CbDeviceID)
 	nd.OutFlag = false
@@ -430,7 +430,7 @@ func GetNetworkTbByDevice(device cbmodels.NetworkDevice)(
 	return nd, dc, GetLogList(device.WrIsComment, device.Wr1, device.MbId, device.WrContent)
 }
 
-func GetPartTbByDevice(device cbmodels.PartDevice)(
+func GetPartTbByDevice(device cbmodels.PartDevice) (
 	pd models.DevicePart, dc models.DeviceComment, lc []models.DeviceLog) {
 	pd.Idx = uint(device.CbDeviceID)
 	pd.OutFlag = false
@@ -479,35 +479,35 @@ func GetUserTableByMember(m cbmodels.CbMember, idx int) (user models.User) {
 	} else {
 		zip = m.ZIP1
 	}
-	level := 5		// auth level (company manager : 5)
+	level := 5 // auth level (company manager : 5)
 	if idx == 0 {
 		level = 2
 	}
 	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
 	interceptDate, _ = time.Parse(TimeSimpleFormat, m.InterceptDate)
 	user = models.User{
-		UserId:          m.Id,
-		Password:        m.Password,
-		Name:            m.Name,
-		CompanyIdx:      idx,
-		Email:           m.Email,
-		AuthLevel:       level,
-		Tel:             m.Tel,
-		HP:              m.HP,
-		Zipcode:         zip,
-		Address:         m.Addr1,
-		AddressDetail:   m.Addr2,
-		TermDate:        leaveDate,
-		BlockDate:       interceptDate,
-		Memo:            m.Memo,
-		WorkScope:       m.Mb1,
-		Department:      m.Mb2,
-		Position:        m.Mb3,
-		EmailAuth:		 true,
-		GroupEmailAuth:  false,
-		RegisterDate:    m.Datetime,
-		LastAccessDate:  m.TodayLogin,
-		LastAccessIp:    m.LoginIp,
+		UserId:         m.Id,
+		Password:       m.Password,
+		Name:           m.Name,
+		CompanyIdx:     idx,
+		Email:          m.Email,
+		AuthLevel:      level,
+		Tel:            m.Tel,
+		HP:             m.HP,
+		Zipcode:        zip,
+		Address:        m.Addr1,
+		AddressDetail:  m.Addr2,
+		TermDate:       leaveDate,
+		BlockDate:      interceptDate,
+		Memo:           m.Memo,
+		WorkScope:      m.Mb1,
+		Department:     m.Mb2,
+		Position:       m.Mb3,
+		EmailAuth:      true,
+		GroupEmailAuth: false,
+		RegisterDate:   m.Datetime,
+		LastAccessDate: m.TodayLogin,
+		LastAccessIp:   m.LoginIp,
 	}
 
 	return user
@@ -523,28 +523,28 @@ func GetCompanyTableByMember(m cbmodels.CbMember, check bool) (cs models.Company
 	}
 	leaveDate, _ = time.Parse(TimeSimpleFormat, m.LeaveDate)
 	cs = models.Company{
-		Name: 	         m.Nick,
-		Email:           m.Email,
-		Homepage:        m.Homepage,
-		Tel:             m.Tel,
-		HP:              m.HP,
-		Zipcode:         zip,
-		Address:         m.Addr1,
-		AddressDetail:   m.Addr2,
-		TermDate:        leaveDate,
-		IsCompany:		 check,
-		Memo:            m.Memo,
+		Name:          m.Nick,
+		Email:         m.Email,
+		Homepage:      m.Homepage,
+		Tel:           m.Tel,
+		HP:            m.HP,
+		Zipcode:       zip,
+		Address:       m.Addr1,
+		AddressDetail: m.Addr2,
+		TermDate:      leaveDate,
+		IsCompany:     check,
+		Memo:          m.Memo,
 	}
 	return cs
 }
 
 type LogContents struct {
-	RegName			string
-	RegTime			time.Time
-	WorkCode		int
-	SubCode			string
-	OldStatus		string
-	NewStatus		string
+	RegName   string
+	RegTime   time.Time
+	WorkCode  int
+	SubCode   string
+	OldStatus string
+	NewStatus string
 }
 
 func ParseToLogContents(data string) (logs []LogContents) {
@@ -554,7 +554,7 @@ func ParseToLogContents(data string) (logs []LogContents) {
 	tmpData := strings.Split(data, "]")
 	var log = LogContents{}
 
-	for i := 0; i < len(tmpData) - 1; i+=2 {
+	for i := 0; i < len(tmpData)-1; i += 2 {
 		if !strings.Contains(tmpData[i+1], "장비등록") && !strings.Contains(tmpData[i+1], "정보변경") {
 			log.WorkCode = lib.MovedDevice
 			logs = append(logs, log)
@@ -563,7 +563,7 @@ func ParseToLogContents(data string) (logs []LogContents) {
 
 		log.RegName = strings.Replace(strings.TrimSpace(tmpData[i][0:]), "[", "", -1)
 		var err error
-		log.RegTime, err = time.Parse(TimeFormat,tmpData[i+1][8:27])
+		log.RegTime, err = time.Parse(TimeFormat, tmpData[i+1][8:27])
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -598,7 +598,7 @@ func GetLogList(isComment int, deviceCode string, userId string, contents string
 		if lists == nil {
 			return nil
 		}
-		for _, list := range lists{
+		for _, list := range lists {
 			if list.WorkCode == 0 {
 				continue
 			}

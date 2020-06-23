@@ -58,5 +58,3 @@ func (db *DBORM) DeleteAllUserMember() error {
 func (db *DBORM) DeleteAllAuth() error {
 	return db.Delete(&models.Auth{}).Error
 }
-
-

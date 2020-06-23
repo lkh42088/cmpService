@@ -6,5 +6,3 @@ type Accessor interface {
 	Post(d ColletDevice) (ID, error)
 	Delete(id ID) error
 }
-
-

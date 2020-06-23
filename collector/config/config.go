@@ -14,12 +14,13 @@ import (
 type CollectorConfig struct {
 	config.MongoDbConfig
 	config.InfluxDbConfig
-	SvcmgrIp 		string `json:"svcmgr_ip"`
-	RestServerIp   	string `json:"rest_server_ip"`
-	RestServerPort 	string `json:"rest_server_port"`
+	SvcmgrIp       string `json:"svcmgr_ip"`
+	RestServerIp   string `json:"rest_server_ip"`
+	RestServerPort string `json:"rest_server_port"`
 }
 
 const collectorConfigName = "collector.conf"
+
 var CollectorConfigPath string
 
 //need to change default config
@@ -92,7 +93,7 @@ func UpdateConfig(path string, key string, value string) error {
 
 	// JSON transform
 	var b []byte
-	if b, err = json.Marshal(conf) ; err != nil{
+	if b, err = json.Marshal(conf); err != nil {
 		lib.LogWarn("Failed Marshal!\n")
 		return err
 	}
@@ -165,7 +166,7 @@ func SetConfigByField(key string, config string, c *CollectorConfig) int {
 	target := elements.Type()
 	// Find json field
 	for i := 0; i < target.NumField(); i++ {
-		tag :=  target.Field(i).Tag
+		tag := target.Field(i).Tag
 		if tag.Get("json") == key {
 			// Set Value
 			elements.Field(i).SetString(config)

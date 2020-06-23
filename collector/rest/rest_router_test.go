@@ -29,7 +29,7 @@ func TestRestRouter(t *testing.T) {
 
 func TestRestGet(t *testing.T) {
 	req, err := http.NewRequest("GET",
-		"http://localhost:8884" + apiPathPrefix + apiDevice, nil)
+		"http://localhost:8884"+apiPathPrefix+apiDevice, nil)
 	if err != nil {
 		fmt.Println("NewRequest err:", err)
 		return
@@ -105,7 +105,7 @@ func TestRestPort2(t *testing.T) {
 	}
 	pbytes, _ := json.Marshal(dev)
 	req, _ := http.NewRequest("POST",
-		"http://127.0.0.1:7708" + apiPathPrefix + apiDevice,
+		"http://127.0.0.1:7708"+apiPathPrefix+apiDevice,
 		bytes.NewBuffer(pbytes))
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
@@ -121,7 +121,7 @@ func TestRestPort2(t *testing.T) {
 
 func TestRestDelete(t *testing.T) {
 	req, err := http.NewRequest("DELETE",
-		"http://localhost:7708" + apiPathPrefix + apiDevice + "/all", nil)
+		"http://localhost:7708"+apiPathPrefix+apiDevice+"/all", nil)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -139,7 +139,7 @@ func TestRestDelete(t *testing.T) {
 
 func TestId(t *testing.T) {
 	objID := bson.NewObjectId()
-	id := collectdevice.ID(fmt.Sprintf("%x",string(objID)))
+	id := collectdevice.ID(fmt.Sprintf("%x", string(objID)))
 	fmt.Printf("%s\n", id)
 	fmt.Printf("%s\n", string(objID))
 }
@@ -154,15 +154,18 @@ const lbURL = "https://api.ucloudbiz.olleh.com/loadbalancer/v2/client/api"
 const dbURL = "https://api.ucloudbiz.olleh.com/nas/v2/client/api"
 const serverURL = "https://api.ucloudbiz.olleh.com/server/v2/client/api"
 const watchURL = "https://api.ucloudbiz.olleh.com/watch/v2/client/api"
+
 // CB KEY
 const apiKey = "fYGnzisuTXlXVgxw9Des2me-CbQ-d2x1oFDAczUa2DknxtwbCXjlYb25CobtJWXpTbvtnhC3pujtZw-O4Qaq-Q"
 const secretKey = "y8-kgAG1cBnunCZQy-SwnKC3m6nh4akXj1p3HGuFesnJB7speDBCZvhv6zjzz3n9LZ9797RnXwlBJ7MuwaM63w"
+
 // NB KEY
 //const apiKey = "zhY6AqhrBuxzBYahVleF57nXYia3wNg1iddLL0ElgwiKU9V76Iu-g2_Qvh2jE5QxSYT9n_z47nahFz0qI-Byug"
 //const secretKey = "DGcIyrljdy28mKMgns9pEkPchMugzmmxnbB1cUU4fgcIvrjpDALFXqLVUhaweRQrM3PGuY1f6N1NO4Nw_etbqA"
 
 // watch listMetricy15
 const listMetrics = "met1ricname=CPUUtilization&command=listMetrics"
+
 // Server VM TEST
 const productypes = "command=listAvailableProductTypes"
 const listIpAddr = "command=listPublicIpAddresses"
@@ -235,7 +238,7 @@ func TestKtRestApi(t *testing.T) {
 const resellerApiKey = "asfupvb9-abui-gaeu-z"
 const resellerURL = "https://ucloudbiz.kt.com/jv_ssl_key_openapi.jsp"
 const chargeVM = "startDate=2020-01&endDate=2020-03&type=serviceChargeInfoAccount&emailId=fin_bmetal1@vple.net"
-const chargeListVM = "startDate=2020-01&endDate=2020-03&resellerKey="+resellerApiKey+"&type=billingInfoListAccounts"
+const chargeListVM = "startDate=2020-01&endDate=2020-03&resellerKey=" + resellerApiKey + "&type=billingInfoListAccounts"
 
 func KtChargeGet(ktURL string, command string) string {
 	baseUrl, _ := url.Parse(resellerURL)
@@ -276,4 +279,3 @@ func TestKtResellerRestApi(t *testing.T) {
 	response := KtChargeGet(resellerURL, chargeListVM)
 	fmt.Println(response)
 }
-

@@ -7,18 +7,18 @@ import (
 )
 
 type Memory struct {
-	totalMemory int
-	availMemory int
-	totalSwap int
-	availSwap int
+	totalMemory    int
+	availMemory    int
+	totalSwap      int
+	availSwap      int
 	totalSharedMem int
 	totalBufferMem int
-	totalCacheMem int
+	totalCacheMem  int
 }
 
 func (s *SnmpDevice) getMemory() error {
 	var oids []string
-	for i := TypeOidTotalMemory ; i <= TypeOidTotalCacheMem; i ++ {
+	for i := TypeOidTotalMemory; i <= TypeOidTotalCacheMem; i++ {
 		oids = append(oids, oidMap[OidType(i)])
 	}
 	result, err := s.Snmp.Get(oids)
@@ -73,5 +73,3 @@ func (m *Memory) String() {
 	fmt.Printf("  - %10d : Total Buffer Memory \n", m.totalBufferMem)
 	fmt.Printf("  - %10d : Total Cache Memory \n", m.totalCacheMem)
 }
-
-

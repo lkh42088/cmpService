@@ -42,4 +42,3 @@ func collect(configPath string) {
 	fmt.Println("End --")
 	wg.Wait()
 }
-

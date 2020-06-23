@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func getJungbhDb() (*DBORM, error){
+func getJungbhDb() (*DBORM, error) {
 	config := getTestJbhConfig()
 	options := db.GetDataSourceName(config)
 	db, err := NewDBORM(config.DBDriver, options)
@@ -20,7 +20,7 @@ func TestAddUser(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	user := models.User {
+	user := models.User{
 		//ID:"jungbh",
 		//Password: "nubes1510",
 		//Email: "jungbh@cmpService-bridge.com",

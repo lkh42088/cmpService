@@ -9,10 +9,10 @@ import (
 )
 
 type MongoAccessor struct {
-	Address string
-	Database string
-	Table string
-	Session *mgo.Session
+	Address    string
+	Database   string
+	Table      string
+	Session    *mgo.Session
 	Collection *mgo.Collection
 }
 
@@ -26,11 +26,11 @@ func NewMongoAccessor(address, db, c string) *MongoAccessor {
 	}
 	collection := session.DB(db).C(c)
 	return &MongoAccessor{
-		Address : address,
-		Database : db,
-		Table : c,
-		Session :    session,
-		Collection : collection,
+		Address:    address,
+		Database:   db,
+		Table:      c,
+		Session:    session,
+		Collection: collection,
 	}
 }
 
@@ -65,7 +65,7 @@ func (m *MongoAccessor) Put(id collectdevice.ID, d collectdevice.ColletDevice) e
 
 func (m *MongoAccessor) Post(d *collectdevice.ColletDevice) (collectdevice.ID, error) {
 	objID := bson.NewObjectId()
-	d.Id = collectdevice.ID(fmt.Sprintf("%x",string(objID)))
+	d.Id = collectdevice.ID(fmt.Sprintf("%x", string(objID)))
 	_, err := m.Collection.UpsertId(objID, &d)
 	return d.Id, err
 }
@@ -83,5 +83,3 @@ func (m *MongoAccessor) GetAll() ([]collectdevice.ColletDevice, error) {
 	err := m.Collection.Find(nil).All(&devices)
 	return devices, err
 }
-
-

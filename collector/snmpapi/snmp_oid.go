@@ -146,9 +146,9 @@ const (
 	StrOidIpRouteMetric5 = ".1.3.6.1.2.1.4.21.1.12" // INTEGER
 	StrOidIpRouteInfo    = ".1.3.6.1.2.1.4.21.1.13" // OBJECT IDENTIFIER
 
-	StrOidIfName 		 = ".1.3.6.1.2.1.31.1.1.1.1"  // OCTET STRING or DISPLAYSTRING
-	StrOidIfHCInOctets 	 = ".1.3.6.1.2.1.31.1.1.1.6"  // INTEGER64
-	StrOidIfHCOutOctets  = ".1.3.6.1.2.1.31.1.1.1.10" // INTEGER64
+	StrOidIfName        = ".1.3.6.1.2.1.31.1.1.1.1"  // OCTET STRING or DISPLAYSTRING
+	StrOidIfHCInOctets  = ".1.3.6.1.2.1.31.1.1.1.6"  // INTEGER64
+	StrOidIfHCOutOctets = ".1.3.6.1.2.1.31.1.1.1.10" // INTEGER64
 
 	/* L4 Port */
 	StrOidTcpConnState = ".1.3.6.1.2.1.6.13.1.1" // INTEGER {close(1), listen(2), synSent(3), synReceived(4), finWait1(6), finWait2(7), closeWait(8), lastAck(9), closing(10), timeWait(11) }
@@ -208,8 +208,8 @@ var (
 		TypeOidIfOutQLen:        StrOidIfOutQLen,
 		TypeOidIfSpecific:       StrOidIfSpecific,
 		TypeOidIfName:           StrOidIfName,
-		TypeOidIfHCInOctets:	 StrOidIfHCInOctets,
-		TypeOidIfHCOutOctets:	 StrOidIfHCOutOctets,
+		TypeOidIfHCInOctets:     StrOidIfHCInOctets,
+		TypeOidIfHCOutOctets:    StrOidIfHCOutOctets,
 
 		/* L4 Port */
 		TypeOidTcpConnState: StrOidTcpConnState,
@@ -283,8 +283,8 @@ var (
 		TypeOidIfOutQLen:        "IfOutQLen",
 		TypeOidIfSpecific:       "IfSpecific",
 		TypeOidIfName:           "IfName",
-		TypeOidIfHCInOctets:	 "IfHCInOctets",
-		TypeOidIfHCOutOctets:	 "IfHCOutOctets",
+		TypeOidIfHCInOctets:     "IfHCInOctets",
+		TypeOidIfHCOutOctets:    "IfHCOutOctets",
 
 		/* L4 Port */
 		TypeOidTcpConnState: "TcpConnState",

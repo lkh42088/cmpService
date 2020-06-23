@@ -8,15 +8,15 @@ import (
 )
 
 type Cpu struct {
-	Idle int
-	min1av string
-	min5av string
+	Idle    int
+	min1av  string
+	min5av  string
 	min10av string
 }
 
 func (d *SnmpDevice) getCpu() error {
 	var oids []string
-	for i := TypeOidCpuIdle; i <= TypeOidCpuMin10Av; i ++ {
+	for i := TypeOidCpuIdle; i <= TypeOidCpuMin10Av; i++ {
 		oids = append(oids, oidMap[OidType(i)])
 	}
 	result, err := d.Snmp.Get(oids)
@@ -30,7 +30,7 @@ func (d *SnmpDevice) getCpu() error {
 		lib.LogInfo("[%s:%s] %d: oid: %s ",
 			d.Device.Ip, d.Device.SnmpCommunity, i, variable.Name)
 
-		if ! strings.Contains(variable.Name, oidMap[OidType(num)]) {
+		if !strings.Contains(variable.Name, oidMap[OidType(num)]) {
 			lib.LogInfo(" - unmatch oid %s (%s) --> skip!\n",
 				oidMap[OidType(num)], oidDescMap[OidType(num)])
 			num++
@@ -74,4 +74,3 @@ func (m *Cpu) String() {
 	fmt.Printf("  - %10s : CPU 5 minite average\n", m.min5av)
 	fmt.Printf("  - %10s : CPU 10 minite average\n", m.min10av)
 }
-

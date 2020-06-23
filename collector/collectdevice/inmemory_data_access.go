@@ -6,7 +6,7 @@ import (
 
 type InMemoryAccessor struct {
 	devices map[ID]ColletDevice
-	nextID int64
+	nextID  int64
 }
 
 func NewMemoryDataAccess() Accessor {
@@ -46,4 +46,3 @@ func (m *InMemoryAccessor) Delete(id ID) error {
 	delete(m.devices, id)
 	return nil
 }
-

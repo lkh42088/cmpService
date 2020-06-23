@@ -39,21 +39,21 @@ func TestIpEntry(t *testing.T) {
 	defer s.Snmp.Conn.Close()
 
 	getip := s.GetIpEntry(TypeOidIpAddr)
-	for i := 0  ; i < 100 ; i++ {
+	for i := 0; i < 100; i++ {
 		_, ret = getip()
 		if ret < 0 {
 			break
 		}
 	}
 	getmask := s.GetIpEntry(TypeOidIpMask)
-	for i := 0  ; i < 100 ; i++ {
+	for i := 0; i < 100; i++ {
 		_, ret = getmask()
 		if ret < 0 {
 			break
 		}
 	}
 	getIpIfIndex := s.GetIpEntry(TypeOidIpIfIndex)
-	for i := 0  ; i < 100 ; i++ {
+	for i := 0; i < 100; i++ {
 		_, ret = getIpIfIndex()
 		if ret < 0 {
 			break
@@ -76,7 +76,7 @@ func TestIpAddr(t *testing.T) {
 
 	var ret int
 	getip := s.GetIpEntry(TypeOidIpAddr)
-	for i := 0  ; i < 100 ; i++ {
+	for i := 0; i < 100; i++ {
 		_, ret = getip()
 		if ret < 0 {
 			break
@@ -99,7 +99,7 @@ func TestIpIfIndex(t *testing.T) {
 
 	var ret int
 	getIpIfIndex := s.GetIpEntry(TypeOidIpIfIndex)
-	for i := 0  ; i < 100 ; i++ {
+	for i := 0; i < 100; i++ {
 		_, ret = getIpIfIndex()
 		if ret < 0 {
 			break
@@ -122,11 +122,10 @@ func TestIpMask(t *testing.T) {
 
 	var ret int
 	getmask := s.GetIpEntry(TypeOidIpMask)
-	for i := 0  ; i < 100 ; i++ {
+	for i := 0; i < 100; i++ {
 		_, ret = getmask()
 		if ret < 0 {
 			break
 		}
 	}
 }
-

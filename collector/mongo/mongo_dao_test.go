@@ -25,7 +25,7 @@ func TestMongoPost(t *testing.T) {
 	}
 	fmt.Println("collectdevice:", d)
 	devId, err := Mongo.Post(&d)
-	fmt.Println("id:", fmt.Sprintf("%x",devId), err)
+	fmt.Println("id:", fmt.Sprintf("%x", devId), err)
 	fmt.Println(bson.ObjectId(devId), err)
 }
 
@@ -38,4 +38,3 @@ func TestMongoDeleteAll(t *testing.T) {
 	desc, _ := Mongo.DeleteAll()
 	fmt.Println(desc)
 }
-

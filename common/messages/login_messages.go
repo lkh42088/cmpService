@@ -9,17 +9,17 @@ type UserLoginMessage struct {
 }
 
 type UserRegisterMessage struct {
-	Id                 string   `json:"id"`
-	Password           string   `json:"password"`
-	Email              string   `json:"email"`
-	Name               string   `json:"name"`
-	EmailAuthFlag      bool     `json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool     `json:"emailAuthGroupFlag"`
+	Id                 string           `json:"id"`
+	Password           string           `json:"password"`
+	Email              string           `json:"email"`
+	Name               string           `json:"name"`
+	EmailAuthFlag      bool             `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool             `json:"emailAuthGroupFlag"`
 	EmailAuthGroupList []EmailAuthEntry `json:"emailAuthGroupList"`
 }
 
 type EmailAuthEntry struct {
-	Id int `json:"id"`
+	Id    int    `json:"id"`
 	Email string `json:"email"`
 }
 

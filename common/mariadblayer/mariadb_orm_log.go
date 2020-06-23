@@ -36,5 +36,3 @@ func (db *DBORM) DeleteLog(idx int) error {
 	where := GetWhereString(idxFieldName)
 	return db.Where(where, idx).Delete(&dl).Error
 }
-
-

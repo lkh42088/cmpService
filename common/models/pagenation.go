@@ -22,4 +22,3 @@ func (p Pagination) String() {
 	}
 	fmt.Printf("%s\n", data)
 }
-

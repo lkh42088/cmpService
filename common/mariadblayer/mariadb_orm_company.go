@@ -42,4 +42,3 @@ func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
 func (db *DBORM) DeleteAllCompany() error {
 	return db.Delete(&models.Company{}).Error
 }
-

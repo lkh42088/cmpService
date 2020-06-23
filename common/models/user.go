@@ -148,7 +148,7 @@ type UserEmailAuth struct {
 	UserId           string `gorm:"type:varchar(32);column:uea_user_id"`
 	Email            string `gorm:"type:varchar(64);column:uea_email"`
 	EmailAuthConfirm bool   `gorm:"column:uea_confirm" json:"-"`
-	EmailAuthStore string `gorm:"type:varchar(255);column:uea_store" json:"-"`
+	EmailAuthStore   string `gorm:"type:varchar(255);column:uea_store" json:"-"`
 }
 
 func (UserEmailAuth) TableName() string {
