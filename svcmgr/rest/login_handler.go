@@ -385,7 +385,7 @@ func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
 }
 
 func responseWithToken(c *gin.Context, user models.User, authEmail string) {
-	expirationTime := time.Now().Add(1 * time.Minute)
+	expirationTime := time.Now().Add(60 * time.Minute)
 	claims := &Claims{
 		User: messages.UserInfo{
 			Id:                 user.UserId,
