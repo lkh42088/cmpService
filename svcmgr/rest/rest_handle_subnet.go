@@ -20,7 +20,7 @@ func (h *Handler) AddSubnet(c *gin.Context) {
 
 	err := h.db.AddSubnet(subnet)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
@@ -63,7 +63,7 @@ func (h *Handler) GetSubnet(c *gin.Context) {
 
 	data, err := h.db.GetSubnetPage(page)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	fmt.Printf("%+v\n", data.Subnet)

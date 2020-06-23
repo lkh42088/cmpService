@@ -5,9 +5,9 @@ import (
 )
 
 type ColletDevice struct {
-	Id ID `json:"id,omitempty"`
-	Ip string `json:"ip,omitempty"`
-	Port int `json:"port,omitempty"`
+	Id            ID     `json:"id,omitempty"`
+	Ip            string `json:"ip,omitempty"`
+	Port          int    `json:"port,omitempty"`
 	SnmpCommunity string `json:"community,omitempty"`
 }
 

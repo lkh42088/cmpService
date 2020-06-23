@@ -66,7 +66,7 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func getPagination(c *gin.Context) (p models.Pagination, err error){
+func getPagination(c *gin.Context) (p models.Pagination, err error) {
 	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})

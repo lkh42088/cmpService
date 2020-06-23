@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestRegisterUser (t *testing.T) {
+func TestRegisterUser(t *testing.T) {
 	url := restServer + "/api/auth/register"
 	userMsg := messages.UserRegisterMessage{
 		Id:                 "nubes",
@@ -40,7 +40,7 @@ func TestRegisterUser (t *testing.T) {
 	fmt.Println("response:", string(data))
 }
 
-func TestRegisterUserAuth (t *testing.T) {
+func TestRegisterUserAuth(t *testing.T) {
 	url := restServer + "/api/auth/register"
 	userMsg := messages.UserRegisterMessage{
 		Id:                 "nubes2",
@@ -69,7 +69,7 @@ func TestRegisterUserAuth (t *testing.T) {
 	fmt.Println("response:", string(data))
 }
 
-func TestRegisterUserAuthGroup (t *testing.T) {
+func TestRegisterUserAuthGroup(t *testing.T) {
 	url := restServer + "/api/auth/register"
 	userMsg := messages.UserRegisterMessage{
 		Id:                 "nubes3",

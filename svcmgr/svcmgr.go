@@ -10,7 +10,7 @@ import (
 	"fmt"
 )
 
-func main () {
+func main() {
 	configFile := flag.String("file", "svcmgr.conf",
 		"Input configuration file")
 	flag.Parse()

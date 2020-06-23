@@ -17,7 +17,7 @@ func TestDevice(t *testing.T) {
 		Port:          500,
 		SnmpCommunity: "public",
 	}
-	b, err :=json.Marshal(d)
+	b, err := json.Marshal(d)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -48,7 +48,7 @@ func TestDevice3(t *testing.T) {
 	buff := bytes.NewBuffer(pbyte)
 	data := url.Values{}
 	data.Set("collectdevice", buff.String())
-	req, err := http.PostForm( "http://127.0.0.1:8884/api/v1/collectdevice", data)
+	req, err := http.PostForm("http://127.0.0.1:8884/api/v1/collectdevice", data)
 	if err != nil {
 		fmt.Println("err is ", err)
 	}

@@ -165,7 +165,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Subnet
 	router.POST("/v1/subnet/create", h.AddSubnet)
-	router.GET("/v1/subnet" + pagingParam, h.GetSubnet)
+	router.GET("/v1/subnet"+pagingParam, h.GetSubnet)
 
 	return router.Run(address)
 }

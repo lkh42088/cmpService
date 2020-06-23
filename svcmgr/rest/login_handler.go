@@ -303,10 +303,10 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	if user.EmailAuth {
 		// 이메일 발송
 		fmt.Println("send 1")
-		 err = h.sendAuthMail(c, user.UserId, user.Email)
-		 if err != nil {
-		 	return
-		 }
+		err = h.sendAuthMail(c, user.UserId, user.Email)
+		if err != nil {
+			return
+		}
 		fmt.Println("error 3:")
 		restStatus = messages.StatusSentEmailAuth
 		c.JSON(restStatus, gin.H{"success": false, "msg": messages.RestStatusText(restStatus)})
@@ -359,7 +359,7 @@ func (h *Handler) isConfirmEmailAuth(userId, userEmail string) bool {
 	return false
 }
 
-func (h *Handler) checkGroupEmailAuth(userId, userEmail string) (bool) {
+func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
 	// 1. Get from DB
 	userEmailAuth, err := h.db.GetUserEmailAuthByIdAndEmail(userId, userEmail)
 	if err != nil {
@@ -577,7 +577,7 @@ func (h *Handler) EmailConfirm(c *gin.Context) {
 	m, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
 		fmt.Println("EmailConfirm error:", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error":http.StatusText(http.StatusBadRequest)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": http.StatusText(http.StatusBadRequest)})
 		return
 	}
 	fmt.Println("m:", len(m))

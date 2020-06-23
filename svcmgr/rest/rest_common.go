@@ -20,7 +20,7 @@ func JsonUnmarshal(body io.ReadCloser) (m map[string]interface{}, err error) {
 		return nil, errors.New("Request body is invalid.\n")
 	}
 	mapData := make(map[string]interface{})
-	err = json.Unmarshal(bodyByte,&mapData)
+	err = json.Unmarshal(bodyByte, &mapData)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
@@ -71,7 +71,7 @@ func ConvertSplaString(h *Handler, dc interface{}, idx int, deviceType string) e
 		return err
 	}
 
-	spla = ""	// init
+	spla = "" // init
 	for i := 0; i < len(ds); i++ {
 		spla += ds[i].Name + "|"
 	}

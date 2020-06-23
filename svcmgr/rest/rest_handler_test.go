@@ -102,40 +102,39 @@ func TestRestDeleteCode(t *testing.T) {
 	fmt.Println("response", string(data))
 }
 
-
 func TestAddDevice(t *testing.T) {
 	commentlast, _ := time.Parse(time.RFC3339, "2019-12-22T10:28:44+09:00")
 	data := models.DeviceServer{
 		DeviceCommon: models.DeviceCommon{
-			OutFlag:false,
-			CommentCnt:0,
-			CommentLastDate:commentlast,
-			RegisterId:"hjt0601",
-			DeviceCode:"CBS09999",
-			Model:83,
-			Contents:"\u003cbr /\u003e",
-			Customer:"NB",
-			Manufacture:56,
-			DeviceType:7,
-			WarehousingDate:"0",
-			RentDate:"|",
-			Ownership:"2|3",
-			OwnerCompany:"hddigital",
-			HwSn:"MY11353392",
-			IDC:16,
-			Rack:163,
-			Cost:"",
-			Purpose:"",
-			MonitoringFlag:false,
-			MonitoringMethod:0},
-		Ip:"220.90.201.198|",
-		Size:19,
-		Spla:"|",
-		Cpu:"",
-		Memory:"",
-		Hdd:"",
-		RackTag:  "",
-		RackLoc:  0,
+			OutFlag:          false,
+			CommentCnt:       0,
+			CommentLastDate:  commentlast,
+			RegisterId:       "hjt0601",
+			DeviceCode:       "CBS09999",
+			Model:            83,
+			Contents:         "\u003cbr /\u003e",
+			Customer:         "NB",
+			Manufacture:      56,
+			DeviceType:       7,
+			WarehousingDate:  "0",
+			RentDate:         "|",
+			Ownership:        "2|3",
+			OwnerCompany:     "hddigital",
+			HwSn:             "MY11353392",
+			IDC:              16,
+			Rack:             163,
+			Cost:             "",
+			Purpose:          "",
+			MonitoringFlag:   false,
+			MonitoringMethod: 0},
+		Ip:      "220.90.201.198|",
+		Size:    19,
+		Spla:    "|",
+		Cpu:     "",
+		Memory:  "",
+		Hdd:     "",
+		RackTag: "",
+		RackLoc: 0,
 	}
 
 	url := "http://0.0.0.0:8081/v1/device/create/server"
@@ -155,4 +154,3 @@ func TestAddDevice(t *testing.T) {
 	}
 	fmt.Println("response:", string(d))
 }
-

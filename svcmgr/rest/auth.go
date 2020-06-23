@@ -6,16 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(c *gin.Context, jwtKey[]byte) (jwt.MapClaims, bool, string) {
+func AuthMiddleware(c *gin.Context, jwtKey []byte) (jwt.MapClaims, bool, string) {
 	ck, err := c.Request.Cookie("token")
 	fmt.Println("AuthMiddleware:", ck)
 	if err != nil {
 		fmt.Println("AuthMiddleware error:", err)
 		return nil, false, ""
 	}
-	tokenString :=ck.Value
+	tokenString := ck.Value
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok :=token.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			fmt.Println("AuthMiddleware : failed")
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}

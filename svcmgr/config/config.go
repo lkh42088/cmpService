@@ -27,11 +27,12 @@ var SvcmgrGlobalConfig = &global_config{}
 type SvcmgrConfig struct {
 	config.MariaDbConfig
 	config.InfluxDbConfig
-	RestServerIp string `json:"rest_server_ip"`
+	RestServerIp   string `json:"rest_server_ip"`
 	RestServerPort string `json:"rest_server_port"`
 }
 
 const svcmgrConfigName = "svcmgr.conf"
+
 var SvcmgrConfigPath string
 
 func GetDefaultConfig() *SvcmgrConfig {
@@ -153,4 +154,3 @@ func SetConfigMariadb(cfg config.MariaDbConfig) {
 		//ConfigureMariaDB()
 	}
 }
-
