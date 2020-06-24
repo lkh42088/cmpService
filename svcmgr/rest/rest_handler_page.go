@@ -212,16 +212,6 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		return
 	}
 
-	var x interface{} = mapDevice["operatingFlag"]
-	operatingFlag := fmt.Sprintf("%v", x)
-
-	var y interface{} = mapDevice["carryingFlag"]
-	carryingFlag := fmt.Sprintf("%v", y)
-
-	fmt.Println("💃💃💃💃 operatingFlag : ", operatingFlag, "--> ", mapDevice["operatingFlag"].(bool));
-
-	fmt.Println("💃💃💃💃 carryingFlag : ", carryingFlag, "--> ", mapDevice["carryingFlag"].(bool));
-
 	/*0 : 반입, 1 : 반출*/
 	var outFlag string
 	if mapDevice["operatingFlag"].(bool) {
