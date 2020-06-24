@@ -104,6 +104,7 @@ type MariaDBLayer interface {
 	AddUser(user models.User) (models.User, error)
 	DeleteUser(user models.User) (models.User, error)
 	GetAllUsers() ([]models.User, error)
+	GetUserDetailById(id string) (models.UserDetail, error)
 	GetUserById(id string) (models.User, error)
 	GetUserByEmail(id string) (models.User, error)
 	GetUsersPage(paging models.Pagination) (models.UserPage, error)
