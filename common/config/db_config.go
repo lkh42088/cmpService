@@ -9,17 +9,17 @@ type MongoDbConfig struct {
 
 type InfluxDbConfig struct {
 	// InfluxDB
-	InfluxIp       	string `json:"influx_ip"`
-	InfluxDb       	string `json:"influx_db"`
-	InfluxUser     	string `json:"influx_user"`
-	InfluxPassword 	string `json:"influx_password"`
+	InfluxIp       string `json:"influx_ip"`
+	InfluxDb       string `json:"influx_db"`
+	InfluxUser     string `json:"influx_user"`
+	InfluxPassword string `json:"influx_password"`
 }
 
 type MariaDbConfig struct {
-	MariaIp 		string `json:"mariadb_ip"`
-	MariaDb 		string `json:"mariadb_db"`
-	MariaUser 		string `json:"mariadb_user"`
-	MariaPassword 	string `json:"mariadb_password"`
+	MariaIp       string `json:"mariadb_ip"`
+	MariaDb       string `json:"mariadb_db"`
+	MariaUser     string `json:"mariadb_user"`
+	MariaPassword string `json:"mariadb_password"`
 }
 
 // Database Configuration
@@ -48,4 +48,3 @@ func NewDBConfig(driver, user, passwd, dbName, addr string, port int) (*DBConfig
 		port,
 	}, nil
 }
-

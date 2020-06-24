@@ -65,8 +65,3 @@ func WriteMetricInfluxDB(parentwg *sync.WaitGroup) {
 		parentwg.Done()
 	}
 }
-
-
-
-
-

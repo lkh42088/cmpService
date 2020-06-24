@@ -90,7 +90,7 @@ func getTestConfig() *config.DBConfig {
 func Migration(conf config.DBConfig) {
 	type Product2 struct {
 		gorm.Model
-		Code string
+		Code  string
 		Price uint
 	}
 	db, err := gorm.Open(conf.DBDriver, db.GetDataSourceName(&conf))
@@ -130,4 +130,3 @@ func TestMigrtion(t *testing.T) {
 	fmt.Println(config)
 	Migration(config)
 }
-

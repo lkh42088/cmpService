@@ -9,45 +9,45 @@ import (
 )
 
 type IfEntry struct {
-	ifIndex           int         // 1.3.6.1.2.1.2.2.1.1   INTEGER
-	ifDescr           string      // 1.3.6.1.2.1.2.2.1.2   OCTET STRING 0..255
-	ifType            int         // 1.3.6.1.2.1.2.2.1.3   INTEGER
-	ifMTU             int         // 1.3.6.1.2.1.2.2.1.4   INTEGER
-	ifSpeed           int64       // 1.3.6.1.2.1.2.2.1.5   Gauge
-	ifPhysAddress     string      // 1.3.6.1.2.1.2.2.1.6   OCTET STRING
-	ifAdminStatus     int         // 1.3.6.1.2.1.2.2.1.7   INTEGER  { up(1), down(2), testing(3) }
-	ifOperStatus      int         // 1.3.6.1.2.1.2.2.1.8   INTEGER  { up(1), down(2), testing(3) }
-	ifLastChange      int         // 1.3.6.1.2.1.2.2.1.9   TIMETICKS (millisecond)
+	ifIndex       int    // 1.3.6.1.2.1.2.2.1.1   INTEGER
+	ifDescr       string // 1.3.6.1.2.1.2.2.1.2   OCTET STRING 0..255
+	ifType        int    // 1.3.6.1.2.1.2.2.1.3   INTEGER
+	ifMTU         int    // 1.3.6.1.2.1.2.2.1.4   INTEGER
+	ifSpeed       int64  // 1.3.6.1.2.1.2.2.1.5   Gauge
+	ifPhysAddress string // 1.3.6.1.2.1.2.2.1.6   OCTET STRING
+	ifAdminStatus int    // 1.3.6.1.2.1.2.2.1.7   INTEGER  { up(1), down(2), testing(3) }
+	ifOperStatus  int    // 1.3.6.1.2.1.2.2.1.8   INTEGER  { up(1), down(2), testing(3) }
+	ifLastChange  int    // 1.3.6.1.2.1.2.2.1.9   TIMETICKS (millisecond)
 
-	ifInOctets        int64       // 1.3.6.1.2.1.2.2.1.10  COUNT (Counter32)
-	ifInUcastPkts     int64       // 1.3.6.1.2.1.2.2.1.11  COUNT (Counter32)
-	ifInNUcastPkts    int64       // 1.3.6.1.2.1.2.2.1.12  COUNT (Counter32)
-	ifInDiscards      int64       // 1.3.6.1.2.1.2.2.1.13  COUNT (Counter32)
-	ifInErrors        int64       // 1.3.6.1.2.1.2.2.1.14  COUNT (Counter32)
-	ifInUnknownProtos int64       // 1.3.6.1.2.1.2.2.1.15  COUNT (Counter32)
+	ifInOctets        int64 // 1.3.6.1.2.1.2.2.1.10  COUNT (Counter32)
+	ifInUcastPkts     int64 // 1.3.6.1.2.1.2.2.1.11  COUNT (Counter32)
+	ifInNUcastPkts    int64 // 1.3.6.1.2.1.2.2.1.12  COUNT (Counter32)
+	ifInDiscards      int64 // 1.3.6.1.2.1.2.2.1.13  COUNT (Counter32)
+	ifInErrors        int64 // 1.3.6.1.2.1.2.2.1.14  COUNT (Counter32)
+	ifInUnknownProtos int64 // 1.3.6.1.2.1.2.2.1.15  COUNT (Counter32)
 
-	ifOutOctets       int64       // 1.3.6.1.2.1.2.2.1.16  COUNT (Counter32)
-	ifOutUcastPkts    int64       // 1.3.6.1.2.1.2.2.1.17  COUNT (Counter32)
-	ifOutNUcastPkts   int64       // 1.3.6.1.2.1.2.2.1.18  COUNT (Counter32)
-	ifOutDiscards     int64       // 1.3.6.1.2.1.2.2.1.19  COUNT (Counter32)
-	ifOutErrors       int64       // 1.3.6.1.2.1.2.2.1.20  COUNT (Counter32)
+	ifOutOctets     int64 // 1.3.6.1.2.1.2.2.1.16  COUNT (Counter32)
+	ifOutUcastPkts  int64 // 1.3.6.1.2.1.2.2.1.17  COUNT (Counter32)
+	ifOutNUcastPkts int64 // 1.3.6.1.2.1.2.2.1.18  COUNT (Counter32)
+	ifOutDiscards   int64 // 1.3.6.1.2.1.2.2.1.19  COUNT (Counter32)
+	ifOutErrors     int64 // 1.3.6.1.2.1.2.2.1.20  COUNT (Counter32)
 
-	ifOutQLen         int64       // 1.3.6.1.2.1.2.2.1.21  GAUGE
-	ifSpecific        int64       // 1.3.6.1.2.1.2.2.1.22  OBJECT IDENTIFIER (OID)
+	ifOutQLen  int64 // 1.3.6.1.2.1.2.2.1.21  GAUGE
+	ifSpecific int64 // 1.3.6.1.2.1.2.2.1.22  OBJECT IDENTIFIER (OID)
 
-	ifName            string	  // 1.3.6.1.2.1.31.1.1.1.1 DISPLAY STRING
-	ifHCInOctets	  int64	  	  // 1.3.6.1.2.1.31.1.1.1.6 COUNT (Counter64)
-	ifHCOutOctets	  int64	  	  // 1.3.6.1.2.1.31.1.1.1.10 COUNT (Counter64)
+	ifName        string // 1.3.6.1.2.1.31.1.1.1.1 DISPLAY STRING
+	ifHCInOctets  int64  // 1.3.6.1.2.1.31.1.1.1.6 COUNT (Counter64)
+	ifHCOutOctets int64  // 1.3.6.1.2.1.31.1.1.1.10 COUNT (Counter64)
 }
 
 type IfTable struct {
 	ifNumber int64
-	ifEntry []IfEntry
+	ifEntry  []IfEntry
 }
 
 func (d *SnmpDevice) getIfNumber() int64 {
 	var number int64 = 0
-	oids := []string{StrOidIfNumber, }
+	oids := []string{StrOidIfNumber}
 	result, err2 := d.Snmp.Get(oids)
 	if err2 != nil {
 		log.Fatalf("Get() err: %v", err2)
@@ -72,7 +72,7 @@ func (s *SnmpDevice) getIfEntryFromSnmp(oid OidType) error {
 	if s.IfTable.ifNumber < 1 {
 		return nil
 	}
-	result, err := s.Snmp.GetBulk([]string{oidMap[oid],}, 0, uint8(s.IfTable.ifNumber))
+	result, err := s.Snmp.GetBulk([]string{oidMap[oid]}, 0, uint8(s.IfTable.ifNumber))
 	if err != nil {
 		log.Fatalf("getIfEntryFromSnmp() : %v", err)
 		return err
@@ -80,7 +80,7 @@ func (s *SnmpDevice) getIfEntryFromSnmp(oid OidType) error {
 
 	for i, variable := range result.Variables {
 		lib.LogInfo("[%s:%s] %d: oid: %s ", s.Device.Ip, s.Device.SnmpCommunity, i, variable.Name)
-		if ! strings.Contains(variable.Name, oidMap[oid]) {
+		if !strings.Contains(variable.Name, oidMap[oid]) {
 			lib.LogInfo(" - unmatch oid %s (%s) --> skip!\n", oidMap[oid], oidDescMap[oid])
 			continue
 		}
@@ -94,7 +94,7 @@ func (s *SnmpDevice) getIfEntryFromSnmp(oid OidType) error {
 	return nil
 }
 
-func (s *SnmpDevice)insertOctetString2IfEntry(num int, oid OidType, raw []byte) {
+func (s *SnmpDevice) insertOctetString2IfEntry(num int, oid OidType, raw []byte) {
 
 	lib.LogInfo("%s, %s\n", oidDescMap[oid], string(raw))
 	switch oid {
@@ -115,7 +115,7 @@ func (s *SnmpDevice)insertOctetString2IfEntry(num int, oid OidType, raw []byte) 
 	}
 }
 
-func (s *SnmpDevice)insertIntegerIfEntry(num int, oid OidType, value int64) {
+func (s *SnmpDevice) insertIntegerIfEntry(num int, oid OidType, value int64) {
 
 	lib.LogInfo("%s, %d\n", oidDescMap[oid], value)
 	switch oid {
@@ -140,9 +140,9 @@ func (s *SnmpDevice)insertIntegerIfEntry(num int, oid OidType, value int64) {
 	case TypeOidIfInOctets:
 		s.IfTable.ifEntry[num].ifInOctets = value
 	case TypeOidIfInUcastPkts:
-		s.IfTable.ifEntry[num].ifInUcastPkts= value
+		s.IfTable.ifEntry[num].ifInUcastPkts = value
 	case TypeOidIfInNUcastPkts:
-		s.IfTable.ifEntry[num].ifInNUcastPkts= value
+		s.IfTable.ifEntry[num].ifInNUcastPkts = value
 	case TypeOidIfInDiscards:
 		s.IfTable.ifEntry[num].ifInDiscards = value
 	case TypeOidIfInErrors:
@@ -172,8 +172,8 @@ func (s *SnmpDevice)insertIntegerIfEntry(num int, oid OidType, value int64) {
 	}
 }
 
-func (s *SnmpDevice) getIfDescr(){
-	oids := []string{StrOidIfDescr, }
+func (s *SnmpDevice) getIfDescr() {
+	oids := []string{StrOidIfDescr}
 	if s.IfTable.ifNumber < 1 {
 		return
 	}
@@ -187,14 +187,14 @@ func (s *SnmpDevice) getIfDescr(){
 		switch variable.Type {
 		case g.OctetString:
 			s.IfTable.ifEntry[i].ifDescr = string(variable.Value.([]byte))
-			lib.LogInfo("string: %s\n",s.IfTable.ifEntry[i].ifDescr)
+			lib.LogInfo("string: %s\n", s.IfTable.ifEntry[i].ifDescr)
 		default:
 		}
 	}
 }
 
-func (s *SnmpDevice) getIfIndex(){
-	oids := []string{StrOidIfIndex, }
+func (s *SnmpDevice) getIfIndex() {
+	oids := []string{StrOidIfIndex}
 	if s.IfTable.ifNumber < 1 {
 		return
 	}
@@ -221,7 +221,7 @@ func (s *SnmpDevice) getIfIndex(){
 func (t *IfTable) String() {
 	fmt.Println(" [Interface Table]")
 	fmt.Printf("  - The number of Interface: %d\n", t.ifNumber)
-	for i:=0 ; int(t.ifNumber) > i; i++ {
+	for i := 0; int(t.ifNumber) > i; i++ {
 		ife := t.ifEntry[i]
 		ife.DumpWithNum(i)
 	}

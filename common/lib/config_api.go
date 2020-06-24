@@ -7,7 +7,7 @@ import (
 )
 
 func CreateConfig(path string, cfg interface{}) error {
-	var file * os.File
+	var file *os.File
 	var err error
 	var b []byte
 

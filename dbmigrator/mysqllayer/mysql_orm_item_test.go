@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestItemGetEntry (t *testing.T) {
+func TestItemGetEntry(t *testing.T) {
 	config := getMysqlConfig()
 	options := db.GetDataSourceName(config)
 	db, err := NewCBORM(config.DBDriver, options)
@@ -27,7 +27,7 @@ func TestItemGetEntry (t *testing.T) {
 	//fmt.Println(items)
 }
 
-func TestDeviceGetEntry (t *testing.T) {
+func TestDeviceGetEntry(t *testing.T) {
 	config := getMysqlConfig()
 	options := db.GetDataSourceName(config)
 	db, err := NewCBORM(config.DBDriver, options)
@@ -44,4 +44,3 @@ func TestDeviceGetEntry (t *testing.T) {
 		fmt.Println(num, ":", device)
 	}
 }
-

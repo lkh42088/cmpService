@@ -39,5 +39,3 @@ func (db *DBORM) DeleteComments(idx int) error {
 	dc := models.DeviceComment{}
 	return db.Where(models.DeviceComment{Idx: uint(idx)}).Delete(&dc).Error
 }
-
-

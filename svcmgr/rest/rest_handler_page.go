@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 )
+
 /*
 func (h *Handler) GetDevicesForPage(c *gin.Context) {
 	if h.db == nil {
@@ -103,31 +104,31 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 	// Parse params
 	row, err := strconv.Atoi(c.Param("row"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	curpage, err := strconv.Atoi(c.Param("page"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	dir, err := strconv.Atoi(c.Param("dir"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	offsetPage, err := strconv.Atoi(c.Param("offsetPage"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	page := models.PageCreteria{
-		DeviceType : c.Param("type"),
-		OrderKey: c.Param("order"),
-		Row: row,
-		OutFlag: c.Param("outFlag"),
-		Direction: dir,
-		Page: curpage,
+		DeviceType: c.Param("type"),
+		OrderKey:   c.Param("order"),
+		Row:        row,
+		OutFlag:    c.Param("outFlag"),
+		Direction:  dir,
+		Page:       curpage,
 		OffsetPage: offsetPage,
 	}
 	/*fmt.Println("1. page:");
@@ -181,22 +182,22 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 	// Parse params
 	row, err := strconv.Atoi(c.Param("row"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	curpage, err := strconv.Atoi(c.Param("page"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	dir, err := strconv.Atoi(c.Param("dir"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	offsetPage, err := strconv.Atoi(c.Param("offsetPage"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 
@@ -211,7 +212,7 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
-
+	
 	/*0 : 반입, 1 : 반출*/
 	var outFlag string
 	if mapDevice["operatingFlag"].(bool) {
@@ -227,12 +228,12 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 	}
 
 	page := models.PageCreteria{
-		DeviceType : c.Param("type"),
-		OrderKey: c.Param("order"),
-		Row: row,
-		OutFlag: outFlag,
-		Direction: dir,
-		Page: curpage,
+		DeviceType: c.Param("type"),
+		OrderKey:   c.Param("order"),
+		Row:        row,
+		OutFlag:    outFlag,
+		Direction:  dir,
+		Page:       curpage,
 		OffsetPage: offsetPage,
 	}
 

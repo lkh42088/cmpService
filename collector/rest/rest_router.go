@@ -13,8 +13,8 @@ import (
 
 const (
 	apiPathPrefix = "/api/v1"
-	apiDevice = "/collectdevice"
-	apiConfig = "/config"
+	apiDevice     = "/collectdevice"
+	apiConfig     = "/config"
 )
 
 var Router *gin.Engine
@@ -68,18 +68,17 @@ func Start(parentwg *sync.WaitGroup) {
 
 	rg := router.Group(apiPathPrefix)
 	rg.GET(apiDevice, apiDeviceGetAllHandler)
-	rg.GET(apiDevice + "/:id", apiDeviceGetHandler)
+	rg.GET(apiDevice+"/:id", apiDeviceGetHandler)
 	rg.POST(apiDevice, apiDevicePostHandler)
-	rg.DELETE(apiDevice + "", apiDeviceRemoveAllHandler)
-	rg.DELETE(apiDevice + "/:id", apiDeviceRemoveHandler)
+	rg.DELETE(apiDevice+"", apiDeviceRemoveAllHandler)
+	rg.DELETE(apiDevice+"/:id", apiDeviceRemoveHandler)
 
 	// REST CONFIG CHANGE
-	rg.POST(apiConfig + "influxdb", apiConfInfluxdbPostHandler)
-	rg.POST(apiConfig + "mongodb", apiConfMongodbPostHandler)
+	rg.POST(apiConfig+"influxdb", apiConfInfluxdbPostHandler)
+	rg.POST(apiConfig+"mongodb", apiConfMongodbPostHandler)
 
 	router.Run(address)
 	if parentwg != nil {
 		parentwg.Done()
 	}
 }
-

@@ -110,8 +110,8 @@ func TestSubCodeAddEntry(t *testing.T) {
 	code = models.SubCode{
 		//Type:    "type2",
 		//SubType: "subtype2",
-		Name:    "codename2",
-		Order:   2,
+		Name:  "codename2",
+		Order: 2,
 	}
 	code, err = db.AddSubCode(code)
 	fmt.Println("code: ", code, "err:", err)

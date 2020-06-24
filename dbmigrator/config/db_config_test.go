@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func getDbMigConfig() *MigratorConfig{
+func getDbMigConfig() *MigratorConfig {
 	return &MigratorConfig{
 		NewDbIp:       "127.0.0.1",
 		NewDbName:     "nubes",
@@ -29,7 +29,7 @@ func TestWriteConfig(t *testing.T) {
 	fmt.Println(conf)
 }
 
-func getJbhDbMigConfig() *MigratorConfig{
+func getJbhDbMigConfig() *MigratorConfig {
 	return &MigratorConfig{
 		NewDbIp:       "192.168.32.130",
 		NewDbName:     "nubes",

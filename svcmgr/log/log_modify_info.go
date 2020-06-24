@@ -11,16 +11,16 @@ import (
 )
 
 type CompareInfo struct {
-	NewDevice 	interface{}
-	OldDevice	interface{}
-	DeviceType	string
-	DeviceCode	string
+	NewDevice  interface{}
+	OldDevice  interface{}
+	DeviceType string
+	DeviceCode string
 }
 
 type ChangeInfo struct {
-	Field 		string
-	OldStatus	string
-	NewStatus	string
+	Field     string
+	OldStatus string
+	NewStatus string
 }
 
 func DeviceInfoModify(info CompareInfo) error {

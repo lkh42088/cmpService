@@ -11,4 +11,3 @@ func main() {
 	flag.Parse()
 	config.SetConfig(*configFile)
 }
-

@@ -58,6 +58,21 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	}
 
 	user, emailAuthList := userMsg.Convert()
+	if userMsg.CpIdx > 0 {
+		user.CompanyIdx = userMsg.CpIdx
+	} else if userMsg.CpName != "" {
+		// get company by name
+		company, err := h.db.GetCompanyByName(userMsg.CpName)
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": valErr})
+			return
+		}
+		user.CompanyIdx = int(company.Idx)
+	} else {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": valErr})
+		return
+	}
+
 	models.HashPassword(&user)
 	adduser, err := h.db.AddUser(user)
 	if len(emailAuthList) > 0 {
@@ -76,7 +91,19 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 	fmt.Println("Add user:", adduser)
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": adduser})
+}
+
+func (h *Handler) CheckDuplicatedUser(c *gin.Context) {
+	var userMsg messages.UserRegisterMessage
+	c.Bind(&userMsg)
+	fmt.Println("Register Message: ", userMsg)
+	exists := h.checkUserExists(userMsg.Id)
+	if exists {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": ""})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
 }
 
 func (h *Handler) UnRegisterUser(c *gin.Context) {
@@ -161,7 +188,7 @@ func (h *Handler) LoginEmailAuthConfirm(c *gin.Context) {
 	fmt.Println(">>>>>> LoginEmailAuthConfirm")
 	var restStatus int
 	if h.isConfirmEmailAuth(loginMsg.Id, loginMsg.Email) {
-		user, err := h.db.GetUserById(loginMsg.Id)
+		user, err := h.db.GetUserDetailById(loginMsg.Id)
 		if err != nil {
 			restStatus = http.StatusUnprocessableEntity
 			c.JSON(restStatus, gin.H{"success": false, "errors": err})
@@ -184,7 +211,7 @@ func (h *Handler) LoginFrontConfirm(c *gin.Context) {
 	fmt.Println(">>>>>> LoginFrontConfirm")
 	fmt.Println("message:", loginMsg)
 	fmt.Println("id:", loginMsg.Id)
-	user, err := h.db.GetUserById(loginMsg.Id)
+	user, err := h.db.GetUserDetailById(loginMsg.Id)
 	if err != nil {
 		fmt.Println("error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
@@ -212,7 +239,7 @@ func (h *Handler) LoginGroupEmail(c *gin.Context) {
 	fmt.Println(">>>>>> LoginGroupEmail")
 	fmt.Println("message:", loginMsg)
 	fmt.Println("id:", loginMsg.Id)
-	user, err := h.db.GetUserById(loginMsg.Id)
+	user, err := h.db.GetUserDetailById(loginMsg.Id)
 	if err != nil {
 		fmt.Println("error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
@@ -271,7 +298,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 
 	fmt.Println("message:", loginMsg)
 	fmt.Println("id:", loginMsg.Id)
-	user, err := h.db.GetUserById(loginMsg.Id)
+	user, err := h.db.GetUserDetailById(loginMsg.Id)
 	if err != nil {
 		fmt.Println("[LoginUserById] error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
@@ -291,10 +318,10 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 	if user.EmailAuth {
 		// 이메일 발송
 		fmt.Println("send 1")
-		 err = h.sendAuthMail(c, user.UserId, user.Email)
-		 if err != nil {
-		 	return
-		 }
+		err = h.sendAuthMail(c, user.UserId, user.Email)
+		if err != nil {
+			return
+		}
 		fmt.Println("error 3:")
 		restStatus = messages.StatusSentEmailAuth
 		c.JSON(restStatus, gin.H{"success": false, "msg": messages.RestStatusText(restStatus)})
@@ -347,7 +374,7 @@ func (h *Handler) isConfirmEmailAuth(userId, userEmail string) bool {
 	return false
 }
 
-func (h *Handler) checkGroupEmailAuth(userId, userEmail string) (bool) {
+func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
 	// 1. Get from DB
 	userEmailAuth, err := h.db.GetUserEmailAuthByIdAndEmail(userId, userEmail)
 	if err != nil {
@@ -357,13 +384,15 @@ func (h *Handler) checkGroupEmailAuth(userId, userEmail string) (bool) {
 	return true
 }
 
-func responseWithToken(c *gin.Context, user models.User, authEmail string) {
-	expirationTime := time.Now().Add(1 * time.Minute)
+func responseWithToken(c *gin.Context, user models.UserDetail, authEmail string) {
+	expirationTime := time.Now().Add(60 * time.Minute)
 	claims := &Claims{
 		User: messages.UserInfo{
 			Id:                 user.UserId,
-			Email:              user.Email,
 			Name:               user.Name,
+			Email:              user.Email,
+			Level:              user.AuthLevel,
+			CpName:             user.CompanyName,
 			EmailAuthFlag:      user.EmailAuth,
 			EmailAuthGroupFlag: user.GroupEmailAuth,
 			AuthEmail:          authEmail,
@@ -565,7 +594,7 @@ func (h *Handler) EmailConfirm(c *gin.Context) {
 	m, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
 		fmt.Println("EmailConfirm error:", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error":http.StatusText(http.StatusBadRequest)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": http.StatusText(http.StatusBadRequest)})
 		return
 	}
 	fmt.Println("m:", len(m))

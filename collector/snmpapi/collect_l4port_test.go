@@ -22,7 +22,7 @@ func TestTcp(t *testing.T) {
 	//s.SubTree(snmpapi.TypeOidTcpConnState)
 	var param snmpapi.L4TcpPort
 	getNextL4PortGen := s.GetL4TcpPort(snmpapi.TypeOidTcpConnState)
-	for i := 0 ; i < 10000 ; i++ {
+	for i := 0; i < 10000; i++ {
 		param = getNextL4PortGen()
 		if param.Port < 0 {
 			break
@@ -47,7 +47,7 @@ func TestUdp(t *testing.T) {
 	//s.SubTree(snmpapi.TypeOidTcpConnState)
 	var param snmpapi.L4UdpPort
 	getNextL4PortGen := s.GetL4UdpPort(snmpapi.TypeOidUdpPort)
-	for i := 0 ; i < 10000 ; i++ {
+	for i := 0; i < 10000; i++ {
 		param = getNextL4PortGen()
 		if param.Port < 0 {
 			break
@@ -74,7 +74,7 @@ func TestTcpSlice(t *testing.T) {
 	var tcpList []snmpapi.L4TcpPort
 	//tcpList = make([]snmpapi.L4TcpPort, 1)
 	getNextL4PortGen := s.GetL4TcpPort(snmpapi.TypeOidTcpConnState)
-	for i := 0 ; i < 10000 ; i++ {
+	for i := 0; i < 10000; i++ {
 		param = getNextL4PortGen()
 		if param.Port < 0 {
 			break
@@ -106,7 +106,7 @@ func TestUdpSlice(t *testing.T) {
 	var param snmpapi.L4UdpPort
 	var udpList []snmpapi.L4UdpPort
 	getNextL4PortGen := s.GetL4UdpPort(snmpapi.TypeOidUdpPort)
-	for i := 0 ; i < 10000 ; i++ {
+	for i := 0; i < 10000; i++ {
 		param = getNextL4PortGen()
 		if param.Port < 0 {
 			break
@@ -122,4 +122,3 @@ func TestUdpSlice(t *testing.T) {
 	fmt.Println(udpList)
 	fmt.Printf("-----------------------------\n")
 }
-

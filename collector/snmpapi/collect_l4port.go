@@ -16,8 +16,8 @@ type L4Table struct {
 }
 
 type L4TcpPort struct {
-	Port   int
-	IpAddr string
+	Port       int
+	IpAddr     string
 	ConnStatus int
 }
 
@@ -32,7 +32,7 @@ func (s *SnmpDevice) GetL4TcpPort(oid OidType) func() L4TcpPort {
 	param = L4TcpPort{}
 
 	return func() L4TcpPort {
-		oids := []string{ oidstr, }
+		oids := []string{oidstr}
 		result, err := s.Snmp.GetNext(oids)
 		if err != nil {
 			lib.LogWarn("GetL4TcpPort() : %v\n", err)
@@ -46,8 +46,8 @@ func (s *SnmpDevice) GetL4TcpPort(oid OidType) func() L4TcpPort {
 			lib.LogInfo("[%s:%s] oid: %s ",
 				s.Device.Ip, s.Device.SnmpCommunity, variable.Name)
 
-			if ! strings.Contains(variable.Name, oidstr) {
-				 lib.LogInfo(" - unmatch oid %s --> skip!\n",
+			if !strings.Contains(variable.Name, oidstr) {
+				lib.LogInfo(" - unmatch oid %s --> skip!\n",
 					oidstr)
 				continue
 			}
@@ -61,10 +61,10 @@ func (s *SnmpDevice) GetL4TcpPort(oid OidType) func() L4TcpPort {
 					//common.LogInfo("%s, len %d\n", oidMap[oid], len(oidMap[oid]))
 					lib.LogInfo("%s\n", getOid)
 					byteoid := []byte(getOid)
-					if len(byteoid) < len(oidMap[oid]) + 1 {
+					if len(byteoid) < len(oidMap[oid])+1 {
 						break
 					}
-					cutPrefixOid := byteoid[len(oidMap[oid]) + 1 /* . */:]
+					cutPrefixOid := byteoid[len(oidMap[oid])+1: /* . */]
 					//cutPrefixOid := strings.TrimLeft(getOid, oidMap[oid])
 					//common.LogInfo("%s\n", cutPrefixOid)
 					sliceValue := strings.Split(string(cutPrefixOid), ".")
@@ -89,7 +89,7 @@ func (s *SnmpDevice) GetL4UdpPort(oid OidType) func() L4UdpPort {
 	param = L4UdpPort{}
 
 	return func() L4UdpPort {
-		oids := []string{ oidstr, }
+		oids := []string{oidstr}
 		result, err := s.Snmp.GetNext(oids)
 		if err != nil {
 			lib.LogWarn("GetL4UdpPort() : %v\n", err)
@@ -112,10 +112,10 @@ func (s *SnmpDevice) GetL4UdpPort(oid OidType) func() L4UdpPort {
 					//common.LogInfo("%s, len %d\n", oidMap[oid], len(oidMap[oid]))
 					//common.LogInfo("%s\n", getOid)
 					byteoid := []byte(getOid)
-					if len(byteoid) < len(oidMap[oid]) + 1 {
+					if len(byteoid) < len(oidMap[oid])+1 {
 						break
 					}
-					cutPrefixOid := byteoid[len(oidMap[oid]) + 1 /* . */:]
+					cutPrefixOid := byteoid[len(oidMap[oid])+1: /* . */]
 					//cutPrefixOid := strings.TrimLeft(getOid, oidMap[oid])
 					//common.LogInfo("%s\n", cutPrefixOid)
 					sliceValue := strings.Split(string(cutPrefixOid), ".")
@@ -138,7 +138,7 @@ func (d *SnmpDevice) getL4Port() {
 	var param L4TcpPort
 	var tcpList []L4TcpPort
 	getNextL4PortGen := d.GetL4TcpPort(TypeOidTcpConnState)
-	for i := 0 ; i < L4PortMax; i++ {
+	for i := 0; i < L4PortMax; i++ {
 		param = getNextL4PortGen()
 		if param.Port < 0 {
 			break
@@ -152,7 +152,7 @@ func (d *SnmpDevice) getL4Port() {
 	var udp L4UdpPort
 	var udpList []L4UdpPort
 	getNextL4UdpPortGen := d.GetL4UdpPort(TypeOidUdpPort)
-	for i := 0 ; i < L4PortMax; i++ {
+	for i := 0; i < L4PortMax; i++ {
 		udp = getNextL4UdpPortGen()
 		if udp.Port < 0 {
 			break

@@ -56,10 +56,14 @@ type HandlerInterface interface {
 	RegisterUser(c *gin.Context)
 	UnRegisterUser(c *gin.Context)
 	GetUsersPage(c *gin.Context)
+	CheckDuplicatedUser(c *gin.Context)
 	// Companies
 	GetCompaniesPage(c *gin.Context)
 	AddCompany(c *gin.Context)
 	CheckDuplicatedCompany(c *gin.Context)
+	// Subnet
+	AddSubnet(c *gin.Context)
+	GetSubnet(c *gin.Context)
 }
 
 type Handler struct {
@@ -138,26 +142,30 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
 	// Login
-	router.POST("/api/auth/login", h.LoginUserById)
-	router.POST("/api/auth/grouplogin", h.LoginGroupEmail)
-	router.POST("/api/auth/input_email", h.LoginUserById)
-	router.POST("/api/auth/confirm", h.LoginFrontConfirm)
-	router.POST("/api/auth/email_confirm", h.EmailConfirm)
-	router.GET("/api/auth/check", h.GetSession)
-	router.POST("/api/auth/logout", h.Logout)
+	router.POST("/v1/auth/login", h.LoginUserById)
+	router.POST("/v1/auth/grouplogin", h.LoginGroupEmail)
+	router.POST("/v1/auth/input_email", h.LoginUserById)
+	router.POST("/v1/auth/confirm", h.LoginFrontConfirm)
+	router.POST("/v1/auth/email_confirm", h.EmailConfirm)
+	router.GET("/v1/auth/check", h.GetSession)
+	router.POST("/v1/auth/logout", h.Logout)
 
 	pagingParam := "/:rows/:offset/:orderby/:order"
 
 	// User
-	router.POST("/api/auth/register", h.RegisterUser)
-	router.POST("/api/auth/unregister", h.UnRegisterUser)
-	//router.GET("/api/userlist/:rows/:offset/:orderby/:order", h.GetUsersPage)
-	router.GET("/api/userlist"+pagingParam, h.GetUsersPage)
+	router.GET("/v1/users"+pagingParam, h.GetUsersPage)
+	router.POST("/v1/users/register", h.RegisterUser)
+	router.POST("/v1/users/unregister", h.UnRegisterUser)
+	router.POST("/v1/users/check-user", h.CheckDuplicatedUser)
 
 	// Companies
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
-	router.POST("/v1/customers/companies", h.AddCompany)
+	router.POST("/v1/customers/register", h.AddCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
+
+	// Subnet
+	router.POST("/v1/subnet/create", h.AddSubnet)
+	router.GET("/v1/subnet"+pagingParam, h.GetSubnet)
 
 	return router.Run(address)
 }

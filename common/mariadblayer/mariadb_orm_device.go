@@ -57,7 +57,7 @@ func (db *DBORM) GetDeviceWithJoin(device string, field string, condition string
 		selectString = PageSelectQuery
 		sizeQueryString = ""
 	} else {
-		selectString = SizeSelectQuery+","+PageSelectQuery
+		selectString = SizeSelectQuery + "," + PageSelectQuery
 		sizeQueryString = SizeJoinQuery
 	}
 	return dc, db.
@@ -176,7 +176,7 @@ func (db *DBORM) AddDevicePart(device models.DevicePart) (models.DevicePart, err
 	return device, db.Create(&device).Error
 }
 
-func (db *DBORM) AddDevice(data interface{}, device string)  error {
+func (db *DBORM) AddDevice(data interface{}, device string) error {
 	return db.Table(GetTableName(device)).Create(data).Error
 }
 

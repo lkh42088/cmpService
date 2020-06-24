@@ -27,7 +27,7 @@ func ErrorHandler(c *gin.Context) {
 	if len(c.Errors) > 0 {
 		fmt.Println("ErrorHandler:", c.Errors)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"errors":c.Errors,
+			"errors": c.Errors,
 		})
 	}
 }

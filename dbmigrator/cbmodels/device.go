@@ -84,4 +84,3 @@ type PartDevice struct {
 func (PartDevice) TableName() string {
 	return "g4_write_pdevice"
 }
-

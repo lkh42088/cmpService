@@ -51,4 +51,3 @@ func (s *SnmpDevice) String() {
 	s.IpTable.String()
 	s.RouteTable.String()
 }
-

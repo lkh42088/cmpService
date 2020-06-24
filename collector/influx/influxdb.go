@@ -8,12 +8,12 @@ import (
 )
 
 type InfluxAccessor struct {
-	Url string
+	Url      string
 	Username string
 	Password string
 	Database string
-	Bp client.BatchPoints
-	Client client.Client
+	Bp       client.BatchPoints
+	Client   client.Client
 }
 
 var Influx InfluxAccessor
@@ -31,8 +31,8 @@ func NewInfluxCfg(url string, user string, passwd string, db string) *InfluxAcce
 		Database: db,
 	}
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Precision:        "ms",
-		Database:         config.Database,
+		Precision: "ms",
+		Database:  config.Database,
 	})
 	if err != nil {
 		lib.LogWarn("InfluxDB NewInfluxCfg: Failed to get BatchPoints!!\n")
@@ -41,9 +41,9 @@ func NewInfluxCfg(url string, user string, passwd string, db string) *InfluxAcce
 	}
 
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:               config.Url,
-		Username:           config.Username,
-		Password:           config.Password,
+		Addr:     config.Url,
+		Username: config.Username,
+		Password: config.Password,
 	})
 	config.Client = c
 	if err != nil {
@@ -54,7 +54,7 @@ func NewInfluxCfg(url string, user string, passwd string, db string) *InfluxAcce
 
 func NewClient() client.Client {
 	var c client.Client
-	if Influx.Url == ""  {
+	if Influx.Url == "" {
 		lib.LogWarn("Collector config is empty.\n")
 		return nil
 	}
@@ -124,4 +124,3 @@ func InfluxdbQuery(query string) (*client.Response, error) {
 	}
 	return nil, nil
 }
-

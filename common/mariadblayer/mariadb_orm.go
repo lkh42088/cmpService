@@ -15,4 +15,3 @@ func NewDBORM(dbname, dataSource string) (*DBORM, error) {
 		DB: db,
 	}, err
 }
-

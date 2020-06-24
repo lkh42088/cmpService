@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-
 func TestLkhCreateNewMariaDb(t *testing.T) {
 	config.SetConfig(getDbConfig("dbmigrator.lkh.conf"))
 	CreateNewMariadbTable()
@@ -25,4 +24,3 @@ func TestLkhClearNewMariaDb(t *testing.T) {
 	config.SetConfig(getDbConfig("dbmigrator.lkh.conf"))
 	DropNewMariadbTable()
 }
-

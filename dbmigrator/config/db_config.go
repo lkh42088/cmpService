@@ -16,13 +16,13 @@ type global_config struct {
 }
 
 type MigratorConfig struct {
-	NewDbIp string `json:"new_db_ip"`
-	NewDbName string `json:"new_db_name"`
-	NewDbUser string `json:"new_db_user"`
+	NewDbIp       string `json:"new_db_ip"`
+	NewDbName     string `json:"new_db_name"`
+	NewDbUser     string `json:"new_db_user"`
 	NewDbPassword string `json:"new_db_password"`
-	OldDbIp string `json:"old_db_ip"`
-	OldDbName string `json:"old_db_name"`
-	OldDbUser string `json:"old_db_user"`
+	OldDbIp       string `json:"old_db_ip"`
+	OldDbName     string `json:"old_db_name"`
+	OldDbUser     string `json:"old_db_user"`
 	OldDbPassword string `json:"old_db_password"`
 }
 
@@ -62,7 +62,7 @@ func GetOldDatabaseConfig() *config.DBConfig {
 func SetConfig(configPath string) {
 	if configPath == "" || lib.IsFileExists(configPath) == false {
 		dirName, _ := os.Getwd()
-		configPath=fmt.Sprintf("%s/etc/%s", dirName, "dbmigrator.conf")
+		configPath = fmt.Sprintf("%s/etc/%s", dirName, "dbmigrator.conf")
 		if configPath == "" || lib.IsFileExists(configPath) == false {
 			log.Fatal("%% You MUST input config file path!")
 			return
@@ -71,12 +71,12 @@ func SetConfig(configPath string) {
 
 	cfg := ReadDbMigratorConfig(configPath)
 	newDb := &config.DBConfig{
-		DBDriver:"mysql",
-		Username:cfg.NewDbUser,
-		DBName:cfg.NewDbName,
-		Password:cfg.NewDbPassword,
-		Address:cfg.NewDbIp,
-		Port:3306,
+		DBDriver: "mysql",
+		Username: cfg.NewDbUser,
+		DBName:   cfg.NewDbName,
+		Password: cfg.NewDbPassword,
+		Address:  cfg.NewDbIp,
+		Port:     3306,
 	}
 	oldDb := &config.DBConfig{
 		DBDriver: "mysql",

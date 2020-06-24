@@ -9,25 +9,29 @@ type UserLoginMessage struct {
 }
 
 type UserRegisterMessage struct {
-	Id                 string   `json:"id"`
-	Password           string   `json:"password"`
-	Email              string   `json:"email"`
-	Name               string   `json:"name"`
-	EmailAuthFlag      bool     `json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool     `json:"emailAuthGroupFlag"`
+	CpName             string           `json:"cpName"`
+	CpIdx              int              `json:"cpIdx"`
+	Id                 string           `json:"id"`
+	Password           string           `json:"password"`
+	Email              string           `json:"email"`
+	Name               string           `json:"name"`
+	EmailAuthFlag      bool             `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool             `json:"emailAuthGroupFlag"`
 	EmailAuthGroupList []EmailAuthEntry `json:"emailAuthGroupList"`
 }
 
 type EmailAuthEntry struct {
-	Id int `json:"id"`
+	Id    int    `json:"id"`
 	Email string `json:"email"`
 }
 
 type UserInfo struct {
 	Id                 string `json:"id"`
 	Password           string `json:"password"`
-	Email              string `json:"email"`
 	Name               string `json:"name"`
+	Email              string `json:"email"`
+	Level              int    `json:"level"`
+	CpName             string `json:"cpName"`
 	EmailAuthFlag      bool   `json:"emailAuthFlag"`
 	EmailAuthGroupFlag bool   `json:"emailAuthGroupFlag"`
 	AuthEmail          string `json:"authEmail"`

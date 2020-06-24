@@ -40,7 +40,7 @@ func (h *Handler) AddLog(c *gin.Context) {
 	}
 	err := h.db.AddLog(log)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, "OK")
@@ -52,18 +52,18 @@ func (h *Handler) UpdateLog(c *gin.Context) {
 	}
 	idx, err := strconv.Atoi(c.Param("logidx"))
 	if err != nil {
-		c.JSON(http.StatusNoContent, gin.H{"Error":lib.RestAbnormalParam})
+		c.JSON(http.StatusNoContent, gin.H{"Error": lib.RestAbnormalParam})
 		return
 	}
 	code, tmpErr := strconv.Atoi(c.Param("workcode"))
 	if tmpErr != nil {
-		c.JSON(http.StatusNoContent, gin.H{"Error":lib.RestAbnormalParam})
+		c.JSON(http.StatusNoContent, gin.H{"Error": lib.RestAbnormalParam})
 		return
 	}
 	log := models.DeviceLog{
-		Idx: uint(idx),
+		Idx:      uint(idx),
 		WorkCode: code,
-		Field: c.Param("field"),
+		Field:    c.Param("field"),
 	}
 
 	err = h.db.UpdateLog(log.Field, c.Param("change"), log)
@@ -80,7 +80,7 @@ func (h *Handler) DeleteLogByIdx(c *gin.Context) {
 	}
 	idx, err := strconv.Atoi(c.Param("logidx"))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error":lib.RestAbnormalParam})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
 	err = h.db.DeleteLog(idx)

@@ -15,13 +15,13 @@ import (
 
 // Do not modify : changed influxdb table, mismatched convert form
 type IfStat struct {
-	time 			time.Time
-	id 				string
-	ip				string
-	ifIndex			int64
-	ifDescr			string
-	ifHCInOctets	int64
-	ifHCOutOctets	int64
+	time          time.Time
+	id            string
+	ip            string
+	ifIndex       int64
+	ifDescr       string
+	ifHCInOctets  int64
+	ifHCOutOctets int64
 }
 
 var lastSelectTime sync.Map
@@ -47,12 +47,12 @@ func MakeStructForStatistics(s *IfStat, data []interface{}) error {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
 		}
 	}
-	s.id				= data[1].(string)
-	s.ip 				= data[2].(string)
-	s.ifIndex, _ 		= data[3].(json.Number).Int64()
-	s.ifDescr 			= data[4].(string)
-	s.ifHCInOctets, _ 	= data[5].(json.Number).Int64()
-	s.ifHCOutOctets, _ 	= data[6].(json.Number).Int64()
+	s.id = data[1].(string)
+	s.ip = data[2].(string)
+	s.ifIndex, _ = data[3].(json.Number).Int64()
+	s.ifDescr = data[4].(string)
+	s.ifHCInOctets, _ = data[5].(json.Number).Int64()
+	s.ifHCOutOctets, _ = data[6].(json.Number).Int64()
 	return nil
 }
 
@@ -98,7 +98,7 @@ func CalcTrafficPer5Min(stat []IfStat) (IfStat, error) {
 	}
 
 	dummyid := 0
-	for i := 0; i < len(stat); i++{
+	for i := 0; i < len(stat); i++ {
 		if stat[i].ip != "" {
 			dummyid = i
 			break
@@ -113,12 +113,12 @@ func CalcTrafficPer5Min(stat []IfStat) (IfStat, error) {
 		return IfStat{}, errors.New("ata is overflow. Need to check.\n")
 	}
 
-	 return IfStat{
-		id: stat[last].id,
-		ip:	stat[last].ip,
-		ifIndex: stat[last].ifIndex,
-		ifDescr: stat[last].ifDescr,
-		ifHCInOctets: rxAvg,
+	return IfStat{
+		id:            stat[last].id,
+		ip:            stat[last].ip,
+		ifIndex:       stat[last].ifIndex,
+		ifDescr:       stat[last].ifDescr,
+		ifHCInOctets:  rxAvg,
 		ifHCOutOctets: txAvg,
 	}, nil
 }
@@ -128,10 +128,10 @@ func StoreAvgData(stat IfStat) error {
 	tags := snmpapi.MakeTagForInfluxDB(collectdevice.ID(stat.id), stat.ip)
 	//fields := snmpapi.MakeFieldForInfluxDB(stat)
 	fields := map[string]interface{}{
-		"ifindex"	: stat.ifIndex,
-		"ifdescr"	: stat.ifDescr,
-		"rxavg5min"	: stat.ifHCInOctets,
-		"txavg5min"	: stat.ifHCOutOctets,
+		"ifindex":   stat.ifIndex,
+		"ifdescr":   stat.ifDescr,
+		"rxavg5min": stat.ifHCInOctets,
+		"txavg5min": stat.ifHCOutOctets,
 	}
 	if err := snmpapi.AddBpToInflux(name, tags, fields); err != nil {
 		return fmt.Errorf("StoreAvgData() Error: %s\n", err)
@@ -141,7 +141,7 @@ func StoreAvgData(stat IfStat) error {
 
 func CollectStatistics(id collectdevice.ID) {
 	res := GetdataAtInflux(string(id))
-	stat :=	ConvertTrafficData(res)
+	stat := ConvertTrafficData(res)
 	if stat == nil {
 		lib.LogWarn("ConvertTrafficData() is failed.\n")
 		return
