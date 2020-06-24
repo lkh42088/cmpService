@@ -188,7 +188,7 @@ func (h *Handler) LoginEmailAuthConfirm(c *gin.Context) {
 	fmt.Println(">>>>>> LoginEmailAuthConfirm")
 	var restStatus int
 	if h.isConfirmEmailAuth(loginMsg.Id, loginMsg.Email) {
-		user, err := h.db.GetUserById(loginMsg.Id)
+		user, err := h.db.GetUserDetailById(loginMsg.Id)
 		if err != nil {
 			restStatus = http.StatusUnprocessableEntity
 			c.JSON(restStatus, gin.H{"success": false, "errors": err})
@@ -211,7 +211,7 @@ func (h *Handler) LoginFrontConfirm(c *gin.Context) {
 	fmt.Println(">>>>>> LoginFrontConfirm")
 	fmt.Println("message:", loginMsg)
 	fmt.Println("id:", loginMsg.Id)
-	user, err := h.db.GetUserById(loginMsg.Id)
+	user, err := h.db.GetUserDetailById(loginMsg.Id)
 	if err != nil {
 		fmt.Println("error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
@@ -239,7 +239,7 @@ func (h *Handler) LoginGroupEmail(c *gin.Context) {
 	fmt.Println(">>>>>> LoginGroupEmail")
 	fmt.Println("message:", loginMsg)
 	fmt.Println("id:", loginMsg.Id)
-	user, err := h.db.GetUserById(loginMsg.Id)
+	user, err := h.db.GetUserDetailById(loginMsg.Id)
 	if err != nil {
 		fmt.Println("error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
@@ -298,7 +298,7 @@ func (h *Handler) LoginUserById(c *gin.Context) {
 
 	fmt.Println("message:", loginMsg)
 	fmt.Println("id:", loginMsg.Id)
-	user, err := h.db.GetUserById(loginMsg.Id)
+	user, err := h.db.GetUserDetailById(loginMsg.Id)
 	if err != nil {
 		fmt.Println("[LoginUserById] error 1:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
@@ -384,13 +384,15 @@ func (h *Handler) checkGroupEmailAuth(userId, userEmail string) bool {
 	return true
 }
 
-func responseWithToken(c *gin.Context, user models.User, authEmail string) {
+func responseWithToken(c *gin.Context, user models.UserDetail, authEmail string) {
 	expirationTime := time.Now().Add(60 * time.Minute)
 	claims := &Claims{
 		User: messages.UserInfo{
 			Id:                 user.UserId,
-			Email:              user.Email,
 			Name:               user.Name,
+			Email:              user.Email,
+			Level:              user.AuthLevel,
+			CpName:             user.CompanyName,
 			EmailAuthFlag:      user.EmailAuth,
 			EmailAuthGroupFlag: user.GroupEmailAuth,
 			AuthEmail:          authEmail,

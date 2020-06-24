@@ -28,8 +28,10 @@ type EmailAuthEntry struct {
 type UserInfo struct {
 	Id                 string `json:"id"`
 	Password           string `json:"password"`
-	Email              string `json:"email"`
 	Name               string `json:"name"`
+	Email              string `json:"email"`
+	Level              int 	  `json:"level"`
+	CpName             string `json:"cpName"`
 	EmailAuthFlag      bool   `json:"emailAuthFlag"`
 	EmailAuthGroupFlag bool   `json:"emailAuthGroupFlag"`
 	AuthEmail          string `json:"authEmail"`

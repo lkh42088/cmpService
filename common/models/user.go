@@ -138,6 +138,11 @@ type User struct {
 	LastAccessIp   string    `gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'" json:"lastAccessIp"`
 }
 
+type UserDetail struct {
+	User
+	CompanyName string `gorm:"type:varchar(50);column:cp_name" json:"cpName"`
+}
+
 func (User) TableName() string {
 	return "user_tb"
 }
@@ -171,8 +176,8 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 type UserPage struct {
-	Page  Pagination `json:"page"`
-	Users []User     `json:"data"`
+	Page  Pagination 	`json:"page"`
+	Users []UserDetail  `json:"data"`
 }
 
 func (u UserPage) GetOrderBy(orderby, order string) string {
