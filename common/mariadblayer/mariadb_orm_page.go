@@ -213,7 +213,7 @@ func (db *DBORM) GetDevicesServerSearchWithJoin(cri models.PageCreteria, dc mode
 	SetThousandCount(&cri)
 
 	err = db.
-		//Debug().
+		Debug().
 		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceServer{}).
 		Table(ServerTable).
@@ -249,7 +249,7 @@ func (db *DBORM) GetDevicesNetworkSearchWithJoin(cri models.PageCreteria, dc mod
 	SetThousandCount(&cri)
 
 	err = db.
-		//Debug().
+		Debug().
 		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceNetwork{}).
 		Table(NetworkTable).

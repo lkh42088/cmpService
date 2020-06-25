@@ -126,9 +126,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// API_ROUTE/page/ server / 0 / 1000 / 110 / deviceCode / 1
 	//router.GET("/v1/page/:type/:outFlag/:size/:checkcnt/:order/:dir", h.GetDevicesForPage)
 	//router.GET("/v1/page/:type/:outFlag/:size/:checkcnt", h.GetDevicesForPage2)
-	router.GET("/v1/page/:type/:outFlag/:row/:page/:order/:dir/:offsetPage", h.GetDevicesForPage)
+	//router.GET("/v1/page/:type/:outFlag/:row/:page/:order/:dir/:offsetPage", h.GetDevicesForPage)
 	//todo outFlag 삭제 필요
-	router.POST("/v1/search/devices/:type/:outFlag/:row/:page/:order/:dir/:offsetPage",
+	router.POST("/v1/search/devices/:type/:row/:page/:order/:dir/:offsetPage",
 		h.GetDevicesForPageSearch)
 
 	// LOG
