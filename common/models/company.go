@@ -80,6 +80,12 @@ type Company struct {
 	Memo          string    `gorm:"type:text;column:cp_memo;comment:'메모'" json:"memo"`
 }
 
+type CompanyDetail struct {
+	Company
+	UserId string `gorm:"type:varchar(16); column:user_id" json:"userId"`
+	UserPassword string `gorm:"type:varchar(16); column:user_password" json:"userPassword"`
+}
+
 func (Company) TableName() string {
 	return "company_tb"
 }

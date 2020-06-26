@@ -128,19 +128,43 @@ func (h *Handler) checkCompanyExists(name string) bool {
 }
 
 func (h *Handler) AddCompany(c *gin.Context) {
-	var companyMsg models.Company
+	var companyMsg models.CompanyDetail
 	c.Bind(&companyMsg)
 	fmt.Println("recv company: ", companyMsg)
 	exists := h.checkCompanyExists(companyMsg.Name)
 	fmt.Println("exists: ", exists)
 
-	addCompany, err := h.db.AddCompany(companyMsg)
+	addCompany, err := h.db.AddCompany(companyMsg.Company)
 	if err != nil {
 		fmt.Println("err:", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
 		return
 	}
+	var newUser models.User
+	newUser.UserId = companyMsg.UserId
+	newUser.Password = companyMsg.UserPassword
+	newUser.AuthLevel = 5
+	newUser.CompanyIdx = int(addCompany.Idx)
+	newUser.Email = companyMsg.Email
+	newUser.Name = companyMsg.Name
+	newUser.HP = companyMsg.Tel
+	newUser.GroupEmailAuth = false
+	newUser.EmailAuth = false
+	newUser.Address = companyMsg.Address
+	newUser.AddressDetail = companyMsg.AddressDetail
+	newUser.Zipcode = companyMsg.Zipcode
+
+	models.HashPassword(&newUser)
+	adduser, err := h.db.AddUser(newUser)
+	if err != nil {
+		fmt.Println("add user: err:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		return
+	}
+
 	fmt.Println("Add company: ", addCompany)
+	fmt.Println("Add user: ", adduser)
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": addCompany})
 }
 
