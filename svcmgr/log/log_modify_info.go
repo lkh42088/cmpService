@@ -30,7 +30,9 @@ func DeviceInfoModify(info CompareInfo) error {
 	// ......
 	newElem := reflect.ValueOf(info.NewDevice).Elem()
 	oldElem := reflect.ValueOf(info.OldDevice)
-	//fmt.Printf("new %+v\n", newElem) //todo
+	fmt.Printf("👉---------------------------------------------------- 수정 로그 시작 \n")
+	fmt.Printf("😡😡😡😡😡 new %+v\n", newElem) //todo
+	fmt.Printf("😡😡😡😡😡 old %+v\n", oldElem) //todo
 
 	for i := 0; i < newElem.NumField(); i++ {
 		// nested struct check
@@ -42,13 +44,23 @@ func DeviceInfoModify(info CompareInfo) error {
 					continue
 				}
 
+				fmt.Printf("COMMON 😡😡 newElem %+v\n", newElem.Field(i).Field(j).Interface())
+				fmt.Printf("COMMON 😡😡 oldElem %+v\n", oldElem.Field(i).Field(j).Interface())
+
 				changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
 					newElem.Field(i).Field(j).Interface(),
 					oldElem.Field(i).Field(j).Interface())
+
 				changeInfo.Field = ConvertFieldName(newElem.Field(i).Type().Field(j).Name)
+
+				//fmt.Printf("😡😡😡 changeInfo.Field %+v\n", changeInfo.Field)
+
 				if changeInfo.Field == "" {
 					continue
 				}
+
+				fmt.Printf("😡😡😡 info %+v\n", info)
+				fmt.Printf("😡😡😡 changeInfo %+v\n", changeInfo)
 				StoreLog(info, changeInfo)
 				changeInfo = ChangeInfo{} // init struct
 			}
@@ -59,14 +71,22 @@ func DeviceInfoModify(info CompareInfo) error {
 				newElem.Field(i).Interface() == oldElem.Field(i).Interface() {
 				continue
 			}
+
+			fmt.Printf("ELSE 💥💥 newElem %+v\n", newElem.Field(i).Interface())
+			fmt.Printf("ELSE 💥💥 oldElem %+v\n", oldElem.Field(i).Interface())
+
 			changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
 				newElem.Field(i).Interface(),
 				oldElem.Field(i).Interface())
 			changeInfo.Field = ConvertFieldName(newElem.Type().Field(i).Name)
+
+			fmt.Printf("💥💥💥 changeInfo.Field %+v\n", changeInfo.Field)
 		}
 		StoreLog(info, changeInfo)
 		changeInfo = ChangeInfo{} // init struct
 	}
+	fmt.Printf("👉---------------------------------------------------- 수정 로그 끝 \n")
+
 	return nil
 }
 

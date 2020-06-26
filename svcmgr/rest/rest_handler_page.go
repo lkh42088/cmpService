@@ -212,7 +212,7 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
-	
+
 	/*0 : 반입, 1 : 반출*/
 	var outFlag string
 	if mapDevice["operatingFlag"].(bool) {
