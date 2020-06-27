@@ -94,11 +94,13 @@ type MariaDBLayer interface {
 	/**
 	 * Company
 	 */
-	GetCompaniesByName(name string) ([]models.CompanyResponse, error)
-	GetCompanyByName(name string) (models.Company, error)
+	GetCompanyByName(name string) (models.Company, error) // exact match
+	GetCompaniesByName(name string) ([]models.CompanyResponse, error) // best match
+	GetCompaniesWithUserByLikeCpName(name string) ([]models.CompanyResponse, error) // best match
+	GetCompanies() ([]models.CompanyResponse, error) // all
 	AddCompany(company models.Company) (models.Company, error)
-	DeleteAllCompany() error
 	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
+	DeleteAllCompany() error
 
 	// User
 	AddUser(user models.User) (models.User, error)

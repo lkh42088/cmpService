@@ -19,6 +19,33 @@ func (h *Handler) GetCompaniesByName(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println("companies by name: ", customers)
+	c.JSON(http.StatusOK, customers)
+}
+
+func (h *Handler) GetCompaniesWithUserByLikeCpName(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	name := c.Param("name")
+	customers, err := h.db.GetCompaniesWithUserByLikeCpName(name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("companies by name: ", customers)
+	c.JSON(http.StatusOK, customers)
+}
+
+func (h *Handler) GetCompanies(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	customers, err := h.db.GetCompanies()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, customers)
 }
 

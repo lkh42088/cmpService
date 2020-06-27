@@ -9,11 +9,24 @@ import (
 func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResponse, err error) {
 	name = "%" + name + "%"
 	return companies, db.
-		//Debug().
+		Table(CompanyRawTable).
+		Where("cp_name like ?", name).
+		Find(&companies).Error
+}
+
+func (db *DBORM) GetCompaniesWithUserByLikeCpName(name string) (companies []models.CompanyResponse, err error) {
+	name = "%" + name + "%"
+	return companies, db.
 		Table(CompanyRawTable).
 		Select(CompanyAndUserIdSelectQuery).
 		Where("cp_name like ?", name).
 		Joins(CompanyAndUserJoinQuery).
+		Find(&companies).Error
+}
+
+func (db *DBORM) GetCompanies() (companies []models.CompanyResponse, err error) {
+	return companies, db.
+		Table(CompanyRawTable).
 		Find(&companies).Error
 }
 
