@@ -23,6 +23,24 @@ func (h *Handler) GetCompaniesByName(c *gin.Context) {
 	c.JSON(http.StatusOK, customers)
 }
 
+func (h *Handler) GetUserDetailsByCpIdx(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	cpIdxString:= c.Param("cpIdx")
+	fmt.Println("cpIdxString: ", cpIdxString)
+	cpIdx, _ := strconv.Atoi(cpIdxString)
+	fmt.Println("cpId: ", cpIdx)
+	users, err := h.db.GetUserDetailsByCpIdx(cpIdx)
+	if err != nil {
+		fmt.Println("error: ", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("users by cpName: ", users)
+	c.JSON(http.StatusOK, users)
+}
+
 func (h *Handler) GetCompaniesWithUserByLikeCpName(c *gin.Context) {
 	if h.db == nil {
 		return

@@ -22,6 +22,15 @@ func (db *DBORM) GetUserById(id string) (user models.User, err error) {
 	return user, db.Where("user_id = ?", id).Find(&user).Error
 }
 
+func (db *DBORM) GetUserDetailsByCpIdx(cpIdx int) (userDetails []models.UserDetail, err error) {
+	return userDetails, db.
+		Table("user_tb").
+		//Select("user_tb.*, c.cp_name").
+		//Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Where("cp_idx = ?", cpIdx).
+		Find(&userDetails).Error
+}
+
 func (db *DBORM) GetUserByEmail(email string) (user models.User, err error) {
 	return user, db.Where("user_email = ?", email).Find(&user).Error
 }
