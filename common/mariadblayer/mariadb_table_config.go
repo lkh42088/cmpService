@@ -55,6 +55,10 @@ func CreateTable(db *gorm.DB) {
 			"user_tb(user_idx)", "RESTRICT", "RESTRICT") // or CASCADE
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.UserEmailAuth{})
 	}
+	if db.HasTable(&models.LoginAuth{}) == false {
+		db.AutoMigrate(&models.LoginAuth{})
+		db.Set("gorm:table_options", "ENGIN=InnoDB").AutoMigrate(&models.LoginAuth{})
+	}
 
 	// User(temp), Customer, Auth
 	//if db.HasTable(&models.User{}) == false {
@@ -114,13 +118,15 @@ func DropTable(db *gorm.DB) {
 	}
 
 	// User
-	if db.HasTable(&models.User{}) {
-		db.DropTable(&models.User{})
+	if db.HasTable(&models.LoginAuth{}) {
+		db.DropTable(&models.LoginAuth{})
 	}
 	if db.HasTable(&models.UserEmailAuth{}) {
 		db.DropTable(&models.UserEmailAuth{})
 	}
-
+	if db.HasTable(&models.User{}) {
+		db.DropTable(&models.User{})
+	}
 	// User, Customer, Auth
 	if db.HasTable(&models.User{}) {
 		db.DropTable(&models.User{})

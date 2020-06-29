@@ -30,3 +30,13 @@ func (db *DBORM) UpdateUserEmailAuth(obj models.UserEmailAuth) (models.UserEmail
 	return obj, db.Model(&obj).UpdateColumns(&models.UserEmailAuth{EmailAuthConfirm: obj.EmailAuthConfirm,
 		EmailAuthStore: obj.EmailAuthStore}).Error
 }
+
+//
+func (db *DBORM) AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
+	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
+	return obj, db.Delete(&obj).Error
+}
+

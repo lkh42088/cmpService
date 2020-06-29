@@ -148,7 +148,7 @@ func (User) TableName() string {
 }
 
 type UserEmailAuth struct {
-	UserEmailAuthID  uint   `gorm:"primary_key;column:uea_idx:not null"`
+	UserEmailAuthID  uint   `gorm:"primary_key;column:uea_idx;not null"`
 	User             User   `gorm:"foreignkey:Idx"`
 	UserIdx          uint   `gorm:"column:user_idx"`
 	UserId           string `gorm:"type:varchar(32);column:uea_user_id"`
@@ -159,6 +159,20 @@ type UserEmailAuth struct {
 
 func (UserEmailAuth) TableName() string {
 	return "user_email_auth_tb"
+}
+
+type LoginAuth struct {
+	LoginAuthID  	 int 	`gorm:"primary_key;column:la_idx;not null"`
+	User             User   `gorm:"foreignkey:Idx"`
+	UserIdx          uint   `gorm:"column:user_idx"`
+	UserId           string `gorm:"type:varchar(32);column:la_user_id"`
+	AuthUserId       string `gorm:"type:varchar(32);column:la_auth_user_id"`
+	AuthEmail        string `gorm:"type:varchar(64);column:la_auth_email"`
+	EmailAuthConfirm bool   `gorm:"column:la_email_auth_confirm" json:"-"`
+}
+
+func (LoginAuth) TableName() string {
+	return "login_auth_tb"
 }
 
 func HashPassword(user *User) {
