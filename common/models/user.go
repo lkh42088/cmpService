@@ -145,7 +145,9 @@ type User struct {
 
 type UserDetail struct {
 	User
-	CompanyName string `gorm:"type:varchar(50);column:cp_name" json:"cpName"`
+	CompanyName              string      `gorm:"type:varchar(50);column:cp_name" json:"cpName"`
+	GroupEmailAuthList       []LoginAuth `json:"groupEmailAuthList"`
+	ParticipateInAccountList []LoginAuth `json:"participateInAccountList"`
 }
 
 func (User) TableName() string {

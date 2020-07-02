@@ -36,6 +36,14 @@ func (db *DBORM) AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
 	return obj, db.Create(&obj).Error
 }
 
+func (db *DBORM) GetLoginAuthsByUserId(userId string) (obj []models.LoginAuth, err error) {
+	return obj, db.Where(&models.LoginAuth{UserId: userId}).Find(&obj).Error
+}
+
+func (db *DBORM) GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error) {
+	return obj, db.Where(&models.LoginAuth{AuthUserId: authUserId}).Find(&obj).Error
+}
+
 func (db *DBORM) DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
 	return obj, db.Delete(&obj).Error
 }

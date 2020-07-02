@@ -120,8 +120,12 @@ type MariaDBLayer interface {
 	DeleteUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
 	DeleteUserEmailAuthByUserId(id string) ([]models.UserEmailAuth, error)
 	UpdateUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
+
+	// New
 	AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
 	DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
+	GetLoginAuthsByUserId(userId string) (obj []models.LoginAuth, err error)
+	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error

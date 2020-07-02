@@ -61,7 +61,27 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	fmt.Println("2. page:")
+	fmt.Println("2. get email group list:")
+	var newusers []models.UserDetail
+	for _, user := range users.Users {
+		fmt.Println(">>>> userId: ", user.UserId)
+		if user.GroupEmailAuth {
+			user.GroupEmailAuthList, err = h.db.GetLoginAuthsByUserId(user.UserId)
+			if err != nil {
+				fmt.Println("List1 : error ", err)
+			} else {
+				fmt.Println("List1 : ", user.GroupEmailAuthList)
+			}
+		}
+		user.ParticipateInAccountList , err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
+		if err != nil {
+			fmt.Println("List2 : error ",  err)
+		} else {
+			fmt.Println("List2 : ", user.ParticipateInAccountList)
+		}
+		newusers = append(newusers, user)
+	}
+	users.Users = newusers
 	users.Page.String()
 	fmt.Println("OK users:", len(users.Users))
 	c.JSON(http.StatusOK, users)
