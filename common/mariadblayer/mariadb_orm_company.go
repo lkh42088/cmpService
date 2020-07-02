@@ -6,7 +6,15 @@ import (
 )
 
 // User, Companies, Auth
-func (db *DBORM) GetCompaniesByName(name string) (companies []models.CompanyResponse, err error) {
+func (db *DBORM) GetCompaniesByCpName(name string) (companies []models.CompanyResponse, err error) {
+	name = "%" + name + "%"
+	return companies, db.
+		Table(CompanyRawTable).
+		Where("cp_name like ?", name).
+		Find(&companies).Error
+}
+
+func (db *DBORM) GetCompaniesByLikeCpName(name string) (companies []models.CompanyResponse, err error) {
 	name = "%" + name + "%"
 	return companies, db.
 		Table(CompanyRawTable).
@@ -30,7 +38,7 @@ func (db *DBORM) GetCompanies() (companies []models.CompanyResponse, err error) 
 		Find(&companies).Error
 }
 
-func (db *DBORM) GetCompanyByName(name string) (company models.Company, err error) {
+func (db *DBORM) GetCompanyByCpName(name string) (company models.Company, err error) {
 	return company, db.Where("cp_name = ?", name).Find(&company).Error
 }
 

@@ -166,8 +166,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(ApiUser+"/check-user", h.CheckDuplicatedUser)
 
 	// Companies
-	router.GET("/v1/companies-with-user-like-cpname/:name", h.GetCompaniesWithUserByLikeCpName)
-	router.GET("/v1/companies/:name", h.GetCompaniesByName)
+	router.GET("/v1/companies-with-user-like-cpname/:cpName", h.GetCompaniesWithUserByLikeCpName)
+	router.GET("/v1/companies/:cpName", h.GetCompaniesByCpName)
 	router.GET("/v1/users-about-companies/:cpIdx", h.GetUserDetailsByCpIdx)
 	router.GET("/v1/companies", h.GetCompanies)
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)

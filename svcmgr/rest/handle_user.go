@@ -125,7 +125,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		user.CompanyIdx = userMsg.CpIdx
 	} else if userMsg.CpName != "" {
 		// get company by name
-		company, err := h.db.GetCompanyByName(userMsg.CpName)
+		company, err := h.db.GetCompanyByCpName(userMsg.CpName)
 		if err != nil {
 			c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": valErr})
 			return
@@ -179,7 +179,7 @@ func (h *Handler) RegisterUserBackup(c *gin.Context) {
 		user.CompanyIdx = userMsg.CpIdx
 	} else if userMsg.CpName != "" {
 		// get company by name
-		company, err := h.db.GetCompanyByName(userMsg.CpName)
+		company, err := h.db.GetCompanyByCpName(userMsg.CpName)
 		if err != nil {
 			c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": valErr})
 			return

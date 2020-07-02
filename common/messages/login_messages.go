@@ -15,6 +15,7 @@ type UserLoginMessage struct {
 type UserRegisterMessage struct {
 	CpName             string           `json:"cpName"`
 	CpIdx              int              `json:"cpIdx"`
+	IsCompanyAccount   bool				`json:"isCompanyAccount"`
 	Id                 string           `json:"id"`
 	Password           string           `json:"password"`
 	Email              string           `json:"email"`
@@ -103,6 +104,7 @@ func (msg *UserRegisterMessage) Translate() (user models.User, emailAuthList []m
 	user.Password = msg.Password
 	user.GroupEmailAuth = msg.EmailAuthGroupFlag
 	user.EmailAuth = msg.EmailAuthFlag
+	user.IsCompanyAccount = msg.IsCompanyAccount
 
 	// email auth
 	if user.GroupEmailAuth {

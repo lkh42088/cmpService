@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) checkCompanyExists(name string) bool {
-	company, err := h.db.GetCompanyByName(name)
+	company, err := h.db.GetCompanyByCpName(name)
 	if err != nil {
 		lib.LogWarnln(err)
 		return false
@@ -54,12 +54,12 @@ func (h *Handler) GetCompaniesPage(c *gin.Context) {
 	c.JSON(http.StatusOK, companies)
 }
 
-func (h *Handler) GetCompaniesByName(c *gin.Context) {
+func (h *Handler) GetCompaniesByCpName(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
-	name := c.Param("name")
-	customers, err := h.db.GetCompaniesByName(name)
+	name := c.Param("cpName")
+	customers, err := h.db.GetCompaniesByCpName(name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -90,7 +90,7 @@ func (h *Handler) GetCompaniesWithUserByLikeCpName(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
-	name := c.Param("name")
+	name := c.Param("cpName")
 	customers, err := h.db.GetCompaniesWithUserByLikeCpName(name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -127,6 +127,7 @@ func (h *Handler) AddCompany(c *gin.Context) {
 	}
 	var newUser models.User
 	newUser.UserId = companyMsg.UserId
+	newUser.IsCompanyAccount = true
 	newUser.Password = companyMsg.UserPassword
 	newUser.AuthLevel = 5
 	newUser.CompanyIdx = int(addCompany.Idx)
