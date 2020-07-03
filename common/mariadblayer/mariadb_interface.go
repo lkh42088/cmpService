@@ -94,10 +94,10 @@ type MariaDBLayer interface {
 	/**
 	 * Company
 	 */
-	GetCompanyByName(name string) (models.Company, error) // exact match
-	GetCompaniesByName(name string) ([]models.CompanyResponse, error) // best match
+	GetCompanyByCpName(name string) (models.Company, error)                         // exact match
+	GetCompaniesByCpName(name string) ([]models.CompanyResponse, error)             // best match
 	GetCompaniesWithUserByLikeCpName(name string) ([]models.CompanyResponse, error) // best match
-	GetCompanies() ([]models.CompanyResponse, error) // all
+	GetCompanies() ([]models.CompanyResponse, error)                                // all
 	AddCompany(company models.Company) (models.Company, error)
 	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
 	DeleteAllCompany() error
@@ -120,6 +120,12 @@ type MariaDBLayer interface {
 	DeleteUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
 	DeleteUserEmailAuthByUserId(id string) ([]models.UserEmailAuth, error)
 	UpdateUserEmailAuth(obj models.UserEmailAuth) (models.UserEmailAuth, error)
+
+	// New
+	AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
+	DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
+	GetLoginAuthsByUserId(userId string) (obj []models.LoginAuth, err error)
+	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error

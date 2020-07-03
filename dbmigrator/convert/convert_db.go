@@ -510,6 +510,11 @@ func GetUserTableByMember(m cbmodels.CbMember, idx int) (user models.User) {
 		LastAccessIp:   m.LoginIp,
 	}
 
+	// 회사 대표 계정
+	if idx != 0 {
+		user.IsCompanyAccount = true
+	}
+
 	return user
 }
 
@@ -533,6 +538,7 @@ func GetCompanyTableByMember(m cbmodels.CbMember, check bool) (cs models.Company
 		AddressDetail: m.Addr2,
 		TermDate:      leaveDate,
 		IsCompany:     check,
+		UserId: 	   m.Id,
 		Memo:          m.Memo,
 	}
 	return cs
@@ -545,6 +551,7 @@ type LogContents struct {
 	SubCode   string
 	OldStatus string
 	NewStatus string
+	LogLevel  int
 }
 
 func ParseToLogContents(data string) (logs []LogContents) {
@@ -557,6 +564,7 @@ func ParseToLogContents(data string) (logs []LogContents) {
 	for i := 0; i < len(tmpData)-1; i += 2 {
 		if !strings.Contains(tmpData[i+1], "장비등록") && !strings.Contains(tmpData[i+1], "정보변경") {
 			log.WorkCode = lib.MovedDevice
+			log.LogLevel = lib.LevelInfo
 			logs = append(logs, log)
 			continue
 		}
@@ -570,10 +578,12 @@ func ParseToLogContents(data string) (logs []LogContents) {
 		}
 		if strings.Contains(tmpData[i+1], "장비등록") {
 			log.WorkCode = lib.RegisterDevice
+			log.LogLevel = lib.LevelInfo
 			logs = append(logs, log)
 			continue
 		} else {
 			log.WorkCode = lib.ChangeInformation
+			log.LogLevel = lib.LevelInfo
 			splitData := strings.Split(tmpData[i+1], "[")
 			sData := strings.Split(splitData[1], ":")
 			log.SubCode = sData[0]
@@ -607,6 +617,7 @@ func GetLogList(isComment int, deviceCode string, userId string, contents string
 			data.Field = list.SubCode
 			data.OldStatus = list.OldStatus
 			data.NewStatus = list.NewStatus
+			data.LogLevel = lib.LevelInfo
 			data.DeviceCode = deviceCode
 			data.RegisterId = userId
 			data.RegisterName = list.RegName

@@ -1,6 +1,10 @@
 package messages
 
-import "cmpService/common/models"
+import (
+	"cmpService/common/models"
+	"encoding/json"
+	"fmt"
+)
 
 type UserLoginMessage struct {
 	Id       string `json:"id"`
@@ -9,6 +13,31 @@ type UserLoginMessage struct {
 }
 
 type UserRegisterMessage struct {
+	CpName             string           `json:"cpName"`
+	CpIdx              int              `json:"cpIdx"`
+	IsCompanyAccount   bool				`json:"isCompanyAccount"`
+	Id                 string           `json:"id"`
+	Password           string           `json:"password"`
+	Email              string           `json:"email"`
+	Name               string           `json:"name"`
+	EmailAuthFlag      bool             `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool             `json:"emailAuthGroupFlag"`
+	EmailAuthGroupList []models.UserDetail `json:"emailAuthGroupList"`
+}
+
+func (u UserRegisterMessage) String() {
+	data, err := json.Marshal(u)
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	fmt.Printf("Msg: %s\n", data)
+	for i, entry := range u.EmailAuthGroupList {
+		data, _ := json.Marshal(entry)
+		fmt.Printf("%d entry %s\n", i, data)
+	}
+}
+
+type UserRegisterMessageBackup struct {
 	CpName             string           `json:"cpName"`
 	CpIdx              int              `json:"cpIdx"`
 	Id                 string           `json:"id"`
@@ -63,6 +92,35 @@ func (msg *UserRegisterMessage) Convert() (user models.User, emailAuthList []mod
 	} else if user.EmailAuth {
 		emailAuth := GetUserEmailAuth(msg.Id, msg.Email)
 		emailAuthList = append(emailAuthList, emailAuth)
+	}
+	return user, emailAuthList
+}
+
+func (msg *UserRegisterMessage) Translate() (user models.User, emailAuthList []models.LoginAuth) {
+	// user
+	user.Name = msg.Name
+	user.Email = msg.Email
+	user.UserId = msg.Id
+	user.Password = msg.Password
+	user.GroupEmailAuth = msg.EmailAuthGroupFlag
+	user.EmailAuth = msg.EmailAuthFlag
+	user.IsCompanyAccount = msg.IsCompanyAccount
+
+	// email auth
+	if user.GroupEmailAuth {
+		for _, entry := range msg.EmailAuthGroupList {
+			var loginAuth models.LoginAuth
+			loginAuth.UserId = user.UserId
+			loginAuth.AuthUserId = entry.UserId
+			loginAuth.AuthEmail = entry.Email
+			emailAuthList = append(emailAuthList, loginAuth)
+		}
+	} else if user.EmailAuth {
+		var loginAuth models.LoginAuth
+		loginAuth.UserId = user.UserId
+		loginAuth.AuthUserId = user.UserId
+		loginAuth.AuthEmail = user.Email
+		emailAuthList = append(emailAuthList, loginAuth)
 	}
 	return user, emailAuthList
 }

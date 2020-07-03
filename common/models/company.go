@@ -17,6 +17,7 @@ const (
 	CompanyOrmAddressDetail = "cp_addr_detail"
 	CompanyOrmTermDate      = "cp_termination_date"
 	CompanyOrmIsCompany     = "cp_is_company"
+	CompanyOrmUserId 	    = "cp_user_id"
 	CompanyOrmMemo          = "cp_memo"
 )
 
@@ -32,6 +33,7 @@ const (
 	CompanyJsonAddressDetail = "addressDetail"
 	CompanyJsonTermDate      = "termDate"
 	CompanyJsonIsCompany     = "isCompany"
+	CompanyJsonUserId 		 = "cpUserId"
 	CompanyJsonMemo          = "memo"
 )
 
@@ -47,6 +49,7 @@ var CompanyOrmMap = map[string]string{
 	CompanyOrmAddressDetail: CompanyJsonAddressDetail,
 	CompanyOrmTermDate:      CompanyJsonTermDate,
 	CompanyOrmIsCompany:     CompanyJsonIsCompany,
+	CompanyOrmUserId:     	 CompanyJsonUserId,
 	CompanyOrmMemo:          CompanyJsonMemo,
 }
 
@@ -62,6 +65,7 @@ var CompanyJsonMap = map[string]string{
 	CompanyJsonAddressDetail: CompanyOrmAddressDetail,
 	CompanyJsonTermDate:      CompanyOrmTermDate,
 	CompanyJsonIsCompany:     CompanyOrmIsCompany,
+	CompanyJsonUserId:     	  CompanyOrmUserId,
 	CompanyJsonMemo:          CompanyOrmMemo,
 }
 
@@ -77,6 +81,7 @@ type Company struct {
 	AddressDetail string    `gorm:"type:varchar(255);not null;column:cp_addr_detail;comment:'상세 주소'" json:"addressDetail"`
 	TermDate      time.Time `gorm:"type:datetime;column:cp_termination_date;comment:'해지 일자'" json:"termDate"`
 	IsCompany     bool      `gorm:"type:tinyint(1);column:cp_is_company;default:1;comment:'회사 여부'" json:"isCompany"`
+	UserId        string    `gorm:"type:varchar(32);column:cp_user_id;comment:'회사 대표 ID'" json:"cpUserId"`
 	Memo          string    `gorm:"type:text;column:cp_memo;comment:'메모'" json:"memo"`
 }
 
