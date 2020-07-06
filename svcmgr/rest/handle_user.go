@@ -156,8 +156,10 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
+	fmt.Println("User: ", user)
 	models.HashPassword(&user)
 	adduser, err := h.db.AddUser(user)
+	fmt.Println("Add User: ", adduser)
 	if len(emailAuthList) > 0 {
 		for _, loginAuth := range emailAuthList {
 			loginAuth.UserIdx = adduser.Idx
@@ -234,13 +236,15 @@ func (h *Handler) RegisterUserBackup(c *gin.Context) {
 func (h *Handler) CheckDuplicatedUser(c *gin.Context) {
 	var userMsg messages.UserRegisterMessage
 	c.Bind(&userMsg)
-	fmt.Println("Register Message: ", userMsg)
+	fmt.Println("CheckDuplicatedUser: message ", userMsg)
 	exists := h.CheckUserExists(userMsg.Id)
 	if exists {
+		fmt.Println("CheckDuplicatedUser: fail")
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": ""})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
+	fmt.Println("CheckDuplicatedUser: success")
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "존재하지 않는 ID 입니다."})
 }
 
 func (h *Handler) UnRegisterUser(c *gin.Context) {

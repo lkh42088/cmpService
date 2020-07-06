@@ -13,15 +13,20 @@ type UserLoginMessage struct {
 }
 
 type UserRegisterMessage struct {
-	CpName             string           `json:"cpName"`
-	CpIdx              int              `json:"cpIdx"`
-	IsCompanyAccount   bool				`json:"isCompanyAccount"`
-	Id                 string           `json:"id"`
-	Password           string           `json:"password"`
-	Email              string           `json:"email"`
-	Name               string           `json:"name"`
-	EmailAuthFlag      bool             `json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool             `json:"emailAuthGroupFlag"`
+	CpName             string              `json:"cpName"`
+	CpIdx              int                 `json:"cpIdx"`
+	IsCompanyAccount   bool                `json:"isCompanyAccount"`
+	Id                 string              `json:"id"`
+	Password           string              `json:"password"`
+	Email              string              `json:"email"`
+	Name               string              `json:"name"`
+	HP                 string              `json:"hp"`
+	AuthLevel          int                 `json:"authLevel"`
+	ZipCode            string              `json:"zipCode"`
+	Address            string              `json:"address"`
+	AddressDetail      string              `json:"addressDetail"`
+	EmailAuthFlag      bool                `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool                `json:"emailAuthGroupFlag"`
 	EmailAuthGroupList []models.UserDetail `json:"emailAuthGroupList"`
 }
 
@@ -76,10 +81,15 @@ func GetUserEmailAuth(id, email string) (emailAuth models.UserEmailAuth) {
 
 func (msg *UserRegisterMessage) Convert() (user models.User, emailAuthList []models.UserEmailAuth) {
 	// user
-	user.Name = msg.Name
-	user.Email = msg.Email
 	user.UserId = msg.Id
 	user.Password = msg.Password
+	user.Name = msg.Name
+	user.Email = msg.Email
+	user.HP = msg.HP
+	user.AuthLevel = msg.AuthLevel
+	user.Zipcode = msg.ZipCode
+	user.Address = msg.Address
+	user.AddressDetail = msg.AddressDetail
 	user.GroupEmailAuth = msg.EmailAuthGroupFlag
 	user.EmailAuth = msg.EmailAuthFlag
 
@@ -105,6 +115,13 @@ func (msg *UserRegisterMessage) Translate() (user models.User, emailAuthList []m
 	user.GroupEmailAuth = msg.EmailAuthGroupFlag
 	user.EmailAuth = msg.EmailAuthFlag
 	user.IsCompanyAccount = msg.IsCompanyAccount
+	user.HP = msg.HP
+	user.AuthLevel = msg.AuthLevel
+	user.Zipcode = msg.ZipCode
+	user.Address = msg.Address
+	user.AddressDetail = msg.AddressDetail
+	user.GroupEmailAuth = msg.EmailAuthGroupFlag
+	user.EmailAuth = msg.EmailAuthFlag
 
 	// email auth
 	if user.GroupEmailAuth {
