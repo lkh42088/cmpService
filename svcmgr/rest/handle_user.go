@@ -87,6 +87,13 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+func (h *Handler) GetUsersWithSearchParamPage(c *gin.Context) {
+	var msg models.UserPageMsg
+	c.Bind(&msg)
+	fmt.Println("GetUsersWithSearchParamPage() msg ", msg)
+	c.JSON(http.StatusInternalServerError, gin.H{"error": "Testing"})
+}
+
 func getPagination(c *gin.Context) (p models.Pagination, err error) {
 	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
 	if err != nil {

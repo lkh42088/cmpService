@@ -218,3 +218,19 @@ type UserEmailAuthMsg struct {
 	Email  string `json:"email"`
 	Secret string `json:"secret"`
 }
+
+type SearchParam struct {
+	UserId   string `json:"userId"`
+	Username string `json:"username"`
+	Emaile   string `json:"email"`
+	CpName   string `json:"cpName"`
+	Level    string `json:"level"`
+}
+
+type UserPageMsg struct {
+	RowsPerPage int         `json:"rows"`
+	Offset      int         `json:"offset"`
+	OrderBy     string      `json:"orderBy"`
+	Order       string      `json:"order"`
+	Param       SearchParam `json:"searchParam"`
+}
