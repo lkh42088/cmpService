@@ -64,6 +64,7 @@ type HandlerInterface interface {
 	GetCompaniesWithUserByLikeCpName(c *gin.Context)
 	GetCompanies(c *gin.Context)
 	AddCompany(c *gin.Context)
+	DeleteCompany(c *gin.Context)
 	// Subnet
 	GetSubnet(c *gin.Context)
 	AddSubnet(c *gin.Context)
@@ -174,6 +175,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/companies", h.GetCompanies)
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
 	router.POST("/v1/customers/register", h.AddCompany)
+	router.POST("/v1/customers/unregister", h.DeleteCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
 
 	// Subnet

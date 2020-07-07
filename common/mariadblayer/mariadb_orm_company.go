@@ -60,6 +60,10 @@ func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
 	return company, db.Create(&company).Error
 }
 
+func (db *DBORM) DeleteCompany(company models.Company) (models.Company, error) {
+	return company, db.Delete(&company).Error
+}
+
 func (db *DBORM) DeleteAllCompany() error {
 	return db.Delete(&models.Company{}).Error
 }

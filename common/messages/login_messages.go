@@ -12,6 +12,10 @@ type UserLoginMessage struct {
 	Email    string `json:"email"`
 }
 
+type DeleteUserMessage struct {
+	IdxList []int `json:"idx"`
+}
+
 type UserRegisterMessage struct {
 	CpName             string              `json:"cpName"`
 	CpIdx              int                 `json:"cpIdx"`

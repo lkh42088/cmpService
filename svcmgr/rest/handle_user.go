@@ -254,7 +254,34 @@ func (h *Handler) CheckDuplicatedUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "존재하지 않는 ID 입니다."})
 }
 
+func deleteUser(h *Handler, idx uint) bool {
+	var user models.User
+	_, err := h.db.DeleteLoginAuthsByUserIdx(idx)
+	if err != nil {
+		fmt.Println("deleteLoginAuthsByUserIdx err: ", err)
+		return false
+	}
+
+	user.Idx = idx
+	_, err = h.db.DeleteUser(user)
+	if err != nil {
+		fmt.Println("deleteUser err: ", err)
+		return false
+	}
+	return true
+}
+
 func (h *Handler) UnRegisterUser(c *gin.Context) {
+	var msg messages.DeleteUserMessage
+	c.Bind(&msg)
+	fmt.Println("UnRegister Message: ", msg)
+	for _, idx := range msg.IdxList {
+		deleteUser(h, uint(idx));
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
+}
+
+func (h *Handler) UnRegisterUserBackup(c *gin.Context) {
 	var userMsg messages.UserRegisterMessage
 	c.Bind(&userMsg)
 	fmt.Println("UnRegister Message: ", userMsg)

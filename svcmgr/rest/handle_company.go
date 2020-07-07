@@ -154,3 +154,29 @@ func (h *Handler) AddCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": addCompany})
 }
 
+func deleteCompany(h * Handler, idx int) bool {
+	var company models.Company
+	company.Idx = uint(idx)
+	users, err := h.db.GetUserDetailsByCpIdx(idx)
+	for _, user := range users {
+		deleteUser(h, user.Idx)
+	}
+
+	_, err = h.db.DeleteCompany(company)
+	if err != nil {
+		fmt.Println("delete company: err ", err)
+		return false
+	}
+	return true
+}
+
+func (h *Handler) DeleteCompany(c *gin.Context) {
+	var msg models.DeleteCompanyMessage
+	c.Bind(&msg)
+	fmt.Println("recv msg: ", msg)
+	for _, idx := range msg.IdxList {
+		deleteCompany(h, idx)
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
+}
+

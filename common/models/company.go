@@ -17,7 +17,7 @@ const (
 	CompanyOrmAddressDetail = "cp_addr_detail"
 	CompanyOrmTermDate      = "cp_termination_date"
 	CompanyOrmIsCompany     = "cp_is_company"
-	CompanyOrmUserId 	    = "cp_user_id"
+	CompanyOrmUserId        = "cp_user_id"
 	CompanyOrmMemo          = "cp_memo"
 )
 
@@ -33,7 +33,7 @@ const (
 	CompanyJsonAddressDetail = "addressDetail"
 	CompanyJsonTermDate      = "termDate"
 	CompanyJsonIsCompany     = "isCompany"
-	CompanyJsonUserId 		 = "cpUserId"
+	CompanyJsonUserId        = "cpUserId"
 	CompanyJsonMemo          = "memo"
 )
 
@@ -49,7 +49,7 @@ var CompanyOrmMap = map[string]string{
 	CompanyOrmAddressDetail: CompanyJsonAddressDetail,
 	CompanyOrmTermDate:      CompanyJsonTermDate,
 	CompanyOrmIsCompany:     CompanyJsonIsCompany,
-	CompanyOrmUserId:     	 CompanyJsonUserId,
+	CompanyOrmUserId:        CompanyJsonUserId,
 	CompanyOrmMemo:          CompanyJsonMemo,
 }
 
@@ -65,7 +65,7 @@ var CompanyJsonMap = map[string]string{
 	CompanyJsonAddressDetail: CompanyOrmAddressDetail,
 	CompanyJsonTermDate:      CompanyOrmTermDate,
 	CompanyJsonIsCompany:     CompanyOrmIsCompany,
-	CompanyJsonUserId:     	  CompanyOrmUserId,
+	CompanyJsonUserId:        CompanyOrmUserId,
 	CompanyJsonMemo:          CompanyOrmMemo,
 }
 
@@ -87,7 +87,7 @@ type Company struct {
 
 type CompanyDetail struct {
 	Company
-	UserId string `gorm:"type:varchar(16); column:user_id" json:"userId"`
+	UserId       string `gorm:"type:varchar(16); column:user_id" json:"userId"`
 	UserPassword string `gorm:"type:varchar(16); column:user_password" json:"userPassword"`
 }
 
@@ -103,6 +103,10 @@ type CompanyResponse struct {
 type CompanyPage struct {
 	Page      Pagination `json:"page"`
 	Companies []Company  `json:"data"`
+}
+
+type DeleteCompanyMessage struct {
+	IdxList []int `json:"idx"`
 }
 
 func (c CompanyPage) GetOrderBy(orderby, order string) string {

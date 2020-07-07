@@ -99,6 +99,7 @@ type MariaDBLayer interface {
 	GetCompaniesWithUserByLikeCpName(name string) ([]models.CompanyResponse, error) // best match
 	GetCompanies() ([]models.CompanyResponse, error)                                // all
 	AddCompany(company models.Company) (models.Company, error)
+	DeleteCompany(company models.Company) (models.Company, error)
 	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
 	DeleteAllCompany() error
 
@@ -124,7 +125,9 @@ type MariaDBLayer interface {
 	// New
 	AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
 	DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
+	DeleteLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByUserId(userId string) (obj []models.LoginAuth, err error)
+	GetLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
 
 	// Subnet
