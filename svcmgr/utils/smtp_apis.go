@@ -20,6 +20,7 @@ type MailMsg struct {
 	To       string
 	Header   string
 	UserId   string
+	TargetId string
 	Text     string
 	ServerIp string
 	Uuid     string
@@ -28,7 +29,8 @@ type MailMsg struct {
 func (m *MailMsg) GetMessage() []byte {
 	header := fmt.Sprintf("Subject: %s \r\n", m.Header)
 	body := fmt.Sprintf("%s %s \r\n", m.UserId, m.Text)
-	body += fmt.Sprintf("http://%s:4000/log_in/email/%s/%s \r\n", m.ServerIp, m.UserId, m.Uuid)
+	body += fmt.Sprintf("http://%s/login/email/%s/%s/%s \r\n",
+		m.ServerIp, m.UserId, m.TargetId, m.Uuid)
 	msg := header + "\r\n" + body
 	return []byte(msg)
 }

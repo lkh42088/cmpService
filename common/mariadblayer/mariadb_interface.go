@@ -124,11 +124,14 @@ type MariaDBLayer interface {
 
 	// New
 	AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
+	UpdateLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
 	DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
 	DeleteLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByUserId(userId string) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
+	GetLoginAuthByMySelfAuth(userId string) (obj models.LoginAuth, err error)
+ 	GetLoginAuthByAuthUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error

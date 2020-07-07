@@ -10,6 +10,8 @@ type UserLoginMessage struct {
 	Id       string `json:"id"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
+	Result   int    `json:"result"`
+	Comment  string `json:"comment"`
 }
 
 type DeleteUserMessage struct {

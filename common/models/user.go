@@ -176,6 +176,7 @@ type LoginAuth struct {
 	AuthUserId       string `gorm:"type:varchar(32);column:la_auth_user_id"`
 	AuthEmail        string `gorm:"type:varchar(64);column:la_auth_email"`
 	EmailAuthConfirm bool   `gorm:"column:la_email_auth_confirm" json:"-"`
+	EmailAuthStore   string `gorm:"type:varchar(255);column:la_store" json:"-"`
 }
 
 func (LoginAuth) TableName() string {
