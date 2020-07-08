@@ -79,6 +79,16 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 		} else {
 			fmt.Println("List2 : ", user.ParticipateInAccountList)
 		}
+		var list []models.LoginAuth
+		if user.EmailAuth {
+			for _, item := range user.ParticipateInAccountList {
+				if item.UserId == user.UserId && item.AuthUserId == user.UserId {
+					continue
+				}
+				list = append(list, item)
+			}
+			user.ParticipateInAccountList = list
+		}
 		newusers = append(newusers, user)
 	}
 	users.Users = newusers
