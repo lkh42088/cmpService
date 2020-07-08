@@ -47,6 +47,7 @@ type HandlerInterface interface {
 	// Login
 	GetSession(c *gin.Context)
 	LoginUserById(c *gin.Context)
+	LoginSendEmail(c *gin.Context)
 	Logout(c *gin.Context)
 	LoginUserByEmail(c *gin.Context)
 	EmailConfirm(c *gin.Context)
@@ -152,6 +153,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Login
 	router.POST(ApiLogin+"/login", h.LoginUserById)
+	router.POST(ApiLogin+"/login-send-email", h.LoginSendEmail)
 	router.POST(ApiLogin+"/grouplogin", h.LoginGroupEmail)
 	router.POST(ApiLogin+"/input_email", h.LoginUserById)
 	router.POST(ApiLogin+"/confirm", h.LoginFrontConfirm)

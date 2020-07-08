@@ -61,8 +61,12 @@ func (db *DBORM) GetLoginAuthsByUserId(userId string) (obj []models.LoginAuth, e
 	return obj, db.Where(&models.LoginAuth{UserId: userId}).Find(&obj).Error
 }
 
-func (db *DBORM) GetLoginAuthByAuthUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error) {
+func (db *DBORM) GetLoginAuthByUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error) {
 	return obj, db.Where(&models.LoginAuth{UserId: userId, AuthUserId: targetId}).Find(&obj).Error
+}
+
+func (db *DBORM) GetLoginAuthByUserIdAndTargetEmail(userId, targetEmail string) (obj models.LoginAuth, err error) {
+	return obj, db.Where(&models.LoginAuth{UserId: userId, AuthEmail: targetEmail}).Find(&obj).Error
 }
 
 func (db *DBORM) GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error) {

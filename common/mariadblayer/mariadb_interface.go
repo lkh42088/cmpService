@@ -131,7 +131,8 @@ type MariaDBLayer interface {
 	GetLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
 	GetLoginAuthByMySelfAuth(userId string) (obj models.LoginAuth, err error)
- 	GetLoginAuthByAuthUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
+ 	GetLoginAuthByUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
+	GetLoginAuthByUserIdAndTargetEmail(userId, targetEmail string) (obj models.LoginAuth, err error)
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error
