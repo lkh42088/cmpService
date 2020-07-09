@@ -47,5 +47,8 @@ func SetRestServer(db *mariadblayer.DBORM) {
 	cfg := config2.ReadConfig(config2.SvcmgrConfigPath)
 	restServer := fmt.Sprintf("%s:%s", cfg.RestServerIp, cfg.RestServerPort)
 	config2.SvcmgrGlobalConfig.RestServer = restServer
+	config2.SvcmgrConfigStore = &cfg
+	webserver := fmt.Sprintf("%s:%s", cfg.WebServerIP, cfg.WebServerPort)
+	rest.WebServerAddress = webserver
 	rest.RunAPI(restServer, db)
 }
