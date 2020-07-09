@@ -509,7 +509,7 @@ func GetUserTableByMember(m cbmodels.CbMember, idx int) (user models.User) {
 		WorkScope:      m.Mb1,
 		Department:     m.Mb2,
 		Position:       m.Mb3,
-		EmailAuth:      true,
+		EmailAuth:      false,
 		GroupEmailAuth: false,
 		RegisterDate:   m.Datetime,
 		LastAccessDate: m.TodayLogin,
