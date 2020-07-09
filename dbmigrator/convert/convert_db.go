@@ -97,10 +97,12 @@ func ConvertDeviceServer(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 			sd.Idx = idx_device
 			ndb.AddDeviceServer(sd)
 		} else {
-			idx_comment++
-			fmt.Println("server:", i, ": comment, ", idx_comment)
-			dc.Idx = idx_comment
-			ndb.AddComment(dc)
+			if lc == nil {
+				idx_comment++
+				fmt.Println("server:", i, ": comment, ", idx_comment)
+				dc.Idx = idx_comment
+				ndb.AddComment(dc)
+			}
 		}
 
 		if lc != nil {
@@ -134,10 +136,12 @@ func ConvertDeviceNetwork(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 			nd.Idx = idx_device
 			ndb.AddDeviceNetwork(nd)
 		} else {
-			idx_comment++
-			dc.Idx = idx_comment
-			fmt.Println("network:", i, ": comment, ", idx_comment)
-			ndb.AddComment(dc)
+			if lc == nil {
+				idx_comment++
+				dc.Idx = idx_comment
+				fmt.Println("network:", i, ": comment, ", idx_comment)
+				ndb.AddComment(dc)
+			}
 		}
 
 		if lc != nil {
@@ -171,10 +175,12 @@ func ConvertDevicePart(odb *mysqllayer.CBORM, ndb *mariadblayer.DBORM) {
 			pd.Idx = idx_device
 			ndb.AddDevicePart(pd)
 		} else {
-			idx_comment++
-			dc.Idx = idx_comment
-			fmt.Println("part:", i, ": comment, ", idx_comment)
-			ndb.AddComment(dc)
+			if lc == nil {
+				idx_comment++
+				dc.Idx = idx_comment
+				fmt.Println("part:", i, ": comment, ", idx_comment)
+				ndb.AddComment(dc)
+			}
 		}
 
 		if lc != nil {

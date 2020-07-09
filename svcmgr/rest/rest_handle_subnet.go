@@ -66,7 +66,7 @@ func (h *Handler) GetSubnet(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("%+v\n", data.Subnet)
+	//fmt.Printf("%+v\n", data.Subnet)
 	fmt.Printf("%+v\n", data.Page)
 	c.JSON(http.StatusOK, data)
 }
