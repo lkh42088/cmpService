@@ -37,10 +37,15 @@ func (db *DBORM) AddLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
 }
 
 func (db *DBORM) UpdateLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
+	//return obj, db.Model(&obj).
+	//	UpdateColumns(&models.LoginAuth{
+	//		EmailAuthStore: obj.EmailAuthStore,
+	//		EmailAuthConfirm: obj.EmailAuthConfirm,
+	//}).Error
 	return obj, db.Model(&obj).
-		UpdateColumns(&models.LoginAuth{
-			EmailAuthConfirm: obj.EmailAuthConfirm,
-			EmailAuthStore: obj.EmailAuthStore,
+		Updates(map[string]interface{}{
+			"EmailAuthStore": obj.EmailAuthStore,
+			"EmailAuthConfirm": obj.EmailAuthConfirm,
 		}).Error
 }
 
