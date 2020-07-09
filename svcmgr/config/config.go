@@ -27,9 +27,13 @@ var SvcmgrGlobalConfig = &global_config{}
 type SvcmgrConfig struct {
 	config.MariaDbConfig
 	config.InfluxDbConfig
+	WebServerIP    string `json:"web_server_ip"`
+	WebServerPort  string `json:"web_server_port"`
 	RestServerIp   string `json:"rest_server_ip"`
 	RestServerPort string `json:"rest_server_port"`
 }
+
+var SvcmgrConfigStore *SvcmgrConfig
 
 const svcmgrConfigName = "svcmgr.conf"
 
@@ -51,6 +55,8 @@ func GetDefaultConfig() *SvcmgrConfig {
 	return &SvcmgrConfig{
 		maria,
 		influx,
+		"0.0.0.0",
+		"4000",
 		"0.0.0.0",
 		"8081",
 	}

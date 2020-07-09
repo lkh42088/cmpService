@@ -175,7 +175,7 @@ type LoginAuth struct {
 	UserId           string `gorm:"type:varchar(32);column:la_user_id"`
 	AuthUserId       string `gorm:"type:varchar(32);column:la_auth_user_id"`
 	AuthEmail        string `gorm:"type:varchar(64);column:la_auth_email"`
-	EmailAuthConfirm bool   `gorm:"column:la_email_auth_confirm" json:"-"`
+	EmailAuthConfirm bool   `gorm:"type:tinyint(1);default:0;column:la_email_auth_confirm" json:"-"`
 	EmailAuthStore   string `gorm:"type:varchar(255);column:la_store" json:"-"`
 }
 
