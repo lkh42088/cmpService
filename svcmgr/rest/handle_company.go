@@ -115,7 +115,7 @@ func (h *Handler) GetCompanies(c *gin.Context) {
 func (h *Handler) AddCompany(c *gin.Context) {
 	var companyMsg models.CompanyDetail
 	c.Bind(&companyMsg)
-	fmt.Println("recv company: ", companyMsg)
+	fmt.Printf("recv company: %v\n", companyMsg)
 	exists := h.checkCompanyExists(companyMsg.Name)
 	fmt.Println("exists: ", exists)
 
@@ -148,8 +148,8 @@ func (h *Handler) AddCompany(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Add company: ", addCompany)
-	fmt.Println("Add user: ", adduser)
+	fmt.Printf("Add company: %v\n", addCompany)
+	fmt.Printf("Add user: %v\n", adduser)
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": addCompany})
 }
