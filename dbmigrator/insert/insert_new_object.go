@@ -70,7 +70,9 @@ func insertUsers() {
 	for num, user := range data {
 		pass, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 		user.Password = string(pass)
-		user.CompanyIdx = companyIdx
+		if user.CompanyIdx == 0 {
+			user.CompanyIdx = companyIdx
+		}
 		fmt.Printf("insertUsers (%d)\n", num)
 		newDb.AddUser(user)
 	}
