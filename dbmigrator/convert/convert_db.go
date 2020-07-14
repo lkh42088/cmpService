@@ -7,7 +7,6 @@ import (
 	"cmpService/common/models"
 	"cmpService/dbmigrator/cbmodels"
 	"cmpService/dbmigrator/config"
-	"cmpService/dbmigrator/insert"
 	"cmpService/dbmigrator/mysqllayer"
 	"fmt"
 	"strconv"
@@ -20,15 +19,12 @@ var idx_log uint = 0
 var idx_device uint = 0
 
 func RunConvertDb() {
-	//convertInternal(ConvertItem)
-	//convertInternal(ConvertItemSub)
-	//convertInternal(ConvertDeviceServer)
-	//convertInternal(ConvertDeviceNetwork)
-	//convertInternal(ConvertDevicePart)
-	//convertInternal(ConvertMember)
-
-	// INSERT TEST OBJECT
-	insert.InsertNewObject()
+	convertInternal(ConvertItem)
+	convertInternal(ConvertItemSub)
+	convertInternal(ConvertDeviceServer)
+	convertInternal(ConvertDeviceNetwork)
+	convertInternal(ConvertDevicePart)
+	convertInternal(ConvertMember)
 }
 
 func convertInternal(convert func(*mysqllayer.CBORM, *mariadblayer.DBORM)) {
