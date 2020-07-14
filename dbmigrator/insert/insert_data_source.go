@@ -131,4 +131,22 @@ var newUsers = []models.User{
 	},
 }
 
+var newCompanies = []models.Company{
+	{
+		Idx:           0,
+		Name:          "Nubes-Bridge",
+		Email:         "nubes@nubes-bridge.com",
+		Homepage:      "nubes-bridge.com",
+		Tel:           "02-111-2222",
+		HP:            "",
+		Zipcode:       "",
+		Address:       "",
+		AddressDetail: "",
+		TermDate:      time.Time{},
+		IsCompany:     false,
+		UserId:        "nubes",
+		Memo:          "",
+	},
+}
+
 
