@@ -472,7 +472,7 @@ func (db *DBORM) GetDevicesNetworkWithJoin(cri models.PageCreteria) (
 	SetThousandCount(&cri)
 
 	err = db.
-		Debug().
+		//Debug().
 		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceNetwork{}).
 		Table(NetworkTable).

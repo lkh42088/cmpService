@@ -206,12 +206,11 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 
 func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string) (
 	interface{}, error) {
-	fmt.Println("@#$!@#$#@$@#$#@$", device)
 	var err error
 	switch device {
 	case "device_server_tb":
 		err = db.
-			Debug().
+			//Debug().
 			Table(device).
 			Where("device_code = ?", deviceCode).
 			Update(map[string]interface{}{
@@ -250,7 +249,7 @@ func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string
 		}).Error
 	case "device_network_tb":
 		err = db.
-			Debug().
+			//Debug().
 			Table(device).
 			Where("device_code = ?", deviceCode).
 			Update(map[string]interface{}{
@@ -286,7 +285,7 @@ func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string
 		}).Error
 	case "device_part_tb":
 		err = db.
-			Debug().
+			//Debug().
 			Table(device).
 			Where("device_code = ?", deviceCode).
 			Update(map[string]interface{}{
