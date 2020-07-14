@@ -206,7 +206,7 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 
 func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string) (
 	interface{}, error) {
-	return data, db.Table(device).Where("device_code = ?", deviceCode).Update(data).Error
+	return data, db.Debug().Table(device).Where("device_code = ?", deviceCode).Update(data).Error
 }
 
 // Update OutFlag

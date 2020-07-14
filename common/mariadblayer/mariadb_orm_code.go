@@ -2,6 +2,8 @@ package mariadblayer
 
 import (
 	"cmpService/common/models"
+	_ "database/sql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const typeField = "c_type"
@@ -55,3 +57,28 @@ func (db *DBORM) GetCodeList(code string, subCode string) (codes []models.Code, 
 		Where(GetWhereString(typeField), code).
 		Find(&codes).Error
 }
+
+
+func (db *DBORM) GetCodeByIdx(codeIdx string) (code models.Code, err error) {
+	//reScan := db.Select("SELECT c_name FROM code_tb WHERE c_idx = ?", code).Scan(&cName)
+	//err = db.Select("SELECT c_name FROM code_tb WHERE c_idx = ?", code).Error
+/*
+	result := db.Table("code_tb").Select("c_name").Where("c_idx = ?", codeIdx)
+
+	fmt.Println("cName : ", cName)
+	fmt.Println("result : ", result)
+	test := db.Raw("select * from code_tb").Scan(&cName)
+	fmt.Println("test : ", test)*/
+
+	/*return returnVal, db.Where("c_idx=?", code).Find(models.Code{}).Error*/
+	return code, db.Where("c_idx = ?", codeIdx).Find(&code).Error
+}
+
+func (db *DBORM) GetSubCodeByIdx(codeIdx string) (subCode models.SubCode, err error) {
+	return subCode, db.Where("csub_idx = ?", codeIdx).Find(&subCode).Error
+}
+/*
+val, err := db.Where("c_idx=?", code).Find(models.Code{}).Error
+err := db.Raw("SELECT c_name FROM code_tb WHERE c_idx = ?", code).Scan(&result)
+
+*/
