@@ -51,6 +51,7 @@ type HandlerInterface interface {
 	Logout(c *gin.Context)
 	LoginUserByEmail(c *gin.Context)
 	EmailConfirm(c *gin.Context)
+	CheckPassword(c *gin.Context)
 	// User
 	CheckDuplicatedUser(c *gin.Context)
 	GetUsersPage(c *gin.Context)
@@ -66,6 +67,7 @@ type HandlerInterface interface {
 	GetCompanies(c *gin.Context)
 	AddCompany(c *gin.Context)
 	DeleteCompany(c *gin.Context)
+	ModifyCompany(c *gin.Context)
 	// Subnet
 	GetSubnet(c *gin.Context)
 	AddSubnet(c *gin.Context)
@@ -160,6 +162,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(ApiLogin+"/email_confirm", h.EmailConfirm)
 	router.GET(ApiLogin+"/check", h.GetSession)
 	router.POST(ApiLogin+"/logout", h.Logout)
+	router.POST(ApiLogin+"/check-password", h.CheckPassword)
 
 	pagingParam := "/:rows/:offset/:orderby/:order"
 
@@ -179,6 +182,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/v1/customers/register", h.AddCompany)
 	router.POST("/v1/customers/unregister", h.DeleteCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
+	router.POST("/v1/customers/modify-company", h.ModifyCompany)
 
 	// Subnet
 	router.POST("/v1/subnet/create", h.AddSubnet)

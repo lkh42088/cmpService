@@ -10,6 +10,7 @@ import (
 )
 
 func (h *Handler) checkCompanyExists(name string) bool {
+	fmt.Println("name: ", name)
 	company, err := h.db.GetCompanyByCpName(name)
 	if err != nil {
 		lib.LogWarnln(err)
@@ -113,6 +114,48 @@ func (h *Handler) GetCompanies(c *gin.Context) {
 }
 
 func (h *Handler) AddCompany(c *gin.Context) {
+	var companyMsg models.CompanyDetail
+	c.Bind(&companyMsg)
+	fmt.Printf("recv company: %v\n", companyMsg)
+	exists := h.checkCompanyExists(companyMsg.Name)
+	fmt.Println("exists: ", exists)
+
+	addCompany, err := h.db.AddCompany(companyMsg.Company)
+	if err != nil {
+		fmt.Println("err:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		return
+	}
+	var newUser models.User
+	newUser.UserId = companyMsg.UserId
+	newUser.IsCompanyAccount = true
+	newUser.Password = companyMsg.UserPassword
+	newUser.AuthLevel = 5
+	newUser.CompanyIdx = int(addCompany.Idx)
+	newUser.Email = companyMsg.Email
+	newUser.Name = companyMsg.Name
+	newUser.HP = companyMsg.Tel
+	newUser.GroupEmailAuth = false
+	newUser.EmailAuth = false
+	newUser.Address = companyMsg.Address
+	newUser.AddressDetail = companyMsg.AddressDetail
+	newUser.Zipcode = companyMsg.Zipcode
+
+	models.HashPassword(&newUser)
+	adduser, err := h.db.AddUser(newUser)
+	if err != nil {
+		fmt.Println("add user: err:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		return
+	}
+
+	fmt.Printf("Add company: %v\n", addCompany)
+	fmt.Printf("Add user: %v\n", adduser)
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": addCompany})
+}
+
+func (h *Handler) ModifyCompany(c *gin.Context) {
 	var companyMsg models.CompanyDetail
 	c.Bind(&companyMsg)
 	fmt.Printf("recv company: %v\n", companyMsg)
