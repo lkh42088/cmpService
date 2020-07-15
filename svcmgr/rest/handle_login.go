@@ -197,6 +197,23 @@ func (h *Handler) LoginGroupEmail(c *gin.Context) {
 	responseWithToken(c, user, "")
 }
 
+func (h *Handler) CheckPassword(c *gin.Context) {
+	msg, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": ""})
+		return
+	}
+	fmt.Printf("msg: %v\n", msg)
+	id := msg["id"].(string)
+	password := msg["password"].(string)
+	user, err := h.db.GetUserById(id)
+	match := models.CheckPasswordHash(password, user.Password)
+	if !match {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "errors": ""})
+		return
+	}
+}
+
 func (h *Handler) LoginUserById(c *gin.Context) {
 	var msg messages.UserLoginMessage
 	var restStatus int
@@ -662,18 +679,18 @@ func (h *Handler) GetSession(c *gin.Context) {
 }
 
 func (h *Handler) EmailConfirm(c *gin.Context) {
-	m, err := JsonUnmarshal(c.Request.Body)
+	msg, err := JsonUnmarshal(c.Request.Body)
 	if err != nil {
 		fmt.Println("EmailConfirm error:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": http.StatusText(http.StatusBadRequest)})
 		return
 	}
-	fmt.Println("m:", len(m))
-	fmt.Println("m:", m)
+	fmt.Println("msg:", len(msg))
+	fmt.Println("msg:", msg)
 
-	userId := m["id"].(string)
-	targetId := m["target"].(string)
-	secret := m["secret"].(string)
+	userId := msg["id"].(string)
+	targetId := msg["target"].(string)
+	secret := msg["secret"].(string)
 
 	fmt.Println("EmailConfirm: id - ", userId)
 	fmt.Println("EmailConfirm: target - ", targetId)
