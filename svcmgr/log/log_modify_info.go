@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -30,9 +31,10 @@ func DeviceInfoModify(info CompareInfo) error {
 	// ......
 	newElem := reflect.ValueOf(info.NewDevice).Elem()
 	oldElem := reflect.ValueOf(info.OldDevice)
-	fmt.Printf("👉---------------------------------------------------- 수정 로그 시작 \n")
-	fmt.Printf("😡😡😡😡😡 new %+v\n", newElem) //todo
-	fmt.Printf("😡😡😡😡😡 old %+v\n", oldElem) //todo
+	fmt.Printf("😡 new %+v\n", newElem) //todo
+	fmt.Printf("😡 old %+v\n", oldElem) //todo
+
+
 
 	for i := 0; i < newElem.NumField(); i++ {
 		// nested struct check
@@ -44,23 +46,21 @@ func DeviceInfoModify(info CompareInfo) error {
 					continue
 				}
 
-				fmt.Printf("COMMON 😡😡 newElem %+v\n", newElem.Field(i).Field(j).Interface())
-				fmt.Printf("COMMON 😡😡 oldElem %+v\n", oldElem.Field(i).Field(j).Interface())
-
 				changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
 					newElem.Field(i).Field(j).Interface(),
 					oldElem.Field(i).Field(j).Interface())
 
+				changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
+					GetCodeLogValue(changeInfo.NewStatus, newElem.Field(i).Type().Field(j).Name),
+					GetCodeLogValue(changeInfo.OldStatus, newElem.Field(i).Type().Field(j).Name))
+
 				changeInfo.Field = ConvertFieldName(newElem.Field(i).Type().Field(j).Name)
 
-				//fmt.Printf("😡😡😡 changeInfo.Field %+v\n", changeInfo.Field)
 
 				if changeInfo.Field == "" {
 					continue
 				}
 
-				fmt.Printf("😡😡😡 info %+v\n", info)
-				fmt.Printf("😡😡😡 changeInfo %+v\n", changeInfo)
 				StoreLog(info, changeInfo)
 				changeInfo = ChangeInfo{} // init struct
 			}
@@ -72,20 +72,20 @@ func DeviceInfoModify(info CompareInfo) error {
 				continue
 			}
 
-			fmt.Printf("ELSE 💥💥 newElem %+v\n", newElem.Field(i).Interface())
-			fmt.Printf("ELSE 💥💥 oldElem %+v\n", oldElem.Field(i).Interface())
-
 			changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
 				newElem.Field(i).Interface(),
 				oldElem.Field(i).Interface())
 			changeInfo.Field = ConvertFieldName(newElem.Type().Field(i).Name)
 
-			fmt.Printf("💥💥💥 changeInfo.Field %+v\n", changeInfo.Field)
+
+			changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
+				GetCodeLogValue(changeInfo.NewStatus, newElem.Type().Field(i).Name),
+				GetCodeLogValue(changeInfo.OldStatus, newElem.Type().Field(i).Name))
 		}
+
 		StoreLog(info, changeInfo)
 		changeInfo = ChangeInfo{} // init struct
 	}
-	fmt.Printf("👉---------------------------------------------------- 수정 로그 끝 \n")
 
 	return nil
 }
@@ -154,7 +154,7 @@ func SetLogValue(new interface{}, old interface{}) (newVal string, oldVal string
 	if new == nil || old == nil {
 		return "", ""
 	}
-	fmt.Printf(reflect.TypeOf(new).Kind().String()) //todo
+	fmt.Println(reflect.TypeOf(new).Kind().String()) //todo
 	switch reflect.TypeOf(new).Kind() {
 	case reflect.Int:
 		newVal = strconv.Itoa(int(reflect.ValueOf(new).Int()))
@@ -168,7 +168,57 @@ func SetLogValue(new interface{}, old interface{}) (newVal string, oldVal string
 	default:
 		return "", ""
 	}
+
 	return newVal, oldVal
+}
+
+func GetCodeLogValue(val string, field string) string {
+	var returnVal string
+	comma := ","
+	Code := models.Code{}
+	SubCode := models.SubCode{}
+	db, _ := SetMariaDBForLog()
+	defer db.Close()
+
+	switch field {
+	case "Model", "Rack":
+		SubCode, _ = db.GetSubCodeByIdx(val)
+		returnVal = SubCode.Name
+	case "Manufacture", "DeviceType", "Ownership", "OwnershipDiv", "IDC", "RackCode", "Size":
+		Code, _ = db.GetCodeByIdx(val)
+		returnVal = Code.Name
+	/*case "Customer":
+		returnVal = "고객사명"
+	case "OwnerCompany":
+		returnVal = "소유 회사"
+	case "MonitoringFlag":
+		returnVal = "모니터링 여부"
+	case "MonitoringMethod":
+		returnVal = "모니터링 방식"
+	case "Size":
+		returnVal = "크기"*/
+	case "Spla":
+		if strings.Contains(val, "|") {
+			splaArray := strings.Split(val, "|")
+
+			for i := 0; i < len(splaArray); i++ {
+				if len(splaArray[i]) != 0 {
+					if i == 0 {
+						comma = ""
+					} else {
+						comma = ","
+					}
+
+					Code, _ = db.GetCodeByIdx(splaArray[i])
+					returnVal = returnVal + comma +  Code.Name
+				}
+			}
+		}
+	default:
+		returnVal = val
+	}
+
+	return returnVal
 }
 
 func StoreLog(info CompareInfo, v ChangeInfo) error {

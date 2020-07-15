@@ -10,6 +10,7 @@ import (
 )
 
 func (h *Handler) checkCompanyExists(name string) bool {
+	fmt.Println("name: ", name)
 	company, err := h.db.GetCompanyByCpName(name)
 	if err != nil {
 		lib.LogWarnln(err)

@@ -26,6 +26,7 @@ type UserRegisterMessage struct {
 	Password           string              `json:"password"`
 	Email              string              `json:"email"`
 	Name               string              `json:"name"`
+	Tel                string              `json:"tel"`
 	HP                 string              `json:"hp"`
 	AuthLevel          int                 `json:"authLevel"`
 	ZipCode            string              `json:"zipCode"`
@@ -34,6 +35,7 @@ type UserRegisterMessage struct {
 	EmailAuthFlag      bool                `json:"emailAuthFlag"`
 	EmailAuthGroupFlag bool                `json:"emailAuthGroupFlag"`
 	EmailAuthGroupList []models.UserDetail `json:"emailAuthGroupList"`
+	Memo               string              `json:"memo"`
 }
 
 func (u UserRegisterMessage) String() {
@@ -122,12 +124,14 @@ func (msg *UserRegisterMessage) Translate() (user models.User, emailAuthList []m
 	user.EmailAuth = msg.EmailAuthFlag
 	user.IsCompanyAccount = msg.IsCompanyAccount
 	user.HP = msg.HP
+	user.Tel = msg.Tel
 	user.AuthLevel = msg.AuthLevel
 	user.Zipcode = msg.ZipCode
 	user.Address = msg.Address
 	user.AddressDetail = msg.AddressDetail
 	user.GroupEmailAuth = msg.EmailAuthGroupFlag
 	user.EmailAuth = msg.EmailAuthFlag
+	user.Memo = msg.Memo
 
 	// email auth
 	if user.GroupEmailAuth {

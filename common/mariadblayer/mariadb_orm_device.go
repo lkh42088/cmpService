@@ -206,7 +206,120 @@ func (db *DBORM) DeleteDevicePart(pd models.DevicePart) (models.DevicePart, erro
 
 func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string) (
 	interface{}, error) {
-	return data, db.Table(device).Where("device_code = ?", deviceCode).Update(data).Error
+	var err error
+	switch device {
+	case "device_server_tb":
+		err = db.
+			//Debug().
+			Table(device).
+			Where("device_code = ?", deviceCode).
+			Update(map[string]interface{}{
+			"device_idx": data.(*models.DeviceServer).Idx,
+			"out_flag": data.(*models.DeviceServer).OutFlag,
+			"comment_cnt": data.(*models.DeviceServer).CommentCnt,
+			"comment_last_date": data.(*models.DeviceServer).CommentLastDate,
+			"register_id": data.(*models.DeviceServer).RegisterId,
+			"register_date": data.(*models.DeviceServer).RegisterDate,
+			"device_code": data.(*models.DeviceServer).DeviceCode,
+			"model_cd": data.(*models.DeviceServer).Model,
+			"contents": data.(*models.DeviceServer).Contents,
+			"user_id": data.(*models.DeviceServer).Customer,
+			"manufacture_cd": data.(*models.DeviceServer).Manufacture,
+			"device_type_cd": data.(*models.DeviceServer).DeviceType,
+			"warehousing_date": data.(*models.DeviceServer).WarehousingDate,
+			"rent_date": data.(*models.DeviceServer).RentDate,
+			"ownership_cd": data.(*models.DeviceServer).Ownership,
+			"ownership_div_cd": data.(*models.DeviceServer).OwnershipDiv,
+			"owner_company": data.(*models.DeviceServer).OwnerCompany,
+			"hw_sn": data.(*models.DeviceServer).HwSn,
+			"idc_cd": data.(*models.DeviceServer).IDC,
+			"rack_cd": data.(*models.DeviceServer).Rack,
+			"cost": data.(*models.DeviceServer).Cost,
+			"purpose": data.(*models.DeviceServer).Purpose,
+			"monitoring_flag": data.(*models.DeviceServer).MonitoringFlag,
+			"monitoring_method": data.(*models.DeviceServer).MonitoringMethod,
+			"ip": data.(*models.DeviceServer).Ip,
+			"size_cd": data.(*models.DeviceServer).Size,
+			"spla_cd": data.(*models.DeviceServer).Spla,
+			"cpu": data.(*models.DeviceServer).Cpu,
+			"memory": data.(*models.DeviceServer).Memory,
+			"hdd": data.(*models.DeviceServer).Hdd,
+			"rack_tag": data.(*models.DeviceServer).RackTag,
+			"rack_loc": data.(*models.DeviceServer).RackLoc,
+		}).Error
+	case "device_network_tb":
+		err = db.
+			//Debug().
+			Table(device).
+			Where("device_code = ?", deviceCode).
+			Update(map[string]interface{}{
+			"device_idx": data.(*models.DeviceNetwork).Idx,
+			"out_flag": data.(*models.DeviceNetwork).OutFlag,
+			"comment_cnt": data.(*models.DeviceNetwork).CommentCnt,
+			"comment_last_date": data.(*models.DeviceNetwork).CommentLastDate,
+			"register_id": data.(*models.DeviceNetwork).RegisterId,
+			"register_date": data.(*models.DeviceNetwork).RegisterDate,
+			"device_code": data.(*models.DeviceNetwork).DeviceCode,
+			"model_cd": data.(*models.DeviceNetwork).Model,
+			"contents": data.(*models.DeviceNetwork).Contents,
+			"user_id": data.(*models.DeviceNetwork).Customer,
+			"manufacture_cd": data.(*models.DeviceNetwork).Manufacture,
+			"device_type_cd": data.(*models.DeviceNetwork).DeviceType,
+			"warehousing_date": data.(*models.DeviceNetwork).WarehousingDate,
+			"rent_date": data.(*models.DeviceNetwork).RentDate,
+			"ownership_cd": data.(*models.DeviceNetwork).Ownership,
+			"ownership_div_cd": data.(*models.DeviceNetwork).OwnershipDiv,
+			"owner_company": data.(*models.DeviceNetwork).OwnerCompany,
+			"hw_sn": data.(*models.DeviceNetwork).HwSn,
+			"idc_cd": data.(*models.DeviceNetwork).IDC,
+			"rack_cd": data.(*models.DeviceNetwork).Rack,
+			"cost": data.(*models.DeviceNetwork).Cost,
+			"purpose": data.(*models.DeviceNetwork).Purpose,
+			"monitoring_flag": data.(*models.DeviceNetwork).MonitoringFlag,
+			"monitoring_method": data.(*models.DeviceNetwork).MonitoringMethod,
+			"ip": data.(*models.DeviceNetwork).Ip,
+			"size_cd": data.(*models.DeviceNetwork).Size,
+			"firmware_version": data.(*models.DeviceNetwork).FirmwareVersion,
+			"rack_tag": data.(*models.DeviceNetwork).RackTag,
+			"rack_loc": data.(*models.DeviceNetwork).RackLoc,
+		}).Error
+	case "device_part_tb":
+		err = db.
+			//Debug().
+			Table(device).
+			Where("device_code = ?", deviceCode).
+			Update(map[string]interface{}{
+			"device_idx": data.(*models.DevicePart).Idx,
+			"out_flag": data.(*models.DevicePart).OutFlag,
+			"comment_cnt": data.(*models.DevicePart).CommentCnt,
+			"comment_last_date": data.(*models.DevicePart).CommentLastDate,
+			"register_id": data.(*models.DevicePart).RegisterId,
+			"register_date": data.(*models.DevicePart).RegisterDate,
+			"device_code": data.(*models.DevicePart).DeviceCode,
+			"model_cd": data.(*models.DevicePart).Model,
+			"contents": data.(*models.DevicePart).Contents,
+			"user_id": data.(*models.DevicePart).Customer,
+			"manufacture_cd": data.(*models.DevicePart).Manufacture,
+			"device_type_cd": data.(*models.DevicePart).DeviceType,
+			"warehousing_date": data.(*models.DevicePart).WarehousingDate,
+			"rent_date": data.(*models.DevicePart).RentDate,
+			"ownership_cd": data.(*models.DevicePart).Ownership,
+			"ownership_div_cd": data.(*models.DevicePart).OwnershipDiv,
+			"owner_company": data.(*models.DevicePart).OwnerCompany,
+			"hw_sn": data.(*models.DevicePart).HwSn,
+			"idc_cd": data.(*models.DevicePart).IDC,
+			"rack_cd": data.(*models.DevicePart).Rack,
+			"cost": data.(*models.DevicePart).Cost,
+			"purpose": data.(*models.DevicePart).Purpose,
+			"monitoring_flag": data.(*models.DevicePart).MonitoringFlag,
+			"monitoring_method": data.(*models.DevicePart).MonitoringMethod,
+			"warranty": data.(*models.DevicePart).Warranty,
+			"rack_code_cd": data.(*models.DevicePart).RackCode,
+		}).Error
+	}
+
+	return data, err
+
 }
 
 // Update OutFlag
