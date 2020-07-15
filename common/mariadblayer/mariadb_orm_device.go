@@ -3,7 +3,6 @@ package mariadblayer
 import (
 	"cmpService/common/models"
 	"errors"
-	"fmt"
 )
 
 const outFlagField = "out_flag"
