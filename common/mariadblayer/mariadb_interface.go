@@ -8,6 +8,7 @@ type MariaDBLayer interface {
 	// Code
 	GetAllCodes() ([]models.Code, error)
 	GetCodeList(code string, subCode string) ([]models.Code, error)
+	GetCodeByIdx(codeIdx string) (models.Code, error)
 	AddCode(code models.Code) (models.Code, error)
 	DeleteCode(code models.Code) (models.Code, error)
 	DeleteCodes() error
@@ -15,6 +16,7 @@ type MariaDBLayer interface {
 	// SubCode
 	GetAllSubCodes() ([]models.SubCode, error)
 	GetSubCodeList(cIdx []string) ([]models.SubCodeResponse, error)
+	GetSubCodeByIdx(codeIdx string) (models.SubCode, error)
 	AddSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error

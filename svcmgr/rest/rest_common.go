@@ -111,6 +111,9 @@ func ConvertDeviceData(device map[string]interface{}, deviceType string, code st
 	if device == nil {
 		return nil
 	}
+
+	fmt.Println("▣ ConvertDeviceData device : ",device);
+
 	switch deviceType {
 	case "server":
 		dc := new(models.DeviceServer)
@@ -248,6 +251,8 @@ func ConvertDeviceCommon(device map[string]interface{}, code string) models.Devi
 	}
 	if val, ok := device["rack"]; ok {
 		dc.Rack, _ = strconv.Atoi(val.(string))
+
+		fmt.Println("----- <> : ", dc.Rack)
 	}
 	if val, ok := device["cost"]; ok {
 		dc.Cost = val.(string)
@@ -267,5 +272,7 @@ func ConvertDeviceCommon(device map[string]interface{}, code string) models.Devi
 	if val, ok := device["monitoringMethod"]; ok {
 		dc.MonitoringMethod, _ = strconv.Atoi(val.(string))
 	}
+
+	fmt.Println("▣ ConvertDeviceCommon : ", dc)
 	return dc
 }
