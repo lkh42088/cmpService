@@ -1,2 +1,6 @@
 .idea
 svcmgr/svcmgr.conf
+svcmgr/svcmgr.exe
+go.sum
+./svcmgr.conf
+
