@@ -196,6 +196,62 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": adduser})
 }
 
+func (h *Handler) ModifyUser(c *gin.Context) {
+	var msg messages.UserRegisterMessage
+	c.Bind(&msg)
+
+	fmt.Println("Register Message: ", msg)
+	msg.String()
+
+	oldUser, err := h.db.GetUserById(msg.Id)
+	if err != nil {
+		fmt.Println("ModifyUser: error 0.")
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		return
+	}
+	fmt.Printf("oldUser: %v\n", oldUser)
+
+	user, emailAuthList := msg.Translate()
+	user.Idx = oldUser.Idx
+	if user.CompanyIdx == 0 {
+		user.CompanyIdx = oldUser.CompanyIdx
+	}
+	if (len(msg.Password) > 6) {
+		models.HashPassword(&user)
+	} else {
+		user.Password = oldUser.Password
+	}
+
+	fmt.Println("User: ", user)
+	updateUser, err := h.db.UpdateUser(user)
+	fmt.Println("update user: ", updateUser)
+	if oldUser.GroupEmailAuth {
+		h.db.DeleteLoginAuthsByUserIdx(user.Idx)
+	}
+	if updateUser.GroupEmailAuth && len(emailAuthList) > 0 {
+		if err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+			fmt.Println("ModifyUser: error 4.", err)
+			return
+		}
+		for _, loginAuth := range emailAuthList {
+			loginAuth.UserIdx = updateUser.Idx
+			loginAuth, err := h.db.AddLoginAuth(loginAuth)
+			if err != nil {
+				fmt.Println("Failed to add loginAuth!")
+			}
+			fmt.Println("Add loginAuth: ", loginAuth)
+		}
+	}
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		fmt.Println("ModifyUser: error 5.", err)
+		return
+	}
+	fmt.Println("Modify user:", updateUser)
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": updateUser})
+}
+
 func (h *Handler) RegisterUserBackup(c *gin.Context) {
 	var userMsg messages.UserRegisterMessage
 	c.Bind(&userMsg)
