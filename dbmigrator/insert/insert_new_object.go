@@ -14,6 +14,7 @@ func InsertNewObject() {
 	insertSubCodeItems()
 	insertCompanies()
 	insertUsers()
+	insertSubnets()
 }
 
 func insertCodeItem() {
@@ -78,4 +79,20 @@ func insertUsers() {
 	}
 }
 
+func insertSubnets() {
+	newConfig := config.GetNewDatabaseConfig()
+	newOptions := db.GetDataSourceName(newConfig)
+	newDb, err := mariadblayer.NewDBORM(newConfig.DBDriver, newOptions)
+	if err != nil {
+		fmt.Println("newConfig Error:", err)
+		return
+	}
+	defer newDb.Close()
+
+	var data = newSubnets
+	for num, subnet := range data {
+		fmt.Printf("insertSubnets (%d)\n", num)
+		newDb.AddSubnet(subnet)
+	}
+}
 
