@@ -104,6 +104,7 @@ type MariaDBLayer interface {
 	DeleteCompany(company models.Company) (models.Company, error)
 	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
 	DeleteAllCompany() error
+	UpdateCompany(obj models.Company) (models.Company, error)
 
 	// User
 	AddUser(user models.User) (models.User, error)
@@ -114,6 +115,8 @@ type MariaDBLayer interface {
 	GetUserByEmail(id string) (models.User, error)
 	GetUsersPage(paging models.Pagination) (models.UserPage, error)
 	GetUserDetailsByCpIdx(cpIdx int) ([]models.UserDetail, error)
+	UpdateUserPassword(user models.User) (models.User, error)
+	UpdateUser(user models.User) (models.User, error)
 
 	// User Email Authentication
 	GetAllUserEmailAuth() (objs []models.UserEmailAuth, err error)
