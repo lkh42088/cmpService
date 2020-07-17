@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 /*
@@ -226,6 +227,19 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 			outFlag = "1"
 		}
 	}
+
+	currentTime := time.Now()
+	fmt.Println("★★★★★ 20060102 {Special Character} : ", currentTime.Format("20060101"))
+	// time.Now().format("2006-01-02 15:04:05")
+	// Output "2017-02-28 11:35:01"
+
+	t := time.Now()
+
+	formatted := fmt.Sprintf("%d%02d%02d",
+		t.Year(), t.Month(), t.Day())
+
+	fmt.Println("com formatted -----> : ", formatted)
+
 
 	page := models.PageCreteria{
 		DeviceType: c.Param("type"),

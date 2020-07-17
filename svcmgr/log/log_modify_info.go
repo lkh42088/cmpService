@@ -31,10 +31,6 @@ func DeviceInfoModify(info CompareInfo) error {
 	// ......
 	newElem := reflect.ValueOf(info.NewDevice).Elem()
 	oldElem := reflect.ValueOf(info.OldDevice)
-	fmt.Printf("😡 new %+v\n", newElem) //todo
-	fmt.Printf("😡 old %+v\n", oldElem) //todo
-
-
 
 	for i := 0; i < newElem.NumField(); i++ {
 		// nested struct check
