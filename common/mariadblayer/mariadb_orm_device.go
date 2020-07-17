@@ -214,12 +214,13 @@ func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string
 			Table(device).
 			Where("device_code = ?", deviceCode).
 			Update(map[string]interface{}{
-			"device_idx": data.(*models.DeviceServer).Idx,
+			// remove unnecessary data
+			//"device_idx": data.(*models.DeviceServer).Idx,
+			//"comment_cnt": data.(*models.DeviceServer).CommentCnt,
+			//"comment_last_date": data.(*models.DeviceServer).CommentLastDate,
+			//"register_id": data.(*models.DeviceServer).RegisterId,
+			//"register_date": data.(*models.DeviceServer).RegisterDate,
 			"out_flag": data.(*models.DeviceServer).OutFlag,
-			"comment_cnt": data.(*models.DeviceServer).CommentCnt,
-			"comment_last_date": data.(*models.DeviceServer).CommentLastDate,
-			"register_id": data.(*models.DeviceServer).RegisterId,
-			"register_date": data.(*models.DeviceServer).RegisterDate,
 			"device_code": data.(*models.DeviceServer).DeviceCode,
 			"model_cd": data.(*models.DeviceServer).Model,
 			"contents": data.(*models.DeviceServer).Contents,
@@ -253,12 +254,13 @@ func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string
 			Table(device).
 			Where("device_code = ?", deviceCode).
 			Update(map[string]interface{}{
-			"device_idx": data.(*models.DeviceNetwork).Idx,
+			// remove unnecessary data
+			//"device_idx": data.(*models.DeviceNetwork).Idx,
+			//"comment_cnt": data.(*models.DeviceNetwork).CommentCnt,
+			//"comment_last_date": data.(*models.DeviceNetwork).CommentLastDate,
+			//"register_id": data.(*models.DeviceNetwork).RegisterId,
+			//"register_date": data.(*models.DeviceNetwork).RegisterDate,
 			"out_flag": data.(*models.DeviceNetwork).OutFlag,
-			"comment_cnt": data.(*models.DeviceNetwork).CommentCnt,
-			"comment_last_date": data.(*models.DeviceNetwork).CommentLastDate,
-			"register_id": data.(*models.DeviceNetwork).RegisterId,
-			"register_date": data.(*models.DeviceNetwork).RegisterDate,
 			"device_code": data.(*models.DeviceNetwork).DeviceCode,
 			"model_cd": data.(*models.DeviceNetwork).Model,
 			"contents": data.(*models.DeviceNetwork).Contents,
@@ -289,12 +291,13 @@ func (db *DBORM) UpdateDevice(data interface{}, device string, deviceCode string
 			Table(device).
 			Where("device_code = ?", deviceCode).
 			Update(map[string]interface{}{
-			"device_idx": data.(*models.DevicePart).Idx,
+			// remove unnecessary data
+			//"device_idx": data.(*models.DevicePart).Idx,
+			//"comment_cnt": data.(*models.DevicePart).CommentCnt,
+			//"comment_last_date": data.(*models.DevicePart).CommentLastDate,
+			//"register_id": data.(*models.DevicePart).RegisterId,
+			//"register_date": data.(*models.DevicePart).RegisterDate,
 			"out_flag": data.(*models.DevicePart).OutFlag,
-			"comment_cnt": data.(*models.DevicePart).CommentCnt,
-			"comment_last_date": data.(*models.DevicePart).CommentLastDate,
-			"register_id": data.(*models.DevicePart).RegisterId,
-			"register_date": data.(*models.DevicePart).RegisterDate,
 			"device_code": data.(*models.DevicePart).DeviceCode,
 			"model_cd": data.(*models.DevicePart).Model,
 			"contents": data.(*models.DevicePart).Contents,
