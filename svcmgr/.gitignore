@@ -1,3 +1,4 @@
 svcmgr
 .idea
 go.sum
+dbmigrator.lkh.conf
