@@ -172,17 +172,18 @@ func (DeviceLog) TableName() string {
 }
 
 type PageCreteria struct {
-	Count      int    `json:"count"`     // 전체 row 개수 in DB
-	TotalPage  int    `json:"totalPage"` // 전체 페이지
-	CheckCnt   int    `json:"checkCnt"`  // Current row counter (offset)
-	Size       int    `json:"size"`      // limit
-	OutFlag    string `json:"outFlag"`   // 0: 반입, 1: 반출
-	OrderKey   string `json:"orderKey"`  // order field
-	Direction  int    `json:"direction"` // order : asc, desc
-	DeviceType string `json:"deviceType"`
-	Row        int    `json:"row"`
-	Page       int    `json:"page"`
-	OffsetPage int    `json:"offsetPage"`
+	Count          int    `json:"count"`     // 전체 row 개수 in DB
+	TotalPage      int    `json:"totalPage"` // 전체 페이지
+	CheckCnt       int    `json:"checkCnt"`  // Current row counter (offset)
+	Size           int    `json:"size"`      // limit
+	OutFlag        string `json:"outFlag"`   // 0: 반입, 1: 반출
+	OrderKey       string `json:"orderKey"`  // order field
+	Direction      int    `json:"direction"` // order : asc, desc
+	DeviceType     string `json:"deviceType"`
+	Row            int    `json:"row"`
+	Page           int    `json:"page"`
+	OffsetPage     int    `json:"offsetPage"`
+	RentPeriodFlag string `json:"rentPeriod"`
 }
 
 func (p *PageCreteria) String() {
