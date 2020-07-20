@@ -56,6 +56,21 @@ func (db *DBORM) GetCompaniesPage(paging models.Pagination) (companies models.Co
 	return companies, err
 }
 
+func (db *DBORM) GetCompaniesPageBySearch(paging models.Pagination, query string) (companies models.CompanyPage, err error) {
+	err = db.
+		Order(companies.GetOrderBy(paging.OrderBy, paging.Order)).
+		Limit(paging.RowsPerPage).
+		Offset(paging.Offset).
+		Where(query).
+		Find(&companies.Companies).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	paging.TotalCount = len(companies.Companies)
+	companies.Page = paging
+	return companies, err
+}
+
 func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
 	return company, db.Create(&company).Error
 }

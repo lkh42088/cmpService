@@ -22,3 +22,16 @@ func (p Pagination) String() {
 	}
 	fmt.Printf("%s\n", data)
 }
+
+type SearchParam struct {
+	Type    string `json:"searchType"`
+	Content string `json:"searchContent"`
+}
+
+type PageRequestMsg struct {
+	RowsPerPage int         `json:"rows"`
+	Offset      int         `json:"offset"`
+	OrderBy     string      `json:"orderBy"`
+	Order       string      `json:"order"`
+	Param       SearchParam `json:"searchParam"`
+}

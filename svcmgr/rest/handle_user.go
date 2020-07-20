@@ -101,7 +101,7 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 }
 
 func (h *Handler) GetUsersPageWithSearchParam(c *gin.Context) {
-	var msg models.UserPageMsg
+	var msg models.PageRequestMsg
 	c.Bind(&msg)
 	fmt.Printf("GetUsersPageWithSearchParam() msg %v\n", msg)
 

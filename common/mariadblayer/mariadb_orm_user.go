@@ -81,7 +81,6 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 }
 
 func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, err error) {
-	db.Model(&users.Users).Count(&paging.TotalCount)
 	err = db.
 		Table("user_tb").
 		Select("user_tb.*, c.cp_name").
@@ -93,6 +92,7 @@ func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, 
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
+	paging.TotalCount = len(users.Users)
 	users.Page = paging
 	return users, err
 }

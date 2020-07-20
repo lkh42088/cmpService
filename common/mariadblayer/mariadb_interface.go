@@ -103,6 +103,7 @@ type MariaDBLayer interface {
 	AddCompany(company models.Company) (models.Company, error)
 	DeleteCompany(company models.Company) (models.Company, error)
 	GetCompaniesPage(paging models.Pagination) (models.CompanyPage, error)
+	GetCompaniesPageBySearch(paging models.Pagination, query string) (models.CompanyPage, error)
 	DeleteAllCompany() error
 	UpdateCompany(obj models.Company) (models.Company, error)
 

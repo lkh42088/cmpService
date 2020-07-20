@@ -62,6 +62,7 @@ type HandlerInterface interface {
 	// Companies
 	CheckDuplicatedCompany(c *gin.Context)
 	GetCompaniesPage(c *gin.Context)
+	GetCompaniesPageWithSearchParam(c *gin.Context)
 	GetCompaniesByName(c *gin.Context)
 	GetUserDetailsByCpIdx(c *gin.Context)
 	GetCompaniesWithUserByLikeCpName(c *gin.Context)
@@ -185,6 +186,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/v1/customers/unregister", h.DeleteCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
 	router.POST("/v1/customers/modify-company", h.ModifyCompany)
+	router.POST("/v1/customers/companies/page-with-search-param", h.GetCompaniesPageWithSearchParam)
 
 	// Subnet
 	router.POST("/v1/subnet/create", h.AddSubnet)

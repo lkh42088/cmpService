@@ -55,6 +55,44 @@ func (h *Handler) GetCompaniesPage(c *gin.Context) {
 	c.JSON(http.StatusOK, companies)
 }
 
+func (h *Handler) GetCompaniesPageWithSearchParam(c *gin.Context) {
+	var msg models.PageRequestMsg
+	c.Bind(&msg)
+
+	fmt.Printf("Message %v\n", msg)
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: msg.RowsPerPage,
+		Offset:      msg.Offset,
+		OrderBy:     msg.OrderBy,
+		Order:       msg.Order,
+	}
+
+	var companies models.CompanyPage
+	var query string
+	var err error
+	if msg.Param.Type != "" && msg.Param.Content != "" {
+		switch msg.Param.Type {
+		case "userId":
+			query = "cp_user_id like '%" + msg.Param.Content + "%'"
+			fmt.Printf("query %s\n", query)
+			companies, err = h.db.GetCompaniesPageBySearch(page, query)
+		default:
+			query = "cp_name like '%" + msg.Param.Content + "%'"
+			fmt.Printf("query %s\n", query)
+			companies, err = h.db.GetCompaniesPageBySearch(page, query)
+		}
+	}
+	if (err != nil) {
+		fmt.Printf("err %s\n", err)
+	}
+	fmt.Printf("companies %v\n", companies)
+	companies.Page.String()
+	fmt.Println("OK users:", len(companies.Companies))
+	c.JSON(http.StatusOK, companies)
+}
+
 func (h *Handler) GetCompaniesByCpName(c *gin.Context) {
 	if h.db == nil {
 		return

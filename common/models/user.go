@@ -220,15 +220,3 @@ type UserEmailAuthMsg struct {
 	Secret string `json:"secret"`
 }
 
-type SearchParam struct {
-	Type    string `json:"searchType"`
-	Content string `json:"searchContent"`
-}
-
-type UserPageMsg struct {
-	RowsPerPage int         `json:"rows"`
-	Offset      int         `json:"offset"`
-	OrderBy     string      `json:"orderBy"`
-	Order       string      `json:"order"`
-	Param       SearchParam `json:"searchParam"`
-}
