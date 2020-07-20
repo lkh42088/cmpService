@@ -117,6 +117,7 @@ type MariaDBLayer interface {
 	GetUserDetailsByCpIdx(cpIdx int) ([]models.UserDetail, error)
 	UpdateUserPassword(user models.User) (models.User, error)
 	UpdateUser(user models.User) (models.User, error)
+	GetUsersPageBySearch(paging models.Pagination, query string) (users models.UserPage, err error)
 
 	// User Email Authentication
 	GetAllUserEmailAuth() (objs []models.UserEmailAuth, err error)

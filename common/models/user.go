@@ -221,11 +221,8 @@ type UserEmailAuthMsg struct {
 }
 
 type SearchParam struct {
-	UserId   string `json:"userId"`
-	Username string `json:"username"`
-	Emaile   string `json:"email"`
-	CpName   string `json:"cpName"`
-	Level    string `json:"level"`
+	Type    string `json:"searchType"`
+	Content string `json:"searchContent"`
 }
 
 type UserPageMsg struct {

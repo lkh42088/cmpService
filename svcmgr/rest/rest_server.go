@@ -169,7 +169,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// User
 	router.GET(ApiUser+pagingParam, h.GetUsersPage)
-	router.POST(ApiUser+"/page-with-search-param", h.GetUsersWithSearchParamPage)
+	router.POST(ApiUser+"/page-with-search-param", h.GetUsersPageWithSearchParam)
 	router.POST(ApiUser+"/register", h.RegisterUser)
 	router.POST(ApiUser+"/modify", h.ModifyUser)
 	router.POST(ApiUser+"/unregister", h.UnRegisterUser)

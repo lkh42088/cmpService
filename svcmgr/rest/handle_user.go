@@ -23,6 +23,38 @@ func (h *Handler) CheckUserExists(userId string) bool {
 	return false
 }
 
+func (h *Handler) includeEmailAuthToUserDetails(users []models.UserDetail) (newusers []models.UserDetail, err error) {
+	for _, user := range users {
+		fmt.Println(">>>> userId: ", user.UserId)
+		if user.GroupEmailAuth {
+			user.GroupEmailAuthList, err = h.db.GetLoginAuthsByUserId(user.UserId)
+			if err != nil {
+				fmt.Println("List1 : error ", err)
+			} else {
+				fmt.Println("List1 : ", user.GroupEmailAuthList)
+			}
+		}
+		user.ParticipateInAccountList , err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
+		if err != nil {
+			fmt.Println("List2 : error ",  err)
+		} else {
+			fmt.Println("List2 : ", user.ParticipateInAccountList)
+		}
+		var list []models.LoginAuth
+		if user.EmailAuth {
+			for _, item := range user.ParticipateInAccountList {
+				if item.UserId == user.UserId && item.AuthUserId == user.UserId {
+					continue
+				}
+				list = append(list, item)
+			}
+			user.ParticipateInAccountList = list
+		}
+		newusers = append(newusers, user)
+	}
+	return newusers, err
+}
+
 func (h *Handler) GetUsersPage(c *gin.Context) {
 	fmt.Println("GetUserPage...")
 
@@ -62,46 +94,49 @@ func (h *Handler) GetUsersPage(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	fmt.Println("2. get email group list:")
-	var newusers []models.UserDetail
-	for _, user := range users.Users {
-		fmt.Println(">>>> userId: ", user.UserId)
-		if user.GroupEmailAuth {
-			user.GroupEmailAuthList, err = h.db.GetLoginAuthsByUserId(user.UserId)
-			if err != nil {
-				fmt.Println("List1 : error ", err)
-			} else {
-				fmt.Println("List1 : ", user.GroupEmailAuthList)
-			}
-		}
-		user.ParticipateInAccountList , err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
-		if err != nil {
-			fmt.Println("List2 : error ",  err)
-		} else {
-			fmt.Println("List2 : ", user.ParticipateInAccountList)
-		}
-		var list []models.LoginAuth
-		if user.EmailAuth {
-			for _, item := range user.ParticipateInAccountList {
-				if item.UserId == user.UserId && item.AuthUserId == user.UserId {
-					continue
-				}
-				list = append(list, item)
-			}
-			user.ParticipateInAccountList = list
-		}
-		newusers = append(newusers, user)
-	}
-	users.Users = newusers
+	users.Users, _ = h.includeEmailAuthToUserDetails(users.Users)
 	users.Page.String()
 	fmt.Println("OK users:", len(users.Users))
 	c.JSON(http.StatusOK, users)
 }
 
-func (h *Handler) GetUsersWithSearchParamPage(c *gin.Context) {
+func (h *Handler) GetUsersPageWithSearchParam(c *gin.Context) {
 	var msg models.UserPageMsg
 	c.Bind(&msg)
-	fmt.Println("GetUsersWithSearchParamPage() msg ", msg)
-	c.JSON(http.StatusInternalServerError, gin.H{"error": "Testing"})
+	fmt.Printf("GetUsersPageWithSearchParam() msg %v\n", msg)
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: msg.RowsPerPage,
+		Offset:      msg.Offset,
+		OrderBy:     msg.OrderBy,
+		Order:       msg.Order,
+	}
+
+	var users models.UserPage
+	var query string
+	var err error
+	if msg.Param.Type != "" && msg.Param.Content != "" {
+		switch msg.Param.Type {
+		case "name":
+			query = "user_name like '%" + msg.Param.Content + "%'"
+			users, err = h.db.GetUsersPageBySearch(page, query)
+		case "cpName":
+			query = "c.cp_name like '%" + msg.Param.Content + "%'"
+			users, err = h.db.GetUsersPageBySearch(page, query)
+		default:
+			query = "user_id like '%" + msg.Param.Content + "%'"
+			users, err = h.db.GetUsersPageBySearch(page, query)
+		}
+	}
+	if err != nil {
+		fmt.Printf("get error %s\n", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
+	users.Users, _ = h.includeEmailAuthToUserDetails(users.Users)
+	users.Page.String()
+	fmt.Println("OK users:", len(users.Users))
+	c.JSON(http.StatusOK, users)
 }
 
 func getPagination(c *gin.Context) (p models.Pagination, err error) {

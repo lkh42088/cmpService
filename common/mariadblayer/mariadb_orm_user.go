@@ -97,6 +97,25 @@ func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, 
 	return users, err
 }
 
+func (db *DBORM) GetUsersPageBySearch(paging models.Pagination, query string) (users models.UserPage, err error) {
+	err = db.
+		Debug().
+		Table("user_tb").
+		Select("user_tb.*, c.cp_name").
+		Order(users.GetOrderBy(paging.OrderBy, paging.Order)).
+		Limit(paging.RowsPerPage).
+		Offset(paging.Offset).
+		Where(query).
+		Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Find(&users.Users).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	paging.TotalCount = len(users.Users)
+	users.Page = paging
+	return users, err
+}
+
 func (db *DBORM) GetUserByUserId(userId string) (user models.User, err error) {
 	return user, db.Where(models.User{UserId: userId}).Find(&user).Error
 }
