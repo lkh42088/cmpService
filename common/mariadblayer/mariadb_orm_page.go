@@ -57,6 +57,7 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, cri mo
 			queryWhere = queryWhere + " and d.user_id in (" + dc.Customer + ")"
 		}
 	}
+	fmt.Println("queryWhere : ", queryWhere);
 
 	if dc.DeviceCode != "" {
 		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
@@ -92,6 +93,7 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, cri mo
 		queryWhere = queryWhere + " and (SUBSTRING_INDEX(rent_date, '|', " +
 			"-1) <= '" + period + "' and SUBSTRING_INDEX(rent_date, '|', -1) >= '" + today + "')"
 	}
+
 
 	return queryWhere
 }
