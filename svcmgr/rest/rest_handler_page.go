@@ -213,6 +213,14 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		return
 	}
 
+/*	convertData = ConvertDeviceData(mapDevice, deviceType, mapDevice["customer"].(string))
+	if convertData == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	fmt.Println("★★★★★★★★★★★★★★★★ : ", mapDevice["customer"].(string))*/
+
 	/*0 : 반입, 1 : 반출*/
 	var outFlag string
 	if mapDevice["operatingFlag"].(bool) {
@@ -227,6 +235,14 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		}
 	}
 
+	// 0 : false
+	var rentPeriod string
+	if mapDevice["rentPeriod"].(bool) {
+		rentPeriod = "1"
+	} else {
+		rentPeriod = "0"
+	}
+
 	page := models.PageCreteria{
 		DeviceType: c.Param("type"),
 		OrderKey:   c.Param("order"),
@@ -235,6 +251,7 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		Direction:  dir,
 		Page:       curpage,
 		OffsetPage: offsetPage,
+		RentPeriodFlag: rentPeriod,
 	}
 
 	switch deviceType {

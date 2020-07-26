@@ -1,4 +1,11 @@
 .idea
 svcmgr/svcmgr.conf
+<<<<<<< HEAD
 svcmgr/svcmgr.lkh.conf
 svcmgr/svcmgr.exe
+=======
+svcmgr/svcmgr.exe
+go.sum
+./svcmgr.conf
+
+>>>>>>> d3abc377b439185daca8bd4e2c696025da2d107f

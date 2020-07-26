@@ -2,6 +2,7 @@ package convert
 
 import (
 	"cmpService/dbmigrator/config"
+	"cmpService/dbmigrator/insert"
 	"fmt"
 	"os"
 	"testing"
@@ -22,6 +23,11 @@ func TestCreateNewMariadbDb(t *testing.T) {
 func TestConvertDb(t *testing.T) {
 	config.SetConfig(getDbConfig("dbmigrator.conf"))
 	RunConvertDb()
+}
+
+func TestInsertItem(t *testing.T) {
+	config.SetConfig(getDbConfig("dbmigrator.conf"))
+	insert.InsertNewObject()
 }
 
 func TestDeleteDpb(t *testing.T) {

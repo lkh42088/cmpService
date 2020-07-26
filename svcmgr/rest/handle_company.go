@@ -10,6 +10,7 @@ import (
 )
 
 func (h *Handler) checkCompanyExists(name string) bool {
+	fmt.Println("name: ", name)
 	company, err := h.db.GetCompanyByCpName(name)
 	if err != nil {
 		lib.LogWarnln(err)
@@ -49,6 +50,44 @@ func (h *Handler) GetCompaniesPage(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	fmt.Println("2. page:")
+	companies.Page.String()
+	fmt.Println("OK users:", len(companies.Companies))
+	c.JSON(http.StatusOK, companies)
+}
+
+func (h *Handler) GetCompaniesPageWithSearchParam(c *gin.Context) {
+	var msg models.PageRequestMsg
+	c.Bind(&msg)
+
+	fmt.Printf("Message %v\n", msg)
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: msg.RowsPerPage,
+		Offset:      msg.Offset,
+		OrderBy:     msg.OrderBy,
+		Order:       msg.Order,
+	}
+
+	var companies models.CompanyPage
+	var query string
+	var err error
+	if msg.Param.Type != "" && msg.Param.Content != "" {
+		switch msg.Param.Type {
+		case "userId":
+			query = "cp_user_id like '%" + msg.Param.Content + "%'"
+			fmt.Printf("query %s\n", query)
+			companies, err = h.db.GetCompaniesPageBySearch(page, query)
+		default:
+			query = "cp_name like '%" + msg.Param.Content + "%'"
+			fmt.Printf("query %s\n", query)
+			companies, err = h.db.GetCompaniesPageBySearch(page, query)
+		}
+	}
+	if (err != nil) {
+		fmt.Printf("err %s\n", err)
+	}
+	fmt.Printf("companies %v\n", companies)
 	companies.Page.String()
 	fmt.Println("OK users:", len(companies.Companies))
 	c.JSON(http.StatusOK, companies)
@@ -152,6 +191,52 @@ func (h *Handler) AddCompany(c *gin.Context) {
 	fmt.Printf("Add user: %v\n", adduser)
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": addCompany})
+}
+
+func (h *Handler) ModifyCompany(c *gin.Context) {
+	var companyMsg models.CompanyDetail
+	c.Bind(&companyMsg)
+	fmt.Printf("recv company: %v\n", companyMsg)
+	company, err := h.db.GetCompanyByCpName(companyMsg.Name)
+	if err != nil {
+		fmt.Println("1. error: ", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+	}
+	fmt.Printf("get company: %v\n", company)
+
+	updateCompany := companyMsg.Company
+	updateCompany.Idx = company.Idx
+	company, err = h.db.UpdateCompany(updateCompany)
+	if err != nil {
+		fmt.Println("2. error: ", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+	}
+
+	updateUser, err := h.db.GetUserById(companyMsg.UserId)
+	if err != nil {
+		fmt.Println("3. error: ", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+	}
+	updateUser.Email = companyMsg.Email
+	updateUser.Name = companyMsg.Name
+	updateUser.HP = companyMsg.Tel
+	updateUser.Address = companyMsg.Address
+	updateUser.AddressDetail = companyMsg.AddressDetail
+	updateUser.Zipcode = companyMsg.Zipcode
+	if len(companyMsg.UserPassword) > 6 {
+		updateUser.Password = companyMsg.UserPassword
+		models.HashPassword(&updateUser)
+	}
+
+	updateUser, err = h.db.UpdateUser(updateUser)
+	if err != nil {
+		fmt.Println("add user: err:", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
+		return
+	}
+	fmt.Printf(">> Update company: %v\n", company)
+	fmt.Printf(">> Add user: %v\n", updateUser)
+	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
 }
 
 func deleteCompany(h * Handler, idx int) bool {

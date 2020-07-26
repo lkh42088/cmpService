@@ -3,9 +3,11 @@ package mariadblayer
 import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //const limitNum = 1000
@@ -36,14 +38,14 @@ func CombineCondition(outFlag string) string {
 	return "out_flag in ('1', '0')"
 }
 
-func CombineConditionAssetServer(dc models.DeviceServer, division string, outFlag string) string {
+func CombineConditionAssetServer(dc models.DeviceServer, division string, cri models.PageCreteria) string {
 	IDC := strconv.Itoa(dc.IDC)
 	DeviceType := strconv.Itoa(dc.DeviceType)
 	Manufacture := strconv.Itoa(dc.Manufacture)
 	queryWhere := ""
 
-	if outFlag != "" {
-		queryWhere = "out_flag in (" + outFlag + ")"
+	if cri.OutFlag != "" {
+		queryWhere = "out_flag in (" + cri.OutFlag + ")"
 	} else {
 		queryWhere = "out_flag in ( 9 )"
 	}
@@ -55,6 +57,7 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, outFla
 			queryWhere = queryWhere + " and d.user_id in (" + dc.Customer + ")"
 		}
 	}
+	fmt.Println("queryWhere : ", queryWhere);
 
 	if dc.DeviceCode != "" {
 		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
@@ -79,17 +82,30 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, outFla
 	if Manufacture != "" && Manufacture != "0" {
 		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
 	}
+
+	if cri.RentPeriodFlag == "1" { // 0 : false
+		t := time.Now()
+
+		today := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month(), t.Day())
+		period := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month()+1, t.Day())
+		queryWhere = queryWhere + " and (SUBSTRING_INDEX(rent_date, '|', " +
+			"-1) <= '" + period + "' and SUBSTRING_INDEX(rent_date, '|', -1) >= '" + today + "')"
+	}
+
+
 	return queryWhere
 }
 
-func CombineConditionAssetNetwork(dc models.DeviceNetwork, division string, outFlag string) string {
+func CombineConditionAssetNetwork(dc models.DeviceNetwork, division string, cri models.PageCreteria) string {
 	IDC := strconv.Itoa(dc.IDC)
 	DeviceType := strconv.Itoa(dc.DeviceType)
 	Manufacture := strconv.Itoa(dc.Manufacture)
 	queryWhere := ""
 
-	if outFlag != "" {
-		queryWhere = "out_flag in (" + outFlag + ")"
+	if cri.OutFlag != "" {
+		queryWhere = "out_flag in (" + cri.OutFlag + ")"
 	} else {
 		queryWhere = "out_flag in ( 9 )"
 	}
@@ -125,17 +141,29 @@ func CombineConditionAssetNetwork(dc models.DeviceNetwork, division string, outF
 	if Manufacture != "" && Manufacture != "0" {
 		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
 	}
+
+	if cri.RentPeriodFlag == "1" { // 0 : false
+		t := time.Now()
+
+		today := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month(), t.Day())
+		period := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month()+1, t.Day())
+		queryWhere = queryWhere + " and (SUBSTRING_INDEX(rent_date, '|', " +
+			"-1) <= '" + period + "' and SUBSTRING_INDEX(rent_date, '|', -1) >= '" + today + "')"
+	}
+
 	return queryWhere
 }
 
-func CombineConditionAssetPart(dc models.DevicePart, division string, outFlag string) string {
+func CombineConditionAssetPart(dc models.DevicePart, division string, cri models.PageCreteria) string {
 	IDC := strconv.Itoa(dc.IDC)
 	DeviceType := strconv.Itoa(dc.DeviceType)
 	Manufacture := strconv.Itoa(dc.Manufacture)
 	queryWhere := ""
 
-	if outFlag != "" {
-		queryWhere = "out_flag in (" + outFlag + ")"
+	if cri.OutFlag != "" {
+		queryWhere = "out_flag in (" + cri.OutFlag + ")"
 	} else {
 		queryWhere = "out_flag in ( 9 )"
 	}
@@ -171,6 +199,18 @@ func CombineConditionAssetPart(dc models.DevicePart, division string, outFlag st
 	if Manufacture != "" && Manufacture != "0" {
 		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
 	}
+
+	if cri.RentPeriodFlag == "1" { // 0 : false
+		t := time.Now()
+
+		today := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month(), t.Day())
+		period := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month()+1, t.Day())
+		queryWhere = queryWhere + " and (SUBSTRING_INDEX(rent_date, '|', " +
+			"-1) <= '" + period + "' and SUBSTRING_INDEX(rent_date, '|', -1) >= '" + today + "')"
+	}
+
 	return queryWhere
 }
 
@@ -208,7 +248,7 @@ func (db *DBORM) GetDevicesServerForPage(cri models.PageCreteria) (
 func (db *DBORM) GetDevicesServerSearchWithJoin(cri models.PageCreteria, dc models.DeviceServer) (
 	server models.DeviceServerPage, err error) {
 
-	db.Model(&models.DeviceServer{}).Where(CombineConditionAssetServer(dc, "count", cri.OutFlag)).Count(&cri.Count)
+	db.Model(&models.DeviceServer{}).Where(CombineConditionAssetServer(dc, "count", cri)).Count(&cri.Count)
 	orderBy := Orderby(cri.OrderKey, cri.Direction)
 	SetThousandCount(&cri)
 
@@ -220,7 +260,7 @@ func (db *DBORM) GetDevicesServerSearchWithJoin(cri models.PageCreteria, dc mode
 		Order(orderBy).
 		Limit(cri.Row).
 		Offset(cri.OffsetPage).
-		Where(CombineConditionAssetServer(dc, "list", cri.OutFlag)).
+		Where(CombineConditionAssetServer(dc, "list", cri)).
 		Joins(ManufactureServerJoinQuery).
 		Joins(ModelJoinQuery).
 		Joins(DeviceTypeServerJoinQuery).
@@ -244,7 +284,7 @@ func (db *DBORM) GetDevicesServerSearchWithJoin(cri models.PageCreteria, dc mode
 func (db *DBORM) GetDevicesNetworkSearchWithJoin(cri models.PageCreteria, dc models.DeviceNetwork) (
 	network models.DeviceNetworkPage, err error) {
 
-	db.Model(&models.DeviceNetwork{}).Where(CombineConditionAssetNetwork(dc, "count", cri.OutFlag)).Count(&cri.Count)
+	db.Model(&models.DeviceNetwork{}).Where(CombineConditionAssetNetwork(dc, "count", cri)).Count(&cri.Count)
 	orderBy := Orderby(cri.OrderKey, cri.Direction)
 	SetThousandCount(&cri)
 
@@ -256,7 +296,7 @@ func (db *DBORM) GetDevicesNetworkSearchWithJoin(cri models.PageCreteria, dc mod
 		Order(orderBy).
 		Limit(cri.Row).
 		Offset(cri.OffsetPage).
-		Where(CombineConditionAssetNetwork(dc, "list", cri.OutFlag)).
+		Where(CombineConditionAssetNetwork(dc, "list", cri)).
 		Joins(ManufactureNetworkJoinQuery).
 		Joins(ModelJoinQuery).
 		Joins(DeviceTypeNetworkJoinQuery).
@@ -299,7 +339,7 @@ func (db *DBORM) GetDevicesPartForPage(cri models.PageCreteria) (
 func (db *DBORM) GetDevicesPartSearchWithJoin(cri models.PageCreteria, dc models.DevicePart) (
 	part models.DevicePartPage, err error) {
 
-	db.Model(&models.DevicePart{}).Where(CombineConditionAssetPart(dc, "count", cri.OutFlag)).Count(&cri.Count)
+	db.Model(&models.DevicePart{}).Where(CombineConditionAssetPart(dc, "count", cri)).Count(&cri.Count)
 	orderBy := Orderby(cri.OrderKey, cri.Direction)
 	SetThousandCount(&cri)
 
@@ -311,7 +351,7 @@ func (db *DBORM) GetDevicesPartSearchWithJoin(cri models.PageCreteria, dc models
 		Order(orderBy).
 		Limit(cri.Row).
 		Offset(cri.OffsetPage).
-		Where(CombineConditionAssetPart(dc, "list", cri.OutFlag)).
+		Where(CombineConditionAssetPart(dc, "list", cri)).
 		Joins(ManufacturePartJoinQuery).
 		Joins(ModelJoinQuery).
 		Joins(DeviceTypePartJoinQuery).

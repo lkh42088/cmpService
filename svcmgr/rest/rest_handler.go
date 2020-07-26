@@ -388,19 +388,12 @@ func (h *Handler) UpdateDevice(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("★ convertData : ", convertData)
-	fmt.Println("★ tableName : ", tableName)
-	fmt.Println("★ code : ", code)
-	fmt.Println("★ mapDevice : ", mapDevice)
-	fmt.Println("★ device : ", device)
-
 	oldDevice := log.GetDevice(device, code)
 	data, err := h.db.UpdateDevice(convertData, tableName, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("★ ★ data : ", data)
 
 	// 변경된 장비 정보 LOG 로 등록
 	info := log.CompareInfo{

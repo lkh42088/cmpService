@@ -14,6 +14,7 @@ func InsertNewObject() {
 	insertSubCodeItems()
 	insertCompanies()
 	insertUsers()
+	insertSubnets()
 }
 
 func insertCodeItem() {
@@ -70,10 +71,28 @@ func insertUsers() {
 	for num, user := range data {
 		pass, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 		user.Password = string(pass)
-		user.CompanyIdx = companyIdx
+		if user.CompanyIdx == 0 {
+			user.CompanyIdx = companyIdx
+		}
 		fmt.Printf("insertUsers (%d)\n", num)
 		newDb.AddUser(user)
 	}
 }
 
+func insertSubnets() {
+	newConfig := config.GetNewDatabaseConfig()
+	newOptions := db.GetDataSourceName(newConfig)
+	newDb, err := mariadblayer.NewDBORM(newConfig.DBDriver, newOptions)
+	if err != nil {
+		fmt.Println("newConfig Error:", err)
+		return
+	}
+	defer newDb.Close()
+
+	var data = newSubnets
+	for num, subnet := range data {
+		fmt.Printf("insertSubnets (%d)\n", num)
+		newDb.AddSubnet(subnet)
+	}
+}
 
