@@ -85,6 +85,73 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 }
 */
 
+func (h *Handler) GetDevicesTypeCount(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	fmt.Println("GetDevicesTypeCount 시작")
+
+	deviceType := c.Param("type")
+
+	mapDevice, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestFailConvertData})
+		return
+	}
+
+	convertData := ConvertDeviceData(mapDevice, deviceType, mapDevice["deviceCode"].(string))
+	if convertData == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	/*0 : 반입, 1 : 반출*/
+	var outFlag string
+	if mapDevice["operatingFlag"].(bool) {
+		outFlag = "0"
+	}
+
+	if mapDevice["carryingFlag"].(bool) {
+		if outFlag != "" {
+			outFlag = outFlag + ", 1"
+		} else {
+			outFlag = "1"
+		}
+	}
+
+	// 0 : false
+	var rentPeriod string
+	if mapDevice["rentPeriod"].(bool) {
+		rentPeriod = "1"
+	} else {
+		rentPeriod = "0"
+	}
+
+	page := models.PageCreteria{
+		DeviceType: c.Param("type"),
+		OutFlag:    outFlag,
+		RentPeriodFlag: rentPeriod,
+	}
+
+	switch page.DeviceType {
+		case "server":
+			fmt.Println("GetDevicesTypeCount - switch 시작")
+			devicePage, err := h.db.GetDevicesTypeCountServerWithJoin(page,
+				*convertData.(*models.DeviceServer))
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			/*devicePage.Page.String()*/
+			fmt.Println("전체 : -------------------------------- > ", devicePage)
+			fmt.Println("서버 : -------------------------------- > ", devicePage.TypeServerCount)
+			fmt.Println("스토리지 : ----------------------------- > ", devicePage.TypeStorageCount)
+			fmt.Println("기타 : -------------------------------- > ", devicePage.TypeEtcCount)
+			c.JSON(http.StatusOK, devicePage)
+		}
+}
+
 func (h *Handler) GetDevicesForPageSearchTest(c *gin.Context) {
 	bodyByte, err := ioutil.ReadAll(c.Request.Body)
 	fmt.Printf("%+v\n", bodyByte)

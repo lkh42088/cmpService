@@ -38,6 +38,95 @@ func CombineCondition(outFlag string) string {
 	return "out_flag in ('1', '0')"
 }
 
+/*
+type DeviceServer models.DeviceServer
+
+func CombineConditionAsset(dc interface{}, division string, cri models.PageCreteria,
+typeModel string) string {
+	//modelType := dc.(interface{})
+	modelType := DeviceServer
+	switch typeModel {
+	case "server":
+		//modelType = dc.(models.DeviceServer)
+		modelType = models.DeviceServer
+		break
+	case "network":
+		modelType = dc.(models.DeviceNetwork)
+		break
+	case "part":
+		modelType = dc.(models.DevicePart)
+		break
+	default:
+		modelType = dc.(models.DeviceServer)
+	}
+
+	if typeModel == "server" {
+	}
+
+	fmt.Println("＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠ modelType : ", modelType)
+
+	IDC := strconv.Itoa(modelType.IDC)
+	DeviceType := strconv.Itoa(dc.(models.DeviceServer).DeviceType)
+	Manufacture := strconv.Itoa(dc.(models.DeviceServer).Manufacture)
+	queryWhere := ""
+
+	if cri.OutFlag != "" {
+		queryWhere = "out_flag in (" + cri.OutFlag + ")"
+	} else {
+		queryWhere = "out_flag in ( 9 )"
+	}
+
+	if dc.(models.DeviceServer).Customer != "" {
+		if division == "count" {
+			queryWhere = queryWhere + " and user_id in (" + dc.(models.DeviceServer).Customer + ")"
+		} else if division == "list" {
+			queryWhere = queryWhere + " and d.user_id in (" + dc.(models.DeviceServer).Customer + ")"
+		}
+	}
+
+	if division == "typeCount" {
+		queryWhere = queryWhere + " and d.device_type_cd = 7"
+	}
+
+	fmt.Println(".★ queryWhere : ", queryWhere)
+	if dc.(models.DeviceServer).DeviceCode != "" {
+		queryWhere = queryWhere + " and device_code like '%" + dc.(models.DeviceServer).DeviceCode + "%'"
+	}
+
+	if dc.(models.DeviceServer).Ownership != "" && dc.(models.DeviceServer).Ownership != "0" {
+		queryWhere = queryWhere + " and ownership_cd = '" + dc.(models.DeviceServer).Ownership + "'"
+	}
+
+	if dc.(models.DeviceServer).OwnershipDiv != "" && dc.(models.DeviceServer).OwnershipDiv != "0" {
+		queryWhere = queryWhere + " and ownership_div_cd = '" + dc.(models.DeviceServer).OwnershipDiv + "'"
+	}
+
+	if IDC != "" && IDC != "0" {
+		queryWhere = queryWhere + " and idc_cd = '" + IDC + "'"
+	}
+
+	if DeviceType != "" && DeviceType != "0" {
+		queryWhere = queryWhere + " and device_type_cd = '" + DeviceType + "'"
+	}
+
+	if Manufacture != "" && Manufacture != "0" {
+		queryWhere = queryWhere + " and manufacture_cd = '" + Manufacture + "'"
+	}
+
+	if cri.RentPeriodFlag == "1" { // 0 : false
+		t := time.Now()
+
+		today := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month(), t.Day())
+		period := fmt.Sprintf("%d%02d%02d",
+			t.Year(), t.Month()+1, t.Day())
+		queryWhere = queryWhere + " and (SUBSTRING_INDEX(rent_date, '|', " +
+			"-1) <= '" + period + "' and SUBSTRING_INDEX(rent_date, '|', -1) >= '" + today + "')"
+	}
+
+	return queryWhere
+}
+*/
 func CombineConditionAssetServer(dc models.DeviceServer, division string, cri models.PageCreteria) string {
 	IDC := strconv.Itoa(dc.IDC)
 	DeviceType := strconv.Itoa(dc.DeviceType)
@@ -57,8 +146,8 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, cri mo
 			queryWhere = queryWhere + " and d.user_id in (" + dc.Customer + ")"
 		}
 	}
-	fmt.Println("queryWhere : ", queryWhere);
 
+	fmt.Println(".★ queryWhere : ", queryWhere)
 	if dc.DeviceCode != "" {
 		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
 	}
@@ -93,7 +182,6 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, cri mo
 		queryWhere = queryWhere + " and (SUBSTRING_INDEX(rent_date, '|', " +
 			"-1) <= '" + period + "' and SUBSTRING_INDEX(rent_date, '|', -1) >= '" + today + "')"
 	}
-
 
 	return queryWhere
 }
@@ -253,7 +341,6 @@ func (db *DBORM) GetDevicesServerSearchWithJoin(cri models.PageCreteria, dc mode
 	SetThousandCount(&cri)
 
 	err = db.
-		Debug().
 		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceServer{}).
 		Table(ServerTable).
@@ -289,7 +376,7 @@ func (db *DBORM) GetDevicesNetworkSearchWithJoin(cri models.PageCreteria, dc mod
 	SetThousandCount(&cri)
 
 	err = db.
-		Debug().
+		//Debug().
 		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceNetwork{}).
 		Table(NetworkTable).
@@ -449,6 +536,65 @@ func ConvertToColumn(field string) string {
 	return col
 }
 
+func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc models.DeviceServer) (
+	server models.PageStatistics, err error) {
+
+	/*	db.Model(&models.DeviceServer{}).Count(&cri.Count)
+		SetThousandCount(&cri)*/
+
+	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer start --- test ")
+	fmt.Println("00 Count ---> : ", server)
+
+	/*COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount,
+	COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount,
+	COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount*/
+
+	/*TypeServerCount  int `json:"count"`
+	TypeStorageCount int `json:"count"`
+	TypeEtcCount     int `json:"count"`*/
+
+	err = db.
+		Debug().
+		Select("" +
+			"COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount," +
+			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount," +
+			"COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
+		//Model(&models.DeviceServer{}).
+		//Table(ServerTable).
+		Where(CombineConditionAssetServer(dc, "count", cri)).
+		Joins(ManufactureServerJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypeServerJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(SizeJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
+		//Count("Select COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount").
+		//Count("Select COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount").
+		//Count("Select COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
+		Find(models.DeviceServer{}).
+		Error
+		//Count(&statistics.TypeServerCount).
+		//Find(&server.TypeServerCount, &server.TypeStorageCount, &server.TypeEtcCount).Error
+		//Find(&models.PageStatistics{})
+
+	//SetThousandCount(&cri)
+	fmt.Println("11 Count ---> : ", server)
+
+	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer end --- test")
+
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	fmt.Println("server...... : ", server)
+
+	return server, err
+}
+
 func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 	server models.DeviceServerPage, err error) {
 
@@ -457,7 +603,6 @@ func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 	SetThousandCount(&cri)
 
 	err = db.
-		Debug().
 		Select(SizeSelectQuery + "," + PageSelectQuery).
 		Model(&models.DeviceServer{}).
 		Table(ServerTable).

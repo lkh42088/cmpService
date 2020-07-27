@@ -68,6 +68,11 @@ type MariaDBLayer interface {
 	GetDevicesPartSearchWithJoin(creteria models.PageCreteria,
 		dc models.DevicePart) (models.DevicePartPage, error)
 
+	// Device Count
+	GetDevicesTypeCountServerWithJoin(creteria models.PageCreteria, dc models.DeviceServer) (models.PageStatistics, error)
+	/*GetDevicesTypeCountNetwork(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesTypeCountPart(creteria models.PageCreteria) (models.DevicePartPage, error)*/
+
 	// Comment
 	GetAllComments() ([]models.DeviceComment, error)
 	GetComments(code string) ([]models.DeviceComment, error)
@@ -138,7 +143,7 @@ type MariaDBLayer interface {
 	GetLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
 	GetLoginAuthByMySelfAuth(userId string) (obj models.LoginAuth, err error)
- 	GetLoginAuthByUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
+	GetLoginAuthByUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
 	GetLoginAuthByUserIdAndTargetEmail(userId, targetEmail string) (obj models.LoginAuth, err error)
 
 	// Subnet
