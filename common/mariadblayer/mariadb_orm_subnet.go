@@ -9,7 +9,7 @@ func (db *DBORM) AddSubnet(subnet models.SubnetMgmt) error {
 	return db.Create(&subnet).Error
 }
 
-func (db *DBORM) GetSubnetPage(page models.Pagination) (subnet models.SubnetMgmtResponse, err error) {
+func (db *DBORM) GetSubnets(page models.Pagination) (subnet models.SubnetMgmtResponse, err error) {
 	db.Model(&subnet.Subnet).Count(&page.TotalCount)
 	err = db.
 		Order(subnet.GetOrderBy(page.OrderBy, page.Order)).
@@ -22,3 +22,8 @@ func (db *DBORM) GetSubnetPage(page models.Pagination) (subnet models.SubnetMgmt
 	subnet.Page = page
 	return subnet, err
 }
+
+func (db *DBORM) DeleteSubnets(idx []string) error {
+	return db.Debug().Where("sub_idx in (?)", idx).Delete(&models.SubnetMgmt{}).Error
+}
+

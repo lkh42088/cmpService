@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func (h *Handler) AddSubnet(c *gin.Context) {
@@ -26,7 +27,7 @@ func (h *Handler) AddSubnet(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
-func (h *Handler) GetSubnet(c *gin.Context) {
+func (h *Handler) GetSubnets(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
@@ -61,7 +62,7 @@ func (h *Handler) GetSubnet(c *gin.Context) {
 		Order:       order,
 	}
 
-	data, err := h.db.GetSubnetPage(page)
+	data, err := h.db.GetSubnets(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -69,4 +70,17 @@ func (h *Handler) GetSubnet(c *gin.Context) {
 	//fmt.Printf("%+v\n", data.Subnet)
 	fmt.Printf("%+v\n", data.Page)
 	c.JSON(http.StatusOK, data)
+}
+
+func (h *Handler) DeleteSubnets(c *gin.Context) {
+	idx := c.Param("idx")
+	fmt.Printf("%+v\n", idx)
+	idxArray := strings.Split(idx, ",")
+
+	err := h.db.DeleteSubnets(idxArray)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "Delete Subnet OK")
 }
