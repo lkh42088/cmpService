@@ -186,6 +186,12 @@ type PageCreteria struct {
 	RentPeriodFlag string `json:"rentPeriod"`
 }
 
+type PageStatistics struct {
+	TypeServerCount  int `json:"count"`
+	TypeStorageCount int `json:"count"`
+	TypeEtcCount     int `json:"count"`
+}
+
 func (p *PageCreteria) String() {
 	fmt.Printf("%v\n", p)
 	fmt.Printf("%+v\n", p)

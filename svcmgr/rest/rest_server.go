@@ -148,8 +148,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/v1/search/devices/:type/:row/:page/:order/:dir/:offsetPage",
 		h.GetDevicesForPageSearch)
 
-	// LOG
-	router.GET("/v1/log/device/:value", h.GetDevicesByLog)
+	// Device Count
+	// http://127.0.0.1:8081/v1/search/devices/count/server
+	router.POST("/v1/search/count/devices/:type", h.GetDevicesTypeCount)
 
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
