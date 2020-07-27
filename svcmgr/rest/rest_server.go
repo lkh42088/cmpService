@@ -23,7 +23,8 @@ type HandlerInterface interface {
 	GetDevicesByCode(c *gin.Context)
 	GetDevicesForSearch(c *gin.Context)
 	GetDeviceWithoutJoin(c *gin.Context)
-
+	// Device count
+	GetDevicesTypeCount(c *gin.Context)
 	AddDevice(c *gin.Context)
 	UpdateDevice(c *gin.Context)
 	UpdateOutFlag(c *gin.Context)
