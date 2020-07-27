@@ -187,9 +187,9 @@ type PageCreteria struct {
 }
 
 type PageStatistics struct {
-	TypeServerCount  int `json:"count"`
-	TypeStorageCount int `json:"count"`
-	TypeEtcCount     int `json:"count"`
+	TypeServerCount  int `json:"serverCount"`
+	TypeStorageCount int `json:"storageCount"`
+	TypeEtcCount     int `json:"etcCount"`
 }
 
 func (s PageStatistics) String() {
