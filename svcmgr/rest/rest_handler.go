@@ -26,7 +26,6 @@ func (h *Handler) GetCodes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	//fmt.Println(codes)
 
 	c.JSON(http.StatusOK, codes)
 }

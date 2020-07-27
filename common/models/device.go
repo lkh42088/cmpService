@@ -192,6 +192,16 @@ type PageStatistics struct {
 	TypeEtcCount     int `json:"count"`
 }
 
+func (s PageStatistics) String() {
+	fmt.Printf("%v\n", s)
+	fmt.Printf("%+v\n", s)
+	data, err := json.Marshal(s)
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	fmt.Printf("%s\n", data)
+}
+
 func (p *PageCreteria) String() {
 	fmt.Printf("%v\n", p)
 	fmt.Printf("%+v\n", p)

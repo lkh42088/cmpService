@@ -143,11 +143,26 @@ func (h *Handler) GetDevicesTypeCount(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
-			/*devicePage.Page.String()*/
+
+
 			fmt.Println("전체 : -------------------------------- > ", devicePage)
 			fmt.Println("서버 : -------------------------------- > ", devicePage.TypeServerCount)
 			fmt.Println("스토리지 : ----------------------------- > ", devicePage.TypeStorageCount)
 			fmt.Println("기타 : -------------------------------- > ", devicePage.TypeEtcCount)
+
+
+			book := models.PageStatistics{TypeServerCount: devicePage.TypeServerCount,
+				TypeStorageCount: devicePage.TypeStorageCount,
+				TypeEtcCount: devicePage.TypeEtcCount,
+			}
+			/*reDevicePage := models.PageStatistics{
+				TypeServerCount:  devicePage.TypeServerCount,
+				TypeStorageCount: devicePage.TypeStorageCount,
+				TypeEtcCount:     devicePage.TypeEtcCount,
+			}*/
+
+			fmt.Println("book : -------------------------------- > ", book)
+			//c.JSON(http.StatusOK, devicePage)
 			c.JSON(http.StatusOK, devicePage)
 		}
 }

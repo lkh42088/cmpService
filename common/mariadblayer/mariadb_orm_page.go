@@ -539,28 +539,13 @@ func ConvertToColumn(field string) string {
 func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc models.DeviceServer) (
 	server models.PageStatistics, err error) {
 
-	/*	db.Model(&models.DeviceServer{}).Count(&cri.Count)
-		SetThousandCount(&cri)*/
-
 	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer start --- test ")
-	fmt.Println("00 Count ---> : ", server)
 
-	/*COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount,
-	COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount,
-	COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount*/
-
-	/*TypeServerCount  int `json:"count"`
-	TypeStorageCount int `json:"count"`
-	TypeEtcCount     int `json:"count"`*/
-
-	row := db.
+	err = db.
 		Debug().
-		//Select("" +
-		Select(
-			"COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount," +
+		Select("COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount," +
 			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount," +
 			"COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
-		//Model(models.DeviceServer{}).
 		Table(ServerTable).
 		Where(CombineConditionAssetServer(dc, "count", cri)).
 		Joins(ManufactureServerJoinQuery).
@@ -573,26 +558,9 @@ func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc m
 		Joins(SizeJoinQuery).
 		Joins(CompanyJoinQuery).
 		Joins(OwnerCompanyJoinQuery).
-		//Count(&server.TypeEtcCount).
-		//Count(&server.TypeServerCount).
-		//Count(&server.TypeStorageCount)
-		//Count("Select COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount").
-		//Count("Select COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount").
-		//Count("Select COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
 		Row().Scan(&server.TypeServerCount, &server.TypeStorageCount, &server.TypeEtcCount)
-		//Count(&statistics.TypeServerCount).
-		//Find(&server.TypeServerCount, &server.TypeStorageCount, &server.TypeEtcCount).Error
-		//Find(&models.PageStatistics{})
-
-	//SetThousandCount(&cri)
-	fmt.Println("11 Count ---> : ", server)
-	fmt.Printf("TEST1 %+v\nTEST2 %+v\n", row, server)
 
 	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer end --- test")
-
-	if err != nil {
-		lib.LogWarn("[Error] %s\n", err)
-	}
 
 	return server, err
 }
