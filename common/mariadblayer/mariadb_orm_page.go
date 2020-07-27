@@ -553,14 +553,15 @@ func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc m
 	TypeStorageCount int `json:"count"`
 	TypeEtcCount     int `json:"count"`*/
 
-	err = db.
+	row := db.
 		Debug().
-		Select("" +
+		//Select("" +
+		Select(
 			"COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount," +
 			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount," +
 			"COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
-		//Model(&models.DeviceServer{}).
-		//Table(ServerTable).
+		//Model(models.DeviceServer{}).
+		Table(ServerTable).
 		Where(CombineConditionAssetServer(dc, "count", cri)).
 		Joins(ManufactureServerJoinQuery).
 		Joins(ModelJoinQuery).
@@ -572,25 +573,26 @@ func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc m
 		Joins(SizeJoinQuery).
 		Joins(CompanyJoinQuery).
 		Joins(OwnerCompanyJoinQuery).
+		//Count(&server.TypeEtcCount).
+		//Count(&server.TypeServerCount).
+		//Count(&server.TypeStorageCount)
 		//Count("Select COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount").
 		//Count("Select COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount").
 		//Count("Select COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
-		Find(models.DeviceServer{}).
-		Error
+		Row().Scan(&server.TypeServerCount, &server.TypeStorageCount, &server.TypeEtcCount)
 		//Count(&statistics.TypeServerCount).
 		//Find(&server.TypeServerCount, &server.TypeStorageCount, &server.TypeEtcCount).Error
 		//Find(&models.PageStatistics{})
 
 	//SetThousandCount(&cri)
 	fmt.Println("11 Count ---> : ", server)
+	fmt.Printf("TEST1 %+v\nTEST2 %+v\n", row, server)
 
 	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer end --- test")
 
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
-
-	fmt.Println("server...... : ", server)
 
 	return server, err
 }
