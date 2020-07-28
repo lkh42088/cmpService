@@ -72,6 +72,23 @@ func (h *Handler) GetSubnets(c *gin.Context) {
 	c.JSON(http.StatusOK, data)
 }
 
+func (h *Handler) UpdateSubnet(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	var subnet models.SubnetMgmt
+	c.ShouldBindJSON(&subnet)
+	//fmt.Printf("%+v\n", subnet)
+
+	err := h.db.UpdateSubnet(subnet)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, "Update Subnet OK")
+}
+
 func (h *Handler) DeleteSubnets(c *gin.Context) {
 	idx := c.Param("idx")
 	fmt.Printf("%+v\n", idx)

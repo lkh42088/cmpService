@@ -3,6 +3,7 @@ package mariadblayer
 import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"fmt"
 )
 
 func (db *DBORM) AddSubnet(subnet models.SubnetMgmt) error {
@@ -21,6 +22,15 @@ func (db *DBORM) GetSubnets(page models.Pagination) (subnet models.SubnetMgmtRes
 	}
 	subnet.Page = page
 	return subnet, err
+}
+
+func (db *DBORM) UpdateSubnet(subnet models.SubnetMgmt) error {
+	fmt.Printf("%+v", subnet)
+	return db.
+		Model(models.SubnetMgmt{}).
+		Where(models.SubnetMgmt{Idx: subnet.Idx}).
+		Update(&subnet).
+		Error
 }
 
 func (db *DBORM) DeleteSubnets(idx []string) error {
