@@ -544,7 +544,7 @@ func GetCompanyTableByMember(m cbmodels.CbMember, check bool) (cs models.Company
 		AddressDetail: m.Addr2,
 		TermDate:      leaveDate,
 		IsCompany:     check,
-		UserId: 	   m.Id,
+		UserId:        m.Id,
 		Memo:          m.Memo,
 	}
 	return cs

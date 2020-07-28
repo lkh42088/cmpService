@@ -74,6 +74,9 @@ type HandlerInterface interface {
 	// Subnet
 	GetSubnet(c *gin.Context)
 	AddSubnet(c *gin.Context)
+	//Micro Cloud
+	GetMcServers(c *gin.Context)
+	AddMcServer(c *gin.Context)
 }
 
 type Handler struct {
@@ -194,6 +197,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/v1/subnet/create", h.AddSubnet)
 	router.GET("/v1/subnet"+pagingParam, h.GetSubnets)
 	router.DELETE("/v1/subnet/:idx", h.DeleteSubnets)
+
+	// Micro Cloud
+	router.POST("/v1/micro/servers/register", h.AddMcServer)
+	router.GET("/v1/micro/servers"+pagingParam, h.GetMcServers)
 
 	return router.Run(address)
 }

@@ -543,8 +543,8 @@ func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc m
 
 	err = db.
 		Debug().
-		Select("COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount," +
-			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount," +
+		Select("COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount,"+
+			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount,"+
 			"COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
 		Table(ServerTable).
 		Where(CombineConditionAssetServer(dc, "count", cri)).

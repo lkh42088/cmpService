@@ -26,4 +26,3 @@ func (db *DBORM) GetSubnets(page models.Pagination) (subnet models.SubnetMgmtRes
 func (db *DBORM) DeleteSubnets(idx []string) error {
 	return db.Debug().Where("sub_idx in (?)", idx).Delete(&models.SubnetMgmt{}).Error
 }
-

@@ -38,7 +38,6 @@ func insertSubCodeItems() {
 	}
 }
 
-
 func insertCompanies() {
 	newConfig := config.GetNewDatabaseConfig()
 	newOptions := db.GetDataSourceName(newConfig)
@@ -95,4 +94,3 @@ func insertSubnets() {
 		newDb.AddSubnet(subnet)
 	}
 }
-

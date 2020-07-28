@@ -1,11 +1,9 @@
 .idea
 svcmgr/svcmgr.conf
-<<<<<<< HEAD
 svcmgr/svcmgr.lkh.conf
-svcmgr/svcmgr.exe
-=======
 svcmgr/svcmgr.exe
 go.sum
 ./svcmgr.conf
+node_modules
+yarn.lock
 
->>>>>>> d3abc377b439185daca8bd4e2c696025da2d107f

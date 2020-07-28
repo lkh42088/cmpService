@@ -34,9 +34,9 @@ func (h *Handler) includeEmailAuthToUserDetails(users []models.UserDetail) (newu
 				fmt.Println("List1 : ", user.GroupEmailAuthList)
 			}
 		}
-		user.ParticipateInAccountList , err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
+		user.ParticipateInAccountList, err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
 		if err != nil {
-			fmt.Println("List2 : error ",  err)
+			fmt.Println("List2 : error ", err)
 		} else {
 			fmt.Println("List2 : ", user.ParticipateInAccountList)
 		}
@@ -251,7 +251,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 	if user.CompanyIdx == 0 {
 		user.CompanyIdx = oldUser.CompanyIdx
 	}
-	if (len(msg.Password) > 6) {
+	if len(msg.Password) > 6 {
 		models.HashPassword(&user)
 	} else {
 		user.Password = oldUser.Password
@@ -377,7 +377,7 @@ func (h *Handler) UnRegisterUser(c *gin.Context) {
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
-		deleteUser(h, uint(idx));
+		deleteUser(h, uint(idx))
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
 }

@@ -207,5 +207,3 @@ var newSubnets = []models.SubnetMgmt{
 		SubnetTag: "영업팀", SubnetStart: "103.1.1.1", SubnetEnd: "103.1.1.255", SubnetMask: "255.255.255.0", Gateway: "103.1.1.1",
 	},
 }
-
-

@@ -219,4 +219,3 @@ type UserEmailAuthMsg struct {
 	Email  string `json:"email"`
 	Secret string `json:"secret"`
 }
-

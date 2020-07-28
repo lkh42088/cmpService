@@ -112,7 +112,7 @@ func ConvertDeviceData(device map[string]interface{}, deviceType string, code st
 		return nil
 	}
 
-	fmt.Println("▣ ConvertDeviceData device : ",device);
+	fmt.Println("▣ ConvertDeviceData device : ", device)
 
 	switch deviceType {
 	case "server":
