@@ -155,6 +155,8 @@ type MariaDBLayer interface {
 	GetMcServersPage(paging models.Pagination) (servers models.McServerPage, err error)
 	AddMcServer(obj models.McServer) (models.McServer, error)
 	DeleteMcServer(obj models.McServer) (models.McServer, error)
+	GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail, err error)
+
 	GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, err error)
 	AddMcVm(obj models.McVm) (models.McVm, error)
 	DeleteMcVm(obj models.McVm) (models.McVm, error)

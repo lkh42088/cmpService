@@ -77,6 +77,12 @@ type HandlerInterface interface {
 	//Micro Cloud
 	GetMcServers(c *gin.Context)
 	AddMcServer(c *gin.Context)
+	DeleteMcServer(c *gin.Context)
+	GetMcServersByCpIdx(c *gin.Context)
+
+	GetMcVms(c *gin.Context)
+	AddMcVm(c *gin.Context)
+	DeleteMcVm(c *gin.Context)
 }
 
 type Handler struct {
@@ -200,7 +206,13 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Micro Cloud
 	router.POST("/v1/micro/servers/register", h.AddMcServer)
-	router.GET("/v1/micro/servers"+pagingParam, h.GetMcServers)
+	router.POST("/v1/micro/servers/unregister", h.DeleteMcServer)
+	router.GET("/v1/micro/servers/search-company/:cpIdx", h.GetMcServersByCpIdx)
+	router.GET("/v1/micro/servers-paging/"+pagingParam, h.GetMcServers)
+
+	router.POST("/v1/micro/vms/register", h.AddMcVm)
+	router.POST("/v1/micro/vms/unregister", h.DeleteMcVm)
+	router.GET("/v1/micro/vms-paging/"+pagingParam, h.GetMcVms)
 
 	return router.Run(address)
 }

@@ -373,7 +373,7 @@ func deleteUser(h *Handler, idx uint) bool {
 }
 
 func (h *Handler) UnRegisterUser(c *gin.Context) {
-	var msg messages.DeleteUserMessage
+	var msg messages.DeleteDataMessage
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {

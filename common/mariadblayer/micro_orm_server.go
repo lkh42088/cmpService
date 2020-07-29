@@ -22,6 +22,19 @@ func (db *DBORM) GetMcServersPage(paging models.Pagination) (servers models.McSe
 	return servers, err
 }
 
+func (db *DBORM) GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail, err error) {
+	err = db.
+		Table("mc_server_tb").
+		Select("mc_server_tb.*, c.cp_name").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_server_tb.mc_cp_idx").
+		Where(models.McServer{CompanyIdx: cpIdx}).
+		Find(&servers).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	return servers, err
+}
+
 func (db *DBORM) AddMcServer(obj models.McServer) (models.McServer, error) {
 	return obj, db.Create(&obj).Error
 }
@@ -33,8 +46,9 @@ func (db *DBORM) DeleteMcServer(obj models.McServer) (models.McServer, error) {
 func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, err error) {
 	err = db.
 		Table("mc_vm_tb").
-		Select("mc_vm_tb.*, c.cp_name").
-		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.mc_cp_idx").
+		Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
+		Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
 		Order(vms.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).

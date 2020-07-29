@@ -116,8 +116,8 @@ type McVmDetail struct {
 }
 
 type McVmPage struct {
-	Page Pagination `json:"page"`
-	Vms  []McVm     `json:"data"`
+	Page Pagination   `json:"page"`
+	Vms  []McVmDetail `json:"data"`
 }
 
 func (m McServerPage) GetOrderBy(orderby, order string) string {
