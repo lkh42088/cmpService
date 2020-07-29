@@ -70,6 +70,8 @@ type MariaDBLayer interface {
 
 	// Device Count
 	GetDevicesTypeCountServerWithJoin(creteria models.PageCreteria, dc models.DeviceServer) (models.PageStatistics, error)
+	GetDevicesTypeCountNetworkWithJoin(creteria models.PageCreteria, dc models.DeviceNetwork) (models.PageStatistics, error)
+	GetDevicesTypeCountPartWithJoin(creteria models.PageCreteria, dc models.DevicePart) (models.PageStatistics, error)
 	/*GetDevicesTypeCountNetwork(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
 	GetDevicesTypeCountPart(creteria models.PageCreteria) (models.DevicePartPage, error)*/
 
@@ -148,7 +150,8 @@ type MariaDBLayer interface {
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error
-	GetSubnets(cri models.Pagination) (models.SubnetMgmtResponse, error)
+	GetSubnets(cri models.PageRequestForSearch) (models.SubnetMgmtResponse, error)
+	UpdateSubnet(subnet models.SubnetMgmt) error
 	DeleteSubnets(idx []string) error
 
 	// Micro Cloud

@@ -90,8 +90,6 @@ func (h *Handler) GetDevicesTypeCount(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("GetDevicesTypeCount 시작")
-
 	deviceType := c.Param("type")
 
 	mapDevice, err := JsonUnmarshal(c.Request.Body)
@@ -143,24 +141,24 @@ func (h *Handler) GetDevicesTypeCount(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
-		fmt.Println("전체 : -------------------------------- > ", devicePage)
-		fmt.Println("서버 : -------------------------------- > ", devicePage.TypeServerCount)
-		fmt.Println("스토리지 : ----------------------------- > ", devicePage.TypeStorageCount)
-		fmt.Println("기타 : -------------------------------- > ", devicePage.TypeEtcCount)
-
-		book := models.PageStatistics{TypeServerCount: devicePage.TypeServerCount,
-			TypeStorageCount: devicePage.TypeStorageCount,
-			TypeEtcCount:     devicePage.TypeEtcCount,
+		c.JSON(http.StatusOK, devicePage)
+	case "network":
+		devicePage, err := h.db.GetDevicesTypeCountNetworkWithJoin(page,
+			*convertData.(*models.DeviceNetwork))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
-		/*reDevicePage := models.PageStatistics{
-			TypeServerCount:  devicePage.TypeServerCount,
-			TypeStorageCount: devicePage.TypeStorageCount,
-			TypeEtcCount:     devicePage.TypeEtcCount,
-		}*/
 
-		fmt.Println("book : -------------------------------- > ", book)
-		//c.JSON(http.StatusOK, devicePage)
+		c.JSON(http.StatusOK, devicePage)
+	case "part":
+		devicePage, err := h.db.GetDevicesTypeCountPartWithJoin(page,
+			*convertData.(*models.DevicePart))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusOK, devicePage)
 	}
 }
@@ -258,7 +256,6 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 	}
 	deviceType := c.Param("type")
 
-	fmt.Println("deviceType---> ", deviceType)
 	// Parse params
 	row, err := strconv.Atoi(c.Param("row"))
 	if err != nil {

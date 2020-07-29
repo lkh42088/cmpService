@@ -147,7 +147,6 @@ func CombineConditionAssetServer(dc models.DeviceServer, division string, cri mo
 		}
 	}
 
-	fmt.Println(".★ queryWhere : ", queryWhere)
 	if dc.DeviceCode != "" {
 		queryWhere = queryWhere + " and device_code like '%" + dc.DeviceCode + "%'"
 	}
@@ -539,13 +538,11 @@ func ConvertToColumn(field string) string {
 func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc models.DeviceServer) (
 	server models.PageStatistics, err error) {
 
-	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer start --- test ")
-
 	err = db.
 		Debug().
-		Select("COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as TypeServerCount,"+
-			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as TypeStorageCount,"+
-			"COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as TypeEtcCount").
+		Select("COUNT(IF(d.device_type_cd = 7, d.device_type_cd, NULL)) as ServerCount," +
+			"COUNT(IF(d.device_type_cd = 8, d.device_type_cd, NULL)) as StorageCount," +
+			"COUNT(IF(d.device_type_cd = 9, d.device_type_cd, NULL)) as EtcCount").
 		Table(ServerTable).
 		Where(CombineConditionAssetServer(dc, "count", cri)).
 		Joins(ManufactureServerJoinQuery).
@@ -558,9 +555,55 @@ func (db *DBORM) GetDevicesTypeCountServerWithJoin(cri models.PageCreteria, dc m
 		Joins(SizeJoinQuery).
 		Joins(CompanyJoinQuery).
 		Joins(OwnerCompanyJoinQuery).
-		Row().Scan(&server.TypeServerCount, &server.TypeStorageCount, &server.TypeEtcCount)
+		Row().Scan(&server.ServerCount, &server.StorageCount, &server.EtcCount)
 
-	fmt.Println("★★★★★★★★ GetDevicesTypeCountServer end --- test")
+	return server, err
+}
+
+func (db *DBORM) GetDevicesTypeCountNetworkWithJoin(cri models.PageCreteria, dc models.DeviceNetwork) (
+	server models.PageStatistics, err error) {
+
+	err = db.
+		Debug().
+		Select("COUNT(IF(d.device_type_cd = 30, d.device_type_cd, NULL)) as L2Count," +
+			"COUNT(IF(d.device_type_cd = 31, d.device_type_cd, NULL)) as L3Count," +
+			"COUNT(IF(d.device_type_cd = 506, d.device_type_cd, NULL)) as RouterCount").
+		Table(NetworkTable).
+		Where(CombineConditionAssetNetwork(dc, "count", cri)).
+		Joins(ManufactureServerJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypeServerJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(SizeJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
+		Row().Scan(&server.L2Count, &server.L3Count, &server.RouterCount)
+
+	return server, err
+}
+
+func (db *DBORM) GetDevicesTypeCountPartWithJoin(cri models.PageCreteria, dc models.DevicePart) (
+	server models.PageStatistics, err error) {
+
+	err = db.
+		Debug().
+		Select("COUNT(IF(d.device_type_cd = 43, d.device_type_cd, NULL)) as HddCount, " +
+			"COUNT(IF(d.device_type_cd = 598, d.device_type_cd, NULL)) as KvmCount").
+		Table(PartTable).
+		Where(CombineConditionAssetPart(dc, "count", cri)).
+		Joins(ManufacturePartJoinQuery).
+		Joins(ModelJoinQuery).
+		Joins(DeviceTypePartJoinQuery).
+		Joins(OwnershipJoinQuery).
+		Joins(OwnershipDivJoinQuery).
+		Joins(IdcJoinQuery).
+		Joins(RackJoinQuery).
+		Joins(CompanyJoinQuery).
+		Joins(OwnerCompanyJoinQuery).
+		Row().Scan(&server.HddCount, &server.KvmCount)
 
 	return server, err
 }
@@ -580,14 +623,13 @@ func (db *DBORM) GetDevicesServerWithJoin(cri models.PageCreteria) (
 		Limit(cri.Row).
 		Offset(cri.OffsetPage).
 		Where(CombineCondition(cri.OutFlag)).
-		Joins(ManufactureServerJoinQuery).
+		Joins(ManufacturePartJoinQuery).
 		Joins(ModelJoinQuery).
-		Joins(DeviceTypeServerJoinQuery).
+		Joins(DeviceTypePartJoinQuery).
 		Joins(OwnershipJoinQuery).
 		Joins(OwnershipDivJoinQuery).
 		Joins(IdcJoinQuery).
 		Joins(RackJoinQuery).
-		Joins(SizeJoinQuery).
 		Joins(CompanyJoinQuery).
 		Joins(OwnerCompanyJoinQuery).
 		Find(&server.Devices).Error

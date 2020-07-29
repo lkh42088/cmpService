@@ -35,3 +35,12 @@ type PageRequestMsg struct {
 	Order       string      `json:"order"`
 	Param       SearchParam `json:"searchParam"`
 }
+
+type PageRequestForSearch struct {
+	RowsPerPage int         `json:"rows"`
+	Offset      int         `json:"offset"`
+	OrderBy     string      `json:"orderBy"`
+	Order       string      `json:"order"`
+	SearchParam string 		`json:"searchParam"`
+}
+
