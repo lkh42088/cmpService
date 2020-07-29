@@ -148,7 +148,7 @@ type MariaDBLayer interface {
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error
-	GetSubnets(cri models.Pagination) (models.SubnetMgmtResponse, error)
+	GetSubnets(cri models.PageRequestForSearch) (models.SubnetMgmtResponse, error)
 	UpdateSubnet(subnet models.SubnetMgmt) error
 	DeleteSubnets(idx []string) error
 }
