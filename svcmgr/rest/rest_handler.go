@@ -387,7 +387,7 @@ func (h *Handler) UpdateDevice(c *gin.Context) {
 		return
 	}
 
-	oldDevice := log.GetDevice(device, code)
+ 	oldDevice := log.GetDevice(device, code)
 	data, err := h.db.UpdateDevice(convertData, tableName, code)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
