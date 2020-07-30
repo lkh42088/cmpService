@@ -12,8 +12,9 @@ func (db *DBORM) GetAllUsers() (users []models.User, err error) {
 func (db *DBORM) GetUserDetailById(id string) (userDetail models.UserDetail, err error) {
 	return userDetail, db.
 		Table("user_tb").
-		Select("user_tb.*, c.cp_name").
+		Select("user_tb.*, c.cp_name, a.auth_tag").
 		Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Joins("INNER JOIN auth_tb a ON a.auth_level = user_tb.user_auth_level").
 		Where("user_id = ?", id).
 		Find(&userDetail).Error
 }
@@ -86,8 +87,9 @@ func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, 
 		Count(&paging.TotalCount)
 	err = db.
 		Table("user_tb").
-		Select("user_tb.*, c.cp_name").
+		Select("user_tb.*, c.cp_name, a.auth_tag").
 		Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Joins("INNER JOIN auth_tb a ON a.auth_level = user_tb.user_auth_level").
 		Order(users.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).
@@ -103,12 +105,13 @@ func (db *DBORM) GetUsersPageBySearch(paging models.Pagination, query string) (u
 	err = db.
 		Debug().
 		Table("user_tb").
-		Select("user_tb.*, c.cp_name").
+		Select("user_tb.*, c.cp_name, a.auth_tag").
 		Order(users.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).
 		Where(query).
 		Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Joins("INNER JOIN auth_tb a ON a.auth_level = user_tb.user_auth_level").
 		Find(&users.Users).Error
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
@@ -131,6 +134,10 @@ func (db *DBORM) AddUserMember(user models.User) error {
 
 func (db *DBORM) AddAuth(auth models.Auth) error {
 	return db.Create(&auth).Error
+}
+
+func (db *DBORM) GetAuth() (auths []models.Auth, err error) {
+	return auths, db.Find(&auths).Error
 }
 
 func (db *DBORM) DeleteAllUserMember() error {
