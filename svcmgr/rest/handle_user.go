@@ -55,6 +55,23 @@ func (h *Handler) includeEmailAuthToUserDetails(users []models.UserDetail) (newu
 	return newusers, err
 }
 
+func (h *Handler) GetUserById(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	fmt.Println("GetUserById...")
+
+	value := c.Param("value")
+	fmt.Println("★★★★★★ GetUserById value... : ", value)
+	user, err := h.db.GetUserById(value)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("[###] %v", user)
+	c.JSON(http.StatusOK, user)
+}
+
 func (h *Handler) GetUsersPage(c *gin.Context) {
 	fmt.Println("GetUserPage...")
 
@@ -411,4 +428,17 @@ func (h *Handler) UnRegisterUserBackup(c *gin.Context) {
 
 	fmt.Println("Delete user:", adduser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
+}
+
+// Auth table
+func (h *Handler) GetAuth(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	auths, err := h.db.GetAuth()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, auths)
 }

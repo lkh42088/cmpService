@@ -97,6 +97,7 @@ type MariaDBLayer interface {
 	GetUserByUserId(userId string) (models.User, error)
 	AddUserMember(user models.User) error
 	AddAuth(auth models.Auth) error
+	GetAuth() ([]models.Auth, error)
 	DeleteAllUserMember() error
 	DeleteAllAuth() error
 
