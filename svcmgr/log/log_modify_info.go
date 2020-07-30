@@ -52,7 +52,6 @@ func DeviceInfoModify(info CompareInfo) error {
 
 				changeInfo.Field = ConvertFieldName(newElem.Field(i).Type().Field(j).Name)
 
-
 				if changeInfo.Field == "" {
 					continue
 				}
@@ -72,7 +71,6 @@ func DeviceInfoModify(info CompareInfo) error {
 				newElem.Field(i).Interface(),
 				oldElem.Field(i).Interface())
 			changeInfo.Field = ConvertFieldName(newElem.Type().Field(i).Name)
-
 
 			changeInfo.NewStatus, changeInfo.OldStatus = SetLogValue(
 				GetCodeLogValue(changeInfo.NewStatus, newElem.Type().Field(i).Name),
@@ -206,7 +204,7 @@ func GetCodeLogValue(val string, field string) string {
 					}
 
 					Code, _ = db.GetCodeByIdx(splaArray[i])
-					returnVal = returnVal + comma +  Code.Name
+					returnVal = returnVal + comma + Code.Name
 				}
 			}
 		}

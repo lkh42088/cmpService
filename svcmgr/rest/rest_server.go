@@ -76,6 +76,16 @@ type HandlerInterface interface {
 	AddSubnet(c *gin.Context)
 	UpdateSubnet(c *gin.Context)
 	DeleteSubnets(c *gin.Context)
+
+	//Micro Cloud
+	GetMcServers(c *gin.Context)
+	AddMcServer(c *gin.Context)
+	DeleteMcServer(c *gin.Context)
+	GetMcServersByCpIdx(c *gin.Context)
+
+	GetMcVms(c *gin.Context)
+	AddMcVm(c *gin.Context)
+	DeleteMcVm(c *gin.Context)
 }
 
 type Handler struct {
@@ -195,9 +205,19 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Subnet
 	router.POST("/v1/subnet/create", h.AddSubnet)
-	router.GET("/v1/subnet"+pagingParam, h.GetSubnets)
+	router.POST("/v1/subnet", h.GetSubnets)
 	router.POST("/v1/subnet/update", h.UpdateSubnet)
 	router.DELETE("/v1/subnet/:idx", h.DeleteSubnets)
+
+	// Micro Cloud
+	router.POST("/v1/micro/servers/register", h.AddMcServer)
+	router.POST("/v1/micro/servers/unregister", h.DeleteMcServer)
+	router.GET("/v1/micro/servers/search-company/:cpIdx", h.GetMcServersByCpIdx)
+	router.GET("/v1/micro/servers-paging/"+pagingParam, h.GetMcServers)
+
+	router.POST("/v1/micro/vms/register", h.AddMcVm)
+	router.POST("/v1/micro/vms/unregister", h.DeleteMcVm)
+	router.GET("/v1/micro/vms-paging/"+pagingParam, h.GetMcVms)
 
 	return router.Run(address)
 }

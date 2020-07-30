@@ -44,7 +44,7 @@ func (db *DBORM) UpdateLoginAuth(obj models.LoginAuth) (models.LoginAuth, error)
 	//}).Error
 	return obj, db.Model(&obj).
 		Updates(map[string]interface{}{
-			"EmailAuthStore": obj.EmailAuthStore,
+			"EmailAuthStore":   obj.EmailAuthStore,
 			"EmailAuthConfirm": obj.EmailAuthConfirm,
 		}).Error
 }
@@ -81,4 +81,3 @@ func (db *DBORM) GetLoginAuthsByAuthUserId(authUserId string) (obj []models.Logi
 func (db *DBORM) DeleteLoginAuth(obj models.LoginAuth) (models.LoginAuth, error) {
 	return obj, db.Delete(&obj).Error
 }
-

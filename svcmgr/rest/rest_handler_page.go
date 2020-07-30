@@ -134,13 +134,13 @@ func (h *Handler) GetDevicesTypeCount(c *gin.Context) {
 
 	switch page.DeviceType {
 	case "server":
+		fmt.Println("GetDevicesTypeCount - switch 시작")
 		devicePage, err := h.db.GetDevicesTypeCountServerWithJoin(page,
 			*convertData.(*models.DeviceServer))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
 		c.JSON(http.StatusOK, devicePage)
 	case "network":
 		devicePage, err := h.db.GetDevicesTypeCountNetworkWithJoin(page,

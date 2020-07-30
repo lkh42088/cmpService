@@ -84,7 +84,7 @@ func (h *Handler) GetCompaniesPageWithSearchParam(c *gin.Context) {
 			companies, err = h.db.GetCompaniesPageBySearch(page, query)
 		}
 	}
-	if (err != nil) {
+	if err != nil {
 		fmt.Printf("err %s\n", err)
 	}
 	fmt.Printf("companies %v\n", companies)
@@ -111,7 +111,7 @@ func (h *Handler) GetUserDetailsByCpIdx(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
-	cpIdxString:= c.Param("cpIdx")
+	cpIdxString := c.Param("cpIdx")
 	fmt.Println("cpIdxString: ", cpIdxString)
 	cpIdx, _ := strconv.Atoi(cpIdxString)
 	fmt.Println("cpId: ", cpIdx)
@@ -239,7 +239,7 @@ func (h *Handler) ModifyCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
 }
 
-func deleteCompany(h * Handler, idx int) bool {
+func deleteCompany(h *Handler, idx int) bool {
 	var company models.Company
 	company.Idx = uint(idx)
 	users, err := h.db.GetUserDetailsByCpIdx(idx)
@@ -264,4 +264,3 @@ func (h *Handler) DeleteCompany(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
 }
-

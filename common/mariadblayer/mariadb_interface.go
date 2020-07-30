@@ -150,7 +150,17 @@ type MariaDBLayer interface {
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error
-	GetSubnets(cri models.Pagination) (models.SubnetMgmtResponse, error)
+	GetSubnets(cri models.PageRequestForSearch) (models.SubnetMgmtResponse, error)
 	UpdateSubnet(subnet models.SubnetMgmt) error
 	DeleteSubnets(idx []string) error
+
+	// Micro Cloud
+	GetMcServersPage(paging models.Pagination) (servers models.McServerPage, err error)
+	AddMcServer(obj models.McServer) (models.McServer, error)
+	DeleteMcServer(obj models.McServer) (models.McServer, error)
+	GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail, err error)
+
+	GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, err error)
+	AddMcVm(obj models.McVm) (models.McVm, error)
+	DeleteMcVm(obj models.McVm) (models.McVm, error)
 }

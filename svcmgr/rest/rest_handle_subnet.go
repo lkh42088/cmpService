@@ -1,12 +1,10 @@
 package rest
 
 import (
-	"cmpService/common/lib"
 	"cmpService/common/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -32,34 +30,15 @@ func (h *Handler) GetSubnets(c *gin.Context) {
 		return
 	}
 
-	// Parse params
-	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-		return
-	}
-	offset, err := strconv.Atoi(c.Param("offset"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-		return
-	}
-	orderBy := c.Param("orderby")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-		return
-	}
-	order := c.Param("order")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-		return
-	}
-
-	page := models.Pagination{
-		TotalCount:  0,
-		RowsPerPage: rowsPerPage,
-		Offset:      offset,
-		OrderBy:     orderBy,
-		Order:       order,
+	var val models.PageRequestForSearch
+	c.ShouldBindJSON(&val)
+	//fmt.Printf("val : %+v\n", val)
+	page := models.PageRequestForSearch{
+		RowsPerPage: val.RowsPerPage,
+		Offset:      val.Offset,
+		OrderBy:     val.OrderBy,
+		Order:       val.Order,
+		SearchParam: val.SearchParam,
 	}
 
 	data, err := h.db.GetSubnets(page)
@@ -67,8 +46,7 @@ func (h *Handler) GetSubnets(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	//fmt.Printf("%+v\n", data.Subnet)
-	fmt.Printf("%+v\n", data.Page)
+	//fmt.Printf("%+v\n", data)
 	c.JSON(http.StatusOK, data)
 }
 
