@@ -81,7 +81,9 @@ func (db *DBORM) DeleteUser(user models.User) (models.User, error) {
 }
 
 func (db *DBORM) GetUsersPage(paging models.Pagination) (users models.UserPage, err error) {
-	db.Model(&users.Users).Count(&paging.TotalCount)
+	db.Model(&users.Users).
+		Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Count(&paging.TotalCount)
 	err = db.
 		Table("user_tb").
 		Select("user_tb.*, c.cp_name").
@@ -111,7 +113,10 @@ func (db *DBORM) GetUsersPageBySearch(paging models.Pagination, query string) (u
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
-	paging.TotalCount = len(users.Users)
+
+	db.Model(&users.Users).
+		Joins("INNER JOIN company_tb c ON c.cp_idx = user_tb.cp_idx").
+		Where(query).Count(&paging.TotalCount)
 	users.Page = paging
 	return users, err
 }
