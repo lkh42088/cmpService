@@ -54,7 +54,7 @@ func (h *Handler) includeEmailAuthToUserDetails(users []models.UserDetail) (newu
 	}
 	return newusers, err
 }
-/*
+
 func (h *Handler) GetUserById(c *gin.Context) {
 	if h.db == nil {
 		return
@@ -70,7 +70,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 	}
 	fmt.Println("[###] %v", user)
 	c.JSON(http.StatusOK, user)
-}*/
+}
 
 func (h *Handler) GetUsersPage(c *gin.Context) {
 	fmt.Println("GetUserPage...")
