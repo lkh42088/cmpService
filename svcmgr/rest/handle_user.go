@@ -412,3 +412,16 @@ func (h *Handler) UnRegisterUserBackup(c *gin.Context) {
 	fmt.Println("Delete user:", adduser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
 }
+
+// Auth table
+func (h *Handler) GetAuth(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	auths, err := h.db.GetAuth()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, auths)
+}

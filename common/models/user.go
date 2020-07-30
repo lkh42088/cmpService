@@ -146,6 +146,7 @@ type User struct {
 type UserDetail struct {
 	User
 	CompanyName              string      `gorm:"type:varchar(50);column:cp_name" json:"cpName"`
+	AuthLevelTag             string      `gorm:"type:varchar(50);column:auth_tag" json:"authLevelTag"`
 	GroupEmailAuthList       []LoginAuth `json:"groupEmailAuthList"`
 	ParticipateInAccountList []LoginAuth `json:"participateInAccountList"`
 }
