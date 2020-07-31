@@ -56,7 +56,7 @@ func (db *DBORM) UpdateUser(user models.User) (models.User, error) {
 			"user_id":                    user.UserId,
 			"user_password":              user.Password,
 			"user_is_cp_account":         user.IsCompanyAccount,
-			"cp_idx":                     user.CompanyIdx,
+			//"cp_idx":                     user.CompanyIdx,
 			"user_auth_level":            user.AuthLevel,
 			"user_tel":                   user.Tel,
 			"user_hp":                    user.HP,
