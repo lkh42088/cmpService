@@ -4,6 +4,7 @@ import (
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/mcmongo"
 	"cmpService/mcagent/mcrest"
+	"fmt"
 	"sync"
 )
 
@@ -14,7 +15,10 @@ func Start (config string) {
 		return
 	}
 
-	configure()
+	if ! configure() {
+		fmt.Println("Fatal: Failed configuration!")
+		return
+	}
 
 	wg.Add(1)
 
@@ -23,7 +27,11 @@ func Start (config string) {
 	wg.Wait()
 }
 
-func configure () {
+func configure() bool {
 	// Configure Mongo DB
-	mcmongo.Configure()
+	if ! mcmongo.Configure() {
+		fmt.Println("Failed to configure mongodb!")
+		return false
+	}
+	return true
 }

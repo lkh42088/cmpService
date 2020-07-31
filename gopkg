@@ -6,6 +6,7 @@ go get github.com/go-sql-driver/mysql
 go get github.com/jinzhu/gorm
 go get github.com/gin-gonic/gin
 go get github.com/influxdata/influxdb1-client/v2
+go get github.com/influxdata/influxdb1-client
 
 go get github.com/globalsign/mgo
 go get github.com/globalsign/mgo/bson
@@ -16,3 +17,4 @@ go get github.com/TylerBrock/colorjson
 
 go get golang.org/x/crypto/bcrypt
 go get github.com/dgrijalva/jwt-go
+
