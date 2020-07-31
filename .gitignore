@@ -3,6 +3,7 @@ svcmgr/svcmgr.conf
 svcmgr/svcmgr.lkh.conf
 svcmgr/svcmgr.exe
 go.sum
+go.mod
 ./svcmgr.conf
 node_modules
 yarn.lock
