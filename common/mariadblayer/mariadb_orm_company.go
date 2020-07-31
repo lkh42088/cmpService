@@ -78,8 +78,7 @@ func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
 func (db *DBORM) UpdateCompany(obj models.Company) (models.Company, error) {
 	return obj, db.Model(&obj).
 		Updates(map[string]interface{}{
-			"cp_idx":              obj.Idx,
-			"cp_name":             obj.Name,
+			/*"cp_name":             obj.Name,*/
 			"cp_email":            obj.Email,
 			"cp_homepage":         obj.Homepage,
 			"cp_tel":              obj.Tel,
