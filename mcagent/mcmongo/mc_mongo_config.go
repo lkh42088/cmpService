@@ -44,12 +44,16 @@ func (m *McMongoAccessor) Close() error {
 	return nil
 }
 
-func Configure() {
+func Configure() bool {
 	config := config2.GetGlobalConfig()
 	if config.MongoIp == "" || config.MongoDb == "" || config.MongoCollection == "" {
 		lib.LogWarn("Failed MongoDb configuration!\n")
-		return
+		return false
 	}
 	m := NewMcMongoAccessor(config.MongoIp, config.MongoDb, config.MongoCollection)
-	SetMcMongo(m)
+	if m != nil {
+		SetMcMongo(m)
+		return false
+	}
+	return true
 }

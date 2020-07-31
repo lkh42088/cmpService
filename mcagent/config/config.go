@@ -2,8 +2,8 @@ package config
 
 import (
 	"cmpService/common/config"
-	"cmpService/common/lib"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -23,21 +23,25 @@ func GetGlobalConfig () McAgentConfig {
 }
 
 func ApplyGlobalConfig(file string) bool {
+	fmt.Println("ApplyGlobalConfig: ", file)
 	info, err := os.Stat(file)
 	if os.IsNotExist(err) {
+		fmt.Println("ApplyGlobalConfig : dose not exist config!")
 		return false
 	}
 	if info.IsDir() {
+		fmt.Println("ApplyGlobalConfig : the config is directory!")
 		return false
 	}
 	b, err := ioutil.ReadFile(file)
 	if err != nil {
-		lib.LogWarnln(err)
+		fmt.Println("ApplyGlobalConfig : err ", err)
 		return false
 	}
+
 	err = json.Unmarshal(b, &globalConfig)
 	if err != nil {
-		lib.LogWarnln(err)
+		fmt.Println("ApplyGlobalConfig : err 2 ", err)
 		return false
 	}
 	return true

@@ -5,6 +5,7 @@ import (
 	"cmpService/mcagent/mcmongo"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func addVmHandler(c *gin.Context) {
@@ -25,9 +26,10 @@ func addVmHandler(c *gin.Context) {
 }
 
 func getVmByIdHandler(c *gin.Context) {
-	id := c.Param("id")
+	idStr := c.Param("id")
 
 	// Get VMs from Mongodb
+	id, _ := strconv.Atoi(idStr)
 	vm, err := mcmongo.McMongo.GetVmById(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
