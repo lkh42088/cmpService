@@ -5,6 +5,7 @@ svcmgr/svcmgr.exe
 go.sum
 go.mod
 ./svcmgr.conf
+svcmgr.conf
 node_modules
 yarn.lock
 
