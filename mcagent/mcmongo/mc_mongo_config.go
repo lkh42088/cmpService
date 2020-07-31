@@ -53,7 +53,7 @@ func Configure() bool {
 	m := NewMcMongoAccessor(config.MongoIp, config.MongoDb, config.MongoCollection)
 	if m != nil {
 		SetMcMongo(m)
-		return false
+		return true
 	}
-	return true
+	return false
 }
