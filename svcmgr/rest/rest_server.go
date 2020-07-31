@@ -200,6 +200,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/users-about-companies/:cpIdx", h.GetUserDetailsByCpIdx)
 	router.GET("/v1/companies", h.GetCompanies)
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
+	router.POST("/v1/company/get-company/:value", h.GetCompanyByName)
+
 	router.POST("/v1/customers/register", h.AddCompany)
 	router.POST("/v1/customers/unregister", h.DeleteCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
