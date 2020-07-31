@@ -1,0 +1,3 @@
+module cmpService
+
+go 1.13
