@@ -208,4 +208,45 @@ var newSubnets = []models.SubnetMgmt{
 	},
 }
 
-
+var newAuth = []models.Auth{
+	{
+		Level: 1, Tag: "최고 관리자", Login: 2, Device: 2, Platform: 2, Stat: 2, Monitor: 2, Billing: 2,
+		Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 2, Tag: "CB 관리자", Login: 2, Device: 2, Platform: 0, Stat: 2, Monitor: 2, Billing: 2,
+		Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 3, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 4, Tag: "CB 작업자", Login: 2, Device: 2, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Cloud: 0, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 5, Tag: "고객사 관리자", Login: 2, Device: 2, Platform: 0, Stat: 1, Monitor: 1, Billing: 1,
+		Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 6, Tag: "고객사 사용자", Login: 2, Device: 2, Platform: 0, Stat: 1, Monitor: 1, Billing: 0,
+		Cloud: 0, Board: 2, Manager: 0, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 7, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 8, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 9, Tag: "임시 사용자", Login: 2, Device: 1, Platform: 0, Stat: 1, Monitor: 0, Billing: 0,
+		Cloud: 0, Board: 1, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+	{
+		Level: 10, Tag: "해지 고객", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	},
+}

@@ -85,6 +85,84 @@ func (h *Handler) GetDevicesForPage(c *gin.Context) {
 }
 */
 
+func (h *Handler) GetDevicesTypeCount(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	deviceType := c.Param("type")
+
+	mapDevice, err := JsonUnmarshal(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestFailConvertData})
+		return
+	}
+
+	convertData := ConvertDeviceData(mapDevice, deviceType, mapDevice["deviceCode"].(string))
+	if convertData == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	/*0 : 반입, 1 : 반출*/
+	var outFlag string
+	if mapDevice["operatingFlag"].(bool) {
+		outFlag = "0"
+	}
+
+	if mapDevice["carryingFlag"].(bool) {
+		if outFlag != "" {
+			outFlag = outFlag + ", 1"
+		} else {
+			outFlag = "1"
+		}
+	}
+
+	// 0 : false
+	var rentPeriod string
+	if mapDevice["rentPeriod"].(bool) {
+		rentPeriod = "1"
+	} else {
+		rentPeriod = "0"
+	}
+
+	page := models.PageCreteria{
+		DeviceType:     c.Param("type"),
+		OutFlag:        outFlag,
+		RentPeriodFlag: rentPeriod,
+	}
+
+	switch page.DeviceType {
+	case "server":
+		fmt.Println("GetDevicesTypeCount - switch 시작")
+		devicePage, err := h.db.GetDevicesTypeCountServerWithJoin(page,
+			*convertData.(*models.DeviceServer))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, devicePage)
+	case "network":
+		devicePage, err := h.db.GetDevicesTypeCountNetworkWithJoin(page,
+			*convertData.(*models.DeviceNetwork))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, devicePage)
+	case "part":
+		devicePage, err := h.db.GetDevicesTypeCountPartWithJoin(page,
+			*convertData.(*models.DevicePart))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, devicePage)
+	}
+}
+
 func (h *Handler) GetDevicesForPageSearchTest(c *gin.Context) {
 	bodyByte, err := ioutil.ReadAll(c.Request.Body)
 	fmt.Printf("%+v\n", bodyByte)
@@ -178,7 +256,6 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 	}
 	deviceType := c.Param("type")
 
-	fmt.Println("deviceType---> ", deviceType)
 	// Parse params
 	row, err := strconv.Atoi(c.Param("row"))
 	if err != nil {
@@ -213,13 +290,13 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 		return
 	}
 
-/*	convertData = ConvertDeviceData(mapDevice, deviceType, mapDevice["customer"].(string))
-	if convertData == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-		return
-	}
+	/*	convertData = ConvertDeviceData(mapDevice, deviceType, mapDevice["customer"].(string))
+		if convertData == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
 
-	fmt.Println("★★★★★★★★★★★★★★★★ : ", mapDevice["customer"].(string))*/
+		fmt.Println("★★★★★★★★★★★★★★★★ : ", mapDevice["customer"].(string))*/
 
 	/*0 : 반입, 1 : 반출*/
 	var outFlag string
@@ -244,13 +321,13 @@ func (h *Handler) GetDevicesForPageSearch(c *gin.Context) {
 	}
 
 	page := models.PageCreteria{
-		DeviceType: c.Param("type"),
-		OrderKey:   c.Param("order"),
-		Row:        row,
-		OutFlag:    outFlag,
-		Direction:  dir,
-		Page:       curpage,
-		OffsetPage: offsetPage,
+		DeviceType:     c.Param("type"),
+		OrderKey:       c.Param("order"),
+		Row:            row,
+		OutFlag:        outFlag,
+		Direction:      dir,
+		Page:           curpage,
+		OffsetPage:     offsetPage,
 		RentPeriodFlag: rentPeriod,
 	}
 

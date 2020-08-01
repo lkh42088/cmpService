@@ -23,7 +23,8 @@ type HandlerInterface interface {
 	GetDevicesByCode(c *gin.Context)
 	GetDevicesForSearch(c *gin.Context)
 	GetDeviceWithoutJoin(c *gin.Context)
-
+	// Device count
+	GetDevicesTypeCount(c *gin.Context)
 	AddDevice(c *gin.Context)
 	UpdateDevice(c *gin.Context)
 	UpdateOutFlag(c *gin.Context)
@@ -71,8 +72,20 @@ type HandlerInterface interface {
 	DeleteCompany(c *gin.Context)
 	ModifyCompany(c *gin.Context)
 	// Subnet
-	GetSubnet(c *gin.Context)
+	GetSubnets(c *gin.Context)
 	AddSubnet(c *gin.Context)
+	UpdateSubnet(c *gin.Context)
+	DeleteSubnets(c *gin.Context)
+
+	//Micro Cloud
+	GetMcServers(c *gin.Context)
+	AddMcServer(c *gin.Context)
+	DeleteMcServer(c *gin.Context)
+	GetMcServersByCpIdx(c *gin.Context)
+
+	GetMcVms(c *gin.Context)
+	AddMcVm(c *gin.Context)
+	DeleteMcVm(c *gin.Context)
 }
 
 type Handler struct {
@@ -148,8 +161,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST("/v1/search/devices/:type/:row/:page/:order/:dir/:offsetPage",
 		h.GetDevicesForPageSearch)
 
-	// LOG
-	router.GET("/v1/log/device/:value", h.GetDevicesByLog)
+	// Device Count
+	// http://127.0.0.1:8081/v1/search/devices/count/server
+	router.POST("/v1/search/count/devices/:type", h.GetDevicesTypeCount)
 
 	// Monitoring
 	//router.GET("/v1/devices/monitoring", h.GetDevicesMonitoring)
@@ -170,11 +184,15 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// User
 	router.GET(ApiUser+pagingParam, h.GetUsersPage)
+	router.POST(ApiUser+"/get-user/:value", h.GetUserById)
 	router.POST(ApiUser+"/page-with-search-param", h.GetUsersPageWithSearchParam)
 	router.POST(ApiUser+"/register", h.RegisterUser)
 	router.POST(ApiUser+"/modify", h.ModifyUser)
 	router.POST(ApiUser+"/unregister", h.UnRegisterUser)
 	router.POST(ApiUser+"/check-user", h.CheckDuplicatedUser)
+
+	// Auth
+	router.GET(ApiPrefix+"/auth", h.GetAuth)
 
 	// Companies
 	router.GET("/v1/companies-with-user-like-cpname/:cpName", h.GetCompaniesWithUserByLikeCpName)
@@ -182,6 +200,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET("/v1/users-about-companies/:cpIdx", h.GetUserDetailsByCpIdx)
 	router.GET("/v1/companies", h.GetCompanies)
 	router.GET("/v1/customers/companies"+pagingParam, h.GetCompaniesPage)
+	router.POST("/v1/company/get-company/:value", h.GetCompanyByName)
+
 	router.POST("/v1/customers/register", h.AddCompany)
 	router.POST("/v1/customers/unregister", h.DeleteCompany)
 	router.POST("/v1/customers/check-company", h.CheckDuplicatedCompany)
@@ -190,7 +210,19 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Subnet
 	router.POST("/v1/subnet/create", h.AddSubnet)
-	router.GET("/v1/subnet"+pagingParam, h.GetSubnet)
+	router.POST("/v1/subnet", h.GetSubnets)
+	router.POST("/v1/subnet/update", h.UpdateSubnet)
+	router.DELETE("/v1/subnet/:idx", h.DeleteSubnets)
+
+	// Micro Cloud
+	router.POST("/v1/micro/servers/register", h.AddMcServer)
+	router.POST("/v1/micro/servers/unregister", h.DeleteMcServer)
+	router.GET("/v1/micro/servers/search-company/:cpIdx", h.GetMcServersByCpIdx)
+	router.GET("/v1/micro/servers-paging/"+pagingParam, h.GetMcServers)
+
+	router.POST("/v1/micro/vms/register", h.AddMcVm)
+	router.POST("/v1/micro/vms/unregister", h.DeleteMcVm)
+	router.GET("/v1/micro/vms-paging/"+pagingParam, h.GetMcVms)
 
 	return router.Run(address)
 }

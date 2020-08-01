@@ -14,7 +14,7 @@ type UserLoginMessage struct {
 	Comment  string `json:"comment"`
 }
 
-type DeleteUserMessage struct {
+type DeleteDataMessage struct {
 	IdxList []int `json:"idx"`
 }
 

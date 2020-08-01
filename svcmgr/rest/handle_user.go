@@ -34,9 +34,9 @@ func (h *Handler) includeEmailAuthToUserDetails(users []models.UserDetail) (newu
 				fmt.Println("List1 : ", user.GroupEmailAuthList)
 			}
 		}
-		user.ParticipateInAccountList , err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
+		user.ParticipateInAccountList, err = h.db.GetLoginAuthsByAuthUserId(user.UserId)
 		if err != nil {
-			fmt.Println("List2 : error ",  err)
+			fmt.Println("List2 : error ", err)
 		} else {
 			fmt.Println("List2 : ", user.ParticipateInAccountList)
 		}
@@ -53,6 +53,23 @@ func (h *Handler) includeEmailAuthToUserDetails(users []models.UserDetail) (newu
 		newusers = append(newusers, user)
 	}
 	return newusers, err
+}
+
+func (h *Handler) GetUserById(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	fmt.Println("GetUserById...")
+
+	value := c.Param("value")
+	fmt.Println("★★★★★★ GetUserById value... : ", value)
+	user, err := h.db.GetUserById(value)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("[###] %v", user)
+	c.JSON(http.StatusOK, user)
 }
 
 func (h *Handler) GetUsersPage(c *gin.Context) {
@@ -251,7 +268,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 	if user.CompanyIdx == 0 {
 		user.CompanyIdx = oldUser.CompanyIdx
 	}
-	if (len(msg.Password) > 6) {
+	if len(msg.Password) > 6 {
 		models.HashPassword(&user)
 	} else {
 		user.Password = oldUser.Password
@@ -373,11 +390,11 @@ func deleteUser(h *Handler, idx uint) bool {
 }
 
 func (h *Handler) UnRegisterUser(c *gin.Context) {
-	var msg messages.DeleteUserMessage
+	var msg messages.DeleteDataMessage
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
-		deleteUser(h, uint(idx));
+		deleteUser(h, uint(idx))
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
 }
@@ -411,4 +428,17 @@ func (h *Handler) UnRegisterUserBackup(c *gin.Context) {
 
 	fmt.Println("Delete user:", adduser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
+}
+
+// Auth table
+func (h *Handler) GetAuth(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	auths, err := h.db.GetAuth()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, auths)
 }

@@ -122,7 +122,7 @@ func (h *Handler) LoginFrontConfirm(c *gin.Context) {
 		c.JSON(restStatus, gin.H{"success": false, "errors": "incorrect credentials", "msg": msg})
 		return
 	}
-	authLogin, err := h.db.GetLoginAuthByUserIdAndTargetEmail(msg.Id, msg.Email);
+	authLogin, err := h.db.GetLoginAuthByUserIdAndTargetEmail(msg.Id, msg.Email)
 	if err != nil {
 		msg.Password = ""
 		msg.Comment = "인증 이메일이 잘못 되었습니다."

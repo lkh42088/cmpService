@@ -11,7 +11,7 @@ const (
 	CompanyRawTable = "company_tb"
 	CodeRawTable    = "code_tb"
 	CodeSubRawTable = "code_sub_tb"
-	userTable	    = "user_tb"
+	userTable       = "user_tb"
 	// SELECT
 	PageSelectQuery             = "c1.c_name as manufacture_cd,s1.csub_name as model_cd,c2.c_name as device_type_cd,c3.c_name as ownership_cd,c4.c_name as ownership_div_cd,c5.c_name as idc_cd,s2.csub_name as rack_cd,cp1.cp_name as company_name,cp3.cp_name as owner_company_name,d.*"
 	ServerSelectQuery           = "c1.c_name as manufacture_cd,s1.csub_name as model_cd,c2.c_name as device_type_cd,c3.c_name as ownership_cd,c4.c_name as ownership_div_cd,c5.c_name as idc_cd,s2.csub_name as rack_cd,cp1.cp_name as company_name,cp3.cp_name as owner_company_name,c6.c_name as size_cd,device_server_tb.*"

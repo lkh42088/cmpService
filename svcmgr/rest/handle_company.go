@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) checkCompanyExists(name string) bool {
-	fmt.Println("name: ", name)
+	fmt.Println("★★★★★ name: ", name)
 	company, err := h.db.GetCompanyByCpName(name)
 	if err != nil {
 		lib.LogWarnln(err)
@@ -34,6 +34,23 @@ func (h *Handler) CheckDuplicatedCompany(c *gin.Context) {
 	}
 	fmt.Println("It does not exists: ", exists)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
+}
+
+func (h *Handler) GetCompanyByName(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	fmt.Println("GetCompanyByName...")
+
+	value := c.Param("value")
+	fmt.Println("★★★★★★ GetCompanyByName value... : ", value)
+	company, err := h.db.GetCompanyByCpName(value)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("[###] %v", company)
+	c.JSON(http.StatusOK, company)
 }
 
 func (h *Handler) GetCompaniesPage(c *gin.Context) {
@@ -84,7 +101,7 @@ func (h *Handler) GetCompaniesPageWithSearchParam(c *gin.Context) {
 			companies, err = h.db.GetCompaniesPageBySearch(page, query)
 		}
 	}
-	if (err != nil) {
+	if err != nil {
 		fmt.Printf("err %s\n", err)
 	}
 	fmt.Printf("companies %v\n", companies)
@@ -111,7 +128,7 @@ func (h *Handler) GetUserDetailsByCpIdx(c *gin.Context) {
 	if h.db == nil {
 		return
 	}
-	cpIdxString:= c.Param("cpIdx")
+	cpIdxString := c.Param("cpIdx")
 	fmt.Println("cpIdxString: ", cpIdxString)
 	cpIdx, _ := strconv.Atoi(cpIdxString)
 	fmt.Println("cpId: ", cpIdx)
@@ -239,7 +256,7 @@ func (h *Handler) ModifyCompany(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
 }
 
-func deleteCompany(h * Handler, idx int) bool {
+func deleteCompany(h *Handler, idx int) bool {
 	var company models.Company
 	company.Idx = uint(idx)
 	users, err := h.db.GetUserDetailsByCpIdx(idx)
@@ -264,4 +281,3 @@ func (h *Handler) DeleteCompany(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
 }
-

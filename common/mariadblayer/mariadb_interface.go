@@ -68,6 +68,13 @@ type MariaDBLayer interface {
 	GetDevicesPartSearchWithJoin(creteria models.PageCreteria,
 		dc models.DevicePart) (models.DevicePartPage, error)
 
+	// Device Count
+	GetDevicesTypeCountServerWithJoin(creteria models.PageCreteria, dc models.DeviceServer) (models.PageStatistics, error)
+	GetDevicesTypeCountNetworkWithJoin(creteria models.PageCreteria, dc models.DeviceNetwork) (models.PageStatistics, error)
+	GetDevicesTypeCountPartWithJoin(creteria models.PageCreteria, dc models.DevicePart) (models.PageStatistics, error)
+	/*GetDevicesTypeCountNetwork(creteria models.PageCreteria) (models.DeviceNetworkPage, error)
+	GetDevicesTypeCountPart(creteria models.PageCreteria) (models.DevicePartPage, error)*/
+
 	// Comment
 	GetAllComments() ([]models.DeviceComment, error)
 	GetComments(code string) ([]models.DeviceComment, error)
@@ -90,6 +97,7 @@ type MariaDBLayer interface {
 	GetUserByUserId(userId string) (models.User, error)
 	AddUserMember(user models.User) error
 	AddAuth(auth models.Auth) error
+	GetAuth() ([]models.Auth, error)
 	DeleteAllUserMember() error
 	DeleteAllAuth() error
 
@@ -138,10 +146,22 @@ type MariaDBLayer interface {
 	GetLoginAuthsByUserIdx(userIdx uint) (obj []models.LoginAuth, err error)
 	GetLoginAuthsByAuthUserId(authUserId string) (obj []models.LoginAuth, err error)
 	GetLoginAuthByMySelfAuth(userId string) (obj models.LoginAuth, err error)
- 	GetLoginAuthByUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
+	GetLoginAuthByUserIdAndTargetId(userId, targetId string) (obj models.LoginAuth, err error)
 	GetLoginAuthByUserIdAndTargetEmail(userId, targetEmail string) (obj models.LoginAuth, err error)
 
 	// Subnet
 	AddSubnet(subnet models.SubnetMgmt) error
-	GetSubnetPage(cri models.Pagination) (models.SubnetMgmtResponse, error)
+	GetSubnets(cri models.PageRequestForSearch) (models.SubnetMgmtResponse, error)
+	UpdateSubnet(subnet models.SubnetMgmt) error
+	DeleteSubnets(idx []string) error
+
+	// Micro Cloud
+	GetMcServersPage(paging models.Pagination) (servers models.McServerPage, err error)
+	AddMcServer(obj models.McServer) (models.McServer, error)
+	DeleteMcServer(obj models.McServer) (models.McServer, error)
+	GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail, err error)
+
+	GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, err error)
+	AddMcVm(obj models.McVm) (models.McVm, error)
+	DeleteMcVm(obj models.McVm) (models.McVm, error)
 }

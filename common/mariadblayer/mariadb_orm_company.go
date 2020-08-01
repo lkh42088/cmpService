@@ -78,18 +78,17 @@ func (db *DBORM) AddCompany(company models.Company) (models.Company, error) {
 func (db *DBORM) UpdateCompany(obj models.Company) (models.Company, error) {
 	return obj, db.Model(&obj).
 		Updates(map[string]interface{}{
-			"cp_idx":obj.Idx,
-			"cp_name":obj.Name,
-			"cp_email":obj.Email,
-			"cp_homepage":obj.Homepage,
-			"cp_tel":obj.Tel,
-			"cp_hp":obj.HP,
-			"cp_zip":obj.Zipcode,
-			"cp_addr":obj.Address,
-			"cp_addr_detail":obj.AddressDetail,
-			"cp_termination_date":obj.TermDate,
-			"cp_is_company":obj.IsCompany,
-			"cp_memo":obj.Memo,
+			/*"cp_name":             obj.Name,*/
+			"cp_email":            obj.Email,
+			"cp_homepage":         obj.Homepage,
+			"cp_tel":              obj.Tel,
+			"cp_hp":               obj.HP,
+			"cp_zip":              obj.Zipcode,
+			"cp_addr":             obj.Address,
+			"cp_addr_detail":      obj.AddressDetail,
+			"cp_termination_date": obj.TermDate,
+			"cp_is_company":       obj.IsCompany,
+			"cp_memo":             obj.Memo,
 		}).Error
 }
 

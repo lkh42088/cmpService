@@ -186,6 +186,27 @@ type PageCreteria struct {
 	RentPeriodFlag string `json:"rentPeriod"`
 }
 
+type PageStatistics struct {
+	ServerCount  int `json:"serverCount"`
+	StorageCount int `json:"storageCount"`
+	EtcCount     int `json:"etcCount"`
+	L2Count      int `json:"l2Count"`
+	L3Count      int `json:"l3Count"`
+	RouterCount  int `json:"routerCount"`
+	HddCount     int `json:"hddCount"`
+	KvmCount     int `json:"kvmCount"`
+}
+
+func (s PageStatistics) String() {
+	fmt.Printf("%v\n", s)
+	fmt.Printf("%+v\n", s)
+	data, err := json.Marshal(s)
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	fmt.Printf("%s\n", data)
+}
+
 func (p *PageCreteria) String() {
 	fmt.Printf("%v\n", p)
 	fmt.Printf("%+v\n", p)
