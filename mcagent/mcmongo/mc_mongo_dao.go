@@ -1,14 +1,18 @@
 package mcmongo
 
-import "cmpService/mcagent/mcmodel"
+import "cmpService/common/mcmodel"
 
-func (m *McMongoAccessor) AddVm(vm *mcmodel.VmEntry) (id int, err error) {
+func (m *McMongoAccessor) AddVm(vm *mcmodel.MgoVm) (id int, err error) {
 	id = vm.Idx
 	_, err = m.Collection.UpsertId(id, vm)
 	return id, err
 }
 
-func (m*McMongoAccessor) GetVmById(id int) (vm mcmodel.VmEntry, err error) {
+func (m*McMongoAccessor) GetVmById(id int) (vm mcmodel.MgoVm, err error) {
 	err = m.Collection.FindId(id).One(&vm)
 	return vm, err
+}
+
+func (m *McMongoAccessor) DeleteVm(id int) error {
+	return m.Collection.RemoveId(id)
 }

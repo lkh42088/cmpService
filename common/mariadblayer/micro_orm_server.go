@@ -2,11 +2,12 @@ package mariadblayer
 
 import (
 	"cmpService/common/lib"
+	"cmpService/common/mcmodel"
 	"cmpService/common/models"
 	"fmt"
 )
 
-func (db *DBORM) GetMcServersPage(paging models.Pagination) (servers models.McServerPage, err error) {
+func (db *DBORM) GetMcServersPage(paging models.Pagination) (servers mcmodel.McServerPage, err error) {
 	err = db.
 		Table("mc_server_tb").
 		Select("mc_server_tb.*, c.cp_name").
@@ -23,12 +24,12 @@ func (db *DBORM) GetMcServersPage(paging models.Pagination) (servers models.McSe
 	return servers, err
 }
 
-func (db *DBORM) GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail, err error) {
+func (db *DBORM) GetMcServersByCpIdx(cpIdx int) (servers []mcmodel.McServerDetail, err error) {
 	err = db.
 		Table("mc_server_tb").
 		Select("mc_server_tb.*, c.cp_name").
 		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_server_tb.mc_cp_idx").
-		Where(models.McServer{CompanyIdx: cpIdx}).
+		Where(mcmodel.McServer{CompanyIdx: cpIdx}).
 		Find(&servers).Error
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
@@ -37,15 +38,15 @@ func (db *DBORM) GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail
 	return servers, err
 }
 
-func (db *DBORM) AddMcServer(obj models.McServer) (models.McServer, error) {
+func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Create(&obj).Error
 }
 
-func (db *DBORM) DeleteMcServer(obj models.McServer) (models.McServer, error) {
+func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Delete(&obj).Error
 }
 
-func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, err error) {
+func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error) {
 	err = db.
 		Table("mc_vm_tb").
 		Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
@@ -63,9 +64,9 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, er
 	return vms, err
 }
 
-func (db *DBORM) updateVmCount(vm models.McVm, isAdd bool) {
-	var server models.McServer
-	err := db.Where(models.McServer{Idx: uint(vm.McServerIdx)}).
+func (db *DBORM) updateVmCount(vm mcmodel.McVm, isAdd bool) {
+	var server mcmodel.McServer
+	err := db.Where(mcmodel.McServer{Idx: uint(vm.McServerIdx)}).
 		Find(&server).Error
 	fmt.Printf("updateVmCount: vm %v \n", vm)
 	fmt.Printf("updateVmCount: server %v \n", server)
@@ -89,7 +90,7 @@ func (db *DBORM) updateVmCount(vm models.McVm, isAdd bool) {
 	fmt.Printf("update: err %v\n", err)
 }
 
-func (db *DBORM) AddMcVm(obj models.McVm) (vm models.McVm, err error) {
+func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Create(&obj).Error
 	vm = obj
 	if err == nil {
@@ -99,7 +100,7 @@ func (db *DBORM) AddMcVm(obj models.McVm) (vm models.McVm, err error) {
 	return vm, err
 }
 
-func (db *DBORM) DeleteMcVm(obj models.McVm) (vm models.McVm, err error) {
+func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Delete(&obj).Error
 	vm = obj
 	if err == nil {

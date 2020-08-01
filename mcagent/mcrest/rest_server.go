@@ -1,15 +1,13 @@
 package mcrest
 
 import (
+	"cmpService/common/lib"
 	config2 "cmpService/mcagent/config"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"sync"
 )
 
-const (
-	apiPathPrefix = "/api/v1"
-)
 
 var Router *gin.Engine
 
@@ -25,10 +23,11 @@ func Start(parentwg *sync.WaitGroup) {
 
 	Router = gin.Default()
 
-	rg := Router.Group(apiPathPrefix)
+	rg := Router.Group(lib.McUrlPrefix)
 
-	rg.POST(apiPathPrefix+"/vms/create", addVmHandler)
-	rg.GET(apiPathPrefix+"/vms/:id", getVmByIdHandler)
+	rg.POST(lib.McUrlCreateVm, addVmHandler)
+	rg.POST(lib.McUrlDeleteVm, deleteVmHandler)
+	rg.GET(lib.McUrlGetVmById, getVmByIdHandler)
 
 	Router.Run(address)
 	if parentwg != nil {

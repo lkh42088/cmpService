@@ -1,28 +1,28 @@
 package mariadblayer
 
 import (
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	"github.com/jinzhu/gorm"
 )
 
 func CreateMicroCloudTable(db *gorm.DB) {
-	if db.HasTable(&models.McServer{}) == false {
-		db.AutoMigrate(&models.McServer{})
-		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.McServer{})
+	if db.HasTable(&mcmodel.McServer{}) == false {
+		db.AutoMigrate(&mcmodel.McServer{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McServer{})
 	}
 
-	if db.HasTable(&models.McVm{}) == false {
-		db.AutoMigrate(&models.McVm{})
-		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.McVm{})
+	if db.HasTable(&mcmodel.McVm{}) == false {
+		db.AutoMigrate(&mcmodel.McVm{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McVm{})
 	}
 }
 
 func DropMicroCloudTable(db *gorm.DB) {
-	if db.HasTable(&models.McServer{}) {
-		db.DropTable(&models.McServer{})
+	if db.HasTable(&mcmodel.McServer{}) {
+		db.DropTable(&mcmodel.McServer{})
 	}
 
-	if db.HasTable(&models.McVm{}) {
-		db.DropTable(&models.McVm{})
+	if db.HasTable(&mcmodel.McVm{}) {
+		db.DropTable(&mcmodel.McVm{})
 	}
 }

@@ -2,8 +2,10 @@ package rest
 
 import (
 	"cmpService/common/lib"
+	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/common/models"
+	"cmpService/svcmgr/mcapi"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -11,11 +13,16 @@ import (
 )
 
 func (h *Handler) AddMcServer(c *gin.Context) {
-	var msg models.McServer
+	var msg mcmodel.McServer
 	c.Bind(&msg)
 
 	fmt.Printf("Add McServer : %v\n", msg)
-	h.db.AddMcServer(msg)
+	msg, err := h.db.AddMcServer(msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, msg)
 }
 
 func (h *Handler) DeleteMcServer(c *gin.Context) {
@@ -23,7 +30,7 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
-		var server models.McServer
+		var server mcmodel.McServer
 		server.Idx = uint(idx)
 		h.db.DeleteMcServer(server)
 	}
@@ -78,11 +85,20 @@ func (h *Handler) GetMcServersByCpIdx(c *gin.Context) {
 }
 
 func (h *Handler) AddMcVm(c *gin.Context) {
-	var msg models.McVm
+	var msg mcmodel.McVm
 	c.Bind(&msg)
 
 	fmt.Printf("Add McVm : %v\n", msg)
-	h.db.AddMcVm(msg)
+
+	msg, err := h.db.AddMcVm(msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	// send to mcagent
+	mcapi.SendAddVm(msg)
+
+	c.JSON(http.StatusOK, msg)
 }
 
 func (h *Handler) DeleteMcVm(c *gin.Context) {
@@ -90,9 +106,14 @@ func (h *Handler) DeleteMcVm(c *gin.Context) {
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
-		var vm models.McVm
+		var vm mcmodel.McVm
 		vm.Idx = uint(idx)
-		h.db.DeleteMcVm(vm)
+		vm, err := h.db.DeleteMcVm(vm)
+		if err != nil {
+			continue
+		}
+		// send to mcagent
+		mcapi.SendDeleteVm(vm)
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }

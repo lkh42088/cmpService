@@ -1,8 +1,9 @@
 package mcmongo
 
-import "cmpService/mcagent/mcmodel"
+import "cmpService/common/mcmodel"
 
 type McMongoDBLayer interface {
-	AddVm(vm *mcmodel.VmEntry) (id int, err error)
-	GetVmById(id int) (vm mcmodel.VmEntry, err error)
+	AddVm(vm *mcmodel.MgoVm) (id int, err error)
+	DeleteVm(id int) error
+	GetVmById(id int) (vm mcmodel.MgoVm, err error)
 }

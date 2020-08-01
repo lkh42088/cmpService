@@ -1,6 +1,7 @@
 package mariadblayer
 
 import (
+	"cmpService/common/mcmodel"
 	"cmpService/common/models"
 )
 
@@ -156,12 +157,12 @@ type MariaDBLayer interface {
 	DeleteSubnets(idx []string) error
 
 	// Micro Cloud
-	GetMcServersPage(paging models.Pagination) (servers models.McServerPage, err error)
-	AddMcServer(obj models.McServer) (models.McServer, error)
-	DeleteMcServer(obj models.McServer) (models.McServer, error)
-	GetMcServersByCpIdx(cpIdx int) (servers []models.McServerDetail, err error)
+	GetMcServersPage(paging models.Pagination) (servers mcmodel.McServerPage, err error)
+	AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
+	DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
+	GetMcServersByCpIdx(cpIdx int) (servers []mcmodel.McServerDetail, err error)
 
-	GetMcVmsPage(paging models.Pagination) (vms models.McVmPage, err error)
-	AddMcVm(obj models.McVm) (models.McVm, error)
-	DeleteMcVm(obj models.McVm) (models.McVm, error)
+	GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error)
+	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
+	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 }
