@@ -65,6 +65,8 @@ func (h *Handler) LoginUserByEmail(c *gin.Context) {
 		Name:    "token",
 		Value:   tokenString,
 		Expires: expirationTime,
+		//Secure:		true,
+		//SameSite:   http.SameSiteNoneMode,
 	})
 	fmt.Println(tokenString)
 	c.JSON(http.StatusOK,
@@ -437,9 +439,11 @@ func responseWithToken(c *gin.Context, user models.UserDetail, authEmail string)
 	fmt.Printf(">>>> GEN TOKEN: size(%d) token(%s)\n", len(tokenString), tokenString)
 	errors.HandleErr(c, err)
 	http.SetCookie(c.Writer, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
+		Name:    	"token",
+		Value:   	tokenString,
+		Expires: 	expirationTime,
+		//Secure:		true,
+		//SameSite:   http.SameSiteNoneMode,
 	})
 	var msg messages.UserLoginMessage
 	msg.Id = user.UserId
@@ -603,6 +607,8 @@ func (h *Handler) Logout(c *gin.Context) {
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:   "token",
 		MaxAge: -1,
+		//Secure:		true,
+		//SameSite:   http.SameSiteNoneMode,
 	})
 	c.JSON(http.StatusNoContent, gin.H{"success": true, "msg": "logged out in successfully"})
 }
