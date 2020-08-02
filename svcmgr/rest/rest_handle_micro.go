@@ -95,8 +95,9 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
+	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
 	// send to mcagent
-	mcapi.SendAddVm(msg)
+	mcapi.SendAddVm(msg, server)
 
 	c.JSON(http.StatusOK, msg)
 }
@@ -113,7 +114,8 @@ func (h *Handler) DeleteMcVm(c *gin.Context) {
 			continue
 		}
 		// send to mcagent
-		mcapi.SendDeleteVm(vm)
+		server, err := h.db.GetMcServerByServerIdx(uint(vm.McServerIdx))
+		mcapi.SendDeleteVm(vm, server)
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }
