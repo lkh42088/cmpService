@@ -3,7 +3,7 @@ package mcmongo
 import "cmpService/common/mcmodel"
 
 func (m *McMongoAccessor) AddVm(vm *mcmodel.MgoVm) (id int, err error) {
-	id = vm.Idx
+	id = int(vm.Idx)
 	_, err = m.Collection.UpsertId(id, vm)
 	return id, err
 }

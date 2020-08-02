@@ -3,6 +3,7 @@ package mcrest
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/mcmongo"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.MgoVm
 	err := c.ShouldBindJSON(&msg)
+	fmt.Printf("addVmHandler: %v\n", msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -20,24 +22,29 @@ func addVmHandler(c *gin.Context) {
 	_, err = mcmongo.McMongo.AddVm(&msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
+	fmt.Printf("deleteVmHandler: success\n")
 	c.JSON(http.StatusOK, msg)
 }
 
 func deleteVmHandler(c *gin.Context) {
 	var msg mcmodel.MgoVm
 	err := c.ShouldBindJSON(&msg)
+	fmt.Printf("deleteVmHandler: %v\n", msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = mcmongo.McMongo.DeleteVm(msg.Idx)
+	err = mcmongo.McMongo.DeleteVm(int(msg.Idx))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
+	fmt.Printf("deleteVmHandler: success\n")
 	c.JSON(http.StatusOK, msg)
 }
 
