@@ -28,10 +28,10 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.POST(lib.McUrlCreateVm, addVmHandler)
 	rg.POST(lib.McUrlDeleteVm, deleteVmHandler)
 	rg.GET(lib.McUrlGetVmById, getVmByIdHandler)
+	rg.GET(lib.McUrlVm, getVmAllHandler)
 
 	Router.Run(address)
 	if parentwg != nil {
 		parentwg.Done()
 	}
 }
-

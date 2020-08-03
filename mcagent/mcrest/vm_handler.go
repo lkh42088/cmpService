@@ -60,3 +60,13 @@ func getVmByIdHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, vm)
 }
+
+func getVmAllHandler(c *gin.Context) {
+	// Get VMs from Mongodb
+	vm, err := mcmongo.McMongo.GetVmAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, vm)
+}
