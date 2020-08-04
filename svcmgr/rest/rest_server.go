@@ -60,6 +60,8 @@ type HandlerInterface interface {
 	RegisterUser(c *gin.Context)
 	ModifyUser(c *gin.Context)
 	UnRegisterUser(c *gin.Context)
+	// Capcha
+	GetCaptcha(c *gin.Context)
 	// Companies
 	CheckDuplicatedCompany(c *gin.Context)
 	GetCompaniesPage(c *gin.Context)
@@ -193,6 +195,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Auth
 	router.GET(ApiPrefix+"/auth", h.GetAuth)
+	// ReCAPTCHA
+	router.POST(ApiPrefix+"/captcha", h.GetCaptcha)
 
 	// Companies
 	router.GET("/v1/companies-with-user-like-cpname/:cpName", h.GetCompaniesWithUserByLikeCpName)

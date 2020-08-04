@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"bytes"
 	"cmpService/common/messages"
 	"cmpService/common/models"
 	"cmpService/svcmgr/errors"
@@ -8,6 +9,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -725,4 +727,42 @@ func (h *Handler) EmailConfirm(c *gin.Context) {
 	h.db.UpdateLoginAuth(userAuth)
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": ""})
+}
+
+// Get ReCAPTCHA code
+func (h *Handler) GetCaptcha(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	var humanKey models.GoogleKey
+	c.ShouldBindJSON(&humanKey)
+	//fmt.Printf("humanKey : %+v\n", humanKey.HumanKey)
+
+	requestBody := bytes.NewBufferString(humanKey.HumanKey)
+	urlString := models.GoogleVerifyUrl
+	urlString += "?secret=" + models.SecretKey
+	urlString += "&response=" + humanKey.HumanKey
+	//fmt.Println(urlString)
+
+	response, err := http.Post(urlString,
+		"text/plain", requestBody)
+	if err != nil {
+		//fmt.Printf("err1: %+v\n", err)
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	defer response.Body.Close()
+
+	if response.Body != nil {
+		responseBody, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			//fmt.Printf("err2: %+v\n", err)
+			c.JSON(http.StatusUnauthorized, err)
+			return
+		}
+
+		//fmt.Printf("response : %+v\n", string(responseBody))
+		c.JSON(http.StatusOK, string(responseBody))
+	}
 }
