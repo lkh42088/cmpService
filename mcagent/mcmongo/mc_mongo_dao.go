@@ -11,6 +11,10 @@ func (m *McMongoAccessor) AddVm(vm *mcmodel.MgoVm) (id int, err error) {
 	return id, err
 }
 
+func (m *McMongoAccessor) UpdateVm(vm *mcmodel.MgoVm) (id int, err error) {
+	return m.AddVm(vm)
+}
+
 func (m*McMongoAccessor) GetVmAll() (vms []mcmodel.MgoVm, err error) {
 	err = m.Collection.Find(nil).All(&vms)
 	return vms, err

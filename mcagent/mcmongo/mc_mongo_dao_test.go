@@ -19,15 +19,33 @@ func configure() {
 func TestMcMongoAddVm(t *testing.T) {
 	configure()
 	vm := mcmodel.MgoVm{
-		Idx: 1,
-		McServerIds: 1,
-		CompanyIdx: 1,
-		Name: "vm1",
-		Cpu: 4,
-		Ram: 8192,
-		Hdd: 100,
-		OS: "window10",
-		Image: "window10.qcow2",
+		Idx:         1,
+		McServerIdx: 1,
+		CompanyIdx:  1,
+		Name:        "vm1",
+		Cpu:         4,
+		Ram:         8192,
+		Hdd:         100,
+		OS:          "window10",
+		Image:       "window10.qcow2",
+	}
+	fmt.Println("vm:", vm)
+	McMongo.AddVm(&vm)
+}
+
+func TestMcMongoUpdateVm(t *testing.T) {
+	configure()
+	vm := mcmodel.MgoVm{
+		Idx:         1,
+		McServerIdx: 1,
+		CompanyIdx:  1,
+		Name:        "vm1",
+		Cpu:         4,
+		Ram:         8192,
+		Hdd:         100,
+		OS:          "window10",
+		Image:       "window10.qcow2",
+		CurrentStatus: "running",
 	}
 	fmt.Println("vm:", vm)
 	McMongo.AddVm(&vm)

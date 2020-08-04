@@ -10,12 +10,12 @@ func getData() (vm mcmodel.McVm, server mcmodel.McServerDetail){
 		Idx: 1,
 		McServerIdx: 1,
 		CompanyIdx: 1,
-		Name: "vm1",
+		Name: "win10-bhjung",
 		Cpu: 4,
 		Ram: 8192,
 		Hdd: 100,
 		OS: "window10",
-		Image: "window10.qcow2",
+		Image: "win10.qcow2",
 	}
 	server = mcmodel.McServerDetail{
 		McServer: mcmodel.McServer{

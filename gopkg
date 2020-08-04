@@ -18,3 +18,6 @@ go get github.com/TylerBrock/colorjson
 go get golang.org/x/crypto/bcrypt
 go get github.com/dgrijalva/jwt-go
 
+go get github.com/libvirt/libvirt-go
+go get github.com/libvirt/libvirt-go-xml
+go get github.com/digitalocean/go-libvirt

@@ -10,15 +10,16 @@ import (
 
 type McAgentConfig struct {
 	config.MongoDbConfig
-	McagentIp   string `json:"mcagent_ip"`
-	McagentPort string `json:"mcagent_port"`
-	SvcmgrIp    string `json:"svcmgr_ip"`
-	SvcmgrPort  string `json:"svcmgr_port"`
+	McagentIp          string `json:"mcagent_ip"`
+	McagentPort        string `json:"mcagent_port"`
+	SvcmgrIp           string `json:"svcmgr_ip"`
+	SvcmgrPort         string `json:"svcmgr_port"`
+	MonitoringInterval int    `json:"monitoring_interval"`
 }
 
 var globalConfig McAgentConfig
 
-func GetGlobalConfig () McAgentConfig {
+func GetGlobalConfig() McAgentConfig {
 	return globalConfig
 }
 

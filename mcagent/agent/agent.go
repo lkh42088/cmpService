@@ -20,18 +20,31 @@ func Start (config string) {
 		return
 	}
 
-	wg.Add(1)
+	wg.Add(2)
 
+	// Rest Api Server
 	go mcrest.Start(&wg)
+
+	// Monitoring VMs
+	go Mon.Start(&wg)
 
 	wg.Wait()
 }
 
 func configure() bool {
-	// Configure Mongo DB
+	// ConfigureMonitoring Mongo DB
 	if ! mcmongo.Configure() {
 		fmt.Println("Failed to configure mongodb!")
 		return false
 	}
+	// ConfigureMonitoring Monitoring
+	if ! ConfigureMonitoring() {
+		fmt.Println("Failed to configure agent!")
+		return false
+	}
+
+	ConfigureVmList()
+	InitVmList()
+
 	return true
 }
