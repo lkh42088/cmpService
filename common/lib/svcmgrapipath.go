@@ -18,7 +18,7 @@ const (
 	SvcmgrApiMicroServer              = SvcmgrApiMicro + "/servers"
 	SvcmgrApiMicroServerPaging        = SvcmgrApiMicro + "/servers-paging"
 	SvcmgrApiMicroServerRegister      = SvcmgrApiMicroServer + "/register"
-	SvcmgrApiMicroServerUnRegister    = SvcmgrApiMicroServer + "/register"
+	SvcmgrApiMicroServerUnRegister    = SvcmgrApiMicroServer + "/unregister"
 	SvcmgrApiMicroServerSearchCompany = SvcmgrApiMicroServer + "/search-company"
 	// /v1/micro/vms
 	SvcmgrApiMicroVm                  = SvcmgrApiMicro + "/vms"
