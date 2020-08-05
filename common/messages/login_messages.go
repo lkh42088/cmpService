@@ -79,6 +79,7 @@ type UserInfo struct {
 	EmailAuthFlag      bool   `json:"emailAuthFlag"`
 	EmailAuthGroupFlag bool   `json:"emailAuthGroupFlag"`
 	AuthEmail          string `json:"authEmail"`
+	Avata              string              `json:"avata"`
 }
 
 func GetUserEmailAuth(id, email string) (emailAuth models.UserEmailAuth) {

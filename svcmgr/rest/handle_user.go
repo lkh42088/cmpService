@@ -19,6 +19,10 @@ import (
 	"strconv"
 )
 
+const (
+	ApiImage = "./svcmgr/files/img/"
+)
+
 func (h *Handler) CheckUserExists(userId string) bool {
 	user, err := h.db.GetUserById(userId)
 	if err != nil {
@@ -287,7 +291,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 	// 파일 삭제
 	if user.Avata != oldUser.Avata {
 		if oldUser.Avata != "" {
-			errRemove := os.Remove("./svcmgr/files/img/"+string(oldUser.Avata))
+			errRemove := os.Remove(ApiImage+string(oldUser.Avata))
 			if errRemove != nil {
 				panic(errRemove)
 			}
@@ -417,7 +421,7 @@ func (h *Handler) UnRegisterUser(c *gin.Context) {
 	}
 
 	for _, avata := range msg.AvataList {
-		errRemove := os.Remove("./svcmgr/files/img/"+string(avata))
+		errRemove := os.Remove(ApiImage+string(avata))
 		if errRemove != nil {
 			panic(errRemove)
 		}
@@ -488,7 +492,7 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 	// Upload the file to specific dst.
 	filename := filepath.Base(file.Filename)
 
-	uploadPath := "./svcmgr/files/img/" + filename
+	uploadPath := ApiImage + filename
 
 	seed, _ := crand.Int(crand.Reader, big.NewInt(math.MaxInt64))
 	rand.Seed(seed.Int64())
@@ -497,7 +501,7 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 		// 그대로 등록!
 	} else {
 		// 랜덤 파일명 추가 ....
-		uploadPath = "./svcmgr/files/img/" + strconv.Itoa(int(rand.Int63())) + "-" + filename
+		uploadPath = ApiImage + strconv.Itoa(int(rand.Int63())) + "-" + filename
 	}
 
 	log.Println(filename)
