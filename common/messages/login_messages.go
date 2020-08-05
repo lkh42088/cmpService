@@ -16,6 +16,7 @@ type UserLoginMessage struct {
 
 type DeleteDataMessage struct {
 	IdxList []int `json:"idx"`
+	AvataList []string `json:"avata"`
 }
 
 type UserRegisterMessage struct {
@@ -36,6 +37,7 @@ type UserRegisterMessage struct {
 	EmailAuthGroupFlag bool                `json:"emailAuthGroupFlag"`
 	EmailAuthGroupList []models.UserDetail `json:"emailAuthGroupList"`
 	Memo               string              `json:"memo"`
+	Avata              string              `json:"avata"`
 }
 
 func (u UserRegisterMessage) String() {
@@ -132,6 +134,7 @@ func (msg *UserRegisterMessage) Translate() (user models.User, emailAuthList []m
 	user.GroupEmailAuth = msg.EmailAuthGroupFlag
 	user.EmailAuth = msg.EmailAuthFlag
 	user.Memo = msg.Memo
+	user.Avata = msg.Avata
 
 	// email auth
 	if user.GroupEmailAuth {

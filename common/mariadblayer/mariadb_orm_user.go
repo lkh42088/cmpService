@@ -3,6 +3,7 @@ package mariadblayer
 import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
+	"fmt"
 )
 
 func (db *DBORM) GetAllUsers() (users []models.User, err error) {
@@ -50,6 +51,7 @@ func (db *DBORM) UpdateUserPassword(user models.User) (models.User, error) {
 
 func (db *DBORM) UpdateUser(user models.User) (models.User, error) {
 	// exept: Avata
+	fmt.Println("■■■■■■■■■■■■■■■■ Translate user: ", user)
 	return user, db.Model(&user).
 		Updates(map[string]interface{}{
 			"user_idx":                   user.Idx,
@@ -74,6 +76,7 @@ func (db *DBORM) UpdateUser(user models.User) (models.User, error) {
 			"user_register_date":         user.RegisterDate,
 			"user_last_access_date":      user.LastAccessDate,
 			"user_last_access_ip":        user.LastAccessIp,
+			"user_avata":                 user.Avata,
 		}).Error
 }
 

@@ -6,9 +6,16 @@ import (
 	"cmpService/common/models"
 	"cmpService/svcmgr/errors"
 	"cmpService/svcmgr/utils"
+	crand "crypto/rand"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
+	"math"
+	"math/big"
+	"math/rand"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -252,7 +259,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 	var msg messages.UserRegisterMessage
 	c.Bind(&msg)
 
-	fmt.Println("Register Message: ", msg)
+	fmt.Println("■ ModifyUser Message: ", msg)
 	msg.String()
 
 	oldUser, err := h.db.GetUserById(msg.Id)
@@ -274,9 +281,21 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 		user.Password = oldUser.Password
 	}
 
-	fmt.Println("User: ", user)
+	fmt.Println("■ User: ", user)
+	fmt.Println("■ oldUser: ", oldUser)
+
+	// 파일 삭제
+	if user.Avata != oldUser.Avata {
+		if oldUser.Avata != "" {
+			errRemove := os.Remove("./svcmgr/files/img/"+string(oldUser.Avata))
+			if errRemove != nil {
+				panic(errRemove)
+			}
+		}
+	}
+
 	updateUser, err := h.db.UpdateUser(user)
-	fmt.Println("update user: ", updateUser)
+	fmt.Println("■ update user: ", updateUser)
 	if oldUser.GroupEmailAuth {
 		h.db.DeleteLoginAuthsByUserIdx(user.Idx)
 	}
@@ -300,7 +319,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 		fmt.Println("ModifyUser: error 5.", err)
 		return
 	}
-	fmt.Println("Modify user:", updateUser)
+	fmt.Println("■ Modify user:", updateUser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": updateUser})
 }
 
@@ -374,6 +393,7 @@ func (h *Handler) CheckDuplicatedUser(c *gin.Context) {
 
 func deleteUser(h *Handler, idx uint) bool {
 	var user models.User
+
 	_, err := h.db.DeleteLoginAuthsByUserIdx(idx)
 	if err != nil {
 		fmt.Println("deleteLoginAuthsByUserIdx err: ", err)
@@ -392,10 +412,18 @@ func deleteUser(h *Handler, idx uint) bool {
 func (h *Handler) UnRegisterUser(c *gin.Context) {
 	var msg messages.DeleteDataMessage
 	c.Bind(&msg)
-	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
 		deleteUser(h, uint(idx))
 	}
+
+	for _, avata := range msg.AvataList {
+		errRemove := os.Remove("./svcmgr/files/img/"+string(avata))
+		if errRemove != nil {
+			panic(errRemove)
+		}
+	}
+
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "User created successfully"})
 }
 
@@ -441,4 +469,45 @@ func (h *Handler) GetAuth(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	c.JSON(http.StatusOK, auths)
+}
+
+func (h *Handler) UploadFileUser(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+
+	// single file
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+
+	log.Println(file.Filename)
+
+	// Upload the file to specific dst.
+	filename := filepath.Base(file.Filename)
+
+	uploadPath := "./svcmgr/files/img/" + filename
+
+	seed, _ := crand.Int(crand.Reader, big.NewInt(math.MaxInt64))
+	rand.Seed(seed.Int64())
+
+	if _, err := os.Stat(uploadPath); os.IsNotExist(err) {
+		// 그대로 등록!
+	} else {
+		// 랜덤 파일명 추가 ....
+		uploadPath = "./svcmgr/files/img/" + strconv.Itoa(int(rand.Int63())) + "-" + filename
+	}
+
+	log.Println(filename)
+	if err := c.SaveUploadedFile(file, uploadPath); err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"status":    "posted",
+		"file name": file.Filename,
+	})
 }

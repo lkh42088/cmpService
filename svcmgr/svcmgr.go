@@ -21,6 +21,18 @@ func main() {
 		return
 	}
 	SetRestServer(db)
+	//setupRoutes()
+
+/*	r := setupRouter()
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	r.MaxMultipartMemory = 8 << 20 // 8 MiB
+
+	r.Static("/files", "./example/upload")
+	r.LoadHTMLGlob("./example/templates/*")
+
+	// Listen and Server in 0.0.0.0:8080
+	r.Run(":8081")*/
+
 }
 
 func SetMariaDB() (db *mariadblayer.DBORM, err error) {
@@ -52,3 +64,93 @@ func SetRestServer(db *mariadblayer.DBORM) {
 	rest.WebServerAddress = webserver
 	rest.RunAPI(restServer, db)
 }
+
+/*
+func uploadFile(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("...................... : ", r)
+	fmt.Println("File Upload Endpoint Hit")
+
+	// Parse our multipart form, 10 << 20 specifies a maximum
+	// upload of 10 MB files.
+	r.ParseMultipartForm(10 << 20)
+	// FormFile returns the first file for the given key `myFile`
+	// it also returns the FileHeader so we can get the Filename,
+	// the Header and the size of the file
+	file, handler, err := r.FormFile("myFile")
+	if err != nil {
+		fmt.Println("Error Retrieving the File")
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+	fmt.Printf("File Size: %+v\n", handler.Size)
+	fmt.Printf("MIME Header: %+v\n", handler.Header)
+
+	// Create a temporary file within our temp-images directory that follows
+	// a particular naming pattern
+	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer tempFile.Close()
+
+	// read all of the contents of our uploaded file into a
+	// byte array
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Println(err)
+	}
+	// write this byte array to our temporary file
+	tempFile.Write(fileBytes)
+	// return that we have successfully uploaded our file!
+	fmt.Fprintf(w, "Successfully Uploaded File\n")
+}
+
+
+func setupRoutes() {
+	http.HandleFunc("/v1/users/fileUpload", uploadFile)
+	http.ListenAndServe(":8081", nil)
+}*/
+/*
+func setupRouter() *gin.Engine {
+	// Disable Console Color
+	// gin.DisableConsoleColor()
+	r := gin.Default()
+
+	r.GET("/uploadpage", func(c *gin.Context) {
+		title := "upload single file"
+		c.HTML(http.StatusOK, "uploadfile.html", gin.H{
+			"page": title,
+		})
+	})
+
+	r.POST("/upload", uploadSingle)
+
+	return r
+}
+
+func uploadSingle(c *gin.Context) {
+	// single file
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+
+	log.Println(file.Filename)
+
+	// Upload the file to specific dst.
+	filename := filepath.Base(file.Filename)
+	uploadPath := "./example/upload/" + filename
+	log.Println(filename)
+	if err := c.SaveUploadedFile(file, uploadPath); err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"status":    "posted",
+		"file name": file.Filename,
+	})
+}*/

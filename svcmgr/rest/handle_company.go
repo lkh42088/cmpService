@@ -10,7 +10,6 @@ import (
 )
 
 func (h *Handler) checkCompanyExists(name string) bool {
-	fmt.Println("★★★★★ name: ", name)
 	company, err := h.db.GetCompanyByCpName(name)
 	if err != nil {
 		lib.LogWarnln(err)
@@ -43,7 +42,6 @@ func (h *Handler) GetCompanyByName(c *gin.Context) {
 	fmt.Println("GetCompanyByName...")
 
 	value := c.Param("value")
-	fmt.Println("★★★★★★ GetCompanyByName value... : ", value)
 	company, err := h.db.GetCompanyByCpName(value)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
