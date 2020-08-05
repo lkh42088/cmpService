@@ -137,7 +137,7 @@ type User struct {
 	Position         string    `gorm:"type:varchar(15);column:user_position;comment:'직급'" json:"position"`
 	EmailAuth        bool      `gorm:"type:tinyint(1);default:0;column:user_email_auth_flag;comment:'개인 이메일 인증'" json:"emailAuth"`
 	GroupEmailAuth   bool      `gorm:"type:tinyint(1);default:0;column:user_group_email_auth_flag;comment:'그룹 이메일 인증'" json:"groupEmailAuth"`
-	Avata            []byte    `gorm:"type:blob;column:user_avata;comment:'아바타 데이터'" json:"avata"`
+	Avata            string    `gorm:"type:blob;column:user_avata;comment:'아바타 데이터'" json:"avata"`
 	RegisterDate     time.Time `gorm:"type:datetime;default:CURRENT_TIMESTAMP;column:user_register_date;comment:'등록일'" json:"registerDate"`
 	LastAccessDate   time.Time `gorm:"type:datetime;column:user_last_access_date;comment:'최근 로그인 날짜'" json:"lastAccessDate"`
 	LastAccessIp     string    `gorm:"type:varchar(15);column:user_last_access_ip;comment:'최근 접속 IP'" json:"lastAccessIp"`

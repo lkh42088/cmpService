@@ -430,6 +430,7 @@ func responseWithToken(c *gin.Context, user models.UserDetail, authEmail string)
 			EmailAuthFlag:      user.EmailAuth,
 			EmailAuthGroupFlag: user.GroupEmailAuth,
 			AuthEmail:          authEmail,
+			Avata:				user.Avata,
 		},
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),

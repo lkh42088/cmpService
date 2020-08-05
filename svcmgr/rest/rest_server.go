@@ -112,6 +112,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.Use(CORSMiddleware())
 	h, _ := NewHandler(db)
 
+	router.Static("/image", "./svcmgr/files/img/")
+
 	// Code
 	router.GET(lib.SvcmgrApiCode, h.GetCodes)
 	router.GET(lib.SvcmgrApiCode+"/:code/:subcode", h.GetCodeList)
@@ -185,6 +187,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiUser+"/modify", h.ModifyUser)
 	router.POST(lib.SvcmgrApiUser+"/unregister", h.UnRegisterUser)
 	router.POST(lib.SvcmgrApiUser+"/check-user", h.CheckDuplicatedUser)
+	router.POST(lib.SvcmgrApiUser+"/fileUpload", h.UploadFileUser)
+
+	//http.HandleFunc("/v1/users/fileUpload", uploadFile)
+	//http.ListenAndServe(":4000", nil)
 
 	// Auth
 	router.GET(lib.SvcmgrApiPrefix+"/auth", h.GetAuth)
