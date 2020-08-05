@@ -37,6 +37,7 @@ func configure() bool {
 		fmt.Println("Failed to configure mongodb!")
 		return false
 	}
+
 	// ConfigureMonitoring Monitoring
 	if ! ConfigureMonitoring() {
 		fmt.Println("Failed to configure agent!")

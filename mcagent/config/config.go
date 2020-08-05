@@ -8,13 +8,18 @@ import (
 	"os"
 )
 
+const MAX_VM_COUNT = 10
+
 type McAgentConfig struct {
 	config.MongoDbConfig
-	McagentIp          string `json:"mcagent_ip"`
-	McagentPort        string `json:"mcagent_port"`
-	SvcmgrIp           string `json:"svcmgr_ip"`
-	SvcmgrPort         string `json:"svcmgr_port"`
-	MonitoringInterval int    `json:"monitoring_interval"`
+	McagentIp          string             `json:"mcagent_ip"`
+	McagentPort        string             `json:"mcagent_port"`
+	SvcmgrIp           string             `json:"svcmgr_ip"`
+	SvcmgrPort         string             `json:"svcmgr_port"`
+	VmImageDir         string             `json:"vm_image_dir"`
+	VmInstanceDir      string             `json:"vm_instance_dir"`
+	MonitoringInterval int                `json:"monitoring_interval"`
+	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
 }
 
 var globalConfig McAgentConfig

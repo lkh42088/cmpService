@@ -2,6 +2,7 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/mcagent/config"
 	"fmt"
 	"os"
 	"os/exec"
@@ -40,12 +41,12 @@ func getData() (vm mcmodel.MgoVm, server mcmodel.McServerDetail){
 		Idx:         1,
 		McServerIdx: 1,
 		CompanyIdx:  1,
-		Name:        "win10-bhjung",
+		Name:        "windows10-bhjung",
 		Cpu:         4,
 		Ram:         8192,
 		Hdd:         100,
-		OS:          "window10",
-		Image:       "win10.qcow2",
+		OS:          "win10",
+		Image:       "windows10-100G",
 	}
 	server = mcmodel.McServerDetail{
 		McServer: mcmodel.McServer{
@@ -93,6 +94,12 @@ func TestDeleteVm(t *testing.T) {
 	vm, _ := getData()
 	ShutdownVm(vm)
 	UndefineVm(vm)
+}
+
+func TestCopyVmInstance(t *testing.T) {
+	config.ApplyGlobalConfig("../etc/mcagent.conf")
+	vm, _ := getData()
+	CopyVmInstance(&vm)
 }
 
 func TestGetVmFromLibvirt(t *testing.T) {

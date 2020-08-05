@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"cmpService/common/mcmodel"
+	"cmpService/mcagent/config"
 	"fmt"
 	"github.com/digitalocean/go-libvirt"
 	"log"
@@ -80,7 +81,49 @@ func GetIpAddressOfVm(vm mcmodel.MgoVm) (ip, mac string, res int) {
 	return ip, mac, res
 }
 
+func MakeFilename(vm mcmodel.MgoVm) string {
+	cfg := config.GetGlobalConfig()
+	for index, num := range cfg.VmNumber {
+		if num == 0 {
+			cfg.VmNumber[index] = vm.Idx
+			vm.VmNumber = index
+			return fmt.Sprintf("%s-%d", vm.Image, index)
+		}
+	}
+	return ""
+}
+
+func DeleteFilename(vm mcmodel.MgoVm) {
+	cfg := config.GetGlobalConfig()
+	cfg.VmNumber[vm.VmNumber] = 0
+}
+
+func CopyVmInstance(vm *mcmodel.MgoVm) {
+	cfg := config.GetGlobalConfig()
+	org := fmt.Sprintf("%s/%s.qcow2", cfg.VmImageDir, vm.Image)
+	target := fmt.Sprintf("%s/%s.qcow2", cfg.VmInstanceDir, vm.Filename)
+	args := []string{
+		org,
+		target,
+	}
+
+	fmt.Printf("args: %v\n", args)
+	fmt.Println("args: ", args)
+
+	binary := "cp"
+	cmd := exec.Command(binary, args...)
+	output, _ := cmd.Output()
+	fmt.Println("output", string(output))
+}
+
 func CreateVmInstance(vm mcmodel.MgoVm) {
+	cfg := config.GetGlobalConfig()
+	vm.Filename = MakeFilename(vm)
+	if vm.Filename == "" {
+		fmt.Printf("CreateVmInstance: %s failed to get filename!\n", vm.Name)
+		return
+	}
+	diskPath := fmt.Sprintf("path=%s/%s,format=qcow2,bus=virtio", cfg.VmInstanceDir,vm.Filename)
 	RamStr := fmt.Sprintf("%d", vm.Ram)
 	cpuStr := fmt.Sprintf("--vcpus=%d", vm.Cpu)
 	args := []string{
@@ -98,7 +141,7 @@ func CreateVmInstance(vm mcmodel.MgoVm) {
 		"win10",
 		"--import",
 		"--disk",
-		"path=/image/win10.qcow2,format=qcow2,bus=virtio",
+		diskPath,
 		"--network",
 		"network=default,model=virtio",
 		"--noautoconsole",
@@ -195,13 +238,30 @@ func StatusVm(vm mcmodel.MgoVm) string {
 	//	fmt.Printf("%d: (%s), %d\n", index, ar, len(ar))
 	//}
 
-	fmt.Printf("status: ", arr[2])
+	//fmt.Printf("status: ", arr[2])
 	return arr[2]
 }
 
 func DeleteVm(vm mcmodel.MgoVm) {
 	ShutdownVm(vm)
 	UndefineVm(vm)
+}
+
+func DeleteVmInstance(vm mcmodel.MgoVm) {
+	DeleteFilename(vm)
+	cfg := config.GetGlobalConfig()
+	args := []string{
+		cfg.VmInstanceDir+"/"+vm.Filename+".qcow2",
+		"-f",
+	}
+
+	fmt.Printf("args: %v\n", args)
+	fmt.Println("args: ", args)
+
+	binary := "rm"
+	cmd := exec.Command(binary, args...)
+	output, _ := cmd.Output()
+	fmt.Println("output", string(output))
 }
 
 //func DeleteVmInstance(vm *mcmodel.McVm) {

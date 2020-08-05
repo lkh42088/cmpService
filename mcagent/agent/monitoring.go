@@ -42,6 +42,7 @@ func (m *Monitoring)Start(parentwg *sync.WaitGroup) {
 	for {
 		m.Run()
 		time.Sleep(time.Duration(m.Interval * int(time.Second)))
+		fmt.Println("monitoring check...")
 	}
 	if parentwg != nil {
 		parentwg.Done()
@@ -58,7 +59,8 @@ func (m *Monitoring)Run() {
 			defer wg.Done()
 			updated := false
 
-			fmt.Printf("check vm: %s\n", vm.Name)
+			fmt.Printf("check vm: %s, %v\n", vm.Name, vm)
+			// check if copy vm instance, skip
 
 			// check status
 			if UpdateVmStatus(vm) {

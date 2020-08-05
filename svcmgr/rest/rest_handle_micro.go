@@ -102,6 +102,21 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
+// From Micro Cloud Server
+func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
+	var msg mcmodel.McVm
+	c.Bind(&msg)
+
+	fmt.Printf("Add McVm : %v\n", msg)
+
+	msg, err := h.db.UpdateMcVmFromMc(msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, msg)
+}
+
 func (h *Handler) DeleteMcVm(c *gin.Context) {
 	var msg messages.DeleteDataMessage
 	c.Bind(&msg)

@@ -14,8 +14,8 @@ func getData() (vm mcmodel.McVm, server mcmodel.McServerDetail){
 		Cpu: 4,
 		Ram: 8192,
 		Hdd: 100,
-		OS: "window10",
-		Image: "win10.qcow2",
+		OS: "win10",
+		Image: "windows10-100G",
 	}
 	server = mcmodel.McServerDetail{
 		McServer: mcmodel.McServer{

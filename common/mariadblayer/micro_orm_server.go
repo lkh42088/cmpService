@@ -114,6 +114,17 @@ func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	return vm, err
 }
 
+func (db *DBORM) UpdateMcVmFromMc(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	return obj, db.Model(&obj).
+		Updates(map[string]interface{}{
+			"vm_filename":       obj.Filename,
+			"vm_network":        obj.Network,
+			"vm_ip_addr":        obj.IpAddr,
+			"vm_mac":            obj.Mac,
+			"vm_current_status": obj.CurrentStatus,
+		}).Error
+}
+
 func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Delete(&obj).Error
 	vm = obj
@@ -123,5 +134,3 @@ func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 
 	return vm, err
 }
-
-
