@@ -1,6 +1,9 @@
-package models
+package mcmodel
 
-import "strings"
+import (
+	"cmpService/common/models"
+	"strings"
+)
 
 const (
 	McServerOrmIdx          = "mc_idx"
@@ -87,6 +90,7 @@ type McVm struct {
 	Ram         int    `gorm:"type:int(11);column:vm_ram;comment:'vm ram'" json:"ram"`
 	Hdd         int    `gorm:"type:int(11);column:vm_hdd;comment:'vm hdd'" json:"hdd"`
 	OS          string `gorm:"type:varchar(50);column:vm_os;comment:'vm os'" json:"os"`
+	Image       string `gorm:"type:varchar(50);column:vm_image;comment:'vm image'" json:"image"`
 	Network     string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
 	IpAddr      string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
 }
@@ -105,8 +109,8 @@ type McServerDetail struct {
 }
 
 type McServerPage struct {
-	Page    Pagination       `json:"page"`
-	Servers []McServerDetail `json:"data"`
+	Page    models.Pagination `json:"page"`
+	Servers []McServerDetail  `json:"data"`
 }
 
 type McVmDetail struct {
@@ -116,8 +120,8 @@ type McVmDetail struct {
 }
 
 type McVmPage struct {
-	Page Pagination   `json:"page"`
-	Vms  []McVmDetail `json:"data"`
+	Page models.Pagination `json:"page"`
+	Vms  []McVmDetail      `json:"data"`
 }
 
 func (m McServerPage) GetOrderBy(orderby, order string) string {

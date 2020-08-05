@@ -2,7 +2,7 @@ package mcmongo
 
 import (
 	"cmpService/common/lib"
-	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/config"
 	"fmt"
 	"github.com/globalsign/mgo"
 )
@@ -44,12 +44,17 @@ func (m *McMongoAccessor) Close() error {
 	return nil
 }
 
-func Configure() {
-	config := config2.GetGlobalConfig()
-	if config.MongoIp == "" || config.MongoDb == "" || config.MongoCollection == "" {
+func Configure() bool {
+	cfg := config.GetGlobalConfig()
+	if cfg.MongoIp == "" || cfg.MongoDb == "" || cfg.MongoCollection == "" {
 		lib.LogWarn("Failed MongoDb configuration!\n")
-		return
+		return false
 	}
-	m := NewMcMongoAccessor(config.MongoIp, config.MongoDb, config.MongoCollection)
-	SetMcMongo(m)
+	// Configure MongoDB
+	m := NewMcMongoAccessor(cfg.MongoIp, cfg.MongoDb, cfg.MongoCollection)
+	if m != nil {
+		SetMcMongo(m)
+		return true
+	}
+	return false
 }
