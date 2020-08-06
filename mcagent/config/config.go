@@ -28,6 +28,17 @@ func GetGlobalConfig() McAgentConfig {
 	return globalConfig
 }
 
+func IsExistFile(file string) bool {
+	info, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		return false
+	}
+	if info.IsDir() {
+		return false
+	}
+	return true
+}
+
 func ApplyGlobalConfig(file string) bool {
 	fmt.Println("ApplyGlobalConfig: ", file)
 	info, err := os.Stat(file)

@@ -118,12 +118,11 @@ func CopyVmInstance(vm *mcmodel.MgoVm) {
 
 func CreateVmInstance(vm mcmodel.MgoVm) {
 	cfg := config.GetGlobalConfig()
-	vm.Filename = MakeFilename(vm)
 	if vm.Filename == "" {
 		fmt.Printf("CreateVmInstance: %s failed to get filename!\n", vm.Name)
 		return
 	}
-	diskPath := fmt.Sprintf("path=%s/%s,format=qcow2,bus=virtio", cfg.VmInstanceDir,vm.Filename)
+	diskPath := fmt.Sprintf("path=%s/%s.qcow2,format=qcow2,bus=virtio", cfg.VmInstanceDir,vm.Filename)
 	RamStr := fmt.Sprintf("%d", vm.Ram)
 	cpuStr := fmt.Sprintf("--vcpus=%d", vm.Cpu)
 	args := []string{
@@ -199,6 +198,18 @@ func UndefineVm(vm mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
+func DestroyVm(vm mcmodel.MgoVm) {
+	// virsh undefine NAME
+	args := []string{
+		"destroy",
+		vm.Name,
+	}
+	binary := "virsh"
+	cmd := exec.Command(binary, args...)
+	output, _ := cmd.Output()
+	fmt.Println("output", string(output))
+}
+
 func StatusVm(vm mcmodel.MgoVm) string {
 	// virsh undefine NAME
 	args := []string{
@@ -243,8 +254,7 @@ func StatusVm(vm mcmodel.MgoVm) string {
 }
 
 func DeleteVm(vm mcmodel.MgoVm) {
-	ShutdownVm(vm)
-	UndefineVm(vm)
+	DestroyVm(vm)
 }
 
 func DeleteVmInstance(vm mcmodel.MgoVm) {

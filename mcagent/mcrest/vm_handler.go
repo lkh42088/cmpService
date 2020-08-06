@@ -12,12 +12,45 @@ import (
 	"strconv"
 )
 
+func checkValidation(msg mcmodel.MgoVm) bool {
+	if msg.Idx == 0 {
+		fmt.Printf("error: idx is zero!\n")
+		return false
+	}
+	if msg.McServerIdx == 0 {
+		fmt.Printf("error: serverIdx is zero!\n")
+		return false
+	}
+	if msg.CompanyIdx == 0 {
+		fmt.Printf("error: cpIdx is zero!\n")
+		return false
+	}
+	if msg.Name == "" {
+		fmt.Printf("error: name is nil!\n")
+		return false
+	}
+	if msg.OS == "" {
+		fmt.Printf("error: os is nil!\n")
+		return false
+	}
+	if msg.Image == "" {
+		fmt.Printf("error: image is nil!\n")
+		return false
+	}
+	return true
+}
+
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.MgoVm
 	err := c.ShouldBindJSON(&msg)
 	fmt.Printf("addVmHandler: %v\n", msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !checkValidation(msg) {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid message"})
 		return
 	}
 
@@ -42,24 +75,26 @@ func addVmHandler(c *gin.Context) {
 	svcmgrapi.SendUpdateVm2Svcmgr(msg, svcmgrRestAddr)
 
 	// Update vm
-	_, err = mcmongo.McMongo.UpdateVm(&msg)
+	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 
 	// 1. Copy image
 	fmt.Printf("addVmHandler: before copy - %v\n", msg)
-	kvm.CopyVmInstance(&msg)
+	if ! config.IsExistFile(cfg.VmInstanceDir+msg.Filename+"qcow2") {
+		kvm.CopyVmInstance(&msg)
+	}
 	fmt.Printf("addVmHandler: after copy - %v\n", msg)
 
 	// 2. Create vm
 	kvm.CreateVmInstance(msg)
 
 	// Update vm
-	_, err = mcmongo.McMongo.UpdateVm(&msg)
+	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 
 	fmt.Printf("addVmHandler: finished - %v\n", msg)
 	// Send rest api : status update - finished creating vm
 	svcmgrapi.SendUpdateVm2Svcmgr(msg, svcmgrRestAddr)
 	// Update Vm
-	_, err = mcmongo.McMongo.UpdateVm(&msg)
+	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 }
 
 func deleteVmHandler(c *gin.Context) {

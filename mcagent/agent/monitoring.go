@@ -39,10 +39,11 @@ func ConfigureMonitoring() bool {
 }
 
 func (m *Monitoring)Start(parentwg *sync.WaitGroup) {
+	loop := 1
 	for {
 		m.Run()
 		time.Sleep(time.Duration(m.Interval * int(time.Second)))
-		fmt.Println("monitoring check...")
+		fmt.Printf("%d. monitoring check...\n", loop)
 	}
 	if parentwg != nil {
 		parentwg.Done()
@@ -59,7 +60,7 @@ func (m *Monitoring)Run() {
 			defer wg.Done()
 			updated := false
 
-			fmt.Printf("check vm: %s, %v\n", vm.Name, vm)
+			fmt.Printf("check vm: %s, %v\n", vm.Name, *vm)
 			// check if copy vm instance, skip
 
 			// check status
@@ -72,8 +73,9 @@ func (m *Monitoring)Run() {
 			}
 			// update mongodb
 			if updated {
-				fmt.Println("update vm: ", vm)
-				mcmongo.McMongo.UpdateVm(vm)
+				fmt.Println("update vm: ", *vm)
+				mcmongo.McMongo.UpdateVmByInternal(vm)
+				// notify svcmgr
 			}
 		}(&vm)
 	}
@@ -88,12 +90,12 @@ func UpdateVmAddress (vm *mcmodel.MgoVm) bool {
 		return false
 	}
 	if vm.IpAddr != ip {
-		fmt.Printf("change ip: ", vm.IpAddr, "-->", ip)
+		fmt.Println("change ip: ", vm.IpAddr, "-->", ip)
 		vm.IpAddr = ip
 		updated = true
 	}
 	if vm.Mac != mac {
-		fmt.Printf("change mac: ", vm.Mac, "-->", mac)
+		fmt.Println("change mac: ", vm.Mac, "-->", mac)
 		vm.Mac = mac
 		updated = true
 	}
@@ -104,7 +106,7 @@ func UpdateVmStatus (vm *mcmodel.MgoVm) bool {
 	updated := false
 	status := kvm.StatusVm(*vm)
 	if vm.CurrentStatus != status {
-		fmt.Printf("change status: ", vm.CurrentStatus, "-->", status)
+		fmt.Println("change status: ", vm.CurrentStatus, "-->", status)
 		vm.CurrentStatus = status
 		updated = true
 	}

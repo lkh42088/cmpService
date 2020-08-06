@@ -41,7 +41,7 @@ func getData() (vm mcmodel.MgoVm, server mcmodel.McServerDetail){
 		Idx:         1,
 		McServerIdx: 1,
 		CompanyIdx:  1,
-		Name:        "windows10-bhjung",
+		Name:        "win10-bhjung",
 		Cpu:         4,
 		Ram:         8192,
 		Hdd:         100,
