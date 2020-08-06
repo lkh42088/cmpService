@@ -47,7 +47,7 @@ func (h *Handler) GetCompanyByName(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("[###] %v", company)
+	fmt.Printf("[GetCompanyByName] %v", company)
 	c.JSON(http.StatusOK, company)
 }
 

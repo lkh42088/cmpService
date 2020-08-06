@@ -79,7 +79,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("[###] %v", user)
+	fmt.Printf("[GetUserById] %v", user)
 	c.JSON(http.StatusOK, user)
 }
 

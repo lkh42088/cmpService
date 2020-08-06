@@ -78,6 +78,12 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, e
 	return vms, err
 }
 
+func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error){
+	return vm, db.Table("mc_vm_tb").
+		Where(mcmodel.McVm{Name: name, CompanyIdx: cpidx}).
+		Find(&vm).Error
+}
+
 func (db *DBORM) updateVmCount(vm mcmodel.McVm, isAdd bool) {
 	var server mcmodel.McServer
 	err := db.Where(mcmodel.McServer{Idx: uint(vm.McServerIdx)}).
