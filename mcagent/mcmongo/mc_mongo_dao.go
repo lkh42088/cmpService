@@ -11,8 +11,15 @@ func (m *McMongoAccessor) AddVm(vm *mcmodel.MgoVm) (id int, err error) {
 	return id, err
 }
 
-func (m *McMongoAccessor) UpdateVm(vm *mcmodel.MgoVm) (id int, err error) {
-	return m.AddVm(vm)
+func (m *McMongoAccessor) UpdateVmByInternal(vm *mcmodel.MgoVm) (id int, err error) {
+	err = m.Collection.UpdateId(vm.Idx, mcmodel.MgoVm{
+		Filename: vm.Filename,
+		IpAddr: vm.IpAddr,
+		Mac: vm.Mac,
+		CurrentStatus: vm.CurrentStatus,
+		VmNumber: vm.VmNumber,
+	})
+	return int(vm.Idx), err
 }
 
 func (m*McMongoAccessor) GetVmAll() (vms []mcmodel.MgoVm, err error) {
