@@ -18,12 +18,12 @@ type MgoVm struct {
 	OS            string `json:"os"`       // OS: windows10
 	Image         string `json:"image"`    // Image: windows10-250
 	Filename      string `json:"filename"` // Filename: windows10-250-1.qcow2
-	VmNumber      int    `json:"-"`        // VmNumber: 1
 	Network       string `json:"network"`
 	IpAddr        string `json:"ipAddr"`
 	Mac           string `json:"mac"`
 	ConfigStatus  string `json:"configStatus"`
 	CurrentStatus string `json:"currentStatus"`
+	VmNumber      int    `json:"-"`        // VmNumber: 1
 }
 
 // flavor
