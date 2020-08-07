@@ -28,7 +28,6 @@ func CreateNetwork(vm mcmodel.MgoVm) {
 		vm.Name,
 	}
 
-	fmt.Printf("args: %v\n", args)
 	fmt.Println("args: ", args)
 
 	binary := "virsh"
@@ -46,6 +45,7 @@ func GetIpAddressOfVm(vm mcmodel.MgoVm) (ip, mac string, res int) {
 		vm.Name,
 	}
 
+	fmt.Println("args: ", args)
 	binary := "virsh"
 	cmd := exec.Command(binary, args...)
 	output, _ := cmd.Output()
@@ -107,7 +107,6 @@ func CopyVmInstance(vm *mcmodel.MgoVm) {
 		target,
 	}
 
-	fmt.Printf("args: %v\n", args)
 	fmt.Println("args: ", args)
 
 	binary := "cp"
@@ -161,7 +160,6 @@ func StartVm(vm mcmodel.MgoVm) {
 		vm.Name,
 	}
 
-	fmt.Printf("args: %v\n", args)
 	fmt.Println("args: ", args)
 
 	binary := "virsh"
@@ -177,7 +175,6 @@ func ShutdownVm(vm mcmodel.MgoVm) {
 		vm.Name,
 	}
 
-	fmt.Printf("args: %v\n", args)
 	fmt.Println("args: ", args)
 
 	binary := "virsh"
@@ -192,6 +189,7 @@ func UndefineVm(vm mcmodel.MgoVm) {
 		"undefine",
 		vm.Name,
 	}
+	fmt.Println("args: ", args)
 	binary := "virsh"
 	cmd := exec.Command(binary, args...)
 	output, _ := cmd.Output()
@@ -204,6 +202,7 @@ func DestroyVm(vm mcmodel.MgoVm) {
 		"destroy",
 		vm.Name,
 	}
+	fmt.Println("args: ", args)
 	binary := "virsh"
 	cmd := exec.Command(binary, args...)
 	output, _ := cmd.Output()
@@ -216,6 +215,7 @@ func StatusVm(vm mcmodel.MgoVm) string {
 		"list",
 		"--all",
 	}
+	fmt.Println("args: ", args)
 	binary := "virsh"
 	cmd := exec.Command(binary, args...)
 	output, _ := cmd.Output()
@@ -255,6 +255,7 @@ func StatusVm(vm mcmodel.MgoVm) string {
 
 func DeleteVm(vm mcmodel.MgoVm) {
 	DestroyVm(vm)
+	UndefineVm(vm)
 }
 
 func DeleteVmInstance(vm mcmodel.MgoVm) {
@@ -265,7 +266,6 @@ func DeleteVmInstance(vm mcmodel.MgoVm) {
 		"-f",
 	}
 
-	fmt.Printf("args: %v\n", args)
 	fmt.Println("args: ", args)
 
 	binary := "rm"

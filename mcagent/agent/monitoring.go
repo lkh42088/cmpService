@@ -44,6 +44,7 @@ func (m *Monitoring)Start(parentwg *sync.WaitGroup) {
 		m.Run()
 		time.Sleep(time.Duration(m.Interval * int(time.Second)))
 		fmt.Printf("%d. monitoring check...\n", loop)
+		loop += 1
 	}
 	if parentwg != nil {
 		parentwg.Done()
@@ -65,15 +66,19 @@ func (m *Monitoring)Run() {
 
 			// check status
 			if UpdateVmStatus(vm) {
+				fmt.Println("Changed status!");
 				updated = true
 			}
+
 			// check mac/ip address
 			if UpdateVmAddress(vm) {
+				fmt.Println("Changed Address!");
 				updated = true
 			}
+
 			// update mongodb
 			if updated {
-				fmt.Println("update vm: ", *vm)
+				fmt.Println("Update vm: ", *vm)
 				mcmongo.McMongo.UpdateVmByInternal(vm)
 				// notify svcmgr
 			}

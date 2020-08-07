@@ -79,7 +79,9 @@ func addVmHandler(c *gin.Context) {
 
 	// 1. Copy image
 	fmt.Printf("addVmHandler: before copy - %v\n", msg)
-	if ! config.IsExistFile(cfg.VmInstanceDir+msg.Filename+"qcow2") {
+	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
+	fmt.Printf("addVmHandler: %s\n", filepath)
+	if ! config.IsExistFile(filepath) {
 		kvm.CopyVmInstance(&msg)
 	}
 	fmt.Printf("addVmHandler: after copy - %v\n", msg)
@@ -87,12 +89,15 @@ func addVmHandler(c *gin.Context) {
 	// 2. Create vm
 	kvm.CreateVmInstance(msg)
 
+	msg.CurrentStatus = "finished to create vm"
+
 	// Update vm
 	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 
 	fmt.Printf("addVmHandler: finished - %v\n", msg)
 	// Send rest api : status update - finished creating vm
 	svcmgrapi.SendUpdateVm2Svcmgr(msg, svcmgrRestAddr)
+
 	// Update Vm
 	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 }
