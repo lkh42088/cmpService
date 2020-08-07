@@ -14,6 +14,7 @@ func SendUpdateVm2Svcmgr(vm mcmodel.MgoVm, addr string) bool {
 	pbytes, _ := json.Marshal(vm)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroVmUpdateFromMc)
+	fmt.Println(url)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("error: ", err)
