@@ -32,7 +32,7 @@ func getVm() *mcmodel.McVm {
 		Ram: 8192,
 		Hdd: 100,
 		OS: "win10",
-		Image: "windowns10-100G",
+		Image: "windows10-100G",
 	}
 }
 
@@ -117,7 +117,6 @@ func TestAddMcVm(t*testing.T) {
 func TestDeleteMcServer(t*testing.T) {
 }
 
-
 func TestDeleteMcVm(t*testing.T) {
 	vm := getVm()
 	db, err := config.SetMariaDB(
@@ -129,6 +128,7 @@ func TestDeleteMcVm(t*testing.T) {
 	}
 	fmt.Printf("1. vm %v\n", vm)
 	rvm, _ := db.GetMcVmByNameAndCpIdx(vm.Name, vm.CompanyIdx)
+	//rvm.Idx = 1
 	fmt.Printf("2. vm %v\n", rvm)
 	SendSvcDeleteVm(rvm, svcmgrAddr)
 }
