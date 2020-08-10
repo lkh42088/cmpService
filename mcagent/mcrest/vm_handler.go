@@ -41,6 +41,29 @@ func checkValidation(msg mcmodel.MgoVm) bool {
 	return true
 }
 
+func GetMgoServer() (mcmodel.MgoServer, error) {
+	var server mcmodel.MgoServer
+	networks, err := kvm.GetNetworksFromXml()
+	if err != nil {
+		return server, err
+	}
+	images := kvm.GetImages()
+	cfg := config.GetGlobalConfig()
+	server.Mac = cfg.ServerMac
+	server.Port = cfg.ServerPort
+	server.Ip = cfg.ServerIp
+	if len(networks) > 0 {
+		server.Networks = &networks
+	}
+	if len(images) > 0 {
+		server.Images = &images
+	}
+	fmt.Println("server:", server)
+	fmt.Println("networks:", server.Networks)
+	fmt.Println("images:", server.Images)
+	return server, err
+}
+
 func registerServerHandler(c *gin.Context) {
 	var msg mcmodel.McServerDetail
 	err := c.ShouldBindJSON(&msg)
@@ -51,8 +74,8 @@ func registerServerHandler(c *gin.Context) {
 	fmt.Printf("registerServerHandler: %v\n", msg)
 	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx)
 
-	// return server, image, network
-	networks, err := kvm.GetNetworksFromXml()
+	server, _ := GetMgoServer()
+	c.JSON(http.StatusOK, server)
 }
 
 func unRegisterServerHandler(c *gin.Context) {
@@ -62,7 +85,7 @@ func unRegisterServerHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("registerServerHandler: %v\n", msg)
+	fmt.Printf("unRegisterServerHandler: %v\n", msg)
 	config.DeleteServerStatus()
 	c.JSON(http.StatusOK, msg)
 }

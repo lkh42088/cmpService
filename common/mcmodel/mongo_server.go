@@ -36,12 +36,20 @@ type MgoImage struct {
 }
 
 type MgoNetwork struct {
-	Id     uint   `json:"id"`
-	Uuid   string `json:"uuid"`
-	Name   string `json:"name"`
-	bridge string `json:"bridge"`
-	Mode   string `json:"mode"`
-	Ip     string `json:"ip"`
+	Id      uint   `json:"id"`
+	Uuid    string `json:"uuid"`
+	Name    string `json:"name"`
+	bridge  string `json:"bridge"`
+	Mode    string `json:"mode"`
+	Ip      string `json:"ip"`
 	Netmask string `json:"netmask"`
-	Prefix uint   `json:"prefix"`
+	Prefix  uint   `json:"prefix"`
+}
+
+type MgoServer struct {
+	Port     string        `json:"port"`
+	Mac      string        `json:"mac"`
+	Ip       string        `json:"ip"`
+	Networks *[]MgoNetwork `json:"networks"`
+	Images   *[]MgoImage   `json:"images"`
 }

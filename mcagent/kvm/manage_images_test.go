@@ -1,4 +1,4 @@
-package agent
+package kvm
 
 import (
 	"cmpService/mcagent/config"
