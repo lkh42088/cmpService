@@ -22,6 +22,10 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
+	// Send to mc server
+	server, _:= h.db.GetMcServerByServerIdx(msg.Idx)
+	mcapi.SendMcRegisterServer(server)
+
 	c.JSON(http.StatusOK, msg)
 }
 
@@ -34,6 +38,9 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		server.Idx = uint(idx)
 		h.db.DeleteMcServer(server)
 	}
+
+	// Send to mc server
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }
 

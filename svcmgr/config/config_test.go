@@ -76,7 +76,7 @@ func TestWriteJungbhConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jbh.conf")
 	var cfg = getJungbhConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -107,7 +107,7 @@ func TestWriteJeeebConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jeb.conf")
 	var cfg = getJeeebConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -116,7 +116,7 @@ func TestWritejbhLocalConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jbhlocal.conf")
 	var cfg = getJungbhLocalConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -125,7 +125,7 @@ func TestWritejbhCBConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "svcmgr.jbhcb.conf")
 	var cfg = getJungbhCBConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -155,7 +155,7 @@ func TestWriteLkhConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../%s", dirName, "svcmgr.conf")
 	var cfg = getLkhConfig()
 	fmt.Println(path)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -165,6 +165,6 @@ func TestWriteDefaultConfig(t *testing.T) {
 	fmt.Println(path)
 	var cfg = GetDefaultConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }

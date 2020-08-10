@@ -64,9 +64,33 @@ func SendSvcAddServer(server mcmodel.McServer, addr string) bool {
 	return true
 }
 
+func SendSvcDeleteServer(server mcmodel.McServer, addr string) bool {
+	pbytes, _ := json.Marshal(server)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8081%s", addr, lib.SvcmgrApiMicroServerUnRegister)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error 1:", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2:", err)
+		return false
+	}
+	fmt.Println("response:", string(data))
+	return true
+}
+
 func TestAddMcServer(t*testing.T) {
 	server := getServer()
 	SendSvcAddServer(*server, svcmgrAddr)
+}
+
+func TestDeleteMcServer(t*testing.T) {
+	server := getServer()
+	SendSvcDeleteServer(*server, svcmgrAddr)
 }
 
 func SendSvcAddVm(vm mcmodel.McVm, addr string) bool {
@@ -114,8 +138,6 @@ func TestAddMcVm(t*testing.T) {
 	SendSvcAddVm(*vm, svcmgrAddr)
 }
 
-func TestDeleteMcServer(t*testing.T) {
-}
 
 func TestDeleteMcVm(t*testing.T) {
 	vm := getVm()

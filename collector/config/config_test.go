@@ -41,7 +41,7 @@ func TestWriteLkhConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "collector.lkh.conf")
 	var cfg = getLkhConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -71,7 +71,7 @@ func TestWriteJungbhConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "collector.jbh.conf")
 	var cfg = getJungbhConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
@@ -81,7 +81,7 @@ func TestWriteDefaultConfig(t *testing.T) {
 	fmt.Println(path)
 	var cfg = GetDefaultConfig()
 	fmt.Println(cfg)
-	config := lib.CreateConfig(path, cfg)
+	config := lib.WriteJsonFile(path, cfg)
 	fmt.Println(config)
 }
 
