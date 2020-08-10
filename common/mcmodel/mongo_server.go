@@ -1,12 +1,10 @@
 package mcmodel
 
-import "encoding/xml"
-
 const (
-	McVmStatusCopyImage="copy vm image"
-	McVmStatusCreateVm="create vm instance"
-	McVmStatusRunning="running"
-	McVmStatusShutdown="shutdown"
+	McVmStatusCopyImage = "copy vm image"
+	McVmStatusCreateVm  = "create vm instance"
+	McVmStatusRunning   = "running"
+	McVmStatusShutdown  = "shutdown"
 )
 
 type MgoVm struct {
@@ -25,55 +23,33 @@ type MgoVm struct {
 	Mac           string `json:"mac"`
 	ConfigStatus  string `json:"configStatus"`
 	CurrentStatus string `json:"currentStatus"`
-	VmNumber      int    `json:"-"`        // VmNumber: 1
+	VmNumber      int    `json:"-"` // VmNumber: 1
 }
 
 // flavor
 type MgoImage struct {
-	Id          uint   `json:"id"`
-	McServerIdx int    `json:"serverIdx"`
-	Variant     string `json:"variant"` // os : win10
-	Name        string `json:"name"`    // image : windows10-250G
-	Hdd         int    `json:"hdd"`
-	Desc        string `json:"desc"`
+	Id      uint   `json:"id"`
+	Variant string `json:"variant"` // os : win10
+	Name    string `json:"name"`    // image : windows10-250G
+	Hdd     int    `json:"hdd"`
+	Desc    string `json:"desc"`
 }
 
 type MgoNetwork struct {
-	Id uint `json:"id"`
-	McServerIdx int `json:"serverIdx"`
-	Name string `json:"name"`
-	Mode string `json:"mode"`
-	Subnet string `json:"subnet"`
-}
-
-type XmlNetwork struct {
-	XMLName xml.Name `xml:"network"`
-	Name string `xml:"name"`
-	Uuid string `xml:"uuid"`
-	Forward XmlForward `xml:"forward"`
-	Bridge XmlBridge `xml:"bridge"`
-}
-
-type XmlForward struct {
-	Mode string `xml:"mode,attr"`
-}
-
-type XmlBridge struct {
-	Name string `xml:"name,attr"`
-	Stp string `xml:"stp,attr"`
-	Delay string `xml:"delay,attr"`
-}
-
-type XmlIp struct {
-	Address string `xml:"address,attr"`
-	Netmask string `xml:"netmask,attr"`
-}
-
-type XmlDhcpRange struct {
-	Start string `xml:"start,attr"`
-	End string `xml:"end,attr"`
+	Id      uint   `json:"id"`
+	Uuid    string `json:"uuid"`
+	Name    string `json:"name"`
+	bridge  string `json:"bridge"`
+	Mode    string `json:"mode"`
+	Ip      string `json:"ip"`
+	Netmask string `json:"netmask"`
+	Prefix  uint   `json:"prefix"`
 }
 
 type MgoServer struct {
-	McServerIdx int `json:"serverIdx"`
+	Port     string        `json:"port"`
+	Mac      string        `json:"mac"`
+	Ip       string        `json:"ip"`
+	Networks *[]MgoNetwork `json:"networks"`
+	Images   *[]MgoImage   `json:"images"`
 }

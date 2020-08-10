@@ -168,4 +168,7 @@ type MariaDBLayer interface {
 	UpdateMcVmFromMc(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
  	GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error)
+
+	GetMcNetworksPage(paging models.Pagination) (vms mcmodel.McNetworkPage, err error)
+	GetMcImagesPage(paging models.Pagination) (vms mcmodel.McImagePage, err error)
 }

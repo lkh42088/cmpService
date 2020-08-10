@@ -1,4 +1,4 @@
-package agent
+package kvm
 
 import (
 	"cmpService/common/mcmodel"
@@ -26,11 +26,21 @@ func GetMgoImageByName (name string) mcmodel.MgoImage {
 
 func InitImages() {
 	cfg := config.GetGlobalConfig()
-
 	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
 	for _, image := range images {
 		img := GetMgoImageByName(image[len(cfg.VmImageDir)+1:])
 		fmt.Printf("image: %v", img)
 		//mcmongo.McMongo.AddImage(&img)
 	}
+}
+
+func GetImages() (list []mcmodel.MgoImage) {
+	cfg := config.GetGlobalConfig()
+	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
+	for _, image := range images {
+		img := GetMgoImageByName(image[len(cfg.VmImageDir)+1:])
+		fmt.Printf("image: %v\n", img)
+		list = append(list, img)
+	}
+	return list
 }

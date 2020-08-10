@@ -22,6 +22,10 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
+	// Send to mc server
+	server, _:= h.db.GetMcServerByServerIdx(msg.Idx)
+	mcapi.SendMcRegisterServer(server)
+
 	c.JSON(http.StatusOK, msg)
 }
 
@@ -33,7 +37,11 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		var server mcmodel.McServer
 		server.Idx = uint(idx)
 		h.db.DeleteMcServer(server)
+		// Send to mc server
+		mcapi.SendMcUnRegisterServer(server)
 	}
+
+
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }
 
@@ -171,4 +179,80 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	c.JSON(http.StatusOK, vms)
+}
+
+func (h *Handler) GetMcImages(c *gin.Context) {
+	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	offset, err := strconv.Atoi(c.Param("offset"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
+	}
+	fmt.Println("1. page:")
+	page.String()
+	images, err := h.db.GetMcImagesPage(page)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, images)
+}
+
+func (h *Handler) GetMcNetworks(c *gin.Context) {
+	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	offset, err := strconv.Atoi(c.Param("offset"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
+	}
+	fmt.Println("1. page:")
+	page.String()
+	networks, err := h.db.GetMcNetworksPage(page)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+	c.JSON(http.StatusOK, networks)
 }

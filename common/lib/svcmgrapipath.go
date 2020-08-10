@@ -27,4 +27,6 @@ const (
 	SvcmgrApiMicroVmUpdate            = SvcmgrApiMicroVm + "/update"
 	SvcmgrApiMicroVmUpdateFromMc      = SvcmgrApiMicroVm + "/update-from-mc"
 	SvcmgrApiMicroVmPaging            = SvcmgrApiMicro + "/vms-paging"
+	SvcmgrApiMicroNetworkPaging            = SvcmgrApiMicro + "/networks-paging"
+	SvcmgrApiMicroImagePaging            = SvcmgrApiMicro + "/images-paging"
 )

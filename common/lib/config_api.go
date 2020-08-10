@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func CreateConfig(path string, cfg interface{}) error {
+func WriteJsonFile(path string, cfg interface{}) error {
 	var file *os.File
 	var err error
 	var b []byte

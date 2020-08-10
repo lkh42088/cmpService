@@ -1,7 +1,8 @@
-package agent
+package kvm
 
 import (
 	"cmpService/mcagent/config"
+	"fmt"
 	"testing"
 )
 
@@ -11,4 +12,10 @@ func TestGetMgoImageByName(t *testing.T) {
 	config.ApplyGlobalConfig("../etc/mcagent.conf")
 	GetMgoImageByName(name)
 	InitImages()
+}
+
+func TestGetImages(t *testing.T) {
+	config.ApplyGlobalConfig("../etc/mcagent.conf")
+	list := GetImages()
+	fmt.Println("list: ", list)
 }
