@@ -59,7 +59,7 @@ func GetXmlNetwork() {
 		name, _ := net.GetName()
 		fmt.Println(index, ": ", name, "------------")
 		xmlstr, _ := net.GetXMLDesc(0)
-		//fmt.Println(index, ": ", xmlstr)
+		fmt.Println(index, ": ", xmlstr)
 		netcfg := &libvirtxml.Network{}
 		err = netcfg.Unmarshal(xmlstr)
 		fmt.Println("domain", netcfg.Domain)
