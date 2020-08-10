@@ -202,8 +202,12 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	var userMsg messages.UserRegisterMessage
 	c.Bind(&userMsg)
 
+	fmt.Println("Register c: ", c)
 	fmt.Println("Register Message: ", userMsg)
 	userMsg.String()
+
+/*	v, _ := c.MultipartForm()
+	fmt.Println("vvvvvvvvvvvvv", v)*/
 
 	exists := h.CheckUserExists(userMsg.Id)
 	fmt.Println("exists:", exists)
@@ -221,6 +225,8 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	}
 
 	user, emailAuthList := userMsg.Translate()
+	//user, _ := userMsg.Translate()
+	//fmt.Println("★★★★★★★★★★★★★★★★ : ", user)
 	if userMsg.CpIdx > 0 {
 		user.CompanyIdx = userMsg.CpIdx
 	} else if userMsg.CpName != "" {
@@ -236,7 +242,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("User: ", user)
+	//fmt.Println("User: ", user)
 	models.HashPassword(&user)
 	adduser, err := h.db.AddUser(user)
 	fmt.Println("Add User: ", adduser)
@@ -475,6 +481,8 @@ func (h *Handler) GetAuth(c *gin.Context) {
 	c.JSON(http.StatusOK, auths)
 }
 
+
+//todo image file db store
 func (h *Handler) UploadFileUser(c *gin.Context) {
 	if h.db == nil {
 		return
@@ -482,12 +490,34 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 
 	// single file
 	file, err := c.FormFile("file")
+
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 		return
 	}
 
+	//fmt.Println("type 확인 file : ", reflect.TypeOf(file))
+
 	log.Println(file.Filename)
+
+/*	v, _ := c.MultipartForm()
+	fmt.Println("vvvvvvvvvvvvv", v)
+	fmt.Println("Value", v.Value)
+	fmt.Println("v.File", v.File)
+	fmt.Println("File", v.File["file"])
+	fmt.Println("File[] fields", v.File["fields"])
+	fmt.Println("id", v.Value["id"])
+	fmt.Println("fields", v.Value["fields"])
+	fmt.Println("PostFormMap : ", c.PostFormMap("fields"))*/
+
+
+/*	id, _ := c.FormValue("id")
+	fields, _ := c.FormValue("fields")
+
+	fmt.Println("file : ", file)
+	fmt.Println("id : ", id)
+	fmt.Println("fields : ", fields)*/
+
 
 	// Upload the file to specific dst.
 	filename := filepath.Base(file.Filename)
@@ -509,6 +539,36 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 		return
 	}
+
+	/*_, header , _ := c.Request.FormFile("file")
+	out, _ := os.Open(header.Filename)*/
+
+/*	user := models.User{
+		Idx:              0,
+		UserId:           "UserId7",
+		Password:         "Password",
+		Name:             "Name",
+		IsCompanyAccount: false,
+		CompanyIdx:       0,
+		Email:            "Email",
+		AuthLevel:        0,
+		Tel:              "Tel",
+		HP:               "HP",
+		Zipcode:          "Zipcode",
+		Address:          "Address",
+		AddressDetail:    "AddressDetail",
+		Memo:             "Memo",
+		WorkScope:        "WorkScope",
+		Department:       "Department",
+		Position:         "Position",
+		EmailAuth:        false,
+		GroupEmailAuth:   false,
+		Avata:            filename,
+		AvataFile:        file,
+		LastAccessIp:     "127.0.0.1",
+	}
+
+	h.db.AddUser(user)*/
 
 	c.JSON(200, gin.H{
 		"status":    "posted",
