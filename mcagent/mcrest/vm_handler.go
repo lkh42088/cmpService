@@ -79,7 +79,7 @@ func registerServerHandler(c *gin.Context) {
 }
 
 func unRegisterServerHandler(c *gin.Context) {
-	var msg mcmodel.McServerDetail
+	var msg mcmodel.McServer
 	err := c.ShouldBindJSON(&msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

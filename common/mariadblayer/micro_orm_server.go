@@ -120,7 +120,7 @@ func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	return vm, err
 }
 
-func (db *DBORM) UpdateMcVmFromMc(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
+func (db *DBORM) UpdateMcVmFromMc(obj mcmodel.McVm) (mcmodel.McVm, error) {
 	return obj, db.Model(&obj).
 		Updates(map[string]interface{}{
 			"vm_filename":       obj.Filename,
@@ -140,3 +140,56 @@ func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 
 	return vm, err
 }
+
+func (db *DBORM) AddMcImage(obj mcmodel.McImages) (mcmodel.McImages, error) {
+	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) DeleteMcImage(obj mcmodel.McImages) (mcmodel.McImages, error) {
+	return obj, db.Delete(&obj).Error
+}
+
+func (db *DBORM) GetMcImagesPage(paging models.Pagination) (images mcmodel.McImagePage, err error) {
+	err = db.
+		Table("mc_image_tb").
+		Select("mc_image_tb.*, c.cp_name, m.mc_serial_number").
+		Joins("LEFT JOIN mc_server_tb m ON m.mc_idx = mc_image_tb.img_server_idx").
+		Joins("LEFT JOIN company_tb c ON c.cp_idx = m.mc_cp_idx").
+		//Order(images.GetOrderBy(paging.OrderBy, paging.Order)).
+		Limit(paging.RowsPerPage).
+		Offset(paging.Offset).
+		Find(&images.Images).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	paging.TotalCount = len(images.Images)
+	images.Page = paging
+	return images, err
+}
+
+func (db *DBORM) AddMcNetwork(obj mcmodel.McNetworks) (mcmodel.McNetworks, error) {
+	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) DeleteMcNetwork(obj mcmodel.McNetworks) (mcmodel.McNetworks, error) {
+	return obj, db.Delete(&obj).Error
+}
+
+func (db *DBORM) GetMcNetworksPage(paging models.Pagination) (networks mcmodel.McNetworkPage, err error) {
+	err = db.
+		Table("mc_network_tb").
+		Select("mc_network_tb.*, c.cp_name, m.mc_serial_number").
+		Joins("LEFT JOIN mc_server_tb m ON m.mc_idx = mc_network_tb.net_server_idx").
+		Joins("LEFT JOIN company_tb c ON c.cp_idx = m.mc_cp_idx").
+		//Order(networks.GetOrderBy(paging.OrderBy, paging.Order)).
+		Limit(paging.RowsPerPage).
+		Offset(paging.Offset).
+		Find(&networks.Networks).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+	paging.TotalCount = len(networks.Networks)
+	networks.Page = paging
+	return networks, err
+}
+

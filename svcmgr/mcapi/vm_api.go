@@ -30,7 +30,7 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	return true
 }
 
-func SendMcUnRegisterServer(server mcmodel.McServerDetail) bool {
+func SendMcUnRegisterServer(server mcmodel.McServer) bool {
 	pbytes, _ := json.Marshal(server)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUnRegisterServer)
