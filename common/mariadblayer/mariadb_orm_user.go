@@ -38,7 +38,11 @@ func (db *DBORM) GetUserByEmail(email string) (user models.User, err error) {
 }
 
 func (db *DBORM) AddUser(user models.User) (models.User, error) {
-	return user, db.Create(&user).Error
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 AvataFile : ", user.AvataFile);
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 user : ", user);
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 UserId : ", user.UserId);
+
+	return user, db.Debug().Create(&user).Error
 }
 
 func (db *DBORM) UpdateUserPassword(user models.User) (models.User, error) {

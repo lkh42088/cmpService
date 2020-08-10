@@ -4,6 +4,7 @@ import (
 	"cmpService/common/models"
 	"encoding/json"
 	"fmt"
+	"mime/multipart"
 )
 
 type UserLoginMessage struct {
@@ -15,29 +16,30 @@ type UserLoginMessage struct {
 }
 
 type DeleteDataMessage struct {
-	IdxList []int `json:"idx"`
+	IdxList   []int    `json:"idx"`
 	AvataList []string `json:"avata"`
 }
 
 type UserRegisterMessage struct {
-	CpName             string              `json:"cpName"`
-	CpIdx              int                 `json:"cpIdx"`
-	IsCompanyAccount   bool                `json:"isCompanyAccount"`
-	Id                 string              `json:"id"`
-	Password           string              `json:"password"`
-	Email              string              `json:"email"`
-	Name               string              `json:"name"`
-	Tel                string              `json:"tel"`
-	HP                 string              `json:"hp"`
-	AuthLevel          int                 `json:"authLevel"`
-	ZipCode            string              `json:"zipCode"`
-	Address            string              `json:"address"`
-	AddressDetail      string              `json:"addressDetail"`
-	EmailAuthFlag      bool                `json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool                `json:"emailAuthGroupFlag"`
-	EmailAuthGroupList []models.UserDetail `json:"emailAuthGroupList"`
-	Memo               string              `json:"memo"`
-	Avata              string              `json:"avata"`
+	CpName             string                `json:"cpName"`
+	CpIdx              int                   `json:"cpIdx"`
+	IsCompanyAccount   bool                  `json:"isCompanyAccount"`
+	Id                 string                `json:"id"`
+	Password           string                `json:"password"`
+	Email              string                `json:"email"`
+	Name               string                `json:"name"`
+	Tel                string                `json:"tel"`
+	HP                 string                `json:"hp"`
+	AuthLevel          int                   `json:"authLevel"`
+	ZipCode            string                `json:"zipCode"`
+	Address            string                `json:"address"`
+	AddressDetail      string                `json:"addressDetail"`
+	EmailAuthFlag      bool                  `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool                  `json:"emailAuthGroupFlag"`
+	EmailAuthGroupList []models.UserDetail   `json:"emailAuthGroupList"`
+	Memo               string                `json:"memo"`
+	Avata              string                `json:"avata"`
+	AvataFile          *multipart.FileHeader `json:"avataFile"`
 }
 
 func (u UserRegisterMessage) String() {
@@ -70,16 +72,17 @@ type EmailAuthEntry struct {
 }
 
 type UserInfo struct {
-	Id                 string `json:"id"`
-	Password           string `json:"password"`
-	Name               string `json:"name"`
-	Email              string `json:"email"`
-	Level              int    `json:"level"`
-	CpName             string `json:"cpName"`
-	EmailAuthFlag      bool   `json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool   `json:"emailAuthGroupFlag"`
-	AuthEmail          string `json:"authEmail"`
-	Avata              string              `json:"avata"`
+	Id                 string                `json:"id"`
+	Password           string                `json:"password"`
+	Name               string                `json:"name"`
+	Email              string                `json:"email"`
+	Level              int                   `json:"level"`
+	CpName             string                `json:"cpName"`
+	EmailAuthFlag      bool                  `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool                  `json:"emailAuthGroupFlag"`
+	AuthEmail          string                `json:"authEmail"`
+	Avata              string                `json:"avata"`
+	AvataFile          *multipart.FileHeader `json:"avataFile"`
 }
 
 func GetUserEmailAuth(id, email string) (emailAuth models.UserEmailAuth) {
@@ -136,6 +139,11 @@ func (msg *UserRegisterMessage) Translate() (user models.User, emailAuthList []m
 	user.EmailAuth = msg.EmailAuthFlag
 	user.Memo = msg.Memo
 	user.Avata = msg.Avata
+	user.AvataFile = msg.AvataFile
+
+	//todo image file db store
+	/*fmt.Println("★★★★★★★★★★★★★★★★ :  msg : ", msg)
+	fmt.Println("★★★★★★★★★★★★★★★★ :  msg.AvataFile : ", msg.AvataFile)*/
 
 	// email auth
 	if user.GroupEmailAuth {
