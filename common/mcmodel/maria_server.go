@@ -82,17 +82,21 @@ type McServer struct {
 }
 
 type McVm struct {
-	Idx         uint   `gorm:"primary_key;column:vm_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
-	McServerIdx int    `gorm:"type:int(11);column:vm_server_idx;comment:'서버 고유값'" json:"serverIdx"`
-	CompanyIdx  int    `gorm:"type:int(11);column:vm_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
-	Name        string `gorm:"type:varchar(50);column:vm_name;comment:'vm 이름'" json:"name"`
-	Cpu         int    `gorm:"type:int(11);column:vm_cpu;comment:'vm cpu'" json:"cpu"`
-	Ram         int    `gorm:"type:int(11);column:vm_ram;comment:'vm ram'" json:"ram"`
-	Hdd         int    `gorm:"type:int(11);column:vm_hdd;comment:'vm hdd'" json:"hdd"`
-	OS          string `gorm:"type:varchar(50);column:vm_os;comment:'vm os'" json:"os"`
-	Image       string `gorm:"type:varchar(50);column:vm_image;comment:'vm image'" json:"image"`
-	Network     string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
-	IpAddr      string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
+	Idx           uint   `gorm:"primary_key;column:vm_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
+	McServerIdx   int    `gorm:"type:int(11);column:vm_server_idx;comment:'서버 고유값'" json:"serverIdx"`
+	CompanyIdx    int    `gorm:"type:int(11);column:vm_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
+	Name          string `gorm:"type:varchar(50);column:vm_name;comment:'vm 이름'" json:"name"`
+	Cpu           int    `gorm:"type:int(11);column:vm_cpu;comment:'vm cpu'" json:"cpu"`
+	Ram           int    `gorm:"type:int(11);column:vm_ram;comment:'vm ram'" json:"ram"`
+	Hdd           int    `gorm:"type:int(11);column:vm_hdd;comment:'vm hdd'" json:"hdd"`
+	OS            string `gorm:"type:varchar(50);column:vm_os;comment:'vm os'" json:"os"`
+	Image         string `gorm:"type:varchar(50);column:vm_image;comment:'vm image'" json:"image"`
+	Filename      string `gorm:"type:varchar(50);column:vm_filename;comment:'vm image'" json:"filename"`
+	Network       string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
+	IpAddr        string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
+	Mac           string `gorm:"type:varchar(50);column:vm_mac;comment:'vm mac address'" json:"mac"`
+	ConfigStatus  string `gorm:"type:varchar(50);column:vm_config_status;comment:'vm config status'" json:"configStatus"`
+	CurrentStatus string `gorm:"type:varchar(50);column:vm_current_status;comment:'vm current status'" json:"currentStatus"`
 }
 
 func (McServer) TableName() string {

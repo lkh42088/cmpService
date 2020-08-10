@@ -78,6 +78,12 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, e
 	return vms, err
 }
 
+func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error){
+	return vm, db.Table("mc_vm_tb").
+		Where(mcmodel.McVm{Name: name, CompanyIdx: cpidx}).
+		Find(&vm).Error
+}
+
 func (db *DBORM) updateVmCount(vm mcmodel.McVm, isAdd bool) {
 	var server mcmodel.McServer
 	err := db.Where(mcmodel.McServer{Idx: uint(vm.McServerIdx)}).
@@ -114,6 +120,17 @@ func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	return vm, err
 }
 
+func (db *DBORM) UpdateMcVmFromMc(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	return obj, db.Model(&obj).
+		Updates(map[string]interface{}{
+			"vm_filename":       obj.Filename,
+			"vm_network":        obj.Network,
+			"vm_ip_addr":        obj.IpAddr,
+			"vm_mac":            obj.Mac,
+			"vm_current_status": obj.CurrentStatus,
+		}).Error
+}
+
 func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Delete(&obj).Error
 	vm = obj
@@ -123,5 +140,3 @@ func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 
 	return vm, err
 }
-
-

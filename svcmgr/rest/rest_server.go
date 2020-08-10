@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"cmpService/common/lib"
 	"cmpService/common/mariadblayer"
 	"github.com/gin-gonic/gin"
 )
@@ -88,6 +89,8 @@ type HandlerInterface interface {
 	GetMcVms(c *gin.Context)
 	AddMcVm(c *gin.Context)
 	DeleteMcVm(c *gin.Context)
+
+	UpdateMcVm(c *gin.Context)
 }
 
 type Handler struct {
@@ -100,16 +103,6 @@ func NewHandler(db *mariadblayer.DBORM) (*Handler, error) {
 	return h, nil
 }
 
-const (
-	ApiPrefix  = "/v1"
-	ApiCode    = ApiPrefix + "/codes"
-	ApiSubCode = ApiPrefix + "/subcodes"
-	ApiDevice  = ApiPrefix + "/device"
-	ApiDevices = ApiPrefix + "/devices"
-	ApiLogin   = ApiPrefix + "/auth"
-	ApiCompany = ApiPrefix + "/companies"
-	ApiUser    = ApiPrefix + "/users"
-)
 
 func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router := gin.Default()
@@ -122,26 +115,26 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.Static("/image", "./svcmgr/files/img/")
 
 	// Code
-	router.GET(ApiCode, h.GetCodes)
-	router.GET(ApiCode+"/:code/:subcode", h.GetCodeList)
-	router.POST(ApiCode+"/create", h.AddCode)
-	router.DELETE(ApiCode+"/delete/:id", h.DeleteCode)
-	router.DELETE(ApiCode+"/delete", h.DeleteCodes)
+	router.GET(lib.SvcmgrApiCode, h.GetCodes)
+	router.GET(lib.SvcmgrApiCode+"/:code/:subcode", h.GetCodeList)
+	router.POST(lib.SvcmgrApiCode+"/create", h.AddCode)
+	router.DELETE(lib.SvcmgrApiCode+"/delete/:id", h.DeleteCode)
+	router.DELETE(lib.SvcmgrApiCode+"/delete", h.DeleteCodes)
 
 	// SubCode
-	router.GET(ApiSubCode, h.GetSubCodes)
-	router.GET(ApiSubCode+"/:c_idx", h.GetSubCodeList)
-	router.POST(ApiSubCode+"/create", h.AddSubCode)
-	router.DELETE(ApiSubCode+"/delete/:id", h.DeleteSubCode)
-	router.DELETE(ApiSubCode+"/delete", h.DeleteSubCodes)
+	router.GET(lib.SvcmgrApiSubCode, h.GetSubCodes)
+	router.GET(lib.SvcmgrApiSubCode+"/:c_idx", h.GetSubCodeList)
+	router.POST(lib.SvcmgrApiSubCode+"/create", h.AddSubCode)
+	router.DELETE(lib.SvcmgrApiSubCode+"/delete/:id", h.DeleteSubCode)
+	router.DELETE(lib.SvcmgrApiSubCode+"/delete", h.DeleteSubCodes)
 
 	// Devices
-	router.GET(ApiDevice+"/:type/:value/:field", h.GetDevicesByCode)
-	router.GET(ApiDevice+"/:type/:value", h.GetDevicesByCode)
-	router.POST(ApiDevice+"/create/:type", h.AddDevice)
-	router.PUT(ApiDevice+"/update/:type/:deviceCode", h.UpdateDevice)
-	router.PUT(ApiDevices+"/update/:type", h.UpdateOutFlag)
-	router.GET(ApiDevices+"/:type/:outFlag/list", h.GetDevicesByList)
+	router.GET(lib.SvcmgrApiDevice+"/:type/:value/:field", h.GetDevicesByCode)
+	router.GET(lib.SvcmgrApiDevice+"/:type/:value", h.GetDevicesByCode)
+	router.POST(lib.SvcmgrApiDevice+"/create/:type", h.AddDevice)
+	router.PUT(lib.SvcmgrApiDevice+"/update/:type/:deviceCode", h.UpdateDevice)
+	router.PUT(lib.SvcmgrApiDevices+"/update/:type", h.UpdateOutFlag)
+	router.GET(lib.SvcmgrApiDevices+"/:type/:outFlag/list", h.GetDevicesByList)
 	router.GET("/v1/raw/device/:type/:value", h.GetDeviceWithoutJoin)
 
 	// Comment
@@ -174,35 +167,35 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//router.POST("/v1/devices/monitoring", h.AddDevicesMonitoring)
 
 	// Login
-	router.POST(ApiLogin+"/login", h.LoginUserById)
-	router.POST(ApiLogin+"/login-send-email", h.LoginSendEmail)
-	router.POST(ApiLogin+"/grouplogin", h.LoginGroupEmail)
-	router.POST(ApiLogin+"/input_email", h.LoginUserById)
-	router.POST(ApiLogin+"/confirm", h.LoginFrontConfirm)
-	router.POST(ApiLogin+"/email_confirm", h.EmailConfirm)
-	router.GET(ApiLogin+"/check", h.GetSession)
-	router.POST(ApiLogin+"/logout", h.Logout)
-	router.POST(ApiLogin+"/check-password", h.CheckPassword)
+	router.POST(lib.SvcmgrApiLogin+"/login", h.LoginUserById)
+	router.POST(lib.SvcmgrApiLogin+"/login-send-email", h.LoginSendEmail)
+	router.POST(lib.SvcmgrApiLogin+"/grouplogin", h.LoginGroupEmail)
+	router.POST(lib.SvcmgrApiLogin+"/input_email", h.LoginUserById)
+	router.POST(lib.SvcmgrApiLogin+"/confirm", h.LoginFrontConfirm)
+	router.POST(lib.SvcmgrApiLogin+"/email_confirm", h.EmailConfirm)
+	router.GET(lib.SvcmgrApiLogin+"/check", h.GetSession)
+	router.POST(lib.SvcmgrApiLogin+"/logout", h.Logout)
+	router.POST(lib.SvcmgrApiLogin+"/check-password", h.CheckPassword)
 
 	pagingParam := "/:rows/:offset/:orderby/:order"
 
 	// User
-	router.GET(ApiUser+pagingParam, h.GetUsersPage)
-	router.POST(ApiUser+"/get-user/:value", h.GetUserById)
-	router.POST(ApiUser+"/page-with-search-param", h.GetUsersPageWithSearchParam)
-	router.POST(ApiUser+"/register", h.RegisterUser)
-	router.POST(ApiUser+"/modify", h.ModifyUser)
-	router.POST(ApiUser+"/unregister", h.UnRegisterUser)
-	router.POST(ApiUser+"/check-user", h.CheckDuplicatedUser)
-	router.POST(ApiUser+"/fileUpload", h.UploadFileUser)
+	router.GET(lib.SvcmgrApiUser+pagingParam, h.GetUsersPage)
+	router.POST(lib.SvcmgrApiUser+"/get-user/:value", h.GetUserById)
+	router.POST(lib.SvcmgrApiUser+"/page-with-search-param", h.GetUsersPageWithSearchParam)
+	router.POST(lib.SvcmgrApiUser+"/register", h.RegisterUser)
+	router.POST(lib.SvcmgrApiUser+"/modify", h.ModifyUser)
+	router.POST(lib.SvcmgrApiUser+"/unregister", h.UnRegisterUser)
+	router.POST(lib.SvcmgrApiUser+"/check-user", h.CheckDuplicatedUser)
+	router.POST(lib.SvcmgrApiUser+"/fileUpload", h.UploadFileUser)
 
 	//http.HandleFunc("/v1/users/fileUpload", uploadFile)
 	//http.ListenAndServe(":4000", nil)
 
 	// Auth
-	router.GET(ApiPrefix+"/auth", h.GetAuth)
+	router.GET(lib.SvcmgrApiPrefix+"/auth", h.GetAuth)
 	// ReCAPTCHA
-	router.POST(ApiPrefix+"/captcha", h.GetCaptcha)
+	router.POST(lib.SvcmgrApiPrefix+"/captcha", h.GetCaptcha)
 
 	// Companies
 	router.GET("/v1/companies-with-user-like-cpname/:cpName", h.GetCompaniesWithUserByLikeCpName)
@@ -225,14 +218,16 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.DELETE("/v1/subnet/:idx", h.DeleteSubnets)
 
 	// Micro Cloud
-	router.POST("/v1/micro/servers/register", h.AddMcServer)
-	router.POST("/v1/micro/servers/unregister", h.DeleteMcServer)
-	router.GET("/v1/micro/servers/search-company/:cpIdx", h.GetMcServersByCpIdx)
-	router.GET("/v1/micro/servers-paging/"+pagingParam, h.GetMcServers)
+	router.POST(lib.SvcmgrApiMicroServerRegister, h.AddMcServer)
+	router.POST(lib.SvcmgrApiMicroServerUnRegister, h.DeleteMcServer)
+	router.GET(lib.SvcmgrApiMicroServerSearchCompany+"/:cpIdx", h.GetMcServersByCpIdx)
+	router.GET(lib.SvcmgrApiMicroServerPaging+pagingParam, h.GetMcServers)
 
-	router.POST("/v1/micro/vms/register", h.AddMcVm)
-	router.POST("/v1/micro/vms/unregister", h.DeleteMcVm)
-	router.GET("/v1/micro/vms-paging/"+pagingParam, h.GetMcVms)
+	router.POST(lib.SvcmgrApiMicroVmRegister, h.AddMcVm)
+	router.POST(lib.SvcmgrApiMicroVmUnRegister, h.DeleteMcVm)
+	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam, h.GetMcVms)
+
+	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
 
 	return router.Run(address)
 }

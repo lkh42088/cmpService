@@ -15,27 +15,18 @@ func main() {
 		"Input configuration file")
 	flag.Parse()
 	config2.SetConfig(*configFile)
-	db, err := SetMariaDB()
+	cfg := config2.ReadConfig(config2.SvcmgrConfigPath)
+	db, err := config2.SetMariaDB(cfg.MariaUser, cfg.MariaPassword, cfg.MariaDb,
+		cfg.MariaIp, 3306)
+	//db, err := SetMariaDB()
 	if err != nil {
 		fmt.Println("Main: ERROR - ", err)
 		return
 	}
 	SetRestServer(db)
-	//setupRoutes()
-
-/*	r := setupRouter()
-	// Set a lower memory limit for multipart forms (default is 32 MiB)
-	r.MaxMultipartMemory = 8 << 20 // 8 MiB
-
-	r.Static("/files", "./example/upload")
-	r.LoadHTMLGlob("./example/templates/*")
-
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8081")*/
-
 }
 
-func SetMariaDB() (db *mariadblayer.DBORM, err error) {
+func SetMariaDBOld() (db *mariadblayer.DBORM, err error) {
 	cfg := config2.ReadConfig(config2.SvcmgrConfigPath)
 	dbconfig, err := config.NewDBConfig("mysql",
 		cfg.MariaUser, cfg.MariaPassword, cfg.MariaDb,

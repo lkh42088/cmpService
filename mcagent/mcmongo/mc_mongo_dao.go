@@ -2,6 +2,7 @@ package mcmongo
 
 import (
 	"cmpService/common/mcmodel"
+	"fmt"
 	"github.com/globalsign/mgo"
 )
 
@@ -11,7 +12,16 @@ func (m *McMongoAccessor) AddVm(vm *mcmodel.MgoVm) (id int, err error) {
 	return id, err
 }
 
-func (m *McMongoAccessor) UpdateVm(vm *mcmodel.MgoVm) (id int, err error) {
+func (m *McMongoAccessor) UpdateVmByInternal(vm *mcmodel.MgoVm) (id int, err error) {
+	fmt.Println("UPDATE: ", vm)
+	//err = m.Collection.UpdateId(vm.Idx, mcmodel.MgoVm{
+	//	Filename: vm.Filename,
+	//	IpAddr: vm.IpAddr,
+	//	Mac: vm.Mac,
+	//	CurrentStatus: vm.CurrentStatus,
+	//	VmNumber: vm.VmNumber,
+	//})
+	//return int(vm.Idx), err
 	return m.AddVm(vm)
 }
 
