@@ -10,6 +10,45 @@ import (
 	"net/http"
 )
 
+func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
+	fmt.Printf("McServer : %v\n", server)
+	pbytes, _ := json.Marshal(server)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlRegisterServer)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
+func SendMcUnRegisterServer(server mcmodel.McServerDetail) bool {
+	pbytes, _ := json.Marshal(server)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUnRegisterServer)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
 func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(vm)
 	buff := bytes.NewBuffer(pbytes)

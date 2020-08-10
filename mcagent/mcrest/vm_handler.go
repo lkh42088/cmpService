@@ -41,6 +41,32 @@ func checkValidation(msg mcmodel.MgoVm) bool {
 	return true
 }
 
+func registerServerHandler(c *gin.Context) {
+	var msg mcmodel.McServerDetail
+	err := c.ShouldBindJSON(&msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Printf("registerServerHandler: %v\n", msg)
+	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx)
+
+	// return server, image, network
+	networks, err := kvm.GetNetworksFromXml()
+}
+
+func unRegisterServerHandler(c *gin.Context) {
+	var msg mcmodel.McServerDetail
+	err := c.ShouldBindJSON(&msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Printf("registerServerHandler: %v\n", msg)
+	config.DeleteServerStatus()
+	c.JSON(http.StatusOK, msg)
+}
+
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.MgoVm
 	err := c.ShouldBindJSON(&msg)

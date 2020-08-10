@@ -20,8 +20,12 @@ func getData() (vm mcmodel.McVm, server mcmodel.McServerDetail){
 	server = mcmodel.McServerDetail{
 		McServer: mcmodel.McServer{
 			Idx: 1,
+			SerialNumber: "NB_SN_001",
+			CompanyIdx: 191,
+			Type: "Standard",
 			IpAddr: "192.168.0.73",
 		},
+		CompanyName: "Nubes-Bridge",
 	}
 	return vm, server
 }

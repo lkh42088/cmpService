@@ -34,3 +34,4 @@ func InitImages() {
 		//mcmongo.McMongo.AddImage(&img)
 	}
 }
+
