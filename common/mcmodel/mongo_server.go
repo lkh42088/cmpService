@@ -1,5 +1,7 @@
 package mcmodel
 
+import "encoding/xml"
+
 const (
 	McVmStatusCopyImage="copy vm image"
 	McVmStatusCreateVm="create vm instance"
@@ -30,10 +32,46 @@ type MgoVm struct {
 type MgoImage struct {
 	Id          uint   `json:"id"`
 	McServerIdx int    `json:"serverIdx"`
-	variant     string `json:"variant"` // os : window10
-	Name        string `json:"name"`    // image : window10-250
+	Variant     string `json:"variant"` // os : win10
+	Name        string `json:"name"`    // image : windows10-250G
 	Hdd         int    `json:"hdd"`
 	Desc        string `json:"desc"`
+}
+
+type MgoNetwork struct {
+	Id uint `json:"id"`
+	McServerIdx int `json:"serverIdx"`
+	Name string `json:"name"`
+	Mode string `json:"mode"`
+	Subnet string `json:"subnet"`
+}
+
+type XmlNetwork struct {
+	XMLName xml.Name `xml:"network"`
+	Name string `xml:"name"`
+	Uuid string `xml:"uuid"`
+	Forward XmlForward `xml:"forward"`
+	Bridge XmlBridge `xml:"bridge"`
+}
+
+type XmlForward struct {
+	Mode string `xml:"mode,attr"`
+}
+
+type XmlBridge struct {
+	Name string `xml:"name,attr"`
+	Stp string `xml:"stp,attr"`
+	Delay string `xml:"delay,attr"`
+}
+
+type XmlIp struct {
+	Address string `xml:"address,attr"`
+	Netmask string `xml:"netmask,attr"`
+}
+
+type XmlDhcpRange struct {
+	Start string `xml:"start,attr"`
+	End string `xml:"end,attr"`
 }
 
 type MgoServer struct {

@@ -2,6 +2,7 @@ package mcrest
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcmongo"
@@ -81,7 +82,7 @@ func addVmHandler(c *gin.Context) {
 	fmt.Printf("addVmHandler: before copy - %v\n", msg)
 	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
 	fmt.Printf("addVmHandler: %s\n", filepath)
-	if ! config.IsExistFile(filepath) {
+	if ! utils.IsExistFile(filepath) {
 		kvm.CopyVmInstance(&msg)
 	}
 	fmt.Printf("addVmHandler: after copy - %v\n", msg)
