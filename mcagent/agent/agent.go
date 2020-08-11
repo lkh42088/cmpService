@@ -2,6 +2,7 @@ package agent
 
 import (
 	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcmongo"
 	"cmpService/mcagent/mcrest"
 	"fmt"
@@ -20,13 +21,15 @@ func Start (config string) {
 		return
 	}
 
-	wg.Add(2)
+	wg.Add(3)
 
 	// Rest Api Server
 	go mcrest.Start(&wg)
 
-	// Monitoring VMs
-	go Mon.Start(&wg)
+	// MonitorRoutine VMs
+	go MonitorR.Start(&wg)
+
+	go kvm.KvmR.Start(&wg)
 
 	wg.Wait()
 }
@@ -38,14 +41,14 @@ func configure() bool {
 		return false
 	}
 
-	// ConfigureMonitoring Monitoring
+	// ConfigureMonitoring MonitorRoutine
 	if ! ConfigureMonitoring() {
 		fmt.Println("Failed to configure agent!")
 		return false
 	}
 
 	ConfigureVmList()
-	InitVmList()
+	kvm.ConfigureKvmRoutine()
 
 	return true
 }

@@ -10,27 +10,27 @@ import (
 	"time"
 )
 
-type Monitoring struct {
+type MonitorRoutine struct {
 	Interval int
 }
 
-var Mon *Monitoring
+var MonitorR *MonitorRoutine
 
-func NewMonitoring(interval int) *Monitoring{
-	return &Monitoring{
+func NewMonitorRoutine(interval int) *MonitorRoutine {
+	return &MonitorRoutine{
 		interval,
 	}
 }
 
-func SetMonitoring(m *Monitoring) {
-	Mon = m
+func SetMonitoring(m *MonitorRoutine) {
+	MonitorR = m
 }
 
 func ConfigureMonitoring() bool {
 	cfg := config2.GetGlobalConfig()
 
-	// ConfigureMonitoring Monitoring
-	monitoring := NewMonitoring(cfg.MonitoringInterval)
+	// ConfigureMonitoring MonitorRoutine
+	monitoring := NewMonitorRoutine(cfg.MonitoringInterval)
 	if monitoring != nil {
 		SetMonitoring(monitoring)
 		return true
@@ -38,12 +38,13 @@ func ConfigureMonitoring() bool {
 	return false
 }
 
-func (m *Monitoring)Start(parentwg *sync.WaitGroup) {
+func (m *MonitorRoutine)Start(parentwg *sync.WaitGroup) {
 	loop := 1
 	for {
+		InitVmList()
 		m.Run()
 		time.Sleep(time.Duration(m.Interval * int(time.Second)))
-		fmt.Printf("%d. monitoring check...\n", loop)
+		fmt.Printf("%d. monitoring check(%ds)\n", loop, m.Interval)
 		loop += 1
 	}
 	if parentwg != nil {
@@ -51,7 +52,7 @@ func (m *Monitoring)Start(parentwg *sync.WaitGroup) {
 	}
 }
 
-func (m *Monitoring)Run() {
+func (m *MonitorRoutine)Run() {
 
 	var wg sync.WaitGroup
 	wg.Add(len(McVms.List))
@@ -66,13 +67,13 @@ func (m *Monitoring)Run() {
 
 			// check status
 			if UpdateVmStatus(vm) {
-				fmt.Println("Changed status!");
+				fmt.Println("Changed status!")
 				updated = true
 			}
 
 			// check mac/ip address
 			if UpdateVmAddress(vm) {
-				fmt.Println("Changed Address!");
+				fmt.Println("Changed Address!")
 				updated = true
 			}
 

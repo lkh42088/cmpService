@@ -27,6 +27,9 @@ func ConfigureVmList() {
 }
 
 func InitVmList() {
+	for _, vm := range McVms.List {
+		delete(McVms.List, vm.Idx)
+	}
 	vms, err := mcmongo.McMongo.GetVmAll()
 	if err != nil {
 		return
