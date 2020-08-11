@@ -53,9 +53,9 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
-		var server mcmodel.McServer
-		server.Idx = uint(idx)
-		fmt.Println("delete server : idx ", idx)
+		serverdetail, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcServerByServerIdx(uint(idx))
+		server := serverdetail.McServer
+		fmt.Println("delete server : ", server)
 		// Send to mc server
 		mcapi.SendMcUnRegisterServer(server)
 		// Dao: Network
