@@ -124,6 +124,7 @@ func CreateVmInstance(vm mcmodel.MgoVm) {
 	diskPath := fmt.Sprintf("path=%s/%s.qcow2,format=qcow2,bus=virtio", cfg.VmInstanceDir,vm.Filename)
 	RamStr := fmt.Sprintf("%d", vm.Ram)
 	cpuStr := fmt.Sprintf("--vcpus=%d", vm.Cpu)
+	netStr := fmt.Sprintf("network=%s,model=virtio", vm.Network)
 	args := []string{
 		"--connect=qemu:///system",
 		"--virt-type",
@@ -141,7 +142,8 @@ func CreateVmInstance(vm mcmodel.MgoVm) {
 		"--disk",
 		diskPath,
 		"--network",
-		"network=default,model=virtio",
+		//"network=default,model=virtio",
+		netStr,
 		"--noautoconsole",
 	}
 

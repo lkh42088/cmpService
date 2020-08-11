@@ -1,5 +1,10 @@
 package mcmodel
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 const (
 	McVmStatusCopyImage = "copy vm image"
 	McVmStatusCreateVm  = "create vm instance"
@@ -25,6 +30,13 @@ type MgoVm struct {
 	CurrentStatus string `json:"currentStatus"`
 	VmNumber      int    `json:"-"` // VmNumber: 1
 	IsCreated     bool   `json:"-"`
+}
+
+func (v *MgoVm) Dump() string {
+	pretty, _:= json.MarshalIndent(v, "", "  ")
+
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
 }
 
 // flavor

@@ -92,7 +92,7 @@ func unRegisterServerHandler(c *gin.Context) {
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.MgoVm
 	err := c.ShouldBindJSON(&msg)
-	fmt.Printf("addVmHandler: %v\n", msg)
+	fmt.Printf("addVmHandler: %s\n", msg.Dump())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

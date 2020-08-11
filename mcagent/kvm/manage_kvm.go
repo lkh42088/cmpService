@@ -76,4 +76,5 @@ func (k *KvmRoutine) Run() {
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
 		}(&vm)
 	}
+	KvmR.Vms = KvmR.Vms[:0]
 }
