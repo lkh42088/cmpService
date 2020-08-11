@@ -62,6 +62,7 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 		for _, net := range *mcserver.Networks {
 			var network mcmodel.McNetworks
 			network.Name = net.Name
+			network.Bridge = net.Bridge
 			network.Mode = net.Mode
 			network.Ip = net.Ip
 			network.Netmask= net.Netmask
