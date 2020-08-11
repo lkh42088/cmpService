@@ -62,6 +62,10 @@ func (m *MonitorRoutine)Run() {
 			defer wg.Done()
 			updated := false
 
+			if !vm.IsCreated {
+				return
+			}
+
 			fmt.Printf("check vm: %s, %v\n", vm.Name, *vm)
 			// check if copy vm instance, skip
 

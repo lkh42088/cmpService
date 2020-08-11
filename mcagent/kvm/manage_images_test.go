@@ -19,3 +19,12 @@ func TestGetImages(t *testing.T) {
 	list := GetImages()
 	fmt.Println("list: ", list)
 }
+
+func TestList(t *testing.T) {
+	var list []int
+	list = append(list, 1)
+	list = append(list, 2)
+	fmt.Println(list)
+	list = list[:0]
+	fmt.Println(list)
+}
