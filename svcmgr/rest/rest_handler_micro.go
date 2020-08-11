@@ -279,3 +279,12 @@ func (h *Handler) GetMcNetworks(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, networks)
 }
+
+func (h *Handler) GetMcImagesByServerIdx(c *gin.Context) {
+	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
+	images, err := h.db.GetMcImagesByServerIdx(serverIdx)
+	if err != nil  {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+	}
+	c.JSON(http.StatusOK, images)
+}
