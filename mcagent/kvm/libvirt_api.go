@@ -70,6 +70,7 @@ func GetNetworksFromXml() (list []mcmodel.MgoNetwork, err error) {
 		entry.Name = netcfg.Name
 		entry.Mode = netcfg.Forward.Mode
 		entry.Uuid = netcfg.UUID
+		entry.Bridge = netcfg.Bridge.Name
 		for index, Ip := range netcfg.IPs {
 			if index == 0 {
 				entry.Ip = Ip.Address

@@ -56,6 +56,14 @@ func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Create(&obj).Error
 }
 
+func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
+	return obj, db.Model(&obj).
+		Update(map[string]interface{}{
+			"mc_status":obj.Status,
+			"mc_mac":obj.Mac,
+	}).Error
+}
+
 func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Delete(&obj).Error
 }
@@ -84,12 +92,12 @@ func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm,
 		Find(&vm).Error
 }
 
-func (db *DBORM) updateVmCount(vm mcmodel.McVm, isAdd bool) {
+func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
 	var server mcmodel.McServer
 	err := db.Where(mcmodel.McServer{Idx: uint(vm.McServerIdx)}).
 		Find(&server).Error
-	fmt.Printf("updateVmCount: vm %v \n", vm)
-	fmt.Printf("updateVmCount: server %v \n", server)
+	fmt.Printf("UpdateVmCount: vm %v \n", vm)
+	fmt.Printf("UpdateVmCount: server %v \n", server)
 
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
@@ -114,7 +122,7 @@ func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Create(&obj).Error
 	vm = obj
 	if err == nil {
-		db.updateVmCount(vm, true)
+		db.UpdateVmCount(vm, true)
 	}
 
 	return vm, err
@@ -135,7 +143,7 @@ func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Delete(&obj).Error
 	vm = obj
 	if err == nil {
-		db.updateVmCount(vm, false)
+		db.UpdateVmCount(vm, false)
 	}
 
 	return vm, err
@@ -143,6 +151,12 @@ func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 
 func (db *DBORM) AddMcImage(obj mcmodel.McImages) (mcmodel.McImages, error) {
 	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) GetMcImagesByServerIdx(serverIdx int) (obj []mcmodel.McImages, err error) {
+	return obj, db.Table("mc_image_tb").
+		Where(mcmodel.McImages{McServerIdx: serverIdx}).
+		Find(&obj).Error
 }
 
 func (db *DBORM) DeleteMcImage(obj mcmodel.McImages) (mcmodel.McImages, error) {
@@ -169,6 +183,12 @@ func (db *DBORM) GetMcImagesPage(paging models.Pagination) (images mcmodel.McIma
 
 func (db *DBORM) AddMcNetwork(obj mcmodel.McNetworks) (mcmodel.McNetworks, error) {
 	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) GetMcNetworksByServerIdx(serverIdx int) (obj []mcmodel.McNetworks, err error) {
+	return obj, db.Table("mc_network_tb").
+		Where(mcmodel.McNetworks{McServerIdx: serverIdx}).
+		Find(&obj).Error
 }
 
 func (db *DBORM) DeleteMcNetwork(obj mcmodel.McNetworks) (mcmodel.McNetworks, error) {

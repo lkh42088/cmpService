@@ -5,6 +5,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/common/models"
+	"cmpService/svcmgr/config"
 	"cmpService/svcmgr/mcapi"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -29,18 +30,40 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
+func DeleteMcImagesByServerIdx(idx int) {
+	images , _ := config.SvcmgrGlobalConfig.Mariadb.GetMcImagesByServerIdx(idx)
+	fmt.Println("DeleteMcImage: images ", images)
+	for _, img := range images {
+		fmt.Println("img ", img)
+		config.SvcmgrGlobalConfig.Mariadb.DeleteMcImage(img)
+	}
+}
+
+func DeleteMcNetworksByServerIdx(idx int) {
+	networks, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcNetworksByServerIdx(idx)
+	fmt.Println("DeleteMcNetwork: networks ", networks)
+	for _, net := range networks {
+		fmt.Println("net ", net)
+		config.SvcmgrGlobalConfig.Mariadb.DeleteMcNetwork(net)
+	}
+}
+
 func (h *Handler) DeleteMcServer(c *gin.Context) {
 	var msg messages.DeleteDataMessage
 	c.Bind(&msg)
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
-		var server mcmodel.McServer
-		server.Idx = uint(idx)
-		h.db.DeleteMcServer(server)
+		serverdetail, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcServerByServerIdx(uint(idx))
+		server := serverdetail.McServer
+		fmt.Println("delete server : ", server)
 		// Send to mc server
 		mcapi.SendMcUnRegisterServer(server)
+		// Dao: Network
+		DeleteMcNetworksByServerIdx(idx)
+		// Dao: Image
+		DeleteMcImagesByServerIdx(idx)
+		h.db.DeleteMcServer(server)
 	}
-
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }

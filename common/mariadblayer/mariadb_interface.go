@@ -159,6 +159,7 @@ type MariaDBLayer interface {
 	// Micro Cloud
 	GetMcServersPage(paging models.Pagination) (servers mcmodel.McServerPage, err error)
 	AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
+	UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	GetMcServersByCpIdx(cpIdx int) (servers []mcmodel.McServerDetail, err error)
 	GetMcServerByServerIdx(idx uint) (server mcmodel.McServerDetail, err error)
@@ -169,6 +170,13 @@ type MariaDBLayer interface {
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
  	GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error)
 
+	AddMcNetwork(obj mcmodel.McNetworks) (mcmodel.McNetworks, error)
+	DeleteMcNetwork(obj mcmodel.McNetworks) (mcmodel.McNetworks, error)
 	GetMcNetworksPage(paging models.Pagination) (vms mcmodel.McNetworkPage, err error)
+	GetMcNetworksByServerIdx(serverIdx int) (obj []mcmodel.McNetworks, err error)
+
+	AddMcImage(obj mcmodel.McImages) (mcmodel.McImages, error)
+	DeleteMcImage(obj mcmodel.McImages) (mcmodel.McImages, error)
 	GetMcImagesPage(paging models.Pagination) (vms mcmodel.McImagePage, err error)
+	GetMcImagesByServerIdx(serverIdx int) (obj []mcmodel.McImages, err error)
 }

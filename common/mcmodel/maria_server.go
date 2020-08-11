@@ -97,7 +97,7 @@ type McNetworks struct {
 	Idx         uint   `gorm:"primary_key;column:net_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
 	McServerIdx int    `gorm:"type:int(11);column:net_server_idx;comment:'서버 고유값'" json:"serverIdx"`
 	Name        string `gorm:"type:varchar(50);column:net_name;comment:'network 이름'" json:"name"`
-	bridge      string `gorm:"type:varchar(50);column:net_bridge;comment:'bridge name'" json:"bridge"`
+	Bridge      string `gorm:"type:varchar(50);column:net_bridge;comment:'bridge name'" json:"bridge"`
 	Mode        string `gorm:"type:varchar(50);column:net_mode;comment:'forward mode'" json:"mode"`
 	Ip          string `gorm:"type:varchar(50);column:net_ip;comment:'ip address'" json:"ip"`
 	Netmask     string `gorm:"type:varchar(50);column:net_netmask;comment:'netmask'" json:"netmask"`

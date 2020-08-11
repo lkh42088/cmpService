@@ -39,7 +39,7 @@ type MgoNetwork struct {
 	Id      uint   `json:"id"`
 	Uuid    string `json:"uuid"`
 	Name    string `json:"name"`
-	bridge  string `json:"bridge"`
+	Bridge  string `json:"bridge"`
 	Mode    string `json:"mode"`
 	Ip      string `json:"ip"`
 	Netmask string `json:"netmask"`
