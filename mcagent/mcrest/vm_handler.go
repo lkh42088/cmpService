@@ -110,85 +110,24 @@ func addVmHandler(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("addVmHandler: success - %v\n", msg)
-	c.JSON(http.StatusOK, msg)
-
-	// Update Vm
-	msg.Filename = kvm.MakeFilename(msg)
 	msg.CurrentStatus = "Ready"
-	msg.IsCreated = false
-
-	cfg := config.GetGlobalConfig()
-	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
-
-	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
-	if ! utils.IsExistFile(filepath) {
-		kvm.KvmR.Vms = append(kvm.KvmR.Vms, msg)
-	}
-}
-
-func addVmHandlerBackup(c *gin.Context) {
-	var msg mcmodel.MgoVm
-	err := c.ShouldBindJSON(&msg)
-	fmt.Printf("addVmHandler: %v\n", msg)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	if !checkValidation(msg) {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid message"})
-		return
-	}
-
-	// Insert VM to Mongodb
-	_, err = mcmongo.McMongo.AddVm(&msg)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
 
 	fmt.Printf("addVmHandler: success - %v\n", msg)
 	c.JSON(http.StatusOK, msg)
 
 	// Update Vm
 	msg.Filename = kvm.MakeFilename(msg)
-	msg.CurrentStatus = "Ready"
 	msg.IsCreated = false
+	msg.IsProcess = true
 
 	cfg := config.GetGlobalConfig()
-	//svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
-
-	// Send rest api : status update - image copy
-	//svcmgrapi.SendUpdateVm2Svcmgr(msg, svcmgrRestAddr)
-
-	// Update vm
 	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 
-	// 1. Copy image
-	fmt.Printf("addVmHandler: before copy - %v\n", msg)
 	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
-	fmt.Printf("addVmHandler: %s\n", filepath)
 	if ! utils.IsExistFile(filepath) {
-		//kvm.CopyVmInstance(&msg)
-		kvm.KvmR.Vms = append(kvm.KvmR.Vms, msg)
+		//kvm.KvmR.Vms = append(kvm.KvmR.Vms, msg)
+		kvm.KvmR.Vms[msg.Idx] = msg
 	}
-	fmt.Printf("addVmHandler: after copy - %v\n", msg)
-
-	// 2. Create vm
-	//kvm.CreateVmInstance(msg)
-
-	msg.CurrentStatus = "finished to create vm"
-
-	// Update vm
-	//_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
-
-	//fmt.Printf("addVmHandler: finished - %v\n", msg)
-	// Send rest api : status update - finished creating vm
-	//svcmgrapi.SendUpdateVm2Svcmgr(msg, svcmgrRestAddr)
-
-	// Update Vm
-	//_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 }
 
 func deleteVmHandler(c *gin.Context) {

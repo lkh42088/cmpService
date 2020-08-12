@@ -12,15 +12,29 @@ import (
 
 type KvmRoutine struct {
 	Interval int
-	Vms []mcmodel.MgoVm
+	Vms map[uint]mcmodel.MgoVm
 }
-
 
 var KvmR *KvmRoutine
 
+func InitKvmR() {
+	for _, vm := range KvmR.Vms {
+		delete(KvmR.Vms, vm.Idx)
+	}
+	vms, err := mcmongo.McMongo.GetVmAll()
+	if err != nil {
+		return
+	}
+	for _, vm := range vms {
+		if vm.IsProcess {
+			KvmR.Vms[vm.Idx] = vm
+		}
+	}
+}
 func NewKvmRoutine(interval int) *KvmRoutine {
 	return &KvmRoutine{
 		Interval: interval,
+		Vms: map[uint]mcmodel.MgoVm{},
 	}
 }
 
@@ -38,30 +52,37 @@ func (k *KvmRoutine) Start(parentwg *sync.WaitGroup) {
 	for {
 		k.Run()
 		time.Sleep(time.Duration(k.Interval * int(time.Second)))
-		if loop%10 == 0 {
-			fmt.Printf("%d. KvmRoutine(%ds)\n", loop, k.Interval)
-		}
+		fmt.Printf("%d. KvmRoutine(%ds)\n", loop, k.Interval)
 		loop += 1
 	}
 }
 
 func (k *KvmRoutine) Run() {
 
+	//InitKvmR()
+
 	if len(k.Vms) == 0 {
 		return
 	}
 
+	list := k.Vms
+
 	var wg sync.WaitGroup
-	wg.Add(len(k.Vms))
+	wg.Add(len(list))
 
 	cfg := config.GetGlobalConfig()
 	svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
 
-	for _, vm := range KvmR.Vms {
+	for _, vm := range list {
 		go func(vm *mcmodel.MgoVm) {
 			defer wg.Done()
+
+			delete(k.Vms, vm.Idx)
+
 			// 1. copy image
 			vm.CurrentStatus = "coping image"
+			vm.IsProcess = false
+
 			mcmongo.McMongo.UpdateVmByInternal(vm)
 			fmt.Println("KvmRoutine: copy image - ", vm)
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
@@ -74,7 +95,8 @@ func (k *KvmRoutine) Run() {
 			mcmongo.McMongo.UpdateVmByInternal(vm)
 			// 3. Notify svcmgr
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
+
 		}(&vm)
 	}
-	KvmR.Vms = KvmR.Vms[:0]
+	wg.Wait()
 }

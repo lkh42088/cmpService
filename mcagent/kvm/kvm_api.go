@@ -85,8 +85,9 @@ func MakeFilename(vm mcmodel.MgoVm) string {
 	cfg := config.GetGlobalConfig()
 	for index, num := range cfg.VmNumber {
 		if num == 0 {
-			cfg.VmNumber[index] = vm.Idx
-			vm.VmNumber = index
+			config.SetGlobalConfigByVmNumber(uint(index), vm.Idx)
+			//cfg.VmNumber[index] = vm.Idx
+			//vm.VmNumber = index
 			return fmt.Sprintf("%s-%d", vm.Image, index)
 		}
 	}
@@ -96,6 +97,37 @@ func MakeFilename(vm mcmodel.MgoVm) string {
 func DeleteFilename(vm mcmodel.MgoVm) {
 	cfg := config.GetGlobalConfig()
 	cfg.VmNumber[vm.VmNumber] = 0
+}
+
+func ConfigDNAT(vm *mcmodel.MgoVm) {
+	cfg := config.GetGlobalConfig()
+	//iptables -t nat -A PREROUTING -d 192.168.0.73 -p tcp --dport 13389 -j DNAT --to 10.0.0.159:3389
+	dport:= fmt.Sprintf("%d", 10000+vm.VmNumber)
+	ip := strings.Split(vm.IpAddr,"/")
+	target := fmt.Sprintf("%s:3389", ip[0])
+	args := []string{
+		"-t",
+		"nat",
+		"-A",
+		"PREROUTING",
+		"-d",
+		cfg.ServerIp,
+		"-p",
+		"tcp",
+		"--dport",
+		dport,
+		"-j",
+		"DNAT",
+		"--to",
+		target,
+	}
+
+	fmt.Println("args: ", args)
+
+	binary := "iptables"
+	cmd := exec.Command(binary, args...)
+	output, _ := cmd.Output()
+	fmt.Println("output", string(output))
 }
 
 func CopyVmInstance(vm *mcmodel.MgoVm) {

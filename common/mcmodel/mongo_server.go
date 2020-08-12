@@ -29,7 +29,8 @@ type MgoVm struct {
 	ConfigStatus  string `json:"configStatus"`
 	CurrentStatus string `json:"currentStatus"`
 	VmNumber      int    `json:"-"` // VmNumber: 1
-	IsCreated     bool   `json:"-"`
+	IsCreated     bool   `json:"isCreated"`
+	IsProcess     bool   `json:"isProcess"`
 }
 
 func (v *MgoVm) Dump() string {

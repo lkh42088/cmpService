@@ -32,6 +32,10 @@ func GetGlobalConfig() McAgentConfig {
 	return globalConfig
 }
 
+func SetGlobalConfigByVmNumber(index, value uint) {
+	globalConfig.VmNumber[index] = value
+}
+
 func ApplyGlobalConfig(file string) bool {
 	fmt.Println("ApplyGlobalConfig: ", file)
 	info, err := os.Stat(file)

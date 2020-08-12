@@ -68,5 +68,5 @@ func TestMcMongoGetVmAll(t *testing.T) {
 
 func TestMcMongoRemoveVm(t *testing.T) {
 	configure()
-	McMongo.DeleteVm(1)
+	McMongo.DeleteVm(2)
 }
