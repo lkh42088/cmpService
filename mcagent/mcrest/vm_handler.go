@@ -116,7 +116,7 @@ func addVmHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 
 	// Update Vm
-	msg.Filename = kvm.MakeFilename(msg)
+	msg.Filename = kvm.MakeFilename(&msg)
 	msg.IsCreated = false
 	msg.IsProcess = true
 

@@ -74,7 +74,6 @@ func (m *MonitorRoutine)Run() {
 			if UpdateVmStatus(vm) {
 				fmt.Println("Changed status!")
 				updated = true
-				kvm.ConfigDNAT(vm)
 			}
 
 			// check mac/ip address
@@ -82,6 +81,7 @@ func (m *MonitorRoutine)Run() {
 				fmt.Println("Changed Address!")
 				updated = true
 				// NAT setup
+				kvm.ConfigDNAT(vm)
 			}
 
 			// update mongodb

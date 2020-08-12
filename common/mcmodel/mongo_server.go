@@ -29,12 +29,13 @@ type MgoVm struct {
 	ConfigStatus  string `json:"configStatus"`
 	CurrentStatus string `json:"currentStatus"`
 	VmNumber      int    `json:"-"` // VmNumber: 1
+	RemoteAddr    string `json:"remoteAddr"`
 	IsCreated     bool   `json:"isCreated"`
 	IsProcess     bool   `json:"isProcess"`
 }
 
 func (v *MgoVm) Dump() string {
-	pretty, _:= json.MarshalIndent(v, "", "  ")
+	pretty, _ := json.MarshalIndent(v, "", "  ")
 
 	fmt.Printf("%s\n", string(pretty))
 	return string(pretty)

@@ -81,13 +81,13 @@ func GetIpAddressOfVm(vm mcmodel.MgoVm) (ip, mac string, res int) {
 	return ip, mac, res
 }
 
-func MakeFilename(vm mcmodel.MgoVm) string {
+func MakeFilename(vm *mcmodel.MgoVm) string {
 	cfg := config.GetGlobalConfig()
 	for index, num := range cfg.VmNumber {
 		if num == 0 {
 			config.SetGlobalConfigByVmNumber(uint(index), vm.Idx)
 			//cfg.VmNumber[index] = vm.Idx
-			//vm.VmNumber = index
+			vm.VmNumber = index
 			return fmt.Sprintf("%s-%d", vm.Image, index)
 		}
 	}
@@ -105,6 +105,7 @@ func ConfigDNAT(vm *mcmodel.MgoVm) {
 	dport:= fmt.Sprintf("%d", 10000+vm.VmNumber)
 	ip := strings.Split(vm.IpAddr,"/")
 	target := fmt.Sprintf("%s:3389", ip[0])
+	vm.RemoteAddr = fmt.Sprintf("%s:%s", cfg.ServerIp, dport)
 	args := []string{
 		"-t",
 		"nat",
