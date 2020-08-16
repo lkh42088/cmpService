@@ -102,10 +102,9 @@ func DeleteFilename(vm mcmodel.MgoVm) {
 func ConfigDNAT(vm *mcmodel.MgoVm) {
 	cfg := config.GetGlobalConfig()
 	//iptables -t nat -A PREROUTING -d 192.168.0.73 -p tcp --dport 13389 -j DNAT --to 10.0.0.159:3389
-	dport:= fmt.Sprintf("%d", 10000+vm.VmNumber)
+	dport:= fmt.Sprintf("%d", 13001+vm.VmNumber)
 	ip := strings.Split(vm.IpAddr,"/")
 	target := fmt.Sprintf("%s:3389", ip[0])
-	vm.RemoteAddr = fmt.Sprintf("%s:%s", cfg.ServerIp, dport)
 	args := []string{
 		"-t",
 		"nat",
@@ -178,6 +177,8 @@ func CreateVmInstance(vm mcmodel.MgoVm) {
 		//"network=default,model=virtio",
 		netStr,
 		"--noautoconsole",
+		"--graphics",
+		"vnc,listen=0.0.0.0",
 	}
 
 	fmt.Println("args:", args)

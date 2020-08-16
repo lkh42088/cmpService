@@ -78,10 +78,13 @@ func (m *MonitorRoutine)Run() {
 
 			// check mac/ip address
 			if UpdateVmAddress(vm) {
+				cfg := config2.GetGlobalConfig()
 				fmt.Println("Changed Address!")
 				updated = true
 				// NAT setup
 				kvm.ConfigDNAT(vm)
+				dport:= fmt.Sprintf("%d", 13001+vm.VmNumber)
+				vm.RemoteAddr = fmt.Sprintf("%s:%s", cfg.ServerIp, dport)
 			}
 
 			// update mongodb
