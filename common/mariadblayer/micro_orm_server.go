@@ -59,9 +59,9 @@ func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Model(&obj).
 		Update(map[string]interface{}{
-			"mc_status":obj.Status,
-			"mc_mac":obj.Mac,
-	}).Error
+			"mc_status": obj.Status,
+			"mc_mac":    obj.Mac,
+		}).Error
 }
 
 func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
@@ -86,7 +86,7 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, e
 	return vms, err
 }
 
-func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error){
+func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error) {
 	return vm, db.Table("mc_vm_tb").
 		Where(mcmodel.McVm{Name: name, CompanyIdx: cpidx}).
 		Find(&vm).Error
@@ -136,6 +136,7 @@ func (db *DBORM) UpdateMcVmFromMc(obj mcmodel.McVm) (mcmodel.McVm, error) {
 			"vm_ip_addr":        obj.IpAddr,
 			"vm_mac":            obj.Mac,
 			"vm_current_status": obj.CurrentStatus,
+			"vm_remote_addr":    obj.RemoteAddr,
 		}).Error
 }
 
@@ -212,4 +213,3 @@ func (db *DBORM) GetMcNetworksPage(paging models.Pagination) (networks mcmodel.M
 	networks.Page = paging
 	return networks, err
 }
-

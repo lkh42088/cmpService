@@ -121,6 +121,7 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 
 	fmt.Printf("Add McVm : %v\n", msg)
 
+	msg.CurrentStatus = "Ready"
 	msg, err := h.db.AddMcVm(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -283,6 +284,15 @@ func (h *Handler) GetMcNetworks(c *gin.Context) {
 func (h *Handler) GetMcImagesByServerIdx(c *gin.Context) {
 	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
 	images, err := h.db.GetMcImagesByServerIdx(serverIdx)
+	if err != nil  {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+	}
+	c.JSON(http.StatusOK, images)
+}
+
+func (h *Handler) GetMcNetworksByServerIdx(c *gin.Context) {
+	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
+	images, err := h.db.GetMcNetworksByServerIdx(serverIdx)
 	if err != nil  {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}

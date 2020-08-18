@@ -131,7 +131,7 @@ func (m McNetworkPage) GetOrderBy(orderby, order string) string {
 	return val + " " + order
 }
 
-var McImageJsonMap = map[string]string {
+var McImageJsonMap = map[string]string{
 	"idx":       "img_idx",
 	"serverIdx": "img_server_idx",
 	"variant":   "img_variant",
@@ -188,16 +188,20 @@ var McVmOrmMap = map[string]string{
 }
 
 var McVmJsonMap = map[string]string{
-	"idx":       "vm_idx",
-	"serverIdx": "vm_server_idx",
-	"cpIdx":     "vm_cp_idx",
-	"name":      "vm_name",
-	"cpu":       "vm_cpu",
-	"ram":       "vm_ram",
-	"hdd":       "vm_hdd",
-	"os":        "vm_os",
-	"network":   "vm_network",
-	"ipAddr":    "vm_ip_addr",
+	"idx":           "vm_idx",
+	"serverIdx":     "vm_server_idx",
+	"cpIdx":         "vm_cp_idx",
+	"name":          "vm_name",
+	"cpu":           "vm_cpu",
+	"ram":           "vm_ram",
+	"hdd":           "vm_hdd",
+	"os":            "vm_os",
+	"image":         "vm_image",
+	"network":       "vm_network",
+	"ipAddr":        "vm_ip_addr",
+	"mac":           "vm_mac",
+	"currentStatus": "vm_current_status",
+	"remoteAddr":    "vm_remote_addr",
 }
 
 type McVm struct {
@@ -213,6 +217,7 @@ type McVm struct {
 	Filename      string `gorm:"type:varchar(50);column:vm_filename;comment:'vm image'" json:"filename"`
 	Network       string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
 	IpAddr        string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
+	RemoteAddr    string `gorm:"type:varchar(50);column:vm_remote_addr;comment:'Remote Address for RDP'" json:"remoteAddr"`
 	Mac           string `gorm:"type:varchar(50);column:vm_mac;comment:'vm mac address'" json:"mac"`
 	ConfigStatus  string `gorm:"type:varchar(50);column:vm_config_status;comment:'vm config status'" json:"configStatus"`
 	CurrentStatus string `gorm:"type:varchar(50);column:vm_current_status;comment:'vm current status'" json:"currentStatus"`

@@ -5,6 +5,7 @@ import (
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcmongo"
+	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"sync"
 	"time"
@@ -62,6 +63,10 @@ func (m *MonitorRoutine)Run() {
 			defer wg.Done()
 			updated := false
 
+			if !vm.IsCreated {
+				return
+			}
+
 			fmt.Printf("check vm: %s, %v\n", vm.Name, *vm)
 			// check if copy vm instance, skip
 
@@ -73,8 +78,13 @@ func (m *MonitorRoutine)Run() {
 
 			// check mac/ip address
 			if UpdateVmAddress(vm) {
+				cfg := config2.GetGlobalConfig()
 				fmt.Println("Changed Address!")
 				updated = true
+				// NAT setup
+				kvm.ConfigDNAT(vm)
+				dport:= fmt.Sprintf("%d", 13001+vm.VmNumber)
+				vm.RemoteAddr = fmt.Sprintf("%s:%s", cfg.ServerIp, dport)
 			}
 
 			// update mongodb
@@ -82,6 +92,7 @@ func (m *MonitorRoutine)Run() {
 				fmt.Println("Update vm: ", *vm)
 				mcmongo.McMongo.UpdateVmByInternal(vm)
 				// notify svcmgr
+				svcmgrapi.SendUpdateVm2Svcmgr(*vm,"192.168.0.72:8081")
 			}
 		}(&vm)
 	}
