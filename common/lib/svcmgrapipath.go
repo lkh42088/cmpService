@@ -26,6 +26,7 @@ const (
 	SvcmgrApiMicroVmUnRegister   = SvcmgrApiMicroVm + "/unregister"
 	SvcmgrApiMicroVmUpdate       = SvcmgrApiMicroVm + "/update"
 	SvcmgrApiMicroVmUpdateFromMc = SvcmgrApiMicroVm + "/update-from-mc"
+	SvcmgrApiMicroVmVnc          = SvcmgrApiMicroVm + "/vnc"
 	SvcmgrApiMicroVmPaging       = SvcmgrApiMicro + "/vms-paging"
 	// /v1/micro/images
 	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
