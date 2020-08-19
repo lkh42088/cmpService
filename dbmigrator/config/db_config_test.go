@@ -25,7 +25,7 @@ func TestWriteConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "dbmigrator.conf")
 	var cfg = getDbMigConfig()
 	fmt.Println(cfg)
-	conf := lib.CreateConfig(path, cfg)
+	conf := lib.WriteJsonFile(path, cfg)
 	fmt.Println(conf)
 }
 
@@ -47,6 +47,6 @@ func TestJbhWriteConfig(t *testing.T) {
 	path := fmt.Sprintf("%s/../etc/%s", dirName, "dbmigrator.jbh.conf")
 	var cfg = getJbhDbMigConfig()
 	fmt.Println(cfg)
-	conf := lib.CreateConfig(path, cfg)
+	conf := lib.WriteJsonFile(path, cfg)
 	fmt.Println(conf)
 }

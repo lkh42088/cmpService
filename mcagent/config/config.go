@@ -18,6 +18,10 @@ type McAgentConfig struct {
 	SvcmgrPort         string             `json:"svcmgr_port"`
 	VmImageDir         string             `json:"vm_image_dir"`
 	VmInstanceDir      string             `json:"vm_instance_dir"`
+	ServerPort         string             `json:"server_port"`
+	ServerMac          string             `json:"server_mac"`
+	ServerIp           string             `json:"server_ip"`
+	ServerStatusRepo   string             `json:"server_status_repo"`
 	MonitoringInterval int                `json:"monitoring_interval"`
 	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
 }
@@ -28,15 +32,8 @@ func GetGlobalConfig() McAgentConfig {
 	return globalConfig
 }
 
-func IsExistFile(file string) bool {
-	info, err := os.Stat(file)
-	if os.IsNotExist(err) {
-		return false
-	}
-	if info.IsDir() {
-		return false
-	}
-	return true
+func SetGlobalConfigByVmNumber(index, value uint) {
+	globalConfig.VmNumber[index] = value
 }
 
 func ApplyGlobalConfig(file string) bool {

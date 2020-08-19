@@ -1,10 +1,15 @@
 package mcmodel
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 const (
-	McVmStatusCopyImage="copy vm image"
-	McVmStatusCreateVm="create vm instance"
-	McVmStatusRunning="running"
-	McVmStatusShutdown="shutdown"
+	McVmStatusCopyImage = "copy vm image"
+	McVmStatusCreateVm  = "create vm instance"
+	McVmStatusRunning   = "running"
+	McVmStatusShutdown  = "shutdown"
 )
 
 type MgoVm struct {
@@ -23,19 +28,43 @@ type MgoVm struct {
 	Mac           string `json:"mac"`
 	ConfigStatus  string `json:"configStatus"`
 	CurrentStatus string `json:"currentStatus"`
-	VmNumber      int    `json:"-"`        // VmNumber: 1
+	VmNumber      int    `json:"-"` // VmNumber: 1
+	RemoteAddr    string `json:"remoteAddr"`
+	IsCreated     bool   `json:"isCreated"`
+	IsProcess     bool   `json:"isProcess"`
+}
+
+func (v *MgoVm) Dump() string {
+	pretty, _ := json.MarshalIndent(v, "", "  ")
+
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
 }
 
 // flavor
 type MgoImage struct {
-	Id          uint   `json:"id"`
-	McServerIdx int    `json:"serverIdx"`
-	variant     string `json:"variant"` // os : window10
-	Name        string `json:"name"`    // image : window10-250
-	Hdd         int    `json:"hdd"`
-	Desc        string `json:"desc"`
+	Id      uint   `json:"id"`
+	Variant string `json:"variant"` // os : win10
+	Name    string `json:"name"`    // image : windows10-250G
+	Hdd     int    `json:"hdd"`
+	Desc    string `json:"desc"`
+}
+
+type MgoNetwork struct {
+	Id      uint   `json:"id"`
+	Uuid    string `json:"uuid"`
+	Name    string `json:"name"`
+	Bridge  string `json:"bridge"`
+	Mode    string `json:"mode"`
+	Ip      string `json:"ip"`
+	Netmask string `json:"netmask"`
+	Prefix  uint   `json:"prefix"`
 }
 
 type MgoServer struct {
-	McServerIdx int `json:"serverIdx"`
+	Port     string        `json:"port"`
+	Mac      string        `json:"mac"`
+	Ip       string        `json:"ip"`
+	Networks *[]MgoNetwork `json:"networks"`
+	Images   *[]MgoImage   `json:"images"`
 }

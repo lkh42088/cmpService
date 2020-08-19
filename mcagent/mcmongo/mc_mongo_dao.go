@@ -42,3 +42,18 @@ func (m *McMongoAccessor) DeleteVm(id int) error {
 func (m *McMongoAccessor) DeleteVmAll() (*mgo.ChangeInfo, error) {
 	return m.Collection.RemoveAll(nil)
 }
+
+// Image
+func (m *McMongoAccessor) AddImage(obj *mcmodel.MgoImage) (err error) {
+	err = m.Session.DB(m.Database).C("vm_image").UpdateId(obj.Id, obj)
+	return err
+}
+
+func (m *McMongoAccessor) DeleteImage(id int) error {
+	return m.Session.DB(m.Database).C("vm_image").RemoveId(id)
+}
+
+func (m*McMongoAccessor) GetImageAll() (images []mcmodel.MgoImage, err error) {
+	err = m.Collection.Find(nil).All(&images)
+	return images, err
+}
