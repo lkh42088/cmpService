@@ -4,6 +4,7 @@ import (
 	"cmpService/common/lib"
 	"cmpService/common/models"
 	"fmt"
+	"reflect"
 )
 
 func (db *DBORM) GetAllUsers() (users []models.User, err error) {
@@ -38,10 +39,9 @@ func (db *DBORM) GetUserByEmail(email string) (user models.User, err error) {
 }
 
 func (db *DBORM) AddUser(user models.User) (models.User, error) {
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 AvataFile : ", user.AvataFile);
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 user : ", user);
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 UserId : ", user.UserId);
-
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 AvataFile : ", user.AvataFile)
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 user : ", user)
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 UserId : ", user.UserId)
 	return user, db.Debug().Create(&user).Error
 }
 
@@ -53,15 +53,23 @@ func (db *DBORM) UpdateUserPassword(user models.User) (models.User, error) {
 		}).Error
 }
 
+func (db *DBORM) UpdateUserFile(user models.User) (models.User, error) {
+	fmt.Println("■■■■■■■■■■■■■■■■ Translate -> TypeOf FILE : ", reflect.TypeOf(user.AvataFile))
+
+	return user, db.Debug().Table("user_tb").Where("user_id = ?", user.UserId).Update("user_avata_file",
+		user.AvataFile).Error
+}
+
 func (db *DBORM) UpdateUser(user models.User) (models.User, error) {
 	// exept: Avata
-	fmt.Println("■■■■■■■■■■■■■■■■ Translate user: ", user)
-	return user, db.Model(&user).
+	//db.Debug().Table("user_tb").Where("user_id = ?", user.UserId).Update("user_avata_file", user.AvataFile)
+
+	return user, db.Debug().Model(&user).
 		Updates(map[string]interface{}{
-			"user_idx":                   user.Idx,
-			"user_id":                    user.UserId,
-			"user_password":              user.Password,
-			"user_is_cp_account":         user.IsCompanyAccount,
+			"user_idx":           user.Idx,
+			"user_id":            user.UserId,
+			"user_password":      user.Password,
+			"user_is_cp_account": user.IsCompanyAccount,
 			//"cp_idx":                     user.CompanyIdx,
 			"user_auth_level":            user.AuthLevel,
 			"user_tel":                   user.Tel,
