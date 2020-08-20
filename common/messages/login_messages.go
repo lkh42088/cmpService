@@ -21,25 +21,25 @@ type DeleteDataMessage struct {
 }
 
 type UserRegisterMessage struct {
-	CpName             string                `json:"cpName"`
-	CpIdx              int                   `json:"cpIdx"`
-	IsCompanyAccount   bool                  `json:"isCompanyAccount"`
-	Id                 string                `json:"id"`
-	Password           string                `json:"password"`
-	Email              string                `json:"email"`
-	Name               string                `json:"name"`
-	Tel                string                `json:"tel"`
-	HP                 string                `json:"hp"`
-	AuthLevel          int                   `json:"authLevel"`
-	ZipCode            string                `json:"zipCode"`
-	Address            string                `json:"address"`
-	AddressDetail      string                `json:"addressDetail"`
-	EmailAuthFlag      bool                  `json:"emailAuthFlag"`
-	EmailAuthGroupFlag bool                  `json:"emailAuthGroupFlag"`
-	EmailAuthGroupList []models.UserDetail   `json:"emailAuthGroupList"`
-	Memo               string                `json:"memo"`
-	Avata              string                `json:"avata"`
-	AvataFile          *multipart.FileHeader `json:"avataFile"`
+	CpName             string              `json:"cpName"`
+	CpIdx              int                 `json:"cpIdx"`
+	IsCompanyAccount   bool                `json:"isCompanyAccount"`
+	Id                 string              `json:"id"`
+	Password           string              `json:"password"`
+	Email              string              `json:"email"`
+	Name               string              `json:"name"`
+	Tel                string              `json:"tel"`
+	HP                 string              `json:"hp"`
+	AuthLevel          int                 `json:"authLevel"`
+	ZipCode            string              `json:"zipCode"`
+	Address            string              `json:"address"`
+	AddressDetail      string              `json:"addressDetail"`
+	EmailAuthFlag      bool                `json:"emailAuthFlag"`
+	EmailAuthGroupFlag bool                `json:"emailAuthGroupFlag"`
+	EmailAuthGroupList []models.UserDetail `json:"emailAuthGroupList"`
+	Memo               string              `json:"memo"`
+	Avata              string              `json:"avata"`
+	AvataFile          []byte              `json:"avataFile"`
 }
 
 func (u UserRegisterMessage) String() {

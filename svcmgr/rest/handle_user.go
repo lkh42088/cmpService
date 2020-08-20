@@ -269,7 +269,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 	var msg messages.UserRegisterMessage
 	c.Bind(&msg)
 
-	fmt.Println("■ ModifyUser Message: ", msg)
+	//fmt.Println("■ ModifyUser Message: ", msg)
 	msg.String()
 
 	oldUser, err := h.db.GetUserById(msg.Id)
@@ -291,8 +291,8 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 		user.Password = oldUser.Password
 	}
 
-	fmt.Println("■ User: ", user)
-	fmt.Println("■ oldUser: ", oldUser)
+	//fmt.Println("■ User: ", user)
+	//fmt.Println("■ oldUser: ", oldUser)
 
 	// 파일 삭제
 	if user.Avata != oldUser.Avata {
@@ -329,7 +329,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 		fmt.Println("ModifyUser: error 5.", err)
 		return
 	}
-	fmt.Println("■ Modify user:", updateUser)
+	//fmt.Println("■ Modify user:", updateUser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": updateUser})
 }
 
@@ -496,19 +496,51 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 		return
 	}
 
-	//fmt.Println("type 확인 file : ", reflect.TypeOf(file))
+
+	//file2, err := file.Open()
+
+	//fmt.Println("◀◀◀◀◀◀◀◀◀◀ file2 : ", file2)
+	//fmt.Println("◀◀◀◀◀◀◀◀◀◀ type 확인 file : ", reflect.TypeOf(file)) //*multipart.FileHeader
+	//fmt.Println("◀◀◀◀◀◀◀◀◀◀ type 확인 file2 : ", reflect.TypeOf(file2)) //multipart.sectionReadCloser
+
+
+	/*fileTest, err := file.Open()
+	defer fileTest.Close()*/
+
+	//fileTestData, err := ioutil.ReadAll(fileTest)
+
+	/*fmt.Println("😈😈😈😈😈😈😈😈😈😈 fileTestData : ", fileTestData)
+	fmt.Println("😈😈😈😈😈😈😈😈😈😈 fileTestData type : ", reflect.TypeOf(fileTestData))*/
+
 
 	log.Println(file.Filename)
+	/*data, err := ioutil.ReadFile("13015827004.PNG")
+	data2, err := ioutil.ReadFile("svcmgr/files/img/13015827004.PNG")*/
 
-/*	v, _ := c.MultipartForm()
-	fmt.Println("vvvvvvvvvvvvv", v)
+	/*file2.Close()
+
+	fi, err := os.Open("svcmgr/files/img/13015827004.PNG")
+
+	defer func() {
+		if err := fi.Close(); err != nil {
+			panic(err)
+		}
+	}()*/
+
+	//fmt.Println("♬♬♬♬♬♬♬♬ fi : ", fi) //&{0xc000142500}
+	//fmt.Println("♬♬♬♬♬♬♬♬ type 확인 fi : ", reflect.TypeOf(fi)) //*os.File
+	//fmt.Println("♬♬♬♬♬♬♬♬ data2 : ", data2) // [137 80 78 71 13 10 ...
+	// fmt.Println("♬♬♬♬♬♬♬♬ type 확인 data2 : ", reflect.TypeOf(data2))
+
+
+	//v, _ := c.MultipartForm()
+	/*fmt.Println("vvvvvvvvvvvvv", v)
 	fmt.Println("Value", v.Value)
 	fmt.Println("v.File", v.File)
 	fmt.Println("File", v.File["file"])
 	fmt.Println("File[] fields", v.File["fields"])
 	fmt.Println("id", v.Value["id"])
-	fmt.Println("fields", v.Value["fields"])
-	fmt.Println("PostFormMap : ", c.PostFormMap("fields"))*/
+	fmt.Println("vvvvvvvvvvvvv type 확인 v.Value[id] : ", reflect.TypeOf(v.Value["id"]))*/
 
 
 /*	id, _ := c.FormValue("id")
@@ -521,9 +553,7 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 
 	// Upload the file to specific dst.
 	filename := filepath.Base(file.Filename)
-
 	uploadPath := ApiImage + filename
-
 	seed, _ := crand.Int(crand.Reader, big.NewInt(math.MaxInt64))
 	rand.Seed(seed.Int64())
 
@@ -543,32 +573,26 @@ func (h *Handler) UploadFileUser(c *gin.Context) {
 	/*_, header , _ := c.Request.FormFile("file")
 	out, _ := os.Open(header.Filename)*/
 
-/*	user := models.User{
-		Idx:              0,
-		UserId:           "UserId7",
-		Password:         "Password",
-		Name:             "Name",
-		IsCompanyAccount: false,
-		CompanyIdx:       0,
-		Email:            "Email",
-		AuthLevel:        0,
-		Tel:              "Tel",
-		HP:               "HP",
-		Zipcode:          "Zipcode",
-		Address:          "Address",
-		AddressDetail:    "AddressDetail",
-		Memo:             "Memo",
-		WorkScope:        "WorkScope",
-		Department:       "Department",
-		Position:         "Position",
-		EmailAuth:        false,
-		GroupEmailAuth:   false,
-		Avata:            filename,
-		AvataFile:        file,
-		LastAccessIp:     "127.0.0.1",
-	}
 
-	h.db.AddUser(user)*/
+	/*fmt.Println("◀◀◀◀◀◀◀◀◀◀ file.Filename : ", filename)
+	fmt.Println("◀◀◀◀◀◀◀◀◀◀ data : ", string(data))
+	fmt.Println("◀◀◀◀◀◀◀◀◀◀ data2  len: ", len(data2))*/
+
+	/*user := models.User{
+		UserId:           strings.Join(v.Value["id"], ""),
+		Avata:            filename,
+		AvataFile:        fileTestData,
+	}*/
+
+	//fmt.Println("UploadFileUser -> memo : ", user.Memo)
+	//h.db.AddUser(user)
+
+	//h.db.UpdateUserFile(user)
+
+	//updateUser, err := h.db.UpdateUserFile(user)
+	//jsn, err := json.Marshal(updateUser)
+	//fmt.Println("😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍😍")
+	//fmt.Printf("%v, ", string(jsn))
 
 	c.JSON(200, gin.H{
 		"status":    "posted",
