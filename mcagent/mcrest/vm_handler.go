@@ -182,3 +182,15 @@ func getVmAllHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, vm)
 }
+
+func addNetworkHandler(c *gin.Context) {
+	var msg mcmodel.MgoNetwork
+	c.ShouldBindJSON(&msg)
+	c.JSON(http.StatusOK, msg)
+}
+
+func deleteNetworkHandler(c *gin.Context) {
+	var msg mcmodel.MgoNetwork
+	c.ShouldBindJSON(&msg)
+	c.JSON(http.StatusOK, msg)
+}

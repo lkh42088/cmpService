@@ -166,3 +166,43 @@ func SendGetVmAll(server mcmodel.McServerDetail) bool {
 	fmt.Println("response: ", string(data))
 	return true
 }
+
+func SendAddNetwork(net mcmodel.McNetworks, server mcmodel.McServerDetail) bool {
+	pbytes, _ := json.Marshal(net)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8082%s%s",
+		server.IpAddr, lib.McUrlPrefix, lib.McUrlNetworkAdd)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
+func SendDeleteNetwork(net mcmodel.McNetworks, server mcmodel.McServerDetail) bool {
+	pbytes, _ := json.Marshal(net)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8082%s%s",
+		server.IpAddr, lib.McUrlPrefix, lib.McUrlNetworkDelete)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendDeleteVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendDeleteVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}

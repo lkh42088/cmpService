@@ -22,3 +22,5 @@ go get github.com/libvirt/libvirt-go
 go get github.com/libvirt/libvirt-go-xml
 go get github.com/digitalocean/go-libvirt
 go get github.com/go-xmlfmt/xmlfmt
+
+go get github.com/zquestz/ws-tcp-proxy

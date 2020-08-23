@@ -607,11 +607,11 @@ func (h *Handler) sendAuthMailold(c *gin.Context, id, email string) error {
 }
 
 func (h *Handler) Logout(c *gin.Context) {
+	//fmt.Println("User Logout....")
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:   "token",
 		MaxAge: -1,
-		//Secure:		true,
-		//SameSite:   http.SameSiteNoneMode,
+		//SameSite: http.SameSiteNoneMode,
 	})
 	c.JSON(http.StatusNoContent, gin.H{"success": true, "msg": "logged out in successfully"})
 }

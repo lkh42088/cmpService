@@ -9,4 +9,7 @@ const (
 	McUrlCreateVm         = McUrlVm + "/create"
 	McUrlDeleteVm         = McUrlVm + "/delete"
 	McUrlGetVmById        = McUrlVm + "/:id"
+	McUrlNetwork          = "/networks"
+	McUrlNetworkAdd       = McUrlNetwork + "/add"
+	McUrlNetworkDelete    = McUrlNetwork + "/delete"
 )

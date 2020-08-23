@@ -26,11 +26,14 @@ const (
 	SvcmgrApiMicroVmUnRegister   = SvcmgrApiMicroVm + "/unregister"
 	SvcmgrApiMicroVmUpdate       = SvcmgrApiMicroVm + "/update"
 	SvcmgrApiMicroVmUpdateFromMc = SvcmgrApiMicroVm + "/update-from-mc"
+	SvcmgrApiMicroVmVnc          = SvcmgrApiMicroVm + "/vnc"
 	SvcmgrApiMicroVmPaging       = SvcmgrApiMicro + "/vms-paging"
 	// /v1/micro/images
 	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
 	SvcmgrApiMicroImagePaging = SvcmgrApiMicro + "/images-paging"
 	// /v1/micro/networks
-	SvcmgrApiMicroNetwork       = SvcmgrApiMicro + "/networks"
-	SvcmgrApiMicroNetworkPaging = SvcmgrApiMicro + "/networks-paging"
+	SvcmgrApiMicroNetwork           = SvcmgrApiMicro + "/networks"
+	SvcmgrApiMicroNetworkRegister   = SvcmgrApiMicroNetwork + "/register"
+	SvcmgrApiMicroNetworkUnRegister = SvcmgrApiMicroNetwork + "/unregister"
+	SvcmgrApiMicroNetworkPaging     = SvcmgrApiMicro + "/networks-paging"
 )

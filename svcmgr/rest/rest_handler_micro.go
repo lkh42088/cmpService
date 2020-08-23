@@ -8,7 +8,9 @@ import (
 	"cmpService/svcmgr/config"
 	"cmpService/svcmgr/mcapi"
 	"fmt"
+	"github.com/evangwt/go-vncproxy"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/net/websocket"
 	"net/http"
 	"strconv"
 )
@@ -167,6 +169,31 @@ func (h *Handler) DeleteMcVm(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }
 
+func NewVNCProxy(targetAddr string) *vncproxy.Proxy {
+	return vncproxy.New(&vncproxy.Config{
+		LogLevel: vncproxy.DebugLevel,
+		TokenHandler: func(r *http.Request) (addr string, err error) {
+			// validate token and get forward vnc addr
+			// ...
+			addr = "192.168.0.73:5900"
+			//addr = target
+			return
+		},
+	})
+}
+
+func (h *Handler) GetMcVmVnc(c *gin.Context) {
+	target := c.Param("target")
+	port := c.Param("port")
+
+	addr := fmt.Sprintf("%s:%s", target, port)
+	fmt.Println("GetMcVmVnc:", addr)
+	vncProxy := NewVNCProxy(addr)
+
+	wh := websocket.Handler(vncProxy.ServeWS)
+	wh.ServeHTTP(c.Writer, c.Request)
+}
+
 func (h *Handler) GetMcVms(c *gin.Context) {
 	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
 	if err != nil {
@@ -241,6 +268,32 @@ func (h *Handler) GetMcImages(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	c.JSON(http.StatusOK, images)
+}
+
+func (h *Handler) AddMcNetwork(c *gin.Context) {
+	var msg mcmodel.McNetworks
+	c.Bind(&msg)
+	fmt.Println("AddMcNetwork:", msg)
+	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	if err != nil {
+		fmt.Println("AddMcNetwork: failed to get server - ", err)
+		return
+	}
+	mcapi.SendAddNetwork(msg, server)
+	c.JSON(http.StatusOK, msg)
+}
+
+func (h *Handler) DeleteMcNetwork(c *gin.Context) {
+	var msg mcmodel.McNetworks
+	c.Bind(&msg)
+	fmt.Println("DeleteMcNetwork:", msg)
+	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	if err != nil {
+		fmt.Println("AddMcNetwork: failed to get server - ", err)
+		return
+	}
+	mcapi.SendDeleteNetwork(msg, server)
+	c.JSON(http.StatusOK, msg)
 }
 
 func (h *Handler) GetMcNetworks(c *gin.Context) {

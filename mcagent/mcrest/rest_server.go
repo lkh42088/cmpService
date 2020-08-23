@@ -31,6 +31,8 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.POST(lib.McUrlDeleteVm, deleteVmHandler)
 	rg.GET(lib.McUrlGetVmById, getVmByIdHandler)
 	rg.GET(lib.McUrlVm, getVmAllHandler)
+	rg.POST(lib.McUrlNetworkAdd, addNetworkHandler)
+	rg.POST(lib.McUrlNetworkDelete, deleteNetworkHandler)
 
 	Router.Run(address)
 	if parentwg != nil {

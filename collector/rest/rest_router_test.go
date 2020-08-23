@@ -199,9 +199,85 @@ func ComputeHmac(message string, secret string) string {
 	return url.QueryEscape(message)
 }
 
+type SecurityGroup struct {
+	Data interface{}
+}
+
+type AffinityGroup struct {
+	Data interface{}
+}
+
+type Tags struct {
+	Tags string
+}
+
+type SecondaryIp struct {
+	Ip string
+}
+
+type Nic struct {
+	Id           string        `json:"id"`
+	NetworkId    string        `json:"networkid"`
+	NetworkName  string        `json:"networkname"`
+	Netmask      string        `json:"netmask"`
+	Gateway      string        `json:"gateway"`
+	IpAddress    string        `json:"ipaddress"`
+	IsolationUri string        `json:"isolationuri"`
+	BroadcastUri string        `json:"broadcasturi"`
+	TrafficType  string        `json:"traffictype"`
+	NicType      string        `json:"type"`
+	IsDefault    bool          `json:"isdefault"`
+	MacAddress   string        `json:"macaddress"`
+	SecondaryIp  []SecondaryIp `json:"secondaryip"`
+}
+
+type VirtualMachine struct {
+	Id                    string          `json:"id"`
+	Name                  string          `json:"name"`
+	DisplayName           string          `json:"displayname"`
+	Account               string          `json:"account"`
+	UserId                string          `json:"userid"`
+	Username              string          `json:"username"`
+	DomainId              string          `json:"domainid"`
+	Domain                string          `json:"domain"`
+	Created               string          `json:"created"`
+	State                 string          `json:"state"`
+	HaEnable              bool            `json:"haenable"`
+	ZoneId                string          `json:"zoneid"`
+	ZoneName              string          `json:"zonename"`
+	TemplateId            string          `json:"templateid"`
+	TemplateName          string          `json:"templatename"`
+	TemplateDisplayText   string          `json:"templatedisplaytext"`
+	PasswordEnabled       bool            `json:"passwordenabled"`
+	ServiceOfferingId     string          `json:"serviceofferingid"`
+	ServiceOfferingName   string          `json:"serviceofferingname"`
+	CpuNumber             int             `json:"cpunumber"`
+	CpuSpeed              int             `json:"cpuspeed"`
+	Memory                int             `json:"memory"`
+	GuestOsId             string          `json:"guestosid"`
+	RootDeviceId          int             `json:"rootdeviceid"`
+	RootDeviceType        string          `json:"rootdevicetype"`
+	SecurityGroup         []SecurityGroup `json:"securitygroup"`
+	Nic                   []Nic           `json:"nic"`
+	Hypervisor            string          `json:"hypervisor"`
+	AffinityGroup         []AffinityGroup `json:"affinitygroup"`
+	IsDynamicallyScalable bool            `json:"isdynamicallyscalable"`
+	OsTypeId              int             `json:"ostypeid"`
+	Tags                  []Tags          `json:"tags"`
+}
+
+type ListVirtualMachinesResponse struct {
+	VirtualMachine []VirtualMachine `json:"virtualmachine"`
+	Count          int              `json:"count"`
+}
+
+type ListVirtualMachine struct {
+	List ListVirtualMachinesResponse `json:"listvirtualmachinesresponse"`
+}
+
 func KtRestGet(ktURL string, command string) string {
 	// Add apiKey to command
-	tmpStr := command + "&response=xml"
+	tmpStr := command + "&response=json"
 	tmpStr = tmpStr + "&apiKey=" + apiKey
 
 	// command field Tolower() and sort()
@@ -222,10 +298,16 @@ func KtRestGet(ktURL string, command string) string {
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
+	//json.Unmarshal(data, resp.Body)
 	if err != nil {
 		fmt.Println("error:", err)
 		return ""
 	}
+
+	// data binding to struct
+	var list ListVirtualMachine
+	err = json.Unmarshal(data, &list)
+	fmt.Printf("%+v\n", list)
 
 	return string(data)
 }

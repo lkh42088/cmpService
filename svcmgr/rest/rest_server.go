@@ -89,10 +89,14 @@ type HandlerInterface interface {
 	GetMcVms(c *gin.Context)
 	AddMcVm(c *gin.Context)
 	DeleteMcVm(c *gin.Context)
+	GetMcVmVnc(c *gin.Context)
 
-	GetMcNetworks(c *gin.Context)
 	GetMcImages(c *gin.Context)
 	GetMcImagesByServerIdx(c *gin.Context)
+
+	AddMcNetwork(c *gin.Context)
+	DeleteMcNetwork(c *gin.Context)
+	GetMcNetworks(c *gin.Context)
 	GetMcNetworksByServerIdx(c *gin.Context)
 
 	UpdateMcVm(c *gin.Context)
@@ -232,10 +236,14 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroVmUnRegister, h.DeleteMcVm)
 	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam, h.GetMcVms)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
+	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
 
-	router.GET(lib.SvcmgrApiMicroNetworkPaging+pagingParam, h.GetMcNetworks)
 	router.GET(lib.SvcmgrApiMicroImagePaging+pagingParam, h.GetMcImages)
 	router.GET(lib.SvcmgrApiMicroImage+"/:serverIdx", h.GetMcImagesByServerIdx)
+
+	router.POST(lib.SvcmgrApiMicroNetworkRegister, h.AddMcNetwork)
+	router.POST(lib.SvcmgrApiMicroNetworkUnRegister, h.DeleteMcNetwork)
+	router.GET(lib.SvcmgrApiMicroNetworkPaging+pagingParam, h.GetMcNetworks)
 	router.GET(lib.SvcmgrApiMicroNetwork+"/:serverIdx", h.GetMcNetworksByServerIdx)
 
 	return router.Run(address)
