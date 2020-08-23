@@ -270,6 +270,32 @@ func (h *Handler) GetMcImages(c *gin.Context) {
 	c.JSON(http.StatusOK, images)
 }
 
+func (h *Handler) AddMcNetwork(c *gin.Context) {
+	var msg mcmodel.McNetworks
+	c.Bind(&msg)
+	fmt.Println("AddMcNetwork:", msg)
+	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	if err != nil {
+		fmt.Println("AddMcNetwork: failed to get server - ", err)
+		return
+	}
+	mcapi.SendAddNetwork(msg, server)
+	c.JSON(http.StatusOK, msg)
+}
+
+func (h *Handler) DeleteMcNetwork(c *gin.Context) {
+	var msg mcmodel.McNetworks
+	c.Bind(&msg)
+	fmt.Println("DeleteMcNetwork:", msg)
+	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	if err != nil {
+		fmt.Println("AddMcNetwork: failed to get server - ", err)
+		return
+	}
+	mcapi.SendDeleteNetwork(msg, server)
+	c.JSON(http.StatusOK, msg)
+}
+
 func (h *Handler) GetMcNetworks(c *gin.Context) {
 	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
 	if err != nil {
