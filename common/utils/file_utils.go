@@ -31,7 +31,7 @@ func GetQcowFileInFolder(dir string) (images []string) {
 		panic(err)
 	}
 	for _, file := range files {
-		fmt.Println(file)
+		//fmt.Println(file)
 		if strings.HasSuffix(file, ".qcow2") &&
 			strings.Contains(file, "G") {
 			images = append(images, file)

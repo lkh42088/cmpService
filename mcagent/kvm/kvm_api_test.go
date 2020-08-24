@@ -113,4 +113,3 @@ func TestLs(t *testing.T) {
 	env := os.Environ()
 	syscall.Exec(binary, args, env)
 }
-

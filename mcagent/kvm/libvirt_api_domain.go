@@ -20,14 +20,14 @@ func GetDomainListAll() (doms []libvirt.Domain, err error) {
 		fmt.Println("error2")
 		return doms, err
 	}
-	for index, dom := range doms {
-		name, _ := dom.GetName()
-		fmt.Println(index, ":", name)
-		info, _ := dom.GetInfo()
-		fmt.Println("info: ", info)
-		addr, _ := dom.ListAllInterfaceAddresses(0)
-		fmt.Println("addr: ", addr)
-	}
+	//for index, dom := range doms {
+	//	name, _ := dom.GetName()
+	//	fmt.Println(index, ":", name)
+	//	info, _ := dom.GetInfo()
+	//	fmt.Println("info: ", info)
+	//	addr, _ := dom.ListAllInterfaceAddresses(0)
+	//	fmt.Println("addr: ", addr)
+	//}
 	return doms, err
 }
 

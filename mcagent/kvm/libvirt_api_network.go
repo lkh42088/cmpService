@@ -20,11 +20,11 @@ func GetAllNetwork() (networks []libvirt.Network, err error) {
 		fmt.Println("error1")
 	}
 	networks, err = conn.ListAllNetworks(0)
-	for index, net := range networks {
-		name, _ := net.GetName()
-		bridge, _ := net.GetBridgeName()
-		fmt.Println(index, ": ", name, bridge)
-	}
+	//for index, net := range networks {
+	//	name, _ := net.GetName()
+	//	bridge, _ := net.GetBridgeName()
+	//	fmt.Println(index, ": ", name, bridge)
+	//}
 	return networks, err
 }
 

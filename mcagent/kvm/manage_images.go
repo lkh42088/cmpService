@@ -39,7 +39,7 @@ func GetImages() (list []mcmodel.MgoImage) {
 	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
 	for _, image := range images {
 		img := GetMgoImageByName(image[len(cfg.VmImageDir)+1:])
-		fmt.Printf("image: %v\n", img)
+		//fmt.Printf("image: %v\n", img)
 		list = append(list, img)
 	}
 	return list
