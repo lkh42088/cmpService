@@ -42,7 +42,7 @@ func checkValidation(msg mcmodel.MgoVm) bool {
 
 func GetMgoServer() (mcmodel.MgoServer, error) {
 	var server mcmodel.MgoServer
-	networks, err := kvm.GetNetworksFromXml()
+	networks, err := kvm.GetMgoNetworksFromXmlNetwork()
 	if err != nil {
 		return server, err
 	}
@@ -186,7 +186,7 @@ func getVmAllHandler(c *gin.Context) {
 func addNetworkHandler(c *gin.Context) {
 	var msg mcmodel.MgoNetwork
 	c.ShouldBindJSON(&msg)
-	kvm.CreateNetwork(msg)
+	kvm.CreateNetworkByMgoNetwork(msg)
 	c.JSON(http.StatusOK, msg)
 }
 

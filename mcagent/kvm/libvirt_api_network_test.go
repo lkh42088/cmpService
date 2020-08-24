@@ -68,8 +68,8 @@ func TestLibvirtXml(t *testing.T) {
 }
 
 func TestGetXmlDomain(t *testing.T) {
-	GetXmlDomain("win10-01")
-	//domcfg := GetXmlDomain("win10-bhjung")
+	GetXmlDomainByName("win10-01")
+	//domcfg := GetXmlDomainByName("win10-bhjung")
 	//output, _ := xml.Marshal(domcfg)
 	//DumpXml(string(output))
 }
@@ -79,7 +79,7 @@ func TestGetAllNetwork(t *testing.T) {
 }
 
 func TestGetDomain(t *testing.T) {
-	GetDomain()
+	GetDomainListAll()
 }
 
 func TestGetXmlNetwork(t *testing.T) {
@@ -87,7 +87,7 @@ func TestGetXmlNetwork(t *testing.T) {
 }
 
 func TestCreateXmlNetwork(t *testing.T) {
-	CreateXmlNetwork()
+	CreateXmlNetworkTestApi()
 }
 
 func TestDestroyNetwork(t *testing.T) {
