@@ -19,23 +19,6 @@ func CreateXrdpNat(vm mcmodel.MgoVm) {
 	// iptables-save
 }
 
-func CreateNetwork(vm mcmodel.MgoVm) {
-	// create virbr1.xml file
-	// virsh define virbr1.xml
-	// mapping a virtual bridge per physical interface
-	args := []string{
-		"start",
-		vm.Name,
-	}
-
-	fmt.Println("args: ", args)
-
-	binary := "virsh"
-	cmd := exec.Command(binary, args...)
-	output, _ := cmd.Output()
-	fmt.Println("output", string(output))
-}
-
 func GetIpAddressOfVm(vm mcmodel.MgoVm) (ip, mac string, res int) {
 	res = 0
 

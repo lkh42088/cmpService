@@ -186,11 +186,14 @@ func getVmAllHandler(c *gin.Context) {
 func addNetworkHandler(c *gin.Context) {
 	var msg mcmodel.MgoNetwork
 	c.ShouldBindJSON(&msg)
+	kvm.CreateNetwork(msg)
 	c.JSON(http.StatusOK, msg)
 }
 
 func deleteNetworkHandler(c *gin.Context) {
 	var msg mcmodel.MgoNetwork
 	c.ShouldBindJSON(&msg)
+
+	kvm.DeleteNetwork(msg.Name)
 	c.JSON(http.StatusOK, msg)
 }

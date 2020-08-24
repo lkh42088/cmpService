@@ -2,20 +2,25 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
+	"encoding/xml"
 	"fmt"
 	"github.com/go-xmlfmt/xmlfmt"
 	"github.com/libvirt/libvirt-go"
 	libvirtxml "github.com/libvirt/libvirt-go-xml"
+	"strconv"
+	"strings"
 )
 
 func GetXmlDomain(name string) *libvirtxml.Domain{
 	conn, err := libvirt.NewConnect("qemu:///system")
 	if err != nil {
 		fmt.Println("error1")
+		return nil
 	}
-	dom, err := conn.LookupDomainByName("win10-bhjung")
+	dom, err := conn.LookupDomainByName(name)
 	if err != nil {
 		fmt.Println("error2")
+		return nil
 	}
 	xmldoc, err :=dom.GetXMLDesc(0)
 	if err != nil {
@@ -35,10 +40,12 @@ func GetDomain() {
 	conn, err := libvirt.NewConnect("qemu:///system")
 	if err != nil {
 		fmt.Println("error1")
+		return
 	}
 	doms, err := conn.ListAllDomains(0)
 	if err != nil {
 		fmt.Println("error2")
+		return
 	}
 	for index, dom := range doms {
 		name, _ := dom.GetName()
@@ -82,6 +89,164 @@ func GetNetworksFromXml() (list []mcmodel.MgoNetwork, err error) {
 		list = append(list, entry)
 	}
 	return list, err
+}
+
+func MakeXmlNetwork(name, bridgeName, ipAddr, netmask string) *libvirtxml.Network {
+	netcfg := &libvirtxml.Network{}
+	// name
+	netcfg.Name = name
+
+	// forward
+	forward := &libvirtxml.NetworkForward{}
+	forward.Mode = "nat"
+	forwardNat := &libvirtxml.NetworkForwardNAT{}
+	natPort := &libvirtxml.NetworkForwardNATPort{
+		Start: 1024,
+		End: 65535,
+	}
+	forward.NAT = forwardNat
+	forwardNat.Ports = append(forwardNat.Ports, *natPort)
+	netcfg.Forward = forward
+
+	// bridge
+	bridge := &libvirtxml.NetworkBridge{}
+	bridge.Name = bridgeName
+	bridge.STP = "on"
+	bridge.Delay = "0"
+	netcfg.Bridge = bridge
+
+	// mac
+	// ip/dhcp
+	ip := &libvirtxml.NetworkIP{}
+	ip.Address = ipAddr
+	ip.Netmask = netmask
+	addrArray := strings.Split(ipAddr, ".")
+	lastNum, _ := strconv.Atoi(addrArray[3])
+	dhcp := &libvirtxml.NetworkDHCP{}
+	dhcpRange := &libvirtxml.NetworkDHCPRange{
+		Start: fmt.Sprintf("%s.%s.%s.%d",
+			addrArray[0],
+			addrArray[1],
+			addrArray[2],
+			lastNum + 1),
+		End: fmt.Sprintf("%s.%s.%s.254",
+			addrArray[0],
+			addrArray[1],
+			addrArray[2]),
+	}
+	fmt.Println(dhcpRange)
+	dhcp.Ranges = append(dhcp.Ranges, *dhcpRange)
+	ip.DHCP = dhcp
+	netcfg.IPs = append(netcfg.IPs, *ip)
+	return netcfg
+}
+
+func CreateNetwork(net mcmodel.MgoNetwork) {
+	conn, err := libvirt.NewConnect("qemu:///system")
+	if err != nil {
+		fmt.Println("error1")
+	}
+	netcfg := MakeXmlNetwork(net.Name, net.Bridge, net.Ip, net.Netmask)
+	output, _:= xml.MarshalIndent(netcfg, "  ", "    ")
+	fmt.Println(string(output))
+	res, err := conn.NetworkDefineXML(string(output))
+	resName, err := res.GetName()
+	fmt.Println("res: ", resName)
+	res.SetAutostart(true)
+	res.Create()
+}
+
+func CreateXmlNetwork() {
+	conn, err := libvirt.NewConnect("qemu:///system")
+	if err != nil {
+		fmt.Println("error1")
+	}
+
+	netcfg := &libvirtxml.Network{}
+	// name
+	netcfg.Name = "net11"
+
+	// forward
+	forward := &libvirtxml.NetworkForward{}
+	forward.Mode = "nat"
+	forwardNat := &libvirtxml.NetworkForwardNAT{}
+	natPort := &libvirtxml.NetworkForwardNATPort{
+		Start: 1024,
+		End: 65535,
+	}
+	forward.NAT = forwardNat
+	forwardNat.Ports = append(forwardNat.Ports, *natPort)
+	netcfg.Forward = forward
+
+	// bridge
+	bridge := &libvirtxml.NetworkBridge{}
+	bridge.Name = "virbr11"
+	bridge.STP = "on"
+	bridge.Delay = "0"
+	netcfg.Bridge = bridge
+
+	// mac
+	// ip/dhcp
+	ip := &libvirtxml.NetworkIP{}
+	ip.Address = "11.0.0.1"
+	ip.Netmask = "255.255.255.0"
+	dhcp := &libvirtxml.NetworkDHCP{}
+	dhcpRange := &libvirtxml.NetworkDHCPRange{
+		Start: "11.0.0.2",
+		End: "11.0.0.254",
+	}
+	dhcp.Ranges = append(dhcp.Ranges, *dhcpRange)
+	ip.DHCP = dhcp
+	netcfg.IPs = append(netcfg.IPs, *ip)
+
+	fmt.Println("netcfg:", netcfg)
+	output, _:= xml.MarshalIndent(netcfg, "  ", "    ")
+	//os.Stdout.Write(output)
+	fmt.Println(string(output))
+	res, err := conn.NetworkDefineXML(string(output))
+	resName, err := res.GetName()
+	fmt.Println("res: ", resName)
+	res.SetAutostart(true)
+	res.Create()
+}
+
+func GetNetworkByName(name string) (*libvirt.Network, error) {
+	conn, err := libvirt.NewConnect("qemu:///system")
+	if err != nil {
+		fmt.Println("error1")
+	}
+
+	return conn.LookupNetworkByName("net11")
+}
+
+func DeleteNetwork(name string) {
+	net, err := GetNetworkByName(name)
+	if err != nil {
+		return
+	}
+	net.Undefine()
+	net.Destroy()
+}
+
+func GetXmlNetworkByName() {
+	conn, err := libvirt.NewConnect("qemu:///system")
+	if err != nil {
+		fmt.Println("error1")
+	}
+
+	net, err := conn.LookupNetworkByName("net11")
+	name, _ := net.GetName()
+	fmt.Println(name, "------------")
+	xmlstr, _ := net.GetXMLDesc(0)
+	fmt.Println(xmlstr)
+	netcfg := &libvirtxml.Network{}
+	err = netcfg.Unmarshal(xmlstr)
+	fmt.Println("domain", netcfg.Domain)
+	fmt.Println("name", netcfg.Name)
+	fmt.Println("forward", netcfg.Forward.Mode)
+	res := net.Undefine()
+	res = net.Destroy()
+	fmt.Println(res)
 }
 
 func GetXmlNetwork() {
