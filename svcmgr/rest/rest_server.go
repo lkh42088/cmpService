@@ -100,8 +100,6 @@ type HandlerInterface interface {
 	GetMcNetworksByServerIdx(c *gin.Context)
 
 	UpdateMcVm(c *gin.Context)
-
-	GetClientIp(c *gin.Context)
 }
 
 type Handler struct {
@@ -247,9 +245,6 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroNetworkUnRegister, h.DeleteMcNetwork)
 	router.GET(lib.SvcmgrApiMicroNetworkPaging+pagingParam, h.GetMcNetworks)
 	router.GET(lib.SvcmgrApiMicroNetwork+"/:serverIdx", h.GetMcNetworksByServerIdx)
-
-	// Search Client Ip
-	router.GET(lib.SvcmgrApiPrefix+"/myip", GetClientIp)
 
 	return router.Run(address)
 }

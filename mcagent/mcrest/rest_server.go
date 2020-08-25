@@ -33,6 +33,8 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.GET(lib.McUrlVm, getVmAllHandler)
 	rg.POST(lib.McUrlNetworkAdd, addNetworkHandler)
 	rg.POST(lib.McUrlNetworkDelete, deleteNetworkHandler)
+	// Search Client Ip
+	rg.GET(lib.McUrlPublicIp, GetClientIp)
 
 	Router.Run(address)
 	if parentwg != nil {
