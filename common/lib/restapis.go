@@ -13,4 +13,5 @@ const (
 	McUrlNetworkAdd       = McUrlNetwork + "/add"
 	McUrlNetworkDelete    = McUrlNetwork + "/delete"
 	McUrlPublicIp		  = McUrlPrefix + "/myip"
+	McUrlVmInterfaceTraffic = McUrlVm + "/interface/traffic/:mac"
 )

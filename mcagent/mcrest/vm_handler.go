@@ -1,16 +1,21 @@
 package mcrest
 
 import (
+	"cmpService/collector/influx"
+	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcmongo"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"sync"
+	"time"
 )
 
 func checkValidation(msg mcmodel.MgoVm) bool {
@@ -217,4 +222,66 @@ func GetClientIp(c *gin.Context) {
 	}
 	//fmt.Println("response:", string(data))
 	c.JSON(http.StatusOK, string(data))
+}
+
+// Get VM Interface traffic
+type VmIfStat struct {
+	time          	time.Time
+	ifDescr       	string
+	ifPhysAddress 	string
+	ifInUcastPkts  	int64
+	ifOutUcastPkts	int64
+}
+var lastSelectTime sync.Map
+
+func GetVmInterfaceTrafficByMac(mac string) {
+	//mac := c.Param("mac")
+	dbname := "interface"
+	field := `"time","ifDescr"","ifPhysAddress","ifInUcastPkts","ifOutUcastPkts"`
+	where := fmt.Sprintf(`"ifPhysAddress"='%s' AND time > now() - %s`, mac, "3hour")
+	res := influx.GetMeasurementsWithCondition(dbname, field, where)
+
+	if res.Results[0].Series == nil ||
+		len(res.Results[0].Series[0].Values) == 0 {
+		lib.LogWarn("InfluxDB Response Error : No Data\n")
+		return
+	}
+
+	// Convert response data
+	v := res.Results[0].Series[0].Values
+	stat := make([]VmIfStat, len(v))
+	var timenano time.Time
+	id := v[0][1].(string)
+	for i, data := range v {
+		// select time check
+		timenano, _ = time.Parse(time.RFC3339, data[0].(string))
+		if tmp, ok := lastSelectTime.Load(id); ok != true {
+			if tmp.(time.Time).Sub(timenano) > 0 {
+				continue
+			}
+		}
+
+		// make struct
+		stat[i].time = timenano
+		stat[i].ifPhysAddress = mac
+		if err := MakeStructForStats(&stat[i], data); err != nil {
+			lib.LogWarn("Error : %s\n", err)
+			return
+		}
+
+		lastSelectTime.Store(id, timenano)
+	}
+
+}
+
+func MakeStructForStats(s *VmIfStat, data []interface{}) error {
+	for i := 0; i < len(data); i++ {
+		if data[i] == nil {
+			return fmt.Errorf("Data interface is nil.(%d)\n", i)
+		}
+	}
+	s.ifDescr = data[1].(string)
+	s.ifInUcastPkts, _ = data[2].(json.Number).Int64()
+	s.ifOutUcastPkts, _ = data[3].(json.Number).Int64()
+	return nil
 }
