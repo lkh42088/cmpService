@@ -39,11 +39,11 @@ func ConfigureMonitoring() bool {
 	return false
 }
 
-func (m *MonitorRoutine)Start(parentwg *sync.WaitGroup) {
+func (m *MonitorRoutine) StartByVirsh(parentwg *sync.WaitGroup) {
 	loop := 1
 	for {
-		InitVmList()
-		m.Run()
+		GetVmListByDb()
+		m.RunByVirsh()
 		time.Sleep(time.Duration(m.Interval * int(time.Second)))
 		fmt.Printf("%d. monitoring check(%ds)\n", loop, m.Interval)
 		loop += 1
@@ -53,7 +53,7 @@ func (m *MonitorRoutine)Start(parentwg *sync.WaitGroup) {
 	}
 }
 
-func (m *MonitorRoutine)Run() {
+func (m *MonitorRoutine) RunByVirsh() {
 
 	var wg sync.WaitGroup
 	wg.Add(len(McVms.List))
@@ -70,13 +70,13 @@ func (m *MonitorRoutine)Run() {
 			fmt.Printf("check vm: %s, %v\n", vm.Name, *vm)
 			// check if copy vm instance, skip
 
-			// check status
+			// check status: virsh
 			if UpdateVmStatus(vm) {
 				fmt.Println("Changed status!")
 				updated = true
 			}
 
-			// check mac/ip address
+			// check mac/ip address: virsh
 			if UpdateVmAddress(vm) {
 				cfg := config2.GetGlobalConfig()
 				fmt.Println("Changed Address!")

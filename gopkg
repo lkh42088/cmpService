@@ -18,9 +18,9 @@ go get github.com/TylerBrock/colorjson
 go get golang.org/x/crypto/bcrypt
 go get github.com/dgrijalva/jwt-go
 
-go get github.com/libvirt/libvirt-go
-go get github.com/libvirt/libvirt-go-xml
-go get github.com/digitalocean/go-libvirt
-go get github.com/go-xmlfmt/xmlfmt
+go get -t github.com/libvirt/libvirt-go
+go get -t github.com/libvirt/libvirt-go-xml
+go get -t github.com/digitalocean/go-libvirt
+go get -t github.com/go-xmlfmt/xmlfmt
 
 go get github.com/zquestz/ws-tcp-proxy

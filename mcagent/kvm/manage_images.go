@@ -11,9 +11,10 @@ import (
 
 func GetMgoImageByName (name string) mcmodel.MgoImage {
 	var image mcmodel.MgoImage
+	image.FullName = name
 	image.Name = name[:strings.LastIndexAny(name,".")]
 	list := strings.Split(name, "-")
-	fmt.Println(list)
+	//fmt.Println(list)
 	if list[0] == "windows10" {
 		image.Variant = "win10"
 	} else {

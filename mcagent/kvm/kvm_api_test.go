@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"testing"
 )
+
 //
 //func dumpVm() {
 //	conn, err := libvirt.NewConnect("qemu:///system")
@@ -36,28 +37,31 @@ import (
 //	dumpVm()
 //}
 
-func getData() (vm mcmodel.MgoVm, server mcmodel.McServerDetail){
+func getData() (vm mcmodel.MgoVm, server mcmodel.McServerDetail) {
 	vm = mcmodel.MgoVm{
 		Idx:         1,
 		McServerIdx: 1,
 		CompanyIdx:  1,
-		Name:        "win10-bhjung",
+		Name:        "win10-01",
 		Cpu:         4,
 		Ram:         8192,
-		Hdd:         100,
+		Hdd:         40,
 		OS:          "win10",
-		Image:       "windows10-100G",
+		Image:       "windows10-40G",
+		Network:     "default",
+		Filename:    "windows10-40G-0",
 	}
 	server = mcmodel.McServerDetail{
 		McServer: mcmodel.McServer{
-			Idx: 1,
-			IpAddr: "192.168.0.73",
+			Idx:    1,
+			IpAddr: "192.168.0.89",
 		},
 	}
 	return vm, server
 }
 
 func TestCreateVmInstance(t *testing.T) {
+	config.ApplyGlobalConfig("../etc/mcagent.conf")
 	vm, _ := getData()
 
 	fmt.Println("start...")
@@ -107,7 +111,7 @@ func TestGetVmFromLibvirt(t *testing.T) {
 }
 
 func TestLs(t *testing.T) {
-	binary, _:= exec.LookPath("ls")
+	binary, _ := exec.LookPath("ls")
 	args := []string{"-a", "-l", "-h"}
 	fmt.Println("args:", args)
 	env := os.Environ()
