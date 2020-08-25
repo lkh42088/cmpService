@@ -27,7 +27,7 @@ func Start (config string) {
 	go mcrest.Start(&wg)
 
 	// MonitorRoutine VMs
-	go MonitorR.Start(&wg)
+	go MonitorR.StartByVirsh(&wg)
 
 	go kvm.KvmR.Start(&wg)
 

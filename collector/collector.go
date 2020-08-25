@@ -24,16 +24,16 @@ func collect(configPath string) {
 	config.SetConfig(configPath)
 	snmpapi.InitConfig()
 
-	fmt.Println("Start ++")
+	fmt.Println("StartByVirsh ++")
 	wg.Add(4)
 
-	// Start restapi server
+	// StartByVirsh restapi server
 	go rest.Start(&wg)
 
-	// Start snmp collection
+	// StartByVirsh snmp collection
 	go snmpapi.Start(&wg)
 
-	// Start statistics
+	// StartByVirsh statistics
 	go statistics.Start(&wg)
 
 	// Store to influxdb

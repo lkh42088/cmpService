@@ -30,7 +30,7 @@ func SetMariaDBForLog() (db *mariadblayer.DBORM, err error) {
 }
 
 func AutoAddLog(log models.DeviceLog) error {
-	//lib.LogWarn("Start AutoAddLog().\n")
+	//lib.LogWarn("StartByVirsh AutoAddLog().\n")
 
 	go func() error {
 		db, _ := SetMariaDBForLog()
