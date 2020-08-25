@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -318,3 +319,25 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	// return that we have successfully uploaded our file!
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
+
+func GetClientIp(c *gin.Context) {
+	// search public ip
+	url := "https://domains.google.com/checkip"
+	
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Println("error 1: ", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	//fmt.Println("response:", string(data))
+	c.JSON(http.StatusOK, string(data))
+}
+
