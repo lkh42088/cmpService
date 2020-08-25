@@ -12,4 +12,5 @@ const (
 	McUrlNetwork          = "/networks"
 	McUrlNetworkAdd       = McUrlNetwork + "/add"
 	McUrlNetworkDelete    = McUrlNetwork + "/delete"
+	McUrlPublicIp		  = McUrlPrefix + "/myip"
 )
