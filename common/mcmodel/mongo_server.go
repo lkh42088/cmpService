@@ -113,6 +113,7 @@ type MgoServer struct {
 	Port     string        `json:"port"`
 	Mac      string        `json:"mac"`
 	Ip       string        `json:"ip"`
+	PublicIp string        `json:"publicIp"`
 	Vms      *[]MgoVm      `json:"vms"`
 	Networks *[]MgoNetwork `json:"networks"`
 	Images   *[]MgoImage   `json:"images"`
@@ -138,8 +139,11 @@ func (n *MgoServer) DumpSummary() {
 	if n.Images != nil {
 		imgCount = len(*n.Images)
 	}
-	fmt.Printf("server(%s:%s, %s), vm(%d), network(%d), image(%d)\n",
-		n.Ip, n.Port, n.Mac,
+	fmt.Printf("server(%s/%s, %s/%s), vm(%d), network(%d), image(%d)\n",
+		n.Ip,
+		n.PublicIp,
+		n.Port,
+		n.Mac,
 		vmCount, netCount, imgCount)
 }
 

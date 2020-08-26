@@ -194,6 +194,7 @@ func GetMcServerInfo() mcmodel.MgoServer {
 	server.Ip = config.GetGlobalConfig().ServerIp
 	server.Port = config.GetGlobalConfig().ServerPort
 	server.Mac = config.GetGlobalConfig().ServerMac
+	server.PublicIp = config.GetGlobalConfig().ServerPublicIp
 	server.Vms = &vmList
 	server.Networks = &netList
 	server.Images = &imgList

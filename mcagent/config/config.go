@@ -2,6 +2,7 @@ package config
 
 import (
 	"cmpService/common/config"
+	"cmpService/common/utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -22,6 +23,7 @@ type McAgentConfig struct {
 	ServerPort         string             `json:"server_port"`
 	ServerMac          string             `json:"server_mac"`
 	ServerIp           string             `json:"server_ip"`
+	ServerPublicIp     string             `json:"server_public_ip"`
 	ServerStatusRepo   string             `json:"server_status_repo"`
 	MonitoringInterval int                `json:"monitoring_interval"`
 	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
@@ -59,5 +61,7 @@ func ApplyGlobalConfig(file string) bool {
 		fmt.Println("ApplyGlobalConfig : err 2 ", err)
 		return false
 	}
+
+	globalConfig.ServerPublicIp = utils.GetMyPublicIp()
 	return true
 }

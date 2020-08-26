@@ -179,6 +179,18 @@ func getVmByIdHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, vm)
 }
 
+func getServerHandler(c *gin.Context) {
+	if kvm.LibvirtR == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "LibvirtR dose not exist!"})
+	}
+	server := kvm.LibvirtR.Old
+	if server == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "server dose not exist!"})
+	}
+
+	c.JSON(http.StatusOK, server)
+}
+
 func getVmAllHandler(c *gin.Context) {
 	// Get VMs from Mongodb
 	vm, err := mcmongo.McMongo.GetVmAll()
