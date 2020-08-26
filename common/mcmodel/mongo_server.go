@@ -20,6 +20,7 @@ type MgoVm struct {
 	Cpu           int    `json:"cpu"`
 	Ram           int    `json:"ram"`
 	Hdd           int    `json:"hdd"`
+	Desc          string `json:"desc"`
 	OS            string `json:"os"`       // OS: windows10
 	Image         string `json:"image"`    // Image: windows10-250
 	Filename      string `json:"filename"` // Filename: windows10-250-1.qcow2
@@ -44,21 +45,21 @@ func (v *MgoVm) Dump() string {
 
 func DumpVmList(list []MgoVm) {
 	pretty, _ := json.MarshalIndent(list, "", "  ")
-	fmt.Printf("------------------------------------------------------------\n");
+	fmt.Printf("------------------------------------------------------------\n")
 	fmt.Printf("VM List: %d\n", len(list))
 	fmt.Printf("%s\n", string(pretty))
 }
 
 func DumpNetworkList(list []MgoNetwork) {
 	pretty, _ := json.MarshalIndent(list, "", "  ")
-	fmt.Printf("------------------------------------------------------------\n");
+	fmt.Printf("------------------------------------------------------------\n")
 	fmt.Printf("Network List: %d\n", len(list))
 	fmt.Printf("%s\n", string(pretty))
 }
 
 func DumpImageList(list []MgoImage) {
 	pretty, _ := json.MarshalIndent(list, "", "  ")
-	fmt.Printf("------------------------------------------------------------\n");
+	fmt.Printf("------------------------------------------------------------\n")
 	fmt.Printf("image List: %d\n", len(list))
 	fmt.Printf("%s\n", string(pretty))
 }
@@ -110,12 +111,14 @@ func (n *MgoNetwork) Dump() string {
 }
 
 type MgoServer struct {
-	Port     string        `json:"port"`
-	Mac      string        `json:"mac"`
-	Ip       string        `json:"ip"`
-	Vms      *[]MgoVm      `json:"vms"`
-	Networks *[]MgoNetwork `json:"networks"`
-	Images   *[]MgoImage   `json:"images"`
+	SerialNumber string        `json:"serialNumber"`
+	Port         string        `json:"port"`
+	Mac          string        `json:"mac"`
+	Ip           string        `json:"ip"`
+	PublicIp     string        `json:"publicIp"`
+	Vms          *[]MgoVm      `json:"vms"`
+	Networks     *[]MgoNetwork `json:"networks"`
+	Images       *[]MgoImage   `json:"images"`
 }
 
 func (n *MgoServer) Dump() string {
@@ -138,8 +141,16 @@ func (n *MgoServer) DumpSummary() {
 	if n.Images != nil {
 		imgCount = len(*n.Images)
 	}
-	fmt.Printf("server(%s:%s, %s), vm(%d), network(%d), image(%d)\n",
-		n.Ip, n.Port, n.Mac,
+	if n.SerialNumber == "" {
+		fmt.Printf("SN(none), ")
+	} else {
+		fmt.Printf("SN(%s), ", n.SerialNumber)
+	}
+	fmt.Printf("server(%s/%s, %s/%s), vm(%d), network(%d), image(%d)\n",
+		n.Ip,
+		n.PublicIp,
+		n.Port,
+		n.Mac,
 		vmCount, netCount, imgCount)
 }
 

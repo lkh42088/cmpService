@@ -24,3 +24,5 @@ go get -t github.com/digitalocean/go-libvirt
 go get -t github.com/go-xmlfmt/xmlfmt
 
 go get -t github.com/zquestz/ws-tcp-proxy
+go get -t github.com/evangwt/go-vncproxy
+go get -t golang.org/x/net/websocket

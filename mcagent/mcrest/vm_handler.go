@@ -76,7 +76,8 @@ func registerServerHandler(c *gin.Context) {
 		return
 	}
 	fmt.Printf("registerServerHandler: %v\n", msg)
-	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx)
+	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx, true)
+	config.SetSerialNumber2GlobalConfig(msg.SerialNumber)
 
 	//server, _ := GetMgoServer()
 	server := kvm.GetMcServerInfo()
@@ -110,11 +111,11 @@ func addVmHandler(c *gin.Context) {
 	}
 
 	// Insert VM to Mongodb
-	_, err = mcmongo.McMongo.AddVm(&msg)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	//_, err = mcmongo.McMongo.AddVm(&msg)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
 
 	msg.CurrentStatus = "Ready"
 
@@ -127,7 +128,7 @@ func addVmHandler(c *gin.Context) {
 	msg.IsProcess = true
 
 	cfg := config.GetGlobalConfig()
-	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
+	//_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 
 	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
 	if ! utils.IsExistFile(filepath) {
@@ -137,6 +138,38 @@ func addVmHandler(c *gin.Context) {
 }
 
 func deleteVmHandler(c *gin.Context) {
+	var msg mcmodel.MgoVm
+	err := c.ShouldBindJSON(&msg)
+	fmt.Printf("deleteVmHandler: %v\n", msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	//vm, err := mcmongo.McMongo.GetVmById(int(msg.Idx))
+	vm := kvm.LibvirtR.GetVmByName(msg.Name)
+	if vm == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "The vm does not exist!"})
+		return
+	}
+
+	//err = mcmongo.McMongo.DeleteVm(int(msg.Idx))
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
+
+	// 1. Delete Vm instance
+	kvm.DeleteVm(*vm)
+
+	// 2. Delete Vm image
+	kvm.DeleteVmInstance(*vm)
+
+	fmt.Printf("deleteVmHandler: success\n")
+	c.JSON(http.StatusOK, msg)
+}
+
+func deleteVmHandlerOld(c *gin.Context) {
 	var msg mcmodel.MgoVm
 	err := c.ShouldBindJSON(&msg)
 	fmt.Printf("deleteVmHandler: %v\n", msg)
@@ -177,6 +210,18 @@ func getVmByIdHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, vm)
+}
+
+func getServerHandler(c *gin.Context) {
+	if kvm.LibvirtR == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "LibvirtR dose not exist!"})
+	}
+	server := kvm.LibvirtR.Old
+	if server == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "server dose not exist!"})
+	}
+
+	c.JSON(http.StatusOK, server)
 }
 
 func getVmAllHandler(c *gin.Context) {

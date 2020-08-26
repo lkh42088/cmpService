@@ -42,7 +42,7 @@ func ConfigureMonitoring() bool {
 func (m *MonitorRoutine) StartByVirsh(parentwg *sync.WaitGroup) {
 	loop := 1
 	for {
-		GetVmListByDb()
+		//GetVmListByDb()
 		m.RunByVirsh()
 		time.Sleep(time.Duration(m.Interval * int(time.Second)))
 		fmt.Printf("%d. monitoring check(%ds)\n", loop, m.Interval)
