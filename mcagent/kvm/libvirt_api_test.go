@@ -7,5 +7,16 @@ import (
 
 func TestGetMcVirtInfo(t *testing.T) {
 	config.ApplyGlobalConfig("../etc/mcagent.conf")
-	GetMcVirtInfo()
+	GetMcVirtInfoDebug()
+}
+
+func TestDumpMcVirtInfo(t *testing.T) {
+	config.ApplyGlobalConfig("../etc/mcagent.conf")
+	DumpMcVirtInfo()
+}
+
+func TestGetMcServerInfo(t *testing.T) {
+	config.ApplyGlobalConfig("../etc/mcagent.conf")
+	server := GetMcServerInfo()
+	server.Dump()
 }

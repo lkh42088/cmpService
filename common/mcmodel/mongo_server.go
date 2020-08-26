@@ -42,6 +42,27 @@ func (v *MgoVm) Dump() string {
 	return string(pretty)
 }
 
+func DumpVmList(list []MgoVm) {
+	pretty, _ := json.MarshalIndent(list, "", "  ")
+	fmt.Printf("------------------------------------------------------------\n");
+	fmt.Printf("VM List: %d\n", len(list))
+	fmt.Printf("%s\n", string(pretty))
+}
+
+func DumpNetworkList(list []MgoNetwork) {
+	pretty, _ := json.MarshalIndent(list, "", "  ")
+	fmt.Printf("------------------------------------------------------------\n");
+	fmt.Printf("Network List: %d\n", len(list))
+	fmt.Printf("%s\n", string(pretty))
+}
+
+func DumpImageList(list []MgoImage) {
+	pretty, _ := json.MarshalIndent(list, "", "  ")
+	fmt.Printf("------------------------------------------------------------\n");
+	fmt.Printf("image List: %d\n", len(list))
+	fmt.Printf("%s\n", string(pretty))
+}
+
 // flavor
 type MgoImage struct {
 	Id       uint   `json:"id"`
@@ -95,4 +116,34 @@ type MgoServer struct {
 	Vms      *[]MgoVm      `json:"vms"`
 	Networks *[]MgoNetwork `json:"networks"`
 	Images   *[]MgoImage   `json:"images"`
+}
+
+func (n *MgoServer) Dump() string {
+	pretty, _ := json.MarshalIndent(n, "", "  ")
+
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
+}
+
+func (n *MgoServer) DumpSummary() {
+	vmCount := 0
+	netCount := 0
+	imgCount := 0
+	if n.Vms != nil {
+		vmCount = len(*n.Vms)
+	}
+	if n.Networks != nil {
+		netCount = len(*n.Networks)
+	}
+	if n.Images != nil {
+		imgCount = len(*n.Images)
+	}
+	fmt.Printf("server(%s:%s, %s), vm(%d), network(%d), image(%d)\n",
+		n.Ip, n.Port, n.Mac,
+		vmCount, netCount, imgCount)
+}
+
+func (s *MgoServer) Compare(n MgoServer) bool {
+	isChanged := false
+	return isChanged
 }
