@@ -6,7 +6,7 @@ import (
 	"cmpService/common/mariadblayer"
 	"encoding/json"
 	"fmt"
-	client "github.com/influxdata/influxdb1-client"
+	client "github.com/influxdata/influxdb1-client/v2"
 	"io/ioutil"
 	"log"
 	"os"

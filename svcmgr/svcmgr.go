@@ -23,6 +23,9 @@ func main() {
 		fmt.Println("Main: ERROR - ", err)
 		return
 	}
+
+	config2.SetInfluxDB()
+
 	SetRestServer(db)
 }
 

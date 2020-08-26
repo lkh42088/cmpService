@@ -36,4 +36,6 @@ const (
 	SvcmgrApiMicroNetworkRegister   = SvcmgrApiMicroNetwork + "/register"
 	SvcmgrApiMicroNetworkUnRegister = SvcmgrApiMicroNetwork + "/unregister"
 	SvcmgrApiMicroNetworkPaging     = SvcmgrApiMicro + "/networks-paging"
+	SvcmgrApiMicroVmMonitor			= SvcmgrApiMicro + "/monitor"
+	SvcmgrApiMicroVmStats			= SvcmgrApiMicroVmMonitor + "/stats"
 )

@@ -37,9 +37,6 @@ func Start(parentwg *sync.WaitGroup) {
 	// Search Client Ip
 	rg.GET(lib.McUrlPublicIp, GetClientIp)
 
-	// Get Vm interface traffic
-	rg.GET(lib.McUrlVmInterfaceTraffic, GetVmInterfaceTrafficByMac)
-
 	Router.Run(address)
 	if parentwg != nil {
 		parentwg.Done()
