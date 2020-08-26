@@ -141,6 +141,11 @@ func (n *MgoServer) DumpSummary() {
 	if n.Images != nil {
 		imgCount = len(*n.Images)
 	}
+	if n.SerialNumber == "" {
+		fmt.Printf("SN(none), ")
+	} else {
+		fmt.Printf("SN(%s), ", n.SerialNumber)
+	}
 	fmt.Printf("server(%s/%s, %s/%s), vm(%d), network(%d), image(%d)\n",
 		n.Ip,
 		n.PublicIp,

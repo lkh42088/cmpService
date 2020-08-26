@@ -146,6 +146,38 @@ func deleteVmHandler(c *gin.Context) {
 		return
 	}
 
+	//vm, err := mcmongo.McMongo.GetVmById(int(msg.Idx))
+	vm := kvm.LibvirtR.GetVmByName(msg.Name)
+	if vm == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "The vm does not exist!"})
+		return
+	}
+
+	//err = mcmongo.McMongo.DeleteVm(int(msg.Idx))
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
+
+	// 1. Delete Vm instance
+	kvm.DeleteVm(*vm)
+
+	// 2. Delete Vm image
+	kvm.DeleteVmInstance(*vm)
+
+	fmt.Printf("deleteVmHandler: success\n")
+	c.JSON(http.StatusOK, msg)
+}
+
+func deleteVmHandlerOld(c *gin.Context) {
+	var msg mcmodel.MgoVm
+	err := c.ShouldBindJSON(&msg)
+	fmt.Printf("deleteVmHandler: %v\n", msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	vm, err := mcmongo.McMongo.GetVmById(int(msg.Idx))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

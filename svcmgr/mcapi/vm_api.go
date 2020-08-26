@@ -11,6 +11,97 @@ import (
 	"net/http"
 )
 
+func LookupImage(list *[]mcmodel.McImages, target mcmodel.McImages) *mcmodel.McImages{
+	if list == nil {
+		return nil
+	}
+	for _, obj := range *list {
+		if obj.Name == target.Name {
+			return &obj
+		}
+	}
+	return nil
+}
+
+func LookupNetwork(list *[]mcmodel.McNetworks, target mcmodel.McNetworks) *mcmodel.McNetworks{
+	if list == nil {
+		return nil
+	}
+	for _, obj := range *list {
+		if obj.Name == target.Name {
+			return &obj
+		}
+	}
+	return nil
+}
+
+func LookupVm(list *[]mcmodel.McVm, target mcmodel.McVm) *mcmodel.McVm {
+	if list == nil {
+		return nil
+	}
+	for _, obj := range *list {
+		if obj.Name == target.Name {
+			return &obj
+		}
+	}
+	return nil
+}
+
+func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerDetail) {
+	// Dao: Server
+	fmt.Println("recvMsg:", recvMsg.Mac)
+	s := server.McServer
+	s.Mac = recvMsg.Mac
+	s.Status = 1
+	s, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcServer(s)
+	if err != nil {
+		fmt.Println("UpdateMcServer: error - ", err)
+	}
+
+	// Dao: Images
+	fmt.Println("images:", recvMsg.Images)
+	if recvMsg.Images != nil {
+		imgList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcImagesByServerIdx(int(s.Idx))
+		for _, img := range *recvMsg.Images {
+			if LookupImage(&imgList, img) != nil {
+				continue
+			}
+			img.McServerIdx = int(s.Idx)
+			obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcImage(img)
+			fmt.Println("insert image: ", obj)
+		}
+	}
+
+	// Dao: Networks
+	fmt.Println("networks:", recvMsg.Networks)
+	if recvMsg.Networks != nil {
+		netList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcNetworksByServerIdx(int(s.Idx))
+		for _, net := range *recvMsg.Networks {
+			if LookupNetwork(&netList, net) != nil {
+				continue
+			}
+			net.Idx = 0
+			net.McServerIdx = int(s.Idx)
+			obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcNetwork(net)
+			fmt.Println("insert network: ", obj)
+		}
+	}
+
+	if recvMsg.Vms != nil {
+		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
+		for _, vm := range *recvMsg.Vms {
+			if LookupVm(&vmList, vm) != nil {
+				continue
+			}
+			vm.Idx = 0
+			vm.McServerIdx = int(s.Idx)
+			vm.CompanyIdx = s.CompanyIdx
+			obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcVm(vm)
+			fmt.Println("insert vm: ", obj)
+		}
+	}
+}
+
 func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	fmt.Printf("McServer : %v\n", server)
 	pbytes, _ := json.Marshal(server)
@@ -30,48 +121,11 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	}
 	fmt.Println("response: ", string(data))
 
+	/** process msg ***/
 	var mcserver mcmodel.McServerMsg
 	json.Unmarshal(data, &mcserver)
-	// Dao: Server
-	fmt.Println("mcserver:", mcserver.Mac)
-	s := server.McServer
-	s.Mac = mcserver.Mac
-	s.Status = 1
-	s, err = config.SvcmgrGlobalConfig.Mariadb.UpdateMcServer(s)
-	if err != nil {
-		fmt.Println("UpdateMcServer: error - ", err)
-	}
 
-	// Dao: Images
-	fmt.Println("images:", mcserver.Images)
-	if mcserver.Images != nil {
-		for _, img := range *mcserver.Images {
-			var image mcmodel.McImages
-			image.Name = img.Name
-			image.Hdd = img.Hdd
-			image.Variant = img.Variant
-			image.McServerIdx = int(s.Idx)
-			image, err = config.SvcmgrGlobalConfig.Mariadb.AddMcImage(image)
-			fmt.Println("insert image: ", image)
-		}
-	}
-
-	// Dao: Networks
-	fmt.Println("networks:", mcserver.Networks)
-	if mcserver.Networks != nil {
-		for _, net := range *mcserver.Networks {
-			var network mcmodel.McNetworks
-			network.Name = net.Name
-			network.Bridge = net.Bridge
-			network.Mode = net.Mode
-			network.Ip = net.Ip
-			network.Netmask= net.Netmask
-			network.Prefix = net.Prefix
-			network.McServerIdx = int(s.Idx)
-			network, err = config.SvcmgrGlobalConfig.Mariadb.AddMcNetwork(network)
-			fmt.Println("insert network: ", network)
-		}
-	}
+	/** process msg ***/
 
 	return true
 }

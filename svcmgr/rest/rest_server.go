@@ -85,6 +85,7 @@ type HandlerInterface interface {
 	AddMcServer(c *gin.Context)
 	DeleteMcServer(c *gin.Context)
 	GetMcServersByCpIdx(c *gin.Context)
+	UpdateMcServerResource(c *gin.Context)
 
 	GetMcVms(c *gin.Context)
 	AddMcVm(c *gin.Context)
@@ -245,6 +246,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroNetworkUnRegister, h.DeleteMcNetwork)
 	router.GET(lib.SvcmgrApiMicroNetworkPaging+pagingParam, h.GetMcNetworks)
 	router.GET(lib.SvcmgrApiMicroNetwork+"/:serverIdx", h.GetMcNetworksByServerIdx)
+
+	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
 	return router.Run(address)
 }

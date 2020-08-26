@@ -2,6 +2,8 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/mcagent/config"
+	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"sync"
 	"time"
@@ -13,6 +15,19 @@ type LibvirtResource struct {
 }
 
 var LibvirtR *LibvirtResource
+
+func (l *LibvirtResource) GetVmByName(name string) *mcmodel.MgoVm {
+	server := l.Old
+	if server == nil && server.Vms == nil {
+		return nil
+	}
+	for _, vm := range *server.Vms {
+		if vm.Name == name {
+			return &vm
+		}
+	}
+	return nil
+}
 
 func NewLibvirtResource(interval int) *LibvirtResource {
 	return &LibvirtResource{
@@ -51,7 +66,10 @@ func (l *LibvirtResource) Run() {
 		isChanged = true
 	}
 	if isChanged {
+		cfg := config.GetGlobalConfig()
+		svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
 		// Notify ...
 		fmt.Printf("Changed! --> Notify...\n")
+		svcmgrapi.SendUpdateServer2Svcmgr(*l.Old, svcmgrRestAddr)
 	}
 }

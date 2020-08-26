@@ -38,6 +38,20 @@ func (db *DBORM) GetMcServerByServerIdx(idx uint) (server mcmodel.McServerDetail
 	return server, err
 }
 
+func (db *DBORM) GetMcServerBySerialNumber(sn string) (server mcmodel.McServerDetail, err error) {
+	err = db.
+		Table("mc_server_tb").
+		Select("mc_server_tb.*, c.cp_name").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_server_tb.mc_cp_idx").
+		Where(mcmodel.McServer{SerialNumber: sn}).
+		Find(&server).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	return server, err
+}
+
 func (db *DBORM) GetMcServersByCpIdx(cpIdx int) (servers []mcmodel.McServerDetail, err error) {
 	err = db.
 		Table("mc_server_tb").
@@ -66,6 +80,12 @@ func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) 
 
 func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Delete(&obj).Error
+}
+
+func (db *DBORM) GetMcVmsByServerIdx(serverIdx int) (obj []mcmodel.McVm, err error) {
+	return obj, db.Table("mc_vm_tb").
+		Where(mcmodel.McVm{McServerIdx: serverIdx}).
+		Find(&obj).Error
 }
 
 func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error) {
