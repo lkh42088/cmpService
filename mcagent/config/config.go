@@ -12,6 +12,7 @@ const MAX_VM_COUNT = 10
 
 type McAgentConfig struct {
 	config.MongoDbConfig
+	config.InfluxDbConfig
 	McagentIp          string             `json:"mcagent_ip"`
 	McagentPort        string             `json:"mcagent_port"`
 	SvcmgrIp           string             `json:"svcmgr_ip"`

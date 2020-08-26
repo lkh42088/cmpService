@@ -2,6 +2,7 @@ package mcrest
 
 import (
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/mcinflux"
 	"testing"
 )
 
@@ -11,5 +12,7 @@ func TestGetMgoServer(t *testing.T) {
 }
 
 func TestGetVmInterfaceTrafficByMac(t *testing.T) {
-	GetVmInterfaceTrafficByMac("fe:54:00:d9:f7:6c")
+	config.ApplyGlobalConfig("../etc/mcagent.conf")
+	mcinflux.ConfigureInfluxDB()
+	//GetVmInterfaceTrafficByMac("fe:54:00:d9:f7:6c")
 }

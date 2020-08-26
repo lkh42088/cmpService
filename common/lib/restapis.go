@@ -3,6 +3,7 @@ package lib
 const (
 	McUrlPrefix           = "/api/v1"
 	McUrlServer           = "/server"
+	McUrlMon			  = "/mon"
 	McUrlRegisterServer   = McUrlServer + "/register"
 	McUrlUnRegisterServer = McUrlServer + "/unregister"
 	McUrlVm               = "/vms"
@@ -13,5 +14,5 @@ const (
 	McUrlNetworkAdd       = McUrlNetwork + "/add"
 	McUrlNetworkDelete    = McUrlNetwork + "/delete"
 	McUrlPublicIp		  = McUrlPrefix + "/myip"
-	McUrlVmInterfaceTraffic = McUrlVm + "/interface/traffic/:mac"
+	McUrlVmInterfaceTraffic = McUrlMon + "/interface/traffic/:mac"
 )

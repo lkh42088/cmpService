@@ -1,12 +1,12 @@
 package mcrest
 
 import (
-	"cmpService/collector/influx"
 	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mcmongo"
 	"encoding/json"
 	"fmt"
@@ -14,7 +14,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"sync"
 	"time"
 )
 
@@ -227,51 +226,49 @@ func GetClientIp(c *gin.Context) {
 // Get VM Interface traffic
 type VmIfStat struct {
 	time          	time.Time
+	hostname 		string
 	ifDescr       	string
 	ifPhysAddress 	string
-	ifInUcastPkts  	int64
-	ifOutUcastPkts	int64
+	ifInOctets  	int64
+	ifOutOctets		int64
 }
-var lastSelectTime sync.Map
 
-func GetVmInterfaceTrafficByMac(mac string) {
-	//mac := c.Param("mac")
+func GetVmInterfaceTrafficByMac(c *gin.Context) {
+	mac := c.Param("mac")
 	dbname := "interface"
-	field := `"time","ifDescr"","ifPhysAddress","ifInUcastPkts","ifOutUcastPkts"`
-	where := fmt.Sprintf(`"ifPhysAddress"='%s' AND time > now() - %s`, mac, "3hour")
-	res := influx.GetMeasurementsWithCondition(dbname, field, where)
+	field := `"time","hostname","ifDescr","ifPhysAddress","ifInOctets","ifOutOctets"`
+	where := fmt.Sprintf(`"ifPhysAddress"='%s' AND time > now() - %s`, mac, "3h")
+	res := mcinflux.GetMeasurementsWithCondition(dbname, field, where)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
 		lib.LogWarn("InfluxDB Response Error : No Data\n")
+		c.JSON(http.StatusInternalServerError, "No Data")
 		return
 	}
 
 	// Convert response data
 	v := res.Results[0].Series[0].Values
 	stat := make([]VmIfStat, len(v))
-	var timenano time.Time
-	id := v[0][1].(string)
+	var convTime time.Time
 	for i, data := range v {
 		// select time check
-		timenano, _ = time.Parse(time.RFC3339, data[0].(string))
-		if tmp, ok := lastSelectTime.Load(id); ok != true {
-			if tmp.(time.Time).Sub(timenano) > 0 {
-				continue
-			}
-		}
+		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 
 		// make struct
-		stat[i].time = timenano
+		stat[i].time = convTime
 		stat[i].ifPhysAddress = mac
 		if err := MakeStructForStats(&stat[i], data); err != nil {
 			lib.LogWarn("Error : %s\n", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 			return
 		}
-
-		lastSelectTime.Store(id, timenano)
 	}
 
+	deltaStats := MakeDeltaValues(stat)
+
+	fmt.Printf("VM STAT : %v\n", deltaStats)
+	c.JSON(http.StatusOK, deltaStats)
 }
 
 func MakeStructForStats(s *VmIfStat, data []interface{}) error {
@@ -280,8 +277,25 @@ func MakeStructForStats(s *VmIfStat, data []interface{}) error {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
 		}
 	}
-	s.ifDescr = data[1].(string)
-	s.ifInUcastPkts, _ = data[2].(json.Number).Int64()
-	s.ifOutUcastPkts, _ = data[3].(json.Number).Int64()
+	s.ifDescr = data[2].(string)
+	s.hostname = data[1].(string)
+	s.ifInOctets, _ = data[4].(json.Number).Int64()
+	s.ifOutOctets, _ = data[5].(json.Number).Int64()
 	return nil
 }
+
+func MakeDeltaValues(s []VmIfStat) []VmIfStat {
+	var result []VmIfStat
+	var idx = 0
+	for i := 0; i < len(s); i++ {
+		if i != 0 {
+			result[idx].time = s[i].time
+			result[idx].hostname = s[i].hostname
+			result[idx].ifPhysAddress = s[i].ifPhysAddress
+			result[idx].ifInOctets = s[i].ifInOctets - s[i-1].ifInOctets
+			result[idx].ifOutOctets = s[i].ifOutOctets - s[i-1].ifOutOctets
+		}
+	}
+	return result
+}
+

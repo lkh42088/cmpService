@@ -3,6 +3,7 @@ package agent
 import (
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mcmongo"
 	"cmpService/mcagent/mcrest"
 	"fmt"
@@ -38,6 +39,11 @@ func configure() bool {
 	// ConfigureMonitoring Mongo DB
 	if ! mcmongo.Configure() {
 		fmt.Println("Failed to configure mongodb!")
+		return false
+	}
+
+	if !mcinflux.ConfigureInfluxDB() {
+		fmt.Println("Failed to configure influxdb!")
 		return false
 	}
 
