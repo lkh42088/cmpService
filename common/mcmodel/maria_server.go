@@ -2,6 +2,8 @@ package mcmodel
 
 import (
 	"cmpService/common/models"
+	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -52,8 +54,10 @@ type McServer struct {
 	Type         string `gorm:"type:varchar(50);column:mc_type;comment:'서버 타입'" json:"type"`
 	Status       int    `gorm:"type:int(11);column:mc_status;comment:'서버 상태'" json:"status"`
 	VmCount      int    `gorm:"type:int(11);column:mc_vm_count;comment:'vm 개수'" json:"vmCount"`
-	IpAddr       string `gorm:"type:varchar(50);column:mc_ip_addr;comment:'IP Address'" json:"ipAddr"`
+	Port         string `gorm:"type:varchar(50);column:mc_port;comment:'Port'" json:"port"`
 	Mac          string `gorm:"type:varchar(50);column:mc_mac;comment:'Mac Address'" json:"mac"`
+	IpAddr       string `gorm:"type:varchar(50);column:mc_ip_addr;comment:'IP Address'" json:"ip"`
+	PublicIpAddr string `gorm:"type:varchar(50);column:mc_public_ip_addr;comment:'Public IP Address'" json:"publicIp"`
 }
 
 func (McServer) TableName() string {
@@ -225,6 +229,7 @@ type McVm struct {
 	Cpu           int    `gorm:"type:int(11);column:vm_cpu;comment:'vm cpu'" json:"cpu"`
 	Ram           int    `gorm:"type:int(11);column:vm_ram;comment:'vm ram'" json:"ram"`
 	Hdd           int    `gorm:"type:int(11);column:vm_hdd;comment:'vm hdd'" json:"hdd"`
+	Desc          string `gorm:"type:varchar(100);column:vm_desc;comment:'vm description'" json:"desc"`
 	OS            string `gorm:"type:varchar(50);column:vm_os;comment:'vm os'" json:"os"`
 	Image         string `gorm:"type:varchar(50);column:vm_image;comment:'vm image'" json:"image"`
 	Filename      string `gorm:"type:varchar(50);column:vm_filename;comment:'vm image'" json:"filename"`
@@ -261,4 +266,21 @@ func (m McVmPage) GetOrderBy(orderby, order string) string {
 		order = "desc"
 	}
 	return val + " " + order
+}
+
+type McServerMsg struct {
+	SerialNumber string `json:"serialNumber"`
+	Port         string `json:"port"`
+	Mac          string `json:"mac"`
+	IpAddr       string `json:"ip"`
+	PublicIpAddr string `json:"publicIp"`
+	Vms          *[]McVm
+	Networks     *[]McNetworks
+	Images       *[]McImages
+}
+
+func (s *McServerMsg) Dump() string {
+	pretty, _ := json.MarshalIndent(s, "", "  ")
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
 }

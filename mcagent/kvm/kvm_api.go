@@ -149,6 +149,8 @@ func CreateVmInstance(vm mcmodel.MgoVm) {
 		"--memory",
 		RamStr,
 		cpuStr,
+		"--description",
+		"jungbh_test_desc",
 		"--cpu",
 		"host-passthrough",
 		"--os-type",

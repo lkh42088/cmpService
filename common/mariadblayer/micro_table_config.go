@@ -15,10 +15,17 @@ func CreateMicroCloudTable(db *gorm.DB) {
 		db.AutoMigrate(&mcmodel.McImages{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McImages{})
 	}
+
 	if db.HasTable(&mcmodel.McNetworks{}) == false {
 		db.AutoMigrate(&mcmodel.McNetworks{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McNetworks{})
 	}
+
+	if db.HasTable(&mcmodel.McNetHost{}) == false {
+		db.AutoMigrate(&mcmodel.McNetHost{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McNetHost{})
+	}
+
 	if db.HasTable(&mcmodel.McVm{}) == false {
 		db.AutoMigrate(&mcmodel.McVm{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McVm{})
@@ -36,6 +43,10 @@ func DropMicroCloudTable(db *gorm.DB) {
 
 	if db.HasTable(&mcmodel.McNetworks{}) {
 		db.DropTable(&mcmodel.McNetworks{})
+	}
+
+	if db.HasTable(&mcmodel.McNetHost{}) {
+		db.DropTable(&mcmodel.McNetHost{})
 	}
 
 	if db.HasTable(&mcmodel.McVm{}) {

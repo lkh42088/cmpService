@@ -30,6 +30,71 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	}
 	fmt.Println("response: ", string(data))
 
+	var mcserver mcmodel.McServerMsg
+	json.Unmarshal(data, &mcserver)
+	// Dao: Server
+	fmt.Println("mcserver:", mcserver.Mac)
+	s := server.McServer
+	s.Mac = mcserver.Mac
+	s.Status = 1
+	s, err = config.SvcmgrGlobalConfig.Mariadb.UpdateMcServer(s)
+	if err != nil {
+		fmt.Println("UpdateMcServer: error - ", err)
+	}
+
+	// Dao: Images
+	fmt.Println("images:", mcserver.Images)
+	if mcserver.Images != nil {
+		for _, img := range *mcserver.Images {
+			var image mcmodel.McImages
+			image.Name = img.Name
+			image.Hdd = img.Hdd
+			image.Variant = img.Variant
+			image.McServerIdx = int(s.Idx)
+			image, err = config.SvcmgrGlobalConfig.Mariadb.AddMcImage(image)
+			fmt.Println("insert image: ", image)
+		}
+	}
+
+	// Dao: Networks
+	fmt.Println("networks:", mcserver.Networks)
+	if mcserver.Networks != nil {
+		for _, net := range *mcserver.Networks {
+			var network mcmodel.McNetworks
+			network.Name = net.Name
+			network.Bridge = net.Bridge
+			network.Mode = net.Mode
+			network.Ip = net.Ip
+			network.Netmask= net.Netmask
+			network.Prefix = net.Prefix
+			network.McServerIdx = int(s.Idx)
+			network, err = config.SvcmgrGlobalConfig.Mariadb.AddMcNetwork(network)
+			fmt.Println("insert network: ", network)
+		}
+	}
+
+	return true
+}
+
+func SendMcRegisterServerOld(server mcmodel.McServerDetail) bool {
+	fmt.Printf("McServer : %v\n", server)
+	pbytes, _ := json.Marshal(server)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlRegisterServer)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+
 	var mcserver mcmodel.MgoServer
 	json.Unmarshal(data, &mcserver)
 	// Dao: Server
@@ -147,6 +212,30 @@ func SendGetVmById(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 		return false
 	}
 	fmt.Println("response: ", string(data))
+	return true
+}
+
+func SendGetMcServer(server mcmodel.McServerDetail) bool {
+	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlMonServer)
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Println("SendGetMcServerAll: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendGetMcServerAll: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	var serv mcmodel.McServerMsg
+	err = json.Unmarshal(data, &serv)
+	if err != nil {
+		fmt.Println("SendGetMcServerAll: error 3 ", err)
+		return false
+	}
+	serv.Dump()
 	return true
 }
 

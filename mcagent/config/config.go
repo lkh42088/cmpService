@@ -26,6 +26,7 @@ type McAgentConfig struct {
 	ServerPublicIp     string             `json:"server_public_ip"`
 	ServerStatusRepo   string             `json:"server_status_repo"`
 	MonitoringInterval int                `json:"monitoring_interval"`
+	SerialNumber       string             `json:"-"`
 	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
 }
 
@@ -33,6 +34,10 @@ var globalConfig McAgentConfig
 
 func GetGlobalConfig() McAgentConfig {
 	return globalConfig
+}
+
+func SetSerialNumber2GlobalConfig(sn string) {
+	globalConfig.SerialNumber = sn
 }
 
 func SetGlobalConfigByVmNumber(index, value uint) {

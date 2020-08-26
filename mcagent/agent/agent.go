@@ -67,7 +67,8 @@ func configure() bool {
 	//}
 
 	//ConfigureVmList()
-	//kvm.ConfigureKvmRoutine()
+
+	kvm.ConfigureKvmRoutine()
 
 	kvm.ConfigureLibvirtResource()
 

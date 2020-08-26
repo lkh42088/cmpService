@@ -48,12 +48,21 @@ func GetServerStatus() *McServerStatus {
 	return &serverStatus
 }
 
-func WriteServerStatus(sn, cpName string, cpIdx int) {
+func GetSerialNumber() string {
+	cfg := GetGlobalConfig()
+	if cfg.SerialNumber == "" {
+		serverStatus := GetServerStatus()
+		SetSerialNumber2GlobalConfig(serverStatus.SerialNumber)
+	}
+	return GetGlobalConfig().SerialNumber
+}
+
+func WriteServerStatus(sn, cpName string, cpIdx int, isEnable bool) {
 	cfg := GetGlobalConfig()
 	serverStatus.CompanyName = cpName
 	serverStatus.CompanyIdx = cpIdx
 	serverStatus.SerialNumber = sn
-	serverStatus.Enable = true
+	serverStatus.Enable = isEnable
 	lib.WriteJsonFile(cfg.ServerStatusRepo, &serverStatus)
 }
 

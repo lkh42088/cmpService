@@ -76,7 +76,8 @@ func registerServerHandler(c *gin.Context) {
 		return
 	}
 	fmt.Printf("registerServerHandler: %v\n", msg)
-	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx)
+	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx, true)
+	config.SetSerialNumber2GlobalConfig(msg.SerialNumber)
 
 	//server, _ := GetMgoServer()
 	server := kvm.GetMcServerInfo()
@@ -110,11 +111,11 @@ func addVmHandler(c *gin.Context) {
 	}
 
 	// Insert VM to Mongodb
-	_, err = mcmongo.McMongo.AddVm(&msg)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	//_, err = mcmongo.McMongo.AddVm(&msg)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	//	return
+	//}
 
 	msg.CurrentStatus = "Ready"
 
@@ -127,7 +128,7 @@ func addVmHandler(c *gin.Context) {
 	msg.IsProcess = true
 
 	cfg := config.GetGlobalConfig()
-	_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
+	//_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
 
 	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
 	if ! utils.IsExistFile(filepath) {

@@ -191,6 +191,7 @@ func GetMcServerInfo() mcmodel.MgoServer {
 	netList := GetMgoNetworkByLibvirt()
 	imgList := GetImages()
 
+	server.SerialNumber = config.GetSerialNumber()
 	server.Ip = config.GetGlobalConfig().ServerIp
 	server.Port = config.GetGlobalConfig().ServerPort
 	server.Mac = config.GetGlobalConfig().ServerMac

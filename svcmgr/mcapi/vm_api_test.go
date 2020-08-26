@@ -23,7 +23,7 @@ func getData() (vm mcmodel.McVm, server mcmodel.McServerDetail){
 			SerialNumber: "NB_SN_001",
 			CompanyIdx: 191,
 			Type: "Standard",
-			IpAddr: "192.168.0.73",
+			IpAddr: "192.168.0.89",
 		},
 		CompanyName: "Nubes-Bridge",
 	}
@@ -43,6 +43,11 @@ func TestSendDeleteVm(t*testing.T) {
 func TestSendGetVmById(t*testing.T) {
 	vm, server := getData()
 	SendGetVmById(vm, server)
+}
+
+func TestSendGetServer(t*testing.T) {
+	_, server := getData()
+	SendGetMcServer(server)
 }
 
 func TestSendGetVmAll(t*testing.T) {
