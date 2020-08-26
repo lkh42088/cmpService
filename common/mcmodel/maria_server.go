@@ -93,15 +93,28 @@ var McNetworkJsonMap = map[string]string{
 	"prefix":    "net_prefix",
 }
 
+type McNetHost struct {
+	Idx          uint   `gorm:"primary_key;column:nh_idx" json:"idx"`
+	McNetworkIdx int    `gorm:"type:int(11);column:nh_net_idx" json:"networkIdx"`
+	Mac          string `gorm:"type:varchar(50);column:nh_mac" json:"mac"`
+	Ip           string `gorm:"type:varchar(50);column:nh_ip" json:"ip"`
+	Hostname     string `gorm:"type:varchar(50);column:nh_hostname" json:"hostname"`
+}
+
+func (McNetHost) TableName() string {
+	return "mc_net_host"
+}
+
 type McNetworks struct {
-	Idx         uint   `gorm:"primary_key;column:net_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
-	McServerIdx int    `gorm:"type:int(11);column:net_server_idx;comment:'서버 고유값'" json:"serverIdx"`
-	Name        string `gorm:"type:varchar(50);column:net_name;comment:'network 이름'" json:"name"`
-	Bridge      string `gorm:"type:varchar(50);column:net_bridge;comment:'bridge name'" json:"bridge"`
-	Mode        string `gorm:"type:varchar(50);column:net_mode;comment:'forward mode'" json:"mode"`
-	Ip          string `gorm:"type:varchar(50);column:net_ip;comment:'ip address'" json:"ip"`
-	Netmask     string `gorm:"type:varchar(50);column:net_netmask;comment:'netmask'" json:"netmask"`
-	Prefix      uint   `gorm:"type:int(11);column:net_prefix;comment:'prefix'" json:"prefix"`
+	Idx         uint         `gorm:"primary_key;column:net_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
+	McServerIdx int          `gorm:"type:int(11);column:net_server_idx;comment:'서버 고유값'" json:"serverIdx"`
+	Name        string       `gorm:"type:varchar(50);column:net_name;comment:'network 이름'" json:"name"`
+	Bridge      string       `gorm:"type:varchar(50);column:net_bridge;comment:'bridge name'" json:"bridge"`
+	Mode        string       `gorm:"type:varchar(50);column:net_mode;comment:'forward mode'" json:"mode"`
+	Ip          string       `gorm:"type:varchar(50);column:net_ip;comment:'ip address'" json:"ip"`
+	Netmask     string       `gorm:"type:varchar(50);column:net_netmask;comment:'netmask'" json:"netmask"`
+	Prefix      uint         `gorm:"type:int(11);column:net_prefix;comment:'prefix'" json:"prefix"`
+	Host        *[]McNetHost `gorm:"-" json:"host"`
 }
 
 func (McNetworks) TableName() string {

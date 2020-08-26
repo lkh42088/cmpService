@@ -31,6 +31,7 @@ func InitKvmR() {
 		}
 	}
 }
+
 func NewKvmRoutine(interval int) *KvmRoutine {
 	return &KvmRoutine{
 		Interval: interval,
@@ -100,3 +101,11 @@ func (k *KvmRoutine) Run() {
 	}
 	wg.Wait()
 }
+
+func (k *KvmRoutine) RunGetLibvirtInfo() {
+	vmList, netList, imgList := GetMcVirtInfo()
+	mcmodel.DumpVmList(vmList)
+	mcmodel.DumpNetworkList(netList)
+	mcmodel.DumpImageList(imgList)
+}
+

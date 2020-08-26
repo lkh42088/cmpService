@@ -78,7 +78,8 @@ func registerServerHandler(c *gin.Context) {
 	fmt.Printf("registerServerHandler: %v\n", msg)
 	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx)
 
-	server, _ := GetMgoServer()
+	//server, _ := GetMgoServer()
+	server := kvm.GetMcServerInfo()
 	c.JSON(http.StatusOK, server)
 }
 
