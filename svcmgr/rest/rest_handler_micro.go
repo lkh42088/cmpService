@@ -36,7 +36,11 @@ func (h *Handler) UpdateMcServerResource(c *gin.Context) {
 	var msg mcmodel.McServerMsg
 	c.Bind(&msg)
 
-	server, _ := h.db.GetMcServerBySerialNumber(msg.SerialNumber)
+	server, err := h.db.GetMcServerBySerialNumber(msg.SerialNumber)
+	if err != nil && server.Idx == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	mcapi.ApplyMcServerResource(msg, server)
 	c.JSON(http.StatusOK, msg)
 }
