@@ -166,14 +166,18 @@ func (h *Handler) DeleteMcVm(c *gin.Context) {
 	fmt.Println("UnRegister Message: ", msg)
 	for _, idx := range msg.IdxList {
 		var vm mcmodel.McVm
-		vm.Idx = uint(idx)
-		vm, err := h.db.DeleteMcVm(vm)
+		vm, err := h.db.GetMcVmByIdx(uint(idx))
 		if err != nil {
 			continue
 		}
 		// send to mcagent
 		server, err := h.db.GetMcServerByServerIdx(uint(vm.McServerIdx))
+		if err != nil {
+			fmt.Println("DeleteMcVm: error", err)
+		}
 		mcapi.SendDeleteVm(vm, server)
+
+		h.db.DeleteMcVm(vm)
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
 }

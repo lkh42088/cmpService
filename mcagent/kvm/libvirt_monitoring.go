@@ -60,7 +60,8 @@ func (l *LibvirtResource) Run() {
 
 	isChanged := false
 	if l.Old != nil {
-		isChanged = l.Old.Compare(server)
+		isChanged = l.Old.Compare(&server)
+		l.Old = &server
 	} else {
 		l.Old = &server
 		isChanged = true
