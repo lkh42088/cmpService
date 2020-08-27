@@ -14,7 +14,7 @@ import (
 
 // Get VM Interface traffic
 type VmIfStat struct {
-	Time          	string		`json:"time"`
+	Time          	time.Time	`json:"time"`
 	Hostname 		string		`json:"hostname"`
 	IfDescr       	string		`json:"ifDescr"`
 	IfPhysAddress 	string		`json:"ifPhysAddress"`
@@ -24,6 +24,21 @@ type VmIfStat struct {
 
 type VmIfStatistics struct {
 	Stats 			[]VmIfStat	`json:"stats"`
+}
+
+type Stats struct {
+	Xaxis 			string		`json:"x"`
+	Yaxis			int64		`json:"y"`
+}
+
+type VmStatsSet struct {
+	Id				string		`json:"id"`
+	Data			[]Stats		`json:"data"`
+}
+
+type VmStatseRsponse struct {
+	Hostname 		string			`json:"hostname"`
+	Stats 			[2]VmStatsSet	`json:"stats"`
 }
 
 func GetVmInterfaceTrafficByMac(c *gin.Context) {
@@ -49,7 +64,7 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 
 		// make struct
-		stat[i].Time = convTime.String()
+		stat[i].Time = convTime
 		stat[i].IfPhysAddress = mac
 		if err := MakeStructForStats(&stat[i], data); err != nil {
 			lib.LogWarn("Error : %s\n", err)
@@ -76,10 +91,16 @@ func MakeStructForStats(s *VmIfStat, data []interface{}) error {
 	return nil
 }
 
-func MakeDeltaValues(s []VmIfStat) VmIfStatistics {
+func MakeDeltaValues(s []VmIfStat) VmStatseRsponse {
 	//delta := make([]VmIfStat, len(s))
 	var delta VmIfStatistics
 	var result VmIfStat
+	var response VmStatseRsponse
+	var unit Stats
+
+	response.Stats[0].Id = "RX"
+	response.Stats[1].Id = "TX"
+
 	for i := 0; i < len(s); i++ {
 		if i == 0 {
 			continue
@@ -92,8 +113,16 @@ func MakeDeltaValues(s []VmIfStat) VmIfStatistics {
 		result.IfInOctets = s[i].IfInOctets - s[i-1].IfInOctets
 		result.IfOutOctets = s[i].IfOutOctets - s[i-1].IfOutOctets
 		delta.Stats = append(delta.Stats, result)
+
+		// Make response data set
+		unit.Xaxis = result.Time.Format("01:02:03")
+		unit.Yaxis = result.IfInOctets
+		response.Stats[0].Data = append(response.Stats[0].Data, unit)
+		unit.Yaxis = result.IfOutOctets
+		response.Stats[1].Data = append(response.Stats[1].Data, unit)
 	}
-	return delta
+	response.Hostname = result.IfDescr
+	return response
 }
 
 
