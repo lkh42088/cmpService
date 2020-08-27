@@ -23,6 +23,7 @@ func GetFileListInFolder(dir string) (files []string) {
 
 func GetQcowFileInFolder(dir string) (images []string) {
 	var files []string
+	//fmt.Printf("%s\n", dir)
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		files = append(files, path)
 		return nil
@@ -31,7 +32,7 @@ func GetQcowFileInFolder(dir string) (images []string) {
 		panic(err)
 	}
 	for _, file := range files {
-		fmt.Println(file)
+		//fmt.Printf("file: %s\n", file)
 		if strings.HasSuffix(file, ".qcow2") &&
 			strings.Contains(file, "G") {
 			images = append(images, file)

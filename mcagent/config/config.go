@@ -2,6 +2,7 @@ package config
 
 import (
 	"cmpService/common/config"
+	"cmpService/common/utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +13,7 @@ const MAX_VM_COUNT = 10
 
 type McAgentConfig struct {
 	config.MongoDbConfig
+	config.InfluxDbConfig
 	McagentIp          string             `json:"mcagent_ip"`
 	McagentPort        string             `json:"mcagent_port"`
 	SvcmgrIp           string             `json:"svcmgr_ip"`
@@ -21,8 +23,11 @@ type McAgentConfig struct {
 	ServerPort         string             `json:"server_port"`
 	ServerMac          string             `json:"server_mac"`
 	ServerIp           string             `json:"server_ip"`
+	ServerPublicIp     string             `json:"server_public_ip"`
 	ServerStatusRepo   string             `json:"server_status_repo"`
 	MonitoringInterval int                `json:"monitoring_interval"`
+	DnatBasePortNum    int                `json:"dnat_base_port_num"`
+	SerialNumber       string             `json:"-"`
 	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
 }
 
@@ -30,6 +35,10 @@ var globalConfig McAgentConfig
 
 func GetGlobalConfig() McAgentConfig {
 	return globalConfig
+}
+
+func SetSerialNumber2GlobalConfig(sn string) {
+	globalConfig.SerialNumber = sn
 }
 
 func SetGlobalConfigByVmNumber(index, value uint) {
@@ -58,5 +67,12 @@ func ApplyGlobalConfig(file string) bool {
 		fmt.Println("ApplyGlobalConfig : err 2 ", err)
 		return false
 	}
+
+	// Default Number
+	if globalConfig.DnatBasePortNum == 0 {
+		globalConfig.DnatBasePortNum = 17000
+	}
+
+	globalConfig.ServerPublicIp = utils.GetMyPublicIp()
 	return true
 }

@@ -26,7 +26,7 @@ func ConfigureVmList() {
 	SetVmList(n)
 }
 
-func InitVmList() {
+func GetVmListByDb() {
 	for _, vm := range McVms.List {
 		delete(McVms.List, vm.Idx)
 	}

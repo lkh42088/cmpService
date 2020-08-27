@@ -17,7 +17,7 @@ type KvmRoutine struct {
 
 var KvmR *KvmRoutine
 
-func InitKvmR() {
+func InitKvmRByDb() {
 	for _, vm := range KvmR.Vms {
 		delete(KvmR.Vms, vm.Idx)
 	}
@@ -31,6 +31,7 @@ func InitKvmR() {
 		}
 	}
 }
+
 func NewKvmRoutine(interval int) *KvmRoutine {
 	return &KvmRoutine{
 		Interval: interval,
@@ -59,7 +60,7 @@ func (k *KvmRoutine) Start(parentwg *sync.WaitGroup) {
 
 func (k *KvmRoutine) Run() {
 
-	//InitKvmR()
+	//InitKvmRByDb()
 
 	if len(k.Vms) == 0 {
 		return
@@ -83,16 +84,18 @@ func (k *KvmRoutine) Run() {
 			vm.CurrentStatus = "coping image"
 			vm.IsProcess = false
 
-			mcmongo.McMongo.UpdateVmByInternal(vm)
+			//mcmongo.McMongo.UpdateVmByInternal(vm)
 			fmt.Println("KvmRoutine: copy image - ", vm)
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
 			CopyVmInstance(vm)
+
 			// 2. Create vm
 			CreateVmInstance(*vm)
 			vm.CurrentStatus = "created vm"
 			vm.IsCreated = true
 			fmt.Println("KvmRoutine: create vm- ", vm)
-			mcmongo.McMongo.UpdateVmByInternal(vm)
+			//mcmongo.McMongo.UpdateVmByInternal(vm)
+
 			// 3. Notify svcmgr
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
 
@@ -100,3 +103,11 @@ func (k *KvmRoutine) Run() {
 	}
 	wg.Wait()
 }
+
+func (k *KvmRoutine) RunGetLibvirtInfo() {
+	vmList, netList, imgList := GetMcVirtInfo()
+	mcmodel.DumpVmList(vmList)
+	mcmodel.DumpNetworkList(netList)
+	mcmodel.DumpImageList(imgList)
+}
+

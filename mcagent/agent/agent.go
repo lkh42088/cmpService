@@ -3,7 +3,7 @@ package agent
 import (
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
-	"cmpService/mcagent/mcmongo"
+	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mcrest"
 	"fmt"
 	"sync"
@@ -27,28 +27,50 @@ func Start (config string) {
 	go mcrest.Start(&wg)
 
 	// MonitorRoutine VMs
-	go MonitorR.Start(&wg)
+	if MonitorR != nil {
+		go MonitorR.StartByVirsh(&wg)
+	} else {
+		wg.Done()
+	}
 
-	go kvm.KvmR.Start(&wg)
+	if kvm.KvmR != nil {
+		go kvm.KvmR.Start(&wg)
+	} else {
+		wg.Done()
+	}
+
+	if kvm.LibvirtR != nil {
+		go kvm.LibvirtR.Start(&wg)
+	} else {
+		wg.Done()
+	}
 
 	wg.Wait()
 }
 
 func configure() bool {
 	// ConfigureMonitoring Mongo DB
-	if ! mcmongo.Configure() {
-		fmt.Println("Failed to configure mongodb!")
+	//if ! mcmongo.Configure() {
+	//	fmt.Println("Failed to configure mongodb!")
+	//	return false
+	//}
+
+	if !mcinflux.ConfigureInfluxDB() {
+		fmt.Println("Failed to configure influxdb!")
 		return false
 	}
 
 	// ConfigureMonitoring MonitorRoutine
-	if ! ConfigureMonitoring() {
-		fmt.Println("Failed to configure agent!")
-		return false
-	}
+	//if ! ConfigureMonitoring() {
+	//	fmt.Println("Failed to configure agent!")
+	//	return false
+	//}
 
-	ConfigureVmList()
+	//ConfigureVmList()
+
 	kvm.ConfigureKvmRoutine()
+
+	kvm.ConfigureLibvirtResource()
 
 	return true
 }

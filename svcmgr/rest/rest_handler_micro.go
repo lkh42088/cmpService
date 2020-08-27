@@ -32,6 +32,15 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
+func (h *Handler) UpdateMcServerResource(c *gin.Context) {
+	var msg mcmodel.McServerMsg
+	c.Bind(&msg)
+
+	server, _ := h.db.GetMcServerBySerialNumber(msg.SerialNumber)
+	mcapi.ApplyMcServerResource(msg, server)
+	c.JSON(http.StatusOK, msg)
+}
+
 func DeleteMcImagesByServerIdx(idx int) {
 	images , _ := config.SvcmgrGlobalConfig.Mariadb.GetMcImagesByServerIdx(idx)
 	fmt.Println("DeleteMcImage: images ", images)
@@ -143,7 +152,7 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 
 	fmt.Printf("Add McVm : %v\n", msg)
 
-	msg, err := h.db.UpdateMcVmFromMc(msg)
+	msg, err := h.db.UpdateMcVm(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

@@ -11,9 +11,10 @@ import (
 
 func GetMgoImageByName (name string) mcmodel.MgoImage {
 	var image mcmodel.MgoImage
+	image.FullName = name
 	image.Name = name[:strings.LastIndexAny(name,".")]
 	list := strings.Split(name, "-")
-	fmt.Println(list)
+	//fmt.Println(list)
 	if list[0] == "windows10" {
 		image.Variant = "win10"
 	} else {
@@ -39,7 +40,7 @@ func GetImages() (list []mcmodel.MgoImage) {
 	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
 	for _, image := range images {
 		img := GetMgoImageByName(image[len(cfg.VmImageDir)+1:])
-		fmt.Printf("image: %v\n", img)
+		//fmt.Printf("image: %v\n", img)
 		list = append(list, img)
 	}
 	return list

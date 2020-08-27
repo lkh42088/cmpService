@@ -2,121 +2,373 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/mcagent/config"
 	"fmt"
-	"github.com/go-xmlfmt/xmlfmt"
 	"github.com/libvirt/libvirt-go"
 	libvirtxml "github.com/libvirt/libvirt-go-xml"
+	"strconv"
+	"strings"
 )
 
-func GetXmlDomain(name string) *libvirtxml.Domain{
-	conn, err := libvirt.NewConnect("qemu:///system")
-	if err != nil {
-		fmt.Println("error1")
+func ConvertVmStatus(status libvirt.DomainState) string {
+	var res string
+	switch status {
+	case libvirt.DOMAIN_NOSTATE:
+		res = "no status"
+	case libvirt.DOMAIN_RUNNING:
+		res = "running"
+	case libvirt.DOMAIN_SHUTDOWN:
+		res = "shutdown"
+	case libvirt.DOMAIN_BLOCKED:
+		res = "blocked"
+	case libvirt.DOMAIN_PAUSED:
+		res = "paused"
+	case libvirt.DOMAIN_CRASHED:
+		res = "crashed"
+	case libvirt.DOMAIN_PMSUSPENDED:
+		res = "pm suspended"
+	case libvirt.DOMAIN_SHUTOFF:
+		res = "shutoff"
+	default:
+		res = "unknown"
 	}
-	dom, err := conn.LookupDomainByName("win10-bhjung")
-	if err != nil {
-		fmt.Println("error2")
-	}
-	xmldoc, err :=dom.GetXMLDesc(0)
-	if err != nil {
-		fmt.Println("error3")
-	}
-	fmt.Println("xml:", xmldoc)
-
-	domcfg := &libvirtxml.Domain{}
-	err = domcfg.Unmarshal(xmldoc)
-	if err != nil {
-		fmt.Println("error4")
-	}
-	return domcfg
+	return res
 }
 
-func GetDomain() {
-	conn, err := libvirt.NewConnect("qemu:///system")
-	if err != nil {
-		fmt.Println("error1")
+func ConvertImageFile2MgoVM(vm *mcmodel.MgoVm, file string) {
+	// /opt/vm_instances/windows10-40G-0.qcow2
+	vm.FullPath = file
+	arr := strings.Split(file, "/")
+	name := arr[3]
+	//fmt.Printf("%s\n", arr)
+	//fmt.Printf("%s\n", arr[3])
+	vm.Filename = name[:strings.LastIndexAny(name,".")]
+	list := strings.Split(name, "-")
+	if list[0] == "windows10" {
+		vm.OS = "win10"
+	} else {
+		vm.OS= "ubuntu18"
 	}
-	doms, err := conn.ListAllDomains(0)
-	if err != nil {
-		fmt.Println("error2")
-	}
-	for index, dom := range doms {
-		name, _ := dom.GetName()
-		fmt.Println(index, ":", name)
-		info, _ := dom.GetInfo()
-		fmt.Println("info: ", info)
-		addr, _ := dom.ListAllInterfaceAddresses(0)
-		fmt.Println("addr: ", addr)
-	}
+	vm.VmIndex, _ = strconv.Atoi(list[1])
+	vm.Image = fmt.Sprintf("%s-%s", list[0], list[1])
+	vm.Hdd, _ = strconv.Atoi(list[1][:strings.LastIndexAny(list[1],"G")])
 }
 
-func GetNetworksFromXml() (list []mcmodel.MgoNetwork, err error) {
-	conn, err := libvirt.NewConnect("qemu:///system")
-	if err != nil {
-		fmt.Println("error1")
-	}
-	networks, err := conn.ListAllNetworks(0)
-	for index, net := range networks {
-		var entry mcmodel.MgoNetwork
-		name, _ := net.GetName()
-		fmt.Println(index, ": ", name, "------------")
-		xmlstr, _ := net.GetXMLDesc(0)
-		//fmt.Println(index, ": ", xmlstr)
-		netcfg := &libvirtxml.Network{}
-		err = netcfg.Unmarshal(xmlstr)
-		fmt.Println("domain", netcfg.Domain)
-		fmt.Println("name", netcfg.Name)
-		fmt.Println("forward", netcfg.Forward.Mode)
-		entry.Name = netcfg.Name
-		entry.Mode = netcfg.Forward.Mode
-		entry.Uuid = netcfg.UUID
-		entry.Bridge = netcfg.Bridge.Name
-		for index, Ip := range netcfg.IPs {
-			if index == 0 {
-				entry.Ip = Ip.Address
-				entry.Netmask = Ip.Netmask
-				entry.Prefix = Ip.Prefix
-				break
+func DumpMcVirtInfo() {
+	vmList, netList, imgList := GetMcVirtInfo()
+	mcmodel.DumpVmList(vmList)
+	mcmodel.DumpNetworkList(netList)
+	mcmodel.DumpImageList(imgList)
+}
+
+func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
+	// Get Vms Domains
+	doms, err := GetDomainListAll()
+	if err == nil {
+		for _, dom := range doms {
+			// vm name
+			var vm mcmodel.MgoVm
+			name, _ := dom.GetName()
+
+			vm.Name = name
+			//****************************************************************
+			xmlstr, _ := dom.GetXMLDesc(0)
+			domcfg := &libvirtxml.Domain{}
+			err = domcfg.Unmarshal(xmlstr)
+			if domcfg.VCPU != nil {
+				vcpu := domcfg.VCPU.Value
+				vm.Cpu = int(vcpu)
 			}
+			if domcfg.Memory != nil {
+				vm.Ram = int(domcfg.Memory.Value / 1024)
+			}
+			if domcfg.Devices != nil {
+				devices := domcfg.Devices
+				for _, disk := range devices.Disks {
+					if disk.Source != nil && disk.Source.File != nil {
+						ConvertImageFile2MgoVM(&vm, disk.Source.File.File)
+					}
+				}
+				interfaces := domcfg.Devices.Interfaces
+				for _, intf := range interfaces {
+					if intf.Source != nil {
+						vm.Network = intf.Source.Network.Network
+					}
+					if intf.MAC != nil {
+						vm.Mac = intf.MAC.Address
+					}
+					//for _, ip := range intf.IP {
+					//	fmt.Printf("%s\n", ip.Address)
+					//}
+				}
+			}
+			//****************************************************************
+			// os type
+			//ostype, _ := dom.GetOSType()
+
+			// status
+			status, _, _ := dom.GetState()
+			vm.CurrentStatus = ConvertVmStatus(status)
+
+			// ip address
+			domifs, _ := dom.ListAllInterfaceAddresses(0)
+			for _, intf := range domifs {
+				//fmt.Printf("   intf%d: %s, %s", i, intf.Name, intf.Hwaddr)
+				for _, ip := range intf.Addrs {
+					//fmt.Printf(", %s", ip.Addr)
+					vm.IpAddr = ip.Addr
+				}
+			}
+			cfg := config.GetGlobalConfig()
+			vm.RemoteAddr = fmt.Sprintf("%s:%d",
+				cfg.ServerIp,
+				cfg.DnatBasePortNum + vm.VmIndex)
+			config.SetGlobalConfigByVmNumber(uint(vm.VmIndex), 1)
+			//fmt.Printf("\n")
+			vm.IsCreated = true
+			vmList = append(vmList, vm)
 		}
-		list = append(list, entry)
 	}
-	return list, err
+
+	return vmList
 }
 
-func GetXmlNetwork() {
-	conn, err := libvirt.NewConnect("qemu:///system")
-	if err != nil {
-		fmt.Println("error1")
+func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
+
+	// Get Networks
+	nets, err := GetAllNetwork()
+	if err == nil {
+		for _, net := range nets {
+			var network mcmodel.MgoNetwork
+			name, _ := net.GetName()
+			network.Name = name
+			bridge, _ := net.GetBridgeName()
+			network.Bridge = bridge
+
+			xmlstr, _ := net.GetXMLDesc(0)
+			netcfg := &libvirtxml.Network{}
+			err = netcfg.Unmarshal(xmlstr)
+			mode := netcfg.Forward.Mode
+			network.Mode = mode
+			if netcfg.MAC != nil {
+				mac := netcfg.MAC.Address
+				network.Mac = mac
+			}
+			network.Uuid = netcfg.UUID
+			for _, Ip := range netcfg.IPs {
+				netIp := Ip.Address
+				netNetmask := Ip.Netmask
+				network.Ip = netIp
+				network.Netmask = netNetmask
+				network.Prefix = Ip.Prefix
+				if Ip.DHCP != nil {
+					netDhcp := Ip.DHCP
+					for _, dhcprange := range netDhcp.Ranges {
+						//fmt.Printf("   range %d: %s, %s\n", j, dhcprange.Start, dhcprange.End)
+						network.DhcpStart = dhcprange.Start
+						network.DhcpEnd = dhcprange.End
+					}
+					//for _, host := range netDhcp.Hosts {
+					//	fmt.Printf("   host: %s, %s, %s, %s", host.ID, host.MAC, host.Name, host.IP)
+					//}
+				}
+			}
+			dhcps, _ := net.GetDHCPLeases()
+			for _, dhcp := range dhcps {
+				//fmt.Printf("   dhcp %d: %s, %s, %s, %s\n",
+				//	i, dhcp.Iface, dhcp.Mac, dhcp.IPaddr, dhcp.Hostname)
+				var host mcmodel.MgoNetworkHost
+				host.Mac = dhcp.Mac
+				host.Ip = dhcp.IPaddr
+				host.Hostname = dhcp.Hostname
+				network.Host = append(network.Host, host)
+			}
+			//network.Dump()
+			netList = append(netList, network)
+		}
 	}
-	networks, err := conn.ListAllNetworks(0)
-	for index, net := range networks {
-		name, _ := net.GetName()
-		fmt.Println(index, ": ", name, "------------")
-		xmlstr, _ := net.GetXMLDesc(0)
-		fmt.Println(index, ": ", xmlstr)
-		netcfg := &libvirtxml.Network{}
-		err = netcfg.Unmarshal(xmlstr)
-		fmt.Println("domain", netcfg.Domain)
-		fmt.Println("name", netcfg.Name)
-		fmt.Println("forward", netcfg.Forward.Mode)
-	}
+
+	return netList
 }
 
-func GetAllNetwork() {
-	conn, err := libvirt.NewConnect("qemu:///system")
-	if err != nil {
-		fmt.Println("error1")
-	}
-	networks, err := conn.ListAllNetworks(0)
-	for index, net := range networks {
-		name, _ := net.GetName()
-		bridge, _ := net.GetBridgeName()
-		fmt.Println(index, ": ", name, bridge)
-	}
+func GetMcServerInfo() mcmodel.MgoServer {
+	var server mcmodel.MgoServer
+	vmList := GetMgoVmByLibvirt()
+	netList := GetMgoNetworkByLibvirt()
+	imgList := GetImages()
+
+	server.SerialNumber = config.GetSerialNumber()
+	server.Ip = config.GetGlobalConfig().ServerIp
+	server.Port = config.GetGlobalConfig().ServerPort
+	server.Mac = config.GetGlobalConfig().ServerMac
+	server.PublicIp = config.GetGlobalConfig().ServerPublicIp
+	server.Vms = &vmList
+	server.Networks = &netList
+	server.Images = &imgList
+	return server
 }
 
-func DumpXml(output string) {
-	x := xmlfmt.FormatXML(output, "\t", "  ")
-	print(x)
+func GetMcVirtInfo() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork, imgList []mcmodel.MgoImage) {
+	vmList = GetMgoVmByLibvirt()
+	netList = GetMgoNetworkByLibvirt()
+	imgList = GetImages()
+	return  vmList, netList, imgList
+}
+
+func GetMcVirtInfoDebug() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork, imgList []mcmodel.MgoImage) {
+	// Get Vms Domains
+	doms, err := GetDomainListAll()
+	if err == nil {
+		fmt.Println("--------------------------------")
+		fmt.Println("VMs")
+		for index, dom := range doms {
+			// vm name
+			var vm mcmodel.MgoVm
+			name, _ := dom.GetName()
+			fmt.Printf("%d. %s\n", index, name)
+
+			vm.Name = name
+			//****************************************************************
+			xmlstr, _ := dom.GetXMLDesc(0)
+			domcfg := &libvirtxml.Domain{}
+			err = domcfg.Unmarshal(xmlstr)
+			if domcfg.VCPU != nil {
+				vcpu := domcfg.VCPU.Value
+				fmt.Printf("   cpu: %d, %s\n", vcpu,
+					domcfg.VCPU.Placement)
+				vm.Cpu = int(vcpu)
+			}
+			if domcfg.Memory != nil {
+				fmt.Printf("   memory: %d\n", domcfg.Memory.Value/1024)
+				vm.Ram = int(domcfg.Memory.Value / 1024)
+			}
+			if domcfg.Devices != nil {
+				devices := domcfg.Devices
+				for _, disk := range devices.Disks {
+					if disk.Source != nil && disk.Source.File != nil {
+						fmt.Printf("   device: source file %s\n", disk.Source.File.File)
+						ConvertImageFile2MgoVM(&vm, disk.Source.File.File)
+					}
+				}
+				interfaces := domcfg.Devices.Interfaces
+				for _, intf := range interfaces {
+					fmt.Printf("   network: ")
+					if intf.Source != nil {
+						fmt.Printf("%s, %s",
+							intf.Source.Network.Network,
+							intf.Source.Network.Bridge)
+						vm.Network = intf.Source.Network.Network
+					}
+					if intf.MAC != nil {
+						fmt.Printf(", %s", intf.MAC.Address)
+						vm.Mac = intf.MAC.Address
+					}
+					for _, ip := range intf.IP {
+						fmt.Printf("%s", ip.Address)
+					}
+					fmt.Printf("\n")
+				}
+			}
+			fmt.Printf("   Filename: %s\n", vm.Filename)
+			fmt.Printf("   Image: %s\n", vm.Image)
+			fmt.Printf("   OS: %s\n", vm.OS)
+			fmt.Printf("   hdd: %d\n", vm.Hdd)
+			//****************************************************************
+			// os type
+			ostype, _ := dom.GetOSType()
+			fmt.Printf("   os: %s\n", ostype)
+
+			// status
+			status, _, _ := dom.GetState()
+			fmt.Printf("   status: %s\n", ConvertVmStatus(status))
+			vm.CurrentStatus = ConvertVmStatus(status)
+
+			// ip address
+			domifs, _ := dom.ListAllInterfaceAddresses(0)
+			for i, intf := range domifs {
+				fmt.Printf("   intf%d: %s, %s", i, intf.Name, intf.Hwaddr)
+				for _, ip := range intf.Addrs {
+					fmt.Printf(", %s", ip.Addr)
+					vm.IpAddr = ip.Addr
+				}
+			}
+			fmt.Printf("\n")
+			vm.IsCreated = true
+			vm.Dump()
+			vmList = append(vmList, vm)
+		}
+	}
+
+	// Get Networks
+	nets, err := GetAllNetwork()
+	if err == nil {
+		fmt.Println("--------------------------------")
+		fmt.Println("Networks")
+		for index, net := range nets {
+			var network mcmodel.MgoNetwork
+			name, _ := net.GetName()
+			fmt.Printf("%d. %s\n", index, name)
+			network.Name = name
+			bridge, _ := net.GetBridgeName()
+			fmt.Printf("   bridge: %s\n", bridge)
+			network.Bridge = bridge
+
+			xmlstr, _ := net.GetXMLDesc(0)
+			//fmt.Println(index, ": ", xmlstr)
+			netcfg := &libvirtxml.Network{}
+			err = netcfg.Unmarshal(xmlstr)
+			mode := netcfg.Forward.Mode
+			network.Mode = mode
+			if netcfg.MAC != nil {
+				mac := netcfg.MAC.Address
+				fmt.Printf("   mac: %s\n", mac)
+				network.Mac = mac
+			}
+			fmt.Printf("   mode: %s\n", mode)
+			network.Uuid = netcfg.UUID
+			for j, Ip := range netcfg.IPs {
+				netIp := Ip.Address
+				netNetmask := Ip.Netmask
+				network.Ip = netIp
+				network.Netmask = netNetmask
+				network.Prefix = Ip.Prefix
+				fmt.Printf("   ip %d: %s/%s\n", j, netIp, netNetmask)
+				if Ip.DHCP != nil {
+					netDhcp := Ip.DHCP
+					for _, dhcprange := range netDhcp.Ranges {
+						fmt.Printf("   range %d: %s, %s\n", j, dhcprange.Start, dhcprange.End)
+						network.DhcpStart = dhcprange.Start
+						network.DhcpEnd = dhcprange.End
+					}
+					for _, host := range netDhcp.Hosts {
+						fmt.Printf("   host: %s, %s, %s, %s", host.ID, host.MAC, host.Name, host.IP)
+					}
+				}
+			}
+			dhcps, _ := net.GetDHCPLeases()
+			for i, dhcp := range dhcps {
+				fmt.Printf("   dhcp %d: %s, %s, %s, %s\n",
+					i, dhcp.Iface, dhcp.Mac, dhcp.IPaddr, dhcp.Hostname)
+				var host mcmodel.MgoNetworkHost
+				host.Mac = dhcp.Mac
+				host.Ip = dhcp.IPaddr
+				host.Hostname = dhcp.Hostname
+				network.Host = append(network.Host, host)
+			}
+			network.Dump()
+			netList = append(netList, network)
+		}
+	}
+
+	// Get Images
+	imgList = GetImages()
+	if err == nil {
+		fmt.Println("--------------------------------")
+		fmt.Println("Images")
+		for index, img := range imgList {
+			fmt.Printf("%d. %s, %s\n", index, img.Variant, img.Name)
+			img.Dump()
+		}
+	}
+	return  vmList, netList, imgList
 }
