@@ -11,42 +11,6 @@ import (
 	"net/http"
 )
 
-func LookupImage(list *[]mcmodel.McImages, target mcmodel.McImages) *mcmodel.McImages{
-	if list == nil {
-		return nil
-	}
-	for _, obj := range *list {
-		if obj.Name == target.Name {
-			return &obj
-		}
-	}
-	return nil
-}
-
-func LookupNetwork(list *[]mcmodel.McNetworks, target mcmodel.McNetworks) *mcmodel.McNetworks{
-	if list == nil {
-		return nil
-	}
-	for _, obj := range *list {
-		if obj.Name == target.Name {
-			return &obj
-		}
-	}
-	return nil
-}
-
-func LookupVm(list *[]mcmodel.McVm, target mcmodel.McVm) *mcmodel.McVm {
-	if list == nil {
-		return nil
-	}
-	for _, obj := range *list {
-		if obj.Name == target.Name {
-			return &obj
-		}
-	}
-	return nil
-}
-
 func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerDetail) {
 	// Dao: Server
 	fmt.Println("recvMsg:", recvMsg.Mac)
@@ -67,7 +31,7 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	if recvMsg.Images != nil {
 		imgList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcImagesByServerIdx(int(s.Idx))
 		for _, img := range *recvMsg.Images {
-			if LookupImage(&imgList, img) != nil {
+			if mcmodel.LookupImage(&imgList, img) != nil {
 				continue
 			}
 			img.McServerIdx = int(s.Idx)
@@ -81,7 +45,7 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	if recvMsg.Networks != nil {
 		netList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcNetworksByServerIdx(int(s.Idx))
 		for _, net := range *recvMsg.Networks {
-			if LookupNetwork(&netList, net) != nil {
+			if mcmodel.LookupNetwork(&netList, net) != nil {
 				continue
 			}
 			net.Idx = 0
@@ -94,7 +58,7 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	if recvMsg.Vms != nil {
 		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
 		for _, vm := range *recvMsg.Vms {
-			old := LookupVm(&vmList, vm)
+			old := mcmodel.LookupVm(&vmList, vm)
 			if old != nil {
 				vm.Idx = old.Idx
 				vm.CompanyIdx = old.CompanyIdx
@@ -108,6 +72,17 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 				obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcVm(vm)
 				fmt.Println("insert vm: ", obj)
 			}
+		}
+		for _, vm := range vmList {
+			obj := mcmodel.LookupVm(&vmList, vm)
+			if obj == nil {
+				config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
+			}
+		}
+	} else {
+		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
+		for _, vm := range vmList {
+			config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
 		}
 	}
 }
@@ -136,6 +111,7 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	json.Unmarshal(data, &mcserver)
 
 	/** process msg ***/
+	ApplyMcServerResource(mcserver, server)
 
 	return true
 }

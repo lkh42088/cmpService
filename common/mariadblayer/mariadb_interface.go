@@ -168,6 +168,7 @@ type MariaDBLayer interface {
 	GetMcServerBySerialNumber(sn string) (server mcmodel.McServerDetail, err error)
 
 	GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error)
+	GetMcVmByIdx(idx uint) (mcmodel.McVm, error)
 	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)

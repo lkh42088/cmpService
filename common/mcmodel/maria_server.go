@@ -115,6 +115,9 @@ type McNetworks struct {
 	Name        string       `gorm:"type:varchar(50);column:net_name;comment:'network 이름'" json:"name"`
 	Bridge      string       `gorm:"type:varchar(50);column:net_bridge;comment:'bridge name'" json:"bridge"`
 	Mode        string       `gorm:"type:varchar(50);column:net_mode;comment:'forward mode'" json:"mode"`
+	Mac         string       `gorm:"type:varchar(50);column:net_mac;comment:'forward mode'" json:"mode"`
+	DhcpStart   string       `gorm:"type:varchar(50);column:net_dhcp_start;comment:'dhcp start'" json:"dhcpStart"`
+	DhcpEnd     string       `gorm:"type:varchar(50);column:net_dhcp_end;comment:'dhcp end'" json:"dhcpEnd"`
 	Ip          string       `gorm:"type:varchar(50);column:net_ip;comment:'ip address'" json:"ip"`
 	Netmask     string       `gorm:"type:varchar(50);column:net_netmask;comment:'netmask'" json:"netmask"`
 	Prefix      uint         `gorm:"type:int(11);column:net_prefix;comment:'prefix'" json:"prefix"`
@@ -162,6 +165,8 @@ type McImages struct {
 	Variant     string `gorm:"type:varchar(50);column:img_variant;comment:'이미지 타입'" json:"variant"`
 	Name        string `gorm:"type:varchar(50);column:img_name;comment:'이미지 이름'" json:"name"`
 	Hdd         int    `gorm:"type:int(11);column:img_hdd;comment:'image size'" json:"hdd"`
+	Desc        string `gorm:"type:varchar(50);column:img_desc;comment:'이미지 desc'" json:"desc"`
+	FullName        string `gorm:"type:varchar(50);column:img_full_name;comment:'이미지 fullname'" json:"fullName"`
 }
 
 func (McImages) TableName() string {

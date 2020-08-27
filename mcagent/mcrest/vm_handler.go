@@ -159,6 +159,7 @@ func deleteVmHandler(c *gin.Context) {
 	//	return
 	//}
 
+	config.SetGlobalConfigByVmNumber(uint(vm.VmIndex), 0)
 	// 1. Delete Vm instance
 	kvm.DeleteVm(*vm)
 

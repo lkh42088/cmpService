@@ -43,13 +43,14 @@ func ConvertImageFile2MgoVM(vm *mcmodel.MgoVm, file string) {
 	//fmt.Printf("%s\n", arr)
 	//fmt.Printf("%s\n", arr[3])
 	vm.Filename = name[:strings.LastIndexAny(name,".")]
-	list := strings.Split(name, "-")
+	list := strings.Split(vm.Filename, "-")
 	if list[0] == "windows10" {
 		vm.OS = "win10"
 	} else {
 		vm.OS= "ubuntu18"
 	}
-	vm.VmIndex, _ = strconv.Atoi(list[1])
+	vm.VmIndex, _ = strconv.Atoi(list[2])
+	fmt.Printf("ConvertImageFile2MgoVM: vmIndex %d, %s\n", vm.VmIndex, list[2])
 	vm.Image = fmt.Sprintf("%s-%s", list[0], list[1])
 	vm.Hdd, _ = strconv.Atoi(list[1][:strings.LastIndexAny(list[1],"G")])
 }
