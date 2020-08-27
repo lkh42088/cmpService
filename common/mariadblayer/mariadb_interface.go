@@ -22,6 +22,11 @@ type MariaDBLayer interface {
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error
 
+	// Code Setting
+	GetCodeTagList() ([]models.Code, error)
+	GetCodesMainByType(code string, subCode string) ([]models.Code, error)
+	GetCodesSubByIdx(idx string) ([]models.SubCode, error)
+
 	// Devices
 	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
 	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
@@ -169,7 +174,7 @@ type MariaDBLayer interface {
 
 	GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error)
 	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
-	UpdateMcVmFromMc(obj mcmodel.McVm) (mcmodel.McVm, error)
+	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
  	GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error)
 

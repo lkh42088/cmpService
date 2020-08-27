@@ -82,3 +82,19 @@ val, err := db.Where("c_idx=?", code).Find(models.Code{}).Error
 err := db.Raw("SELECT c_name FROM code_tb WHERE c_idx = ?", code).Scan(&result)
 
 */
+/*----------------------------------------------------------------------------------------------------------*/
+
+func (db *DBORM) GetCodeTagList() (codes []models.Code, err error) {
+	return codes, db.Select("DISTINCT c_type").Find(&codes).Error
+}
+
+func (db *DBORM) GetCodesMainByType(code string, subCode string) (codes []models.Code, err error) {
+	return codes, db.Debug().
+		Where(GetWhereString(typeSubField), subCode).
+		Where(GetWhereString(typeField), code).
+		Find(&codes).Error
+}
+
+func (db *DBORM) GetCodesSubByIdx(idx string) (codes []models.SubCode, err error) {
+	return codes, db.Debug().Where("c_idx = ?", idx).Find(&codes).Error
+}

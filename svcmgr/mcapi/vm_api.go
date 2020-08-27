@@ -50,9 +50,13 @@ func LookupVm(list *[]mcmodel.McVm, target mcmodel.McVm) *mcmodel.McVm {
 func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerDetail) {
 	// Dao: Server
 	fmt.Println("recvMsg:", recvMsg.Mac)
+	recvMsg.Dump()
 	s := server.McServer
 	s.Mac = recvMsg.Mac
 	s.Status = 1
+	s.Port = recvMsg.Port
+	s.IpAddr = recvMsg.IpAddr
+	s.PublicIpAddr = recvMsg.PublicIpAddr
 	s, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcServer(s)
 	if err != nil {
 		fmt.Println("UpdateMcServer: error - ", err)
@@ -90,14 +94,20 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	if recvMsg.Vms != nil {
 		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
 		for _, vm := range *recvMsg.Vms {
-			if LookupVm(&vmList, vm) != nil {
-				continue
+			old := LookupVm(&vmList, vm)
+			if old != nil {
+				vm.Idx = old.Idx
+				vm.CompanyIdx = old.CompanyIdx
+				vm.McServerIdx = old.McServerIdx
+				obj, _ := config.SvcmgrGlobalConfig.Mariadb.UpdateMcVm(vm)
+				fmt.Println("update vm: ", obj)
+			} else {
+				vm.Idx = 0
+				vm.McServerIdx = int(s.Idx)
+				vm.CompanyIdx = s.CompanyIdx
+				obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcVm(vm)
+				fmt.Println("insert vm: ", obj)
 			}
-			vm.Idx = 0
-			vm.McServerIdx = int(s.Idx)
-			vm.CompanyIdx = s.CompanyIdx
-			obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcVm(vm)
-			fmt.Println("insert vm: ", obj)
 		}
 	}
 }

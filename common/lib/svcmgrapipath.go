@@ -1,15 +1,16 @@
 package lib
 
 const (
-	SvcmgrApiPrefix  = "/v1"
-	SvcmgrApiCode    = SvcmgrApiPrefix + "/codes"
-	SvcmgrApiSubCode = SvcmgrApiPrefix + "/subcodes"
-	SvcmgrApiDevice  = SvcmgrApiPrefix + "/device"
-	SvcmgrApiDevices = SvcmgrApiPrefix + "/devices"
-	SvcmgrApiLogin   = SvcmgrApiPrefix + "/auth"
-	SvcmgrApiCompany = SvcmgrApiPrefix + "/companies"
-	SvcmgrApiUser    = SvcmgrApiPrefix + "/users"
-	SvcmgrApiMicro   = SvcmgrApiPrefix + "/micro"
+	SvcmgrApiPrefix      = "/v1"
+	SvcmgrApiCode        = SvcmgrApiPrefix + "/codes"
+	SvcmgrApiCodeSetting = SvcmgrApiPrefix + "/codesetting"
+	SvcmgrApiSubCode     = SvcmgrApiPrefix + "/subcodes"
+	SvcmgrApiDevice      = SvcmgrApiPrefix + "/device"
+	SvcmgrApiDevices     = SvcmgrApiPrefix + "/devices"
+	SvcmgrApiLogin       = SvcmgrApiPrefix + "/auth"
+	SvcmgrApiCompany     = SvcmgrApiPrefix + "/companies"
+	SvcmgrApiUser        = SvcmgrApiPrefix + "/users"
+	SvcmgrApiMicro       = SvcmgrApiPrefix + "/micro"
 )
 
 // About Micro Cloud

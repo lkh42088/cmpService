@@ -70,7 +70,7 @@ func MakeFilename(vm *mcmodel.MgoVm) string {
 		if num == 0 {
 			config.SetGlobalConfigByVmNumber(uint(index), vm.Idx)
 			//cfg.VmNumber[index] = vm.Idx
-			vm.VmNumber = index
+			vm.VmIndex = index
 			return fmt.Sprintf("%s-%d", vm.Image, index)
 		}
 	}
@@ -79,15 +79,16 @@ func MakeFilename(vm *mcmodel.MgoVm) string {
 
 func DeleteFilename(vm mcmodel.MgoVm) {
 	cfg := config.GetGlobalConfig()
-	cfg.VmNumber[vm.VmNumber] = 0
+	cfg.VmNumber[vm.VmIndex] = 0
 }
 
 func ConfigDNAT(vm *mcmodel.MgoVm) {
 	cfg := config.GetGlobalConfig()
 	//iptables -t nat -A PREROUTING -d 192.168.0.73 -p tcp --dport 13389 -j DNAT --to 10.0.0.159:3389
-	dport:= fmt.Sprintf("%d", 13001+vm.VmNumber)
-	ip := strings.Split(vm.IpAddr,"/")
-	target := fmt.Sprintf("%s:3389", ip[0])
+	dport:= fmt.Sprintf("%d", cfg.DnatBasePortNum+vm.VmIndex)
+	//ip := strings.Split(vm.IpAddr,"/")
+	//target := fmt.Sprintf("%s:3389", ip[0])
+	target := fmt.Sprintf("%s:3389", vm.IpAddr)
 	args := []string{
 		"-t",
 		"nat",

@@ -26,6 +26,7 @@ type McAgentConfig struct {
 	ServerPublicIp     string             `json:"server_public_ip"`
 	ServerStatusRepo   string             `json:"server_status_repo"`
 	MonitoringInterval int                `json:"monitoring_interval"`
+	DnatBasePortNum    int                `json:"dnat_base_port_num"`
 	SerialNumber       string             `json:"-"`
 	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
 }
@@ -65,6 +66,11 @@ func ApplyGlobalConfig(file string) bool {
 	if err != nil {
 		fmt.Println("ApplyGlobalConfig : err 2 ", err)
 		return false
+	}
+
+	// Default Number
+	if globalConfig.DnatBasePortNum == 0 {
+		globalConfig.DnatBasePortNum = 17000
 	}
 
 	globalConfig.ServerPublicIp = utils.GetMyPublicIp()

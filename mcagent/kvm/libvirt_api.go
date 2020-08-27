@@ -37,7 +37,7 @@ func ConvertVmStatus(status libvirt.DomainState) string {
 
 func ConvertImageFile2MgoVM(vm *mcmodel.MgoVm, file string) {
 	// /opt/vm_instances/windows10-40G-0.qcow2
-	vm.FullName = file
+	vm.FullPath = file
 	arr := strings.Split(file, "/")
 	name := arr[3]
 	//fmt.Printf("%s\n", arr)
@@ -49,6 +49,7 @@ func ConvertImageFile2MgoVM(vm *mcmodel.MgoVm, file string) {
 	} else {
 		vm.OS= "ubuntu18"
 	}
+	vm.VmIndex, _ = strconv.Atoi(list[1])
 	vm.Image = fmt.Sprintf("%s-%s", list[0], list[1])
 	vm.Hdd, _ = strconv.Atoi(list[1][:strings.LastIndexAny(list[1],"G")])
 }
@@ -118,6 +119,11 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 					vm.IpAddr = ip.Addr
 				}
 			}
+			cfg := config.GetGlobalConfig()
+			vm.RemoteAddr = fmt.Sprintf("%s:%d",
+				cfg.ServerIp,
+				cfg.DnatBasePortNum + vm.VmIndex)
+			config.SetGlobalConfigByVmNumber(uint(vm.VmIndex), 1)
 			//fmt.Printf("\n")
 			vm.IsCreated = true
 			vmList = append(vmList, vm)

@@ -78,6 +78,54 @@ func (h *Handler) GetSubCodeList(c *gin.Context) {
 	c.JSON(http.StatusOK, subCodes)
 }
 
+/*----------------------------------------------------------------------------------------------------------*/
+func (h *Handler) GetCodesMenu(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	code, err := h.db.GetCodeTagList()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, code)
+}
+
+func (h *Handler) GetCodesMainByType(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	t := c.Param("type")
+	subType := c.Param("subType")
+	codes, err := h.db.GetCodesMainByType(t, subType)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+/*	var list []string
+	for _, v := range codes {
+		//fmt.Println(i, v.Name)
+		list = append(list, v.Name)
+	}*/
+
+	//fmt.Println(list)
+	c.JSON(http.StatusOK, codes)
+}
+func (h *Handler) GetCodesSubByIdx(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	idx := c.Param("idx")
+	subcode, err := h.db.GetCodesSubByIdx(idx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, subcode)
+}
+/*----------------------------------------------------------------------------------------------------------*/
+
 func (h *Handler) AddCode(c *gin.Context) {
 	if h.db == nil {
 		return
