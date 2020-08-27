@@ -233,6 +233,8 @@ type McVm struct {
 	OS            string `gorm:"type:varchar(50);column:vm_os;comment:'vm os'" json:"os"`
 	Image         string `gorm:"type:varchar(50);column:vm_image;comment:'vm image'" json:"image"`
 	Filename      string `gorm:"type:varchar(50);column:vm_filename;comment:'vm image'" json:"filename"`
+	VmIndex       int    `gorm:"type:int(11);column:vm_vmIndex;comment:'vm index'" json:"vmIndex"`
+	FullPath      string `gorm:"type:varchar(50);column:vm_full_path;comment:'file full path'" json:"fullPath"`
 	Network       string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
 	IpAddr        string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
 	RemoteAddr    string `gorm:"type:varchar(50);column:vm_remote_addr;comment:'Remote Address for RDP'" json:"remoteAddr"`

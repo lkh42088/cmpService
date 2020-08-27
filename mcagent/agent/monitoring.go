@@ -83,8 +83,9 @@ func (m *MonitorRoutine) RunByVirsh() {
 				updated = true
 				// NAT setup
 				kvm.ConfigDNAT(vm)
-				dport:= fmt.Sprintf("%d", 13001+vm.VmNumber)
-				vm.RemoteAddr = fmt.Sprintf("%s:%s", cfg.ServerIp, dport)
+				vm.RemoteAddr = fmt.Sprintf("%s:%d",
+					cfg.ServerIp,
+					cfg.DnatBasePortNum + vm.VmIndex)
 			}
 
 			// update mongodb

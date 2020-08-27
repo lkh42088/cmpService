@@ -152,7 +152,7 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 
 	fmt.Printf("Add McVm : %v\n", msg)
 
-	msg, err := h.db.UpdateMcVmFromMc(msg)
+	msg, err := h.db.UpdateMcVm(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

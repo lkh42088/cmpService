@@ -24,13 +24,13 @@ type MgoVm struct {
 	OS            string `json:"os"`       // OS: windows10
 	Image         string `json:"image"`    // Image: windows10-250
 	Filename      string `json:"filename"` // Filename: windows10-250-1.qcow2
-	FullName      string `json:"fullName"`
+	VmIndex       int    `json:"vmIndex"`  // VmIndex: 1
+	FullPath      string `json:"fullPath"`
 	Network       string `json:"network"`
 	IpAddr        string `json:"ipAddr"`
 	Mac           string `json:"mac"`
 	ConfigStatus  string `json:"configStatus"`
 	CurrentStatus string `json:"currentStatus"`
-	VmNumber      int    `json:"-"` // VmNumber: 1
 	RemoteAddr    string `json:"remoteAddr"`
 	IsCreated     bool   `json:"isCreated"`
 	IsProcess     bool   `json:"isProcess"`
