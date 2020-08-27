@@ -19,6 +19,10 @@ type HandlerInterface interface {
 	AddSubCode(c *gin.Context)
 	DeleteSubCode(c *gin.Context)
 	DeleteSubCodes(c *gin.Context)
+	// Code Setting
+	GetCodesMenu(c *gin.Context)
+	GetCodesMainByType(c *gin.Context)
+	GetCodesSubByIdx(c *gin.Context)
 	// Device
 	GetDevicesByList(c *gin.Context)
 	GetDevicesByCode(c *gin.Context)
@@ -136,6 +140,12 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiSubCode+"/create", h.AddSubCode)
 	router.DELETE(lib.SvcmgrApiSubCode+"/delete/:id", h.DeleteSubCode)
 	router.DELETE(lib.SvcmgrApiSubCode+"/delete", h.DeleteSubCodes)
+
+	// Code Setting
+	router.GET(lib.SvcmgrApiCodeSetting+"/menu/tag", h.GetCodesMenu)
+	//client.get(`/v1/codesetting/code/${type}/${subType}`);
+	router.GET(lib.SvcmgrApiCodeSetting+"/code/:type/:subType", h.GetCodesMainByType)
+	router.GET(lib.SvcmgrApiCodeSetting+"/code/:type/:subType/:idx", h.GetCodesSubByIdx)
 
 	// Devices
 	router.GET(lib.SvcmgrApiDevice+"/:type/:value/:field", h.GetDevicesByCode)

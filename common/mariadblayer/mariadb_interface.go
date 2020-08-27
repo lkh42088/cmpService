@@ -22,6 +22,11 @@ type MariaDBLayer interface {
 	DeleteSubCode(subCode models.SubCode) (models.SubCode, error)
 	DeleteSubCodes() error
 
+	// Code Setting
+	GetCodeTagList() ([]models.Code, error)
+	GetCodesMainByType(code string, subCode string) ([]models.Code, error)
+	GetCodesSubByIdx(idx string) ([]models.SubCode, error)
+
 	// Devices
 	GetAllDevicesServer(deviceType string, outFlag int) ([]models.DeviceServer, error)
 	GetAllDevicesNetwork(deviceType string, outFlag int) ([]models.DeviceNetwork, error)
