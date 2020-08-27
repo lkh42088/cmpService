@@ -3,6 +3,7 @@ package rest
 import (
 	"cmpService/common/lib"
 	"cmpService/common/mariadblayer"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -101,6 +102,8 @@ type HandlerInterface interface {
 	GetMcNetworksByServerIdx(c *gin.Context)
 
 	UpdateMcVm(c *gin.Context)
+
+	GetVmInterfaceTrafficByMac(c *gin.Context)
 }
 
 type Handler struct {
@@ -112,7 +115,6 @@ func NewHandler(db *mariadblayer.DBORM) (*Handler, error) {
 	h.db = db
 	return h, nil
 }
-
 
 func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router := gin.Default()
@@ -247,6 +249,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroNetworkPaging+pagingParam, h.GetMcNetworks)
 	router.GET(lib.SvcmgrApiMicroNetwork+"/:serverIdx", h.GetMcNetworksByServerIdx)
 
+	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetVmInterfaceTrafficByMac)
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
 	return router.Run(address)
