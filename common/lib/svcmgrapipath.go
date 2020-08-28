@@ -21,7 +21,7 @@ const (
 	SvcmgrApiMicroServerRegister      = SvcmgrApiMicroServer + "/register"
 	SvcmgrApiMicroServerUnRegister    = SvcmgrApiMicroServer + "/unregister"
 	SvcmgrApiMicroServerSearchCompany = SvcmgrApiMicroServer + "/search-company"
-	SvcmgrApiMicroServerResource 	  = SvcmgrApiMicroServer + "/resource"
+	SvcmgrApiMicroServerResource      = SvcmgrApiMicroServer + "/resource"
 	// /v1/micro/vms
 	SvcmgrApiMicroVm             = SvcmgrApiMicro + "/vms"
 	SvcmgrApiMicroVmRegister     = SvcmgrApiMicroVm + "/register"
@@ -38,6 +38,7 @@ const (
 	SvcmgrApiMicroNetworkRegister   = SvcmgrApiMicroNetwork + "/register"
 	SvcmgrApiMicroNetworkUnRegister = SvcmgrApiMicroNetwork + "/unregister"
 	SvcmgrApiMicroNetworkPaging     = SvcmgrApiMicro + "/networks-paging"
-	SvcmgrApiMicroVmMonitor			= SvcmgrApiMicro + "/monitor"
-	SvcmgrApiMicroVmStats			= SvcmgrApiMicroVmMonitor + "/stats"
+	SvcmgrApiMicroVmMonitor         = SvcmgrApiMicro + "/monitor"
+	SvcmgrApiMicroVmStats           = SvcmgrApiMicroVmMonitor + "/stats"
+	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
 )
