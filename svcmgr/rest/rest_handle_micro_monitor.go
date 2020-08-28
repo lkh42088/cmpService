@@ -74,7 +74,7 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	}
 
 	deltaStats := MakeDeltaValues(stat)
-	fmt.Printf("%+v\n", deltaStats)
+	//fmt.Printf("%+v\n", deltaStats)
 	c.JSON(http.StatusOK, deltaStats)
 }
 

@@ -108,6 +108,8 @@ type HandlerInterface interface {
 	UpdateMcVm(c *gin.Context)
 
 	GetVmInterfaceTrafficByMac(c *gin.Context)
+
+	GetMonitorCpu(c *gin.Context)
 }
 
 type Handler struct {
@@ -261,6 +263,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetVmInterfaceTrafficByMac)
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
+
+	// Micro Cloud CPU
+	router.GET(lib.SvcmgrApiMicroMonitorCPU, h.GetMonitorCpu)
 
 	return router.Run(address)
 }
