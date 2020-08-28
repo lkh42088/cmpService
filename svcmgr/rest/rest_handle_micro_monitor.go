@@ -115,7 +115,7 @@ func MakeDeltaValues(s []VmIfStat) VmStatseRsponse {
 		delta.Stats = append(delta.Stats, result)
 
 		// Make response data set
-		unit.Xaxis = result.Time.Format("03:04:05")
+		unit.Xaxis = result.Time.Format("0000-01-02 03:04:05")
 		unit.Yaxis = result.IfInOctets
 		response.Stats[0].Data = append(response.Stats[0].Data, unit)
 		unit.Yaxis = result.IfOutOctets
