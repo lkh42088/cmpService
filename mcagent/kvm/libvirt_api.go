@@ -151,6 +151,7 @@ func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
 			err = netcfg.Unmarshal(xmlstr)
 			mode := netcfg.Forward.Mode
 			network.Mode = mode
+			fmt.Println("Network:", mode)
 			if netcfg.MAC != nil {
 				mac := netcfg.MAC.Address
 				network.Mac = mac
@@ -325,7 +326,7 @@ func GetMcVirtInfoDebug() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork,
 				fmt.Printf("   mac: %s\n", mac)
 				network.Mac = mac
 			}
-			fmt.Printf("   mode: %s\n", mode)
+			//fmt.Printf("   mode: %s\n", mode)
 			network.Uuid = netcfg.UUID
 			for j, Ip := range netcfg.IPs {
 				netIp := Ip.Address

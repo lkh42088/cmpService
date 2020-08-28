@@ -15,6 +15,7 @@ func GetDomainListAll() (doms []libvirt.Domain, err error) {
 		fmt.Println("error1")
 		return doms, err
 	}
+	defer conn.Close()
 	doms, err = conn.ListAllDomains(0)
 	if err != nil {
 		fmt.Println("error2")
@@ -37,6 +38,7 @@ func GetDomainByName(name string) (dom *libvirt.Domain, err error) {
 		fmt.Println("error1")
 		return dom, err
 	}
+	defer conn.Close()
 	dom, err = conn.LookupDomainByName(name)
 	if err != nil {
 		fmt.Println("error2")
@@ -51,6 +53,7 @@ func GetXmlDomainByName(name string) *libvirtxml.Domain {
 		fmt.Println("error1")
 		return nil
 	}
+	defer conn.Close()
 	dom, err := conn.LookupDomainByName(name)
 	if err != nil {
 		fmt.Println("error2")

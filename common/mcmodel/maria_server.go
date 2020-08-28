@@ -115,7 +115,7 @@ type McNetworks struct {
 	Name        string       `gorm:"type:varchar(50);column:net_name;comment:'network 이름'" json:"name"`
 	Bridge      string       `gorm:"type:varchar(50);column:net_bridge;comment:'bridge name'" json:"bridge"`
 	Mode        string       `gorm:"type:varchar(50);column:net_mode;comment:'forward mode'" json:"mode"`
-	Mac         string       `gorm:"type:varchar(50);column:net_mac;comment:'forward mode'" json:"mode"`
+	Mac         string       `gorm:"type:varchar(50);column:net_mac;comment:'forward mode'" json:"mac"`
 	DhcpStart   string       `gorm:"type:varchar(50);column:net_dhcp_start;comment:'dhcp start'" json:"dhcpStart"`
 	DhcpEnd     string       `gorm:"type:varchar(50);column:net_dhcp_end;comment:'dhcp end'" json:"dhcpEnd"`
 	Ip          string       `gorm:"type:varchar(50);column:net_ip;comment:'ip address'" json:"ip"`

@@ -15,6 +15,7 @@ func SendUpdateServer2Svcmgr(obj mcmodel.MgoServer, addr string) bool {
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroServerResource)
 	fmt.Println("Notify: ", url)
+	obj.Dump()
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("error: ", err)

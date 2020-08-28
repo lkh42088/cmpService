@@ -45,13 +45,18 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	if recvMsg.Networks != nil {
 		netList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcNetworksByServerIdx(int(s.Idx))
 		for _, net := range *recvMsg.Networks {
-			if mcmodel.LookupNetwork(&netList, net) != nil {
-				continue
+			dbnet := mcmodel.LookupNetwork(&netList, net)
+			if dbnet != nil {
+				net.Idx = dbnet.Idx
+				net.McServerIdx = dbnet.McServerIdx
+				obj, _ := config.SvcmgrGlobalConfig.Mariadb.UpdateMcNetwork(net)
+				fmt.Println("update network: ", obj)
+			} else {
+				net.Idx = 0
+				net.McServerIdx = int(s.Idx)
+				obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcNetwork(net)
+				fmt.Println("insert network: ", obj)
 			}
-			net.Idx = 0
-			net.McServerIdx = int(s.Idx)
-			obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcNetwork(net)
-			fmt.Println("insert network: ", obj)
 		}
 	}
 

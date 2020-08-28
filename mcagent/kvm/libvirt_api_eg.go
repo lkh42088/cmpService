@@ -12,6 +12,7 @@ func CreateXmlNetworkTestApi() {
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 
 	netcfg := &libvirtxml.Network{}
 	// name
@@ -66,6 +67,7 @@ func GetXmlNetwork() {
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 	networks, err := conn.ListAllNetworks(0)
 	for index, net := range networks {
 		name, _ := net.GetName()
