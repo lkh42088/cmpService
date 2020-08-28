@@ -149,6 +149,7 @@ func InfluxdbQuery(query string) (*client.Response, error) {
 	if c = NewClient(); c == nil {
 		return nil, errors.New("Fail to client create\n")
 	}
+	defer c.Close()
 
 	q.Command = query
 	q.Database = config.SvcmgrGlobalConfig.InfluxdbConfig.DBName

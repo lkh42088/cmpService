@@ -16,3 +16,4 @@ func GetFilterList() {
 		fmt.Printf("%s\n", chain)
 	}
 }
+

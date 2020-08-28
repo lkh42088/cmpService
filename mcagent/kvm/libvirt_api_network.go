@@ -17,7 +17,8 @@ import (
 func GetAllNetwork() (networks []libvirt.Network, err error) {
 	conn, err := libvirt.NewConnect("qemu:///system")
 	if err != nil {
-		fmt.Println("error1")
+		fmt.Println("GetAllNetwork: error", err)
+		return networks, err
 	}
 	networks, err = conn.ListAllNetworks(0)
 	//for index, net := range networks {
