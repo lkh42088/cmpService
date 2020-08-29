@@ -117,6 +117,7 @@ func GetDnatRuleConfigByRule(rule string) *utils.DnatRule {
 	arr := strings.Fields(rule)
 	var next int
 	for _, obj := range arr {
+		//fmt.Println("GetDnatRuleConfigByRule:", obj)
 		if next > 0 {
 			switch next {
 			case DNAT_NEXT_DST_IP:
@@ -141,7 +142,7 @@ func GetDnatRuleConfigByRule(rule string) *utils.DnatRule {
 			next = DNAT_NEXT_DST_IP
 		} else if obj == "--dport" {
 			next = DNAT_NEXT_DPORT
-		} else if obj == "--dport" {
+		} else if obj == "--to-destination" {
 			next = DNAT_NEXT_TO_DEST
 		} else {
 			next = 0
@@ -174,6 +175,7 @@ func AddDnatRuleByVm(vm *mcmodel.MgoVm) {
 		}
 	}
 	if isExist == false {
+		fmt.Println("AddDnatRuleByVm: do it")
 		utils.AddDNATRule(rule)
 	}
 }

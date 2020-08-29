@@ -6,8 +6,22 @@ import (
 	"strings"
 )
 
+var gipt *IPTables
+
+func GetIpt() (*IPTables, error) {
+	var err error
+	if gipt == nil {
+		gipt, err = New()
+		if err != nil {
+			fmt.Println("GetFilterList: error", err)
+			return gipt, err
+		}
+	}
+	return gipt, nil
+}
+
 func GetFilterList() {
-	ipt, err := New()
+	ipt, err := GetIpt()
 	if err != nil {
 		fmt.Println("GetFilterList: error", err)
 	}
@@ -32,7 +46,7 @@ func GetFilterList() {
 }
 
 func DeleteFilterReject() {
-	ipt, err := New()
+	ipt, err := GetIpt()
 	if err != nil {
 		fmt.Println("GetFilterList: error", err)
 		return
@@ -76,7 +90,7 @@ func (o *DnatRule) Compare(n *DnatRule) bool {
 }
 
 func AddDNATRule(rule *DnatRule) {
-	ipt, err := New()
+	ipt, err := GetIpt()
 	if err != nil {
 		fmt.Println("GetFilterList: error", err)
 		return
@@ -88,6 +102,8 @@ func AddDNATRule(rule *DnatRule) {
 	chain := "PREROUTING"
 	//sudo iptables -t nat -A PREROUTING -d 192.168.0.57 -p tcp --dport 13389 -j DNAT --to 192.168.122.130:3389
 	//sudo iptables -t nat -A PREROUTING -d 192.168.0.57 -p udp --dport 13389 -j DNAT --to 192.168.122.130:3389
+	//-A PREROUTING -d 192.168.0.89/32 -p tcp -m tcp --dport 15000 -j DNAT --to-destination 192.168.122.99:3389
+	//-A PREROUTING -d 192.168.0.89/32 -p udp -m udp --dport 15000 -j DNAT --to-destination 192.168.122.99:3389
 	ipt.Append(table, chain, "-d", rule.WantAddr, "-p", "tcp",
 		"--dport", rule.WantPort, "-j", "DNAT", "--to", rule.ToAddr+":"+rule.ToPort)
 	ipt.Append(table, chain, "-d", rule.WantAddr, "-p", "udp",
@@ -95,7 +111,7 @@ func AddDNATRule(rule *DnatRule) {
 }
 
 func DeleteDNATRule(rule *DnatRule) {
-	ipt, err := New()
+	ipt, err := GetIpt()
 	if err != nil {
 		fmt.Println("GetFilterList: error", err)
 	}
@@ -108,7 +124,7 @@ func DeleteDNATRule(rule *DnatRule) {
 }
 
 func GetNATRule() []string{
-	ipt, err := New()
+	ipt, err := GetIpt()
 	if err != nil {
 		fmt.Println("GetFilterList: error", err)
 	}
