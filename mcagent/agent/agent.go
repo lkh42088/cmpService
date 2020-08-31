@@ -21,7 +21,7 @@ func Start (config string) {
 		return
 	}
 
-	wg.Add(3)
+	wg.Add(4)
 
 	// Rest Api Server
 	go mcrest.Start(&wg)
@@ -41,6 +41,12 @@ func Start (config string) {
 
 	if kvm.LibvirtR != nil {
 		go kvm.LibvirtR.Start(&wg)
+	} else {
+		wg.Done()
+	}
+
+	if kvm.LibvirtS != nil {
+		go kvm.LibvirtS.Start(&wg)
 	} else {
 		wg.Done()
 	}
@@ -71,6 +77,8 @@ func configure() bool {
 	kvm.ConfigureKvmRoutine()
 
 	kvm.ConfigureLibvirtResource()
+
+	kvm.ConfigureLibvirtStatstics()
 
 	return true
 }
