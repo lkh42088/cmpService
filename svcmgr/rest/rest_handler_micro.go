@@ -5,7 +5,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/common/models"
-	"cmpService/mcagent/websocketproxy"
+	"cmpService/common/websocketproxy"
 	"cmpService/svcmgr/config"
 	"cmpService/svcmgr/mcapi"
 	"flag"
