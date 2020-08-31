@@ -56,6 +56,7 @@ func (k *KvmRoutine) Start(parentwg *sync.WaitGroup) {
 		fmt.Printf("%d. KvmRoutine(%ds)\n", loop, k.Interval)
 		loop += 1
 	}
+	parentwg.Done()
 }
 
 func (k *KvmRoutine) Run() {

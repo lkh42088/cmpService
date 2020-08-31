@@ -3,15 +3,16 @@ package kvm
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/libvirt/libvirt-go"
 	libvirtxml "github.com/libvirt/libvirt-go-xml"
 )
 
 func CreateXmlNetworkTestApi() {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 
 	netcfg := &libvirtxml.Network{}
 	// name
@@ -62,10 +63,12 @@ func CreateXmlNetworkTestApi() {
 }
 
 func GetXmlNetwork() {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 	networks, err := conn.ListAllNetworks(0)
 	for index, net := range networks {
 		name, _ := net.GetName()

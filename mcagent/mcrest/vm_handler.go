@@ -160,10 +160,13 @@ func deleteVmHandler(c *gin.Context) {
 	//}
 
 	config.SetGlobalConfigByVmNumber(uint(vm.VmIndex), 0)
-	// 1. Delete Vm instance
+	// 1. Delete Dnat Rule
+	kvm.DeleteDnatRulByVm(vm)
+
+	// 2. Delete Vm instance
 	kvm.DeleteVm(*vm)
 
-	// 2. Delete Vm image
+	// 3. Delete Vm image
 	kvm.DeleteVmInstance(*vm)
 
 	fmt.Printf("deleteVmHandler: success\n")

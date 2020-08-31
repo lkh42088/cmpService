@@ -15,11 +15,13 @@ import (
  * Network
  ******************************************************************************/
 func GetAllNetwork() (networks []libvirt.Network, err error) {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("GetAllNetwork: error", err)
 		return networks, err
 	}
+	defer conn.Close()
 	networks, err = conn.ListAllNetworks(0)
 	//for index, net := range networks {
 	//	name, _ := net.GetName()
@@ -30,19 +32,22 @@ func GetAllNetwork() (networks []libvirt.Network, err error) {
 }
 
 func GetNetworkByName(name string) (*libvirt.Network, error) {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 	return conn.LookupNetworkByName("net11")
 }
 
 func GetXmlNetworkByName() {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 	}
-
+	defer conn.Close()
 	net, err := conn.LookupNetworkByName("net11")
 	name, _ := net.GetName()
 	fmt.Println(name, "------------")
@@ -59,10 +64,12 @@ func GetXmlNetworkByName() {
 }
 
 func GetMgoNetworksFromXmlNetwork() (list []mcmodel.MgoNetwork, err error) {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 	networks, err := conn.ListAllNetworks(0)
 	for index, net := range networks {
 		var entry mcmodel.MgoNetwork
@@ -143,10 +150,12 @@ func MakeXmlNetwork(name, bridgeName, ipAddr, netmask string) *libvirtxml.Networ
 }
 
 func CreateNetworkByMgoNetwork(net mcmodel.MgoNetwork) {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 	}
+	defer conn.Close()
 	netcfg := MakeXmlNetwork(net.Name, net.Bridge, net.Ip, net.Netmask)
 	output, _:= xml.MarshalIndent(netcfg, "  ", "    ")
 	fmt.Println(string(output))

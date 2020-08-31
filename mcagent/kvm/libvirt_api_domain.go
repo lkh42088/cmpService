@@ -10,11 +10,13 @@ import (
  * Domain
  ******************************************************************************/
 func GetDomainListAll() (doms []libvirt.Domain, err error) {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	//conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 		return doms, err
 	}
+	defer conn.Close()
 	doms, err = conn.ListAllDomains(0)
 	if err != nil {
 		fmt.Println("error2")
@@ -32,11 +34,12 @@ func GetDomainListAll() (doms []libvirt.Domain, err error) {
 }
 
 func GetDomainByName(name string) (dom *libvirt.Domain, err error) {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 		return dom, err
 	}
+	defer conn.Close()
 	dom, err = conn.LookupDomainByName(name)
 	if err != nil {
 		fmt.Println("error2")
@@ -46,11 +49,12 @@ func GetDomainByName(name string) (dom *libvirt.Domain, err error) {
 }
 
 func GetXmlDomainByName(name string) *libvirtxml.Domain {
-	conn, err := libvirt.NewConnect("qemu:///system")
+	conn, err := GetQemuConnect()
 	if err != nil {
 		fmt.Println("error1")
 		return nil
 	}
+	defer conn.Close()
 	dom, err := conn.LookupDomainByName(name)
 	if err != nil {
 		fmt.Println("error2")
