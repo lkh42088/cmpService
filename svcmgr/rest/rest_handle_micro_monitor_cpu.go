@@ -98,7 +98,7 @@ func InfluxdbQueryCpu(query string) (*client.Response, error) {
 	var q client.Query
 	var c client.Client
 
-	if c = NewClient(); c == nil {
+	if c = config.NewClient(); c == nil {
 		return nil, errors.New("Fail to client create\n")
 	}
 	defer c.Close()
