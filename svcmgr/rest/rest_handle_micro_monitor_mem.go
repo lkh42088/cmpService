@@ -12,17 +12,17 @@ import (
 	"time"
 )
 
-type CpuStat struct {
-	Time      time.Time   `json:"time"`
-	Cpu       string      `json:"cpu"`
-	UsageIdle json.Number `json:"usage_idle"`
+type MemStat struct {
+	Time             time.Time   `json:"time"`
+	Available        json.Number `json:"available"`
+	AvailablePercent json.Number `json:"available_percent"`
 }
 
-func (h *Handler) GetMonitorCpu(c *gin.Context) {
-	dbname := "cpu"
-	field := `"time","cpu","usage_idle"`
-	where := fmt.Sprintf(`cpu = 'cpu-total'`)
-	res := GetMeasurementsWithConditionCpu(dbname, field, where)
+func (h *Handler) GetMonitorMem(c *gin.Context) {
+	dbname := "mem"
+	field := `"time","available","available_percent"`
+	/*where := fmt.Sprintf(`cpu = 'cpu-total'`)*/
+	res := GetMeasurementsWithConditionMem(dbname, field)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
@@ -33,7 +33,7 @@ func (h *Handler) GetMonitorCpu(c *gin.Context) {
 
 	// Convert response data
 	v := res.Results[0].Series[0].Values
-	stat := make([]CpuStat, len(v))
+	stat := make([]MemStat, len(v))
 	var convTime time.Time
 	for i, data := range v {
 		// select time check
@@ -41,7 +41,7 @@ func (h *Handler) GetMonitorCpu(c *gin.Context) {
 
 		// make struct
 		stat[i].Time = convTime
-		if err := MakeStructForStatsStructCpu(&stat[i], data); err != nil {
+		if err := MakeStructForStatsStructMem(&stat[i], data); err != nil {
 			lib.LogWarn("Error : %s\n", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 			return
@@ -52,31 +52,31 @@ func (h *Handler) GetMonitorCpu(c *gin.Context) {
 }
 
 // To create new influxDB client
-func GetMeasurementsWithConditionCpu(collector string, field string, where string) *client.Response {
+func GetMeasurementsWithConditionMem(collector string, field string) *client.Response {
 	query := "SELECT " + field + " FROM " + collector
-	query += " WHERE " + where
+	/*query += " WHERE " + where*/
 	query += " ORDER BY time DESC LIMIT 1"
 	fmt.Printf("Query: %s\n", query) // Need to debuggig
-	res, err := InfluxdbQueryCpu(query)
+	res, err := InfluxdbQueryMem(query)
 	if err != nil {
 		return nil
 	}
 	return res
 }
 
-func MakeStructForStatsStructCpu(s *CpuStat, data []interface{}) error {
+func MakeStructForStatsStructMem(s *MemStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
 		}
 	}
 
-	s.Cpu = data[1].(string)
-	s.UsageIdle = data[2].(json.Number)
+	s.Available = data[1].(json.Number)
+	s.AvailablePercent = data[2].(json.Number)
 	return nil
 }
 
-func InfluxdbQueryCpu(query string) (*client.Response, error) {
+func InfluxdbQueryMem(query string) (*client.Response, error) {
 	if query == "" {
 		return nil, errors.New("Invalid query message.\n")
 	}
@@ -84,7 +84,7 @@ func InfluxdbQueryCpu(query string) (*client.Response, error) {
 	var q client.Query
 	var c client.Client
 
-	if c = config.NewClient(); c == nil {
+	if c = NewClient(); c == nil {
 		return nil, errors.New("Fail to client create\n")
 	}
 	defer c.Close()
