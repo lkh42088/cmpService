@@ -16,11 +16,12 @@ type MemStat struct {
 	Time             time.Time   `json:"time"`
 	Available        json.Number `json:"available"`
 	AvailablePercent json.Number `json:"available_percent"`
+	Total            json.Number `json:"total"`
 }
 
 func (h *Handler) GetMonitorMem(c *gin.Context) {
 	dbname := "mem"
-	field := `"time","available","available_percent"`
+	field := `"time","available","available_percent", total`
 	/*where := fmt.Sprintf(`cpu = 'cpu-total'`)*/
 	res := GetMeasurementsWithConditionMem(dbname, field)
 
@@ -73,6 +74,7 @@ func MakeStructForStatsStructMem(s *MemStat, data []interface{}) error {
 
 	s.Available = data[1].(json.Number)
 	s.AvailablePercent = data[2].(json.Number)
+	s.Total = data[3].(json.Number)
 	return nil
 }
 
