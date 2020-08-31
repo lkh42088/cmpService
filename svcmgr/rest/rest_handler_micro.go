@@ -5,13 +5,15 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/common/models"
+	"cmpService/mcagent/websocketproxy"
 	"cmpService/svcmgr/config"
 	"cmpService/svcmgr/mcapi"
+	"flag"
 	"fmt"
 	"github.com/evangwt/go-vncproxy"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/net/websocket"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -199,16 +201,31 @@ func NewVNCProxy(targetAddr string) *vncproxy.Proxy {
 	})
 }
 
+
+func GetWebsockProxy() {
+	addr := "ws://192.168.0.89:15901"
+	flagBackend := flag.String("backend", addr, "Backend URL for proxying")
+	target, err := url.Parse(*flagBackend)
+	if err != nil {
+		fmt.Println("GetWebsockProxy: error", err)
+	}
+	err = http.ListenAndServe("192.168.0.89:5900", websocketproxy.NewProxy(target))
+	if err != nil {
+		fmt.Println("GetWebsockProxy: listen error", err)
+	}
+}
+
 func (h *Handler) GetMcVmVnc(c *gin.Context) {
 	target := c.Param("target")
 	port := c.Param("port")
 
 	addr := fmt.Sprintf("%s:%s", target, port)
 	fmt.Println("GetMcVmVnc:", addr)
-	vncProxy := NewVNCProxy(addr)
 
-	wh := websocket.Handler(vncProxy.ServeWS)
-	wh.ServeHTTP(c.Writer, c.Request)
+	//vncProxy := NewVNCProxy(addr)
+	//wh := websocket.Handler(vncProxy.ServeWS)
+	//wh.ServeHTTP(c.Writer, c.Request)
+
 }
 
 func (h *Handler) GetMcVms(c *gin.Context) {
