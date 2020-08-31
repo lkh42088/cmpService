@@ -54,6 +54,7 @@ func (l *LibvirtResource) Start(parentwg *sync.WaitGroup) {
 		fmt.Printf("LibvirtResource Loop %d -----------------\n", loop)
 		loop += 1
 	}
+	parentwg.Done()
 }
 
 func (l *LibvirtResource) Run() {

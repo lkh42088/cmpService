@@ -10,6 +10,19 @@ import (
 	"strings"
 )
 
+var libvirtConn *libvirt.Connect
+
+func GetQemuConnect() (*libvirt.Connect, error){
+	if libvirtConn == nil {
+		conn, err := libvirt.NewConnect("qemu:///system")
+		if err != nil {
+			libvirtConn = conn
+		}
+		return conn, err
+	}
+	return libvirtConn, nil
+}
+
 func ConvertVmStatus(status libvirt.DomainState) string {
 	var res string
 	switch status {
