@@ -20,6 +20,20 @@ func GetMeasurementsWithCondition(collector string, field string, where string) 
 	return res
 }
 
+func GetMeasurementsWithConditionOrderLimit(collector string, field string, where string) *client.Response {
+	query := "SELECT " + field + " FROM " + collector
+	if where != "" {
+		query += " WHERE " + where
+	}
+	query += " ORDER BY time DESC LIMIT 1"
+	//fmt.Printf("Query: %s\n", query)	// Need to debuggig
+	res, err := InfluxdbQuery(query)
+	if err != nil {
+		return nil
+	}
+	return res
+}
+
 func InfluxdbQuery(query string) (*client.Response, error) {
 	if query == "" {
 		return nil, errors.New("Invalid query message.\n")
