@@ -1,9 +1,6 @@
 .idea
 svcmgr/svcmgr.conf
-<<<<<<< HEAD
-=======
 svcmgr/svcmgr.lkh.conf
->>>>>>> 9e05f7c2a247c794aca4dc93cb52bf12066e5561
 svcmgr/svcmgr.exe
 go.sum
 go.mod
@@ -12,3 +9,15 @@ svcmgr.conf
 node_modules
 yarn.lock
 
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
