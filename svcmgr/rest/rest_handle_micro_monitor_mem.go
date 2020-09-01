@@ -11,10 +11,10 @@ import (
 	"time"
 )
 
-func GetVmInterfaceCpu(c *gin.Context) {
-	dbname := "cpu"
-	field := `"time","cpu","usage_idle"`
-	where := fmt.Sprintf(`cpu = 'cpu-total'`)
+func GetVmInterfaceMem(c *gin.Context) {
+	dbname := "mem"
+	field := `"time","available","available_percent", total`
+	where := ""
 	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
 	if res.Results[0].Series == nil ||
@@ -26,7 +26,7 @@ func GetVmInterfaceCpu(c *gin.Context) {
 
 	// Convert response data
 	v := res.Results[0].Series[0].Values
-	stat := make([]models.CpuStat, len(v))
+	stat := make([]models.MemStat, len(v))
 	var convTime time.Time
 	for i, data := range v {
 		// select time check
@@ -34,7 +34,7 @@ func GetVmInterfaceCpu(c *gin.Context) {
 
 		// make struct
 		stat[i].Time = convTime
-		if err := MakeStructForStatsCpu(&stat[i], data); err != nil {
+		if err := MakeStructForStatsMem(&stat[i], data); err != nil {
 			lib.LogWarn("Error : %s\n", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 			return
@@ -45,14 +45,14 @@ func GetVmInterfaceCpu(c *gin.Context) {
 	c.JSON(http.StatusOK, stat)
 }
 
-func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
+func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
 		}
 	}
-
-	s.Cpu = data[1].(string)
-	s.UsageIdle = data[2].(json.Number)
+	s.Available = data[1].(json.Number)
+	s.AvailablePercent = data[2].(json.Number)
+	s.Total = data[3].(json.Number)
 	return nil
 }
