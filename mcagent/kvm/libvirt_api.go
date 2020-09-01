@@ -115,6 +115,12 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 					//	fmt.Printf("%s\n", ip.Address)
 					//}
 				}
+				graps := domcfg.Devices.Graphics
+				for _, grap := range graps {
+					if grap.VNC != nil {
+						vm.VncPort = fmt.Sprintf("%d", grap.VNC.Port)
+					}
+				}
 			}
 			//****************************************************************
 			// os type

@@ -43,10 +43,11 @@ func RunWs(wgParent *sync.WaitGroup, port string) error {
 }
 
 func proxyHandlerCustom(ws *websocket.Conn) {
-	log.Println("VNC:Config", ws.Config())
-	log.Println("VNC:Requset", ws.Request())
+	log.Println("VNC:Config Path", ws.Config().Location.Path)
+	//log.Println("VNC:Requset", ws.Request())
 	arr := strings.Split(ws.Config().Location.Path, "/")
 	if len(arr) != 4 {
+		fmt.Printf("[ERROR] arr len %d\n", len(arr))
 		return
 	}
 	address := arr[2]
@@ -54,7 +55,8 @@ func proxyHandlerCustom(ws *websocket.Conn) {
 	addr := fmt.Sprintf("%s:%s", address, port)
 	conn, err := getConnCustom(addr)
 	if err != nil {
-		log.Printf("[ERROR] %v\n", err)
+		//log.Printf("[ERROR] %v\n", err)
+		fmt.Printf("[ERROR] %v\n", err)
 		return
 	}
 
@@ -71,5 +73,6 @@ func proxyHandlerCustom(ws *websocket.Conn) {
 }
 
 func getConnCustom(addr string) (io.ReadWriteCloser, error) {
+	fmt.Println(">>> getConnCustom Tcp addr:", addr)
 	return net.Dial("tcp", addr)
 }

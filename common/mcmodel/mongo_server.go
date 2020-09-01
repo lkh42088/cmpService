@@ -29,6 +29,7 @@ type MgoVm struct {
 	Network        string `json:"network"`
 	IpAddr         string `json:"ipAddr"`
 	IsChangeIpAddr bool   `json:"-"`
+	VncPort        string `json:"vncPort"`
 	Mac            string `json:"mac"`
 	ConfigStatus   string `json:"configStatus"`
 	CurrentStatus  string `json:"currentStatus"`
