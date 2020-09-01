@@ -222,6 +222,7 @@ func (h *Handler) GetMcVmVnc(c *gin.Context) {
 	addr := fmt.Sprintf("%s:%s", target, port)
 	fmt.Println("GetMcVmVnc:", addr)
 
+	GetWebsockProxy()
 	//vncProxy := NewVNCProxy(addr)
 	//wh := websocket.Handler(vncProxy.ServeWS)
 	//wh.ServeHTTP(c.Writer, c.Request)
