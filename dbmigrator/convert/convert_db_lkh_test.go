@@ -1,8 +1,11 @@
 package convert
 
 import (
+	"cmpService/common/db"
+	"cmpService/common/mariadblayer"
 	"cmpService/dbmigrator/config"
 	"cmpService/dbmigrator/insert"
+	"fmt"
 	"testing"
 )
 
@@ -29,4 +32,35 @@ func TestLkhDeleteDb(t *testing.T) {
 func TestLkhClearNewMariaDb(t *testing.T) {
 	config.SetConfig(getDbConfig("dbmigrator.lkh.conf"))
 	DropNewMariadbTable()
+}
+
+//***************************************************************************
+// Micro Cloud
+//***************************************************************************
+func TestLkhMicroCloudCreateDb(t *testing.T) {
+	config.SetConfig(getDbConfig("dbmigrator.lkh.conf"))
+
+	newConfig := config.GetNewDatabaseConfig()
+	newOptions := db.GetDataSourceName(newConfig)
+	newDb, err := mariadblayer.NewDBORM(newConfig.DBDriver, newOptions)
+	if err != nil {
+		fmt.Println("newConfig Error:", err)
+		return
+	}
+	defer newDb.Close()
+	mariadblayer.CreateMicroCloudTable(newDb.DB)
+}
+
+func TestLkhMicroCloudDropDb(t *testing.T) {
+	config.SetConfig(getDbConfig("dbmigrator.lkh.conf"))
+
+	newConfig := config.GetNewDatabaseConfig()
+	newOptions := db.GetDataSourceName(newConfig)
+	newDb, err := mariadblayer.NewDBORM(newConfig.DBDriver, newOptions)
+	if err != nil {
+		fmt.Println("newConfig Error:", err)
+		return
+	}
+	defer newDb.Close()
+	mariadblayer.DropMicroCloudTable(newDb.DB)
 }

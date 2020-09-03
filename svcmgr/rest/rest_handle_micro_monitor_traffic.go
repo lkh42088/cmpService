@@ -15,13 +15,13 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	mac := c.Param("mac")
 	dbname := "interface"
 	field := `"time","hostname","ifDescr","ifPhysAddress","ifInOctets","ifOutOctets"`
-	where := fmt.Sprintf(`"ifPhysAddress"='%s' AND time > now() - %s`, mac, "1h")
+	where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "1h")
 	res := conf.GetMeasurementsWithCondition(dbname, field, where)
-
+    //fmt.Println(res.Err)
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
 		lib.LogWarn("InfluxDB Response Error : No Data\n")
-		c.JSON(http.StatusInternalServerError, "No Data")
+		c.JSON(http.StatusInternalServerError, res.Err)
 		return
 	}
 
