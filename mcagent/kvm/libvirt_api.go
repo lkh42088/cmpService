@@ -105,7 +105,7 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 				}
 				interfaces := domcfg.Devices.Interfaces
 				for _, intf := range interfaces {
-					if intf.Source != nil {
+					if intf.Source != nil && intf.Source.Network != nil {
 						vm.Network = intf.Source.Network.Network
 					}
 					if intf.MAC != nil {
@@ -133,7 +133,7 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 			// ip address
 			domifs, _ := dom.ListAllInterfaceAddresses(0)
 			for _, intf := range domifs {
-				//fmt.Printf("   intf%d: %s, %s", i, intf.Name, intf.Hwaddr)
+				//fmt.Printf("   intf: %s, %s", intf.Name, intf.Hwaddr)
 				for _, ip := range intf.Addrs {
 					//fmt.Printf(", %s", ip.Addr)
 					vm.IpAddr = ip.Addr
