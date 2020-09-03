@@ -6,8 +6,10 @@ import (
 	"cmpService/common/mariadblayer"
 	config2 "cmpService/svcmgr/config"
 	"cmpService/svcmgr/rest"
+	"cmpService/svcmgr/ws-tcp-proxy/server"
 	"flag"
 	"fmt"
+	"sync"
 )
 
 func main() {
@@ -26,7 +28,14 @@ func main() {
 
 	config2.SetInfluxDB()
 
-	SetRestServer(db)
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go server.SetWebsocketServer(&wg, "8083")
+
+	go SetRestServer(&wg, db)
+
+	wg.Wait()
 }
 
 func SetMariaDBOld() (db *mariadblayer.DBORM, err error) {
@@ -49,7 +58,7 @@ func SetMariaDBOld() (db *mariadblayer.DBORM, err error) {
 	return db, err
 }
 
-func SetRestServer(db *mariadblayer.DBORM) {
+func SetRestServer(wgParent *sync.WaitGroup, db *mariadblayer.DBORM) {
 	cfg := config2.ReadConfig(config2.SvcmgrConfigPath)
 	restServer := fmt.Sprintf("%s:%s", cfg.RestServerIp, cfg.RestServerPort)
 	config2.SvcmgrGlobalConfig.RestServer = restServer
@@ -57,6 +66,7 @@ func SetRestServer(db *mariadblayer.DBORM) {
 	webserver := fmt.Sprintf("%s:%s", cfg.WebServerIP, cfg.WebServerPort)
 	rest.WebServerAddress = webserver
 	rest.RunAPI(restServer, db)
+	wgParent.Done()
 }
 
 /*

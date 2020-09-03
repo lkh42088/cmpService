@@ -87,6 +87,7 @@ func (db *DBORM) UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
 			"vm_vmIndex":        obj.VmIndex,
 			"vm_ip_addr":        obj.IpAddr,
 			"vm_mac":            obj.Mac,
+			"vm_vnc_port":       obj.VncPort,
 			"vm_current_status": obj.CurrentStatus,
 			"vm_remote_addr":    obj.RemoteAddr,
 		}).Error

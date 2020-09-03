@@ -243,6 +243,7 @@ type McVm struct {
 	Network       string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
 	IpAddr        string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
 	RemoteAddr    string `gorm:"type:varchar(50);column:vm_remote_addr;comment:'Remote Address for RDP'" json:"remoteAddr"`
+	VncPort       string `gorm:"type:varchar(50);column:vm_vnc_port;comment:'vm vnc port'" json:"vncPort"`
 	Mac           string `gorm:"type:varchar(50);column:vm_mac;comment:'vm mac address'" json:"mac"`
 	ConfigStatus  string `gorm:"type:varchar(50);column:vm_config_status;comment:'vm config status'" json:"configStatus"`
 	CurrentStatus string `gorm:"type:varchar(50);column:vm_current_status;comment:'vm current status'" json:"currentStatus"`

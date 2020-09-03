@@ -165,6 +165,9 @@ func GetDnatList() *[]utils.DnatRule {
 }
 
 func AddDnatRuleByVm(vm *mcmodel.MgoVm) {
+	if vm.IpAddr == "" {
+		return
+	}
 	rule := GetDnatRuleConfigByVm(vm)
 	// Get Dnat Rules
 	dnatList := GetDnatList()

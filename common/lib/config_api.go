@@ -35,6 +35,8 @@ func WriteJsonFile(path string, cfg interface{}) error {
 		return err
 	}
 
+	file.Sync()
+
 	return nil
 }
 
