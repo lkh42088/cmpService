@@ -329,7 +329,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 		fmt.Println("ModifyUser: error 5.", err)
 		return
 	}
-	//fmt.Println("■ Modify user:", updateUser)
+	fmt.Println("■■■■■■■■■■■■■■■■■■■■■ Modify user:", updateUser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": updateUser})
 }
 

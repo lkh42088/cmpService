@@ -39,9 +39,9 @@ func (db *DBORM) GetUserByEmail(email string) (user models.User, err error) {
 }
 
 func (db *DBORM) AddUser(user models.User) (models.User, error) {
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 AvataFile : ", user.AvataFile)
+	/*fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 AvataFile : ", user.AvataFile)
 	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 user : ", user)
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 UserId : ", user.UserId)
+	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 UserId : ", user.UserId)*/
 	return user, db.Debug().Create(&user).Error
 }
 
