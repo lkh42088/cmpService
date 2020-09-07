@@ -53,7 +53,7 @@ func (k *KvmRoutine) Start(parentwg *sync.WaitGroup) {
 	for {
 		k.Run()
 		time.Sleep(time.Duration(k.Interval * int(time.Second)))
-		fmt.Printf("%d. KvmRoutine(%ds)\n", loop, k.Interval)
+		//fmt.Printf("%d. KvmRoutine(%ds)\n", loop, k.Interval)
 		loop += 1
 	}
 	parentwg.Done()
