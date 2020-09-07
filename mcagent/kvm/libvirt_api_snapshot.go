@@ -8,7 +8,7 @@ import (
 /******************************************************************************
  * Snapshot
  ******************************************************************************/
-func CreateSnapshot(name, desc string) (snap *libvirt.DomainSnapshot, err error) {
+func CreateSnapshot(name, snapName, desc string) (snap *libvirt.DomainSnapshot, err error) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
 		return nil, err
@@ -16,13 +16,37 @@ func CreateSnapshot(name, desc string) (snap *libvirt.DomainSnapshot, err error)
 
 	snap, err = dom.CreateSnapshotXML(fmt.Sprintf(`
 		<domainsnapshot>
+			<name>%s</name>
 			<description>%s</description>
 		</domainsnapshot>
-		`, desc),
+		`, snapName, desc),
 		0)
-	snapName, _ := snap.GetName()
+	if err != nil {
+		fmt.Println("snap error: ", err)
+		return nil, err
+	}
+	snapName, _ = snap.GetName()
 	fmt.Println("snap name:", snapName)
 	return snap, err
+}
+
+func GetSnapshotsListName(name string) (snaps[]string, err error) {
+	dom, err := GetDomainByName(name)
+	if err != nil {
+		fmt.Println("GetSnapshotListName error:", err)
+		return snaps, err
+	}
+
+	snaps, err = dom.SnapshotListNames(0)
+	if err != nil {
+		fmt.Println("GetSnapshotListName error:", err)
+		return snaps, err
+	}
+
+	for index, snap := range snaps {
+		fmt.Println("index ", index, " name:", snap)
+	}
+	return snaps, err
 }
 
 func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
@@ -37,6 +61,24 @@ func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
 		fmt.Println("index ", index, " name:", name)
 		desc, _ := snap.GetXMLDesc(0)
 		fmt.Println("        desc: ", desc)
+	}
+	return snaps, err
+}
+
+func DeleteAllSnapshot(name string) (snaps []libvirt.DomainSnapshot, err error) {
+	dom, err := GetDomainByName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	snaps, err = dom.ListAllSnapshots(0)
+	for index, snap := range snaps {
+		name, _ := snap.GetName()
+		fmt.Println("index ", index, " name:", name)
+		err = snap.Delete(0)
+		if err != nil {
+			fmt.Println(" error:", err)
+		}
 	}
 	return snaps, err
 }
