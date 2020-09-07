@@ -15,7 +15,7 @@ var libvirtConn *libvirt.Connect
 func GetQemuConnect() (*libvirt.Connect, error){
 	if libvirtConn == nil {
 		conn, err := libvirt.NewConnect("qemu:///system")
-		if err != nil {
+		if conn != nil {
 			libvirtConn = conn
 		}
 		return conn, err
