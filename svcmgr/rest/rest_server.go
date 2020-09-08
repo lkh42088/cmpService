@@ -246,11 +246,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroServerRegister, h.AddMcServer)
 	router.POST(lib.SvcmgrApiMicroServerUnRegister, h.DeleteMcServer)
 	router.GET(lib.SvcmgrApiMicroServerSearchCompany+"/:cpIdx", h.GetMcServersByCpIdx)
-	router.GET(lib.SvcmgrApiMicroServerPaging+pagingParam, h.GetMcServers)
+	router.GET(lib.SvcmgrApiMicroServerPaging+pagingParam+"/:cpName", h.GetMcServers)
 
 	router.POST(lib.SvcmgrApiMicroVmRegister, h.AddMcVm)
 	router.POST(lib.SvcmgrApiMicroVmUnRegister, h.DeleteMcVm)
-	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam, h.GetMcVms)
+	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam+"/:cpName", h.GetMcVms)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
 	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
 
