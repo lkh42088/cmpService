@@ -23,6 +23,10 @@ func GetAllNetwork() (networks []libvirt.Network, err error) {
 	}
 	defer conn.Close()
 	networks, err = conn.ListAllNetworks(0)
+	if err != nil {
+		fmt.Println("GetAllNetwork: error2", err)
+		return networks, err
+	}
 	//for index, net := range networks {
 	//	name, _ := net.GetName()
 	//	bridge, _ := net.GetBridgeName()

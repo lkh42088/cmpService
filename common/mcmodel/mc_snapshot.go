@@ -4,7 +4,7 @@ import "cmpService/common/models"
 
 type McVmSnapshot struct {
 	Idx    uint   `gorm:"primary_key;column:vs_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
-	VmIdx  uint   `gorm:"primary_key;column:vs_vm_idx;not null;auto_increment;comment:'INDEX'" json:"vmIdx"`
+	VmIdx  uint   `gorm:"column:vs_vm_idx;not null;auto_increment;comment:'INDEX'" json:"vmIdx"`
 	Name   string `gorm:"type:varchar(50);column:vs_name;comment:'vm snapshot 이름'" json:"snapName"`
 }
 

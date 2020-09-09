@@ -15,6 +15,10 @@ var libvirtConn *libvirt.Connect
 func GetQemuConnect() (*libvirt.Connect, error){
 	if libvirtConn == nil {
 		conn, err := libvirt.NewConnect("qemu:///system")
+		if err != nil {
+			fmt.Println("GetQemuConnect error:", err)
+			return conn, err
+		}
 		if conn != nil {
 			libvirtConn = conn
 		}
@@ -78,6 +82,11 @@ func DumpMcVirtInfo() {
 func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 	// Get Vms Domains
 	doms, err := GetDomainListAll()
+	if err != nil {
+		fmt.Println("GetMgoVmByLibvirt error:", err)
+		return vmList
+	}
+
 	if err == nil {
 		for _, dom := range doms {
 			// vm name
@@ -157,56 +166,59 @@ func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
 
 	// Get Networks
 	nets, err := GetAllNetwork()
-	if err == nil {
-		for _, net := range nets {
-			var network mcmodel.MgoNetwork
-			name, _ := net.GetName()
-			network.Name = name
-			bridge, _ := net.GetBridgeName()
-			network.Bridge = bridge
+	if err != nil {
+		fmt.Println("GetMgoNetworkByLibvirt error:", err)
+		return netList
+	}
 
-			xmlstr, _ := net.GetXMLDesc(0)
-			netcfg := &libvirtxml.Network{}
-			err = netcfg.Unmarshal(xmlstr)
-			mode := netcfg.Forward.Mode
-			network.Mode = mode
-			fmt.Println("Network:", mode)
-			if netcfg.MAC != nil {
-				mac := netcfg.MAC.Address
-				network.Mac = mac
-			}
-			network.Uuid = netcfg.UUID
-			for _, Ip := range netcfg.IPs {
-				netIp := Ip.Address
-				netNetmask := Ip.Netmask
-				network.Ip = netIp
-				network.Netmask = netNetmask
-				network.Prefix = Ip.Prefix
-				if Ip.DHCP != nil {
-					netDhcp := Ip.DHCP
-					for _, dhcprange := range netDhcp.Ranges {
-						//fmt.Printf("   range %d: %s, %s\n", j, dhcprange.Start, dhcprange.End)
-						network.DhcpStart = dhcprange.Start
-						network.DhcpEnd = dhcprange.End
-					}
-					//for _, host := range netDhcp.Hosts {
-					//	fmt.Printf("   host: %s, %s, %s, %s", host.ID, host.MAC, host.Name, host.IP)
-					//}
-				}
-			}
-			dhcps, _ := net.GetDHCPLeases()
-			for _, dhcp := range dhcps {
-				//fmt.Printf("   dhcp %d: %s, %s, %s, %s\n",
-				//	i, dhcp.Iface, dhcp.Mac, dhcp.IPaddr, dhcp.Hostname)
-				var host mcmodel.MgoNetworkHost
-				host.Mac = dhcp.Mac
-				host.Ip = dhcp.IPaddr
-				host.Hostname = dhcp.Hostname
-				network.Host = append(network.Host, host)
-			}
-			//network.Dump()
-			netList = append(netList, network)
+	for _, net := range nets {
+		var network mcmodel.MgoNetwork
+		name, _ := net.GetName()
+		network.Name = name
+		bridge, _ := net.GetBridgeName()
+		network.Bridge = bridge
+
+		xmlstr, _ := net.GetXMLDesc(0)
+		netcfg := &libvirtxml.Network{}
+		err = netcfg.Unmarshal(xmlstr)
+		mode := netcfg.Forward.Mode
+		network.Mode = mode
+		fmt.Println("Network:", mode)
+		if netcfg.MAC != nil {
+			mac := netcfg.MAC.Address
+			network.Mac = mac
 		}
+		network.Uuid = netcfg.UUID
+		for _, Ip := range netcfg.IPs {
+			netIp := Ip.Address
+			netNetmask := Ip.Netmask
+			network.Ip = netIp
+			network.Netmask = netNetmask
+			network.Prefix = Ip.Prefix
+			if Ip.DHCP != nil {
+				netDhcp := Ip.DHCP
+				for _, dhcprange := range netDhcp.Ranges {
+					//fmt.Printf("   range %d: %s, %s\n", j, dhcprange.Start, dhcprange.End)
+					network.DhcpStart = dhcprange.Start
+					network.DhcpEnd = dhcprange.End
+				}
+				//for _, host := range netDhcp.Hosts {
+				//	fmt.Printf("   host: %s, %s, %s, %s", host.ID, host.MAC, host.Name, host.IP)
+				//}
+			}
+		}
+		dhcps, _ := net.GetDHCPLeases()
+		for _, dhcp := range dhcps {
+			//fmt.Printf("   dhcp %d: %s, %s, %s, %s\n",
+			//	i, dhcp.Iface, dhcp.Mac, dhcp.IPaddr, dhcp.Hostname)
+			var host mcmodel.MgoNetworkHost
+			host.Mac = dhcp.Mac
+			host.Ip = dhcp.IPaddr
+			host.Hostname = dhcp.Hostname
+			network.Host = append(network.Host, host)
+		}
+		//network.Dump()
+		netList = append(netList, network)
 	}
 
 	return netList

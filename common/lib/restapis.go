@@ -10,7 +10,7 @@ const (
 	McUrlCreateVm           = McUrlVm + "/create"
 	McUrlDeleteVm           = McUrlVm + "/delete"
 	McUrlGetVmById          = McUrlVm + "/:id"
-	McUrlGetVmSnapshot      = McUrlVm + "/snapshot"
+	McUrlGetVmSnapshot      = "/snapshot"
 	McUrlAddVmSnapshot      = McUrlGetVmSnapshot + "/add"
 	McUrlUpdateVmSnapshot   = McUrlGetVmSnapshot + "/update"
 	McUrlDeleteVmSnapshot   = McUrlGetVmSnapshot + "/delete"
