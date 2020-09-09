@@ -30,6 +30,43 @@ func CreateSnapshot(name, snapName, desc string) (snap *libvirt.DomainSnapshot, 
 	return snap, err
 }
 
+func SafeSnapshot(name, snapName, desc string) (snap *libvirt.DomainSnapshot, err error) {
+	dom, err := GetDomainByName(name)
+	if err != nil {
+		return nil, err
+	}
+
+	isChangeState := false
+	state, _, _ := dom.GetState()
+	if state == libvirt.DOMAIN_RUNNING {
+		fmt.Println("Suspend")
+		dom.Suspend()
+		isChangeState = true
+	}
+
+	snap, err = dom.CreateSnapshotXML(fmt.Sprintf(`
+		<domainsnapshot>
+			<name>%s</name>
+			<description>%s</description>
+		</domainsnapshot>
+		`, snapName, desc),
+		0)
+
+	if isChangeState == true {
+		dom.Resume()
+		fmt.Println("Resume")
+	}
+
+	if err != nil {
+		fmt.Println("snap error: ", err)
+		return nil, err
+	}
+
+	snapName, _ = snap.GetName()
+	fmt.Println("snap name:", snapName)
+	return snap, err
+}
+
 func GetSnapshotsListName(name string) (snaps[]string, err error) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
