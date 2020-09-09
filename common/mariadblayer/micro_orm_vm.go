@@ -13,7 +13,13 @@ func (db *DBORM) GetMcVmsByServerIdx(serverIdx int) (obj []mcmodel.McVm, err err
 		Find(&obj).Error
 }
 
-func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error) {
+func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmodel.McVmPage, err error) {
+	var query string
+	if cpName == "all" {
+		query = ""
+	} else {
+		query = "c.cp_name = '" + cpName + "'"
+	}
 	err = db.
 		Table("mc_vm_tb").
 		Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
@@ -22,6 +28,7 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, e
 		Order(vms.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).
+		Where(query).
 		Find(&vms.Vms).Error
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)

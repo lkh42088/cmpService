@@ -6,7 +6,14 @@ import (
 	"cmpService/common/models"
 )
 
-func (db *DBORM) GetMcServersPage(paging models.Pagination) (servers mcmodel.McServerPage, err error) {
+func (db *DBORM) GetMcServersPage(paging models.Pagination, cpName string) (
+	servers mcmodel.McServerPage, err error) {
+	var query string
+	if cpName == "all" {
+		query = ""
+	} else {
+		query = "c.cp_name = '" + cpName + "'"
+	}
 	err = db.
 		Table("mc_server_tb").
 		Select("mc_server_tb.*, c.cp_name").
@@ -14,6 +21,8 @@ func (db *DBORM) GetMcServersPage(paging models.Pagination) (servers mcmodel.McS
 		Order(servers.GetOrderBy(paging.OrderBy, paging.Order)).
 		Limit(paging.RowsPerPage).
 		Offset(paging.Offset).
+		//Where("c.cp_name = ?", cpName).
+		Where(query).
 		Find(&servers.Servers).Error
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)

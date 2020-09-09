@@ -106,6 +106,11 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
+	cpName := c.Param("cpName")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
 
 	page := models.Pagination{
 		TotalCount:  0,
@@ -116,7 +121,7 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 	}
 	fmt.Println("1. page:")
 	page.String()
-	servers, err := h.db.GetMcServersPage(page)
+	servers, err := h.db.GetMcServersPage(page, cpName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -250,6 +255,11 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
+	cpName := c.Param("cpName")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
 
 	page := models.Pagination{
 		TotalCount:  0,
@@ -260,7 +270,7 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 	}
 	fmt.Println("1. page:")
 	page.String()
-	vms, err := h.db.GetMcVmsPage(page)
+	vms, err := h.db.GetMcVmsPage(page, cpName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

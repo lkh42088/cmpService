@@ -20,6 +20,7 @@ type LibvirtCpuDelta struct {
 	EachCpu		uint64
 }
 const NANO_SECONDS = 10000000000
+const INTERVAL_SECONDS = 5
 
 var testVal = make([]LibvirtCpuDelta, 5)
 
@@ -34,7 +35,7 @@ func SetLibvirtStatistics(s *LibvirtStatistics) {
 }
 
 func ConfigureLibvirtStatstics() {
-	s := NewLibvirtStatistics(5)
+	s := NewLibvirtStatistics(INTERVAL_SECONDS)
 	SetLibvirtStatistics(s)
 }
 
@@ -60,9 +61,9 @@ func (s *LibvirtStatistics) Run() {
 	}
 	for i, dom := range doms {
 		name, _ := dom.GetName()
-		fmt.Println(">>>> Statistics:", name)
+		//fmt.Println(">>>> Statistics:", name)
 
-		//vcpumax, _ := dom.GetMaxVcpus()
+		vcpumax, _ := dom.GetMaxVcpus()
 		//fmt.Println(" cpuinfo: max", vcpumax)
 
 		//vcpuinfo, _ := dom.GetVcpus()
@@ -73,16 +74,56 @@ func (s *LibvirtStatistics) Run() {
 
 		//jobStats, _ := dom.GetJobStats(1)
 		//DumpDomainJobInfo(jobStats)
-		if i == 1 {
-			//tmpStats, _ := dom.GetInfo()
-			//DumpDomainInfo(tmpStats) // vm simple cpu usage
-			vcpustat, _ := dom.GetCPUStats(-1, 0, 0)
-			//DumpCpuStats(&vcpustat)
-			//CalcTotalCPUUsage(*tmpStats, vcpustat, i)
-			CalcEachCPUUsage(vcpustat, i)
-		}
+
+		//tmpStats, _ := dom.GetInfo()
+		//DumpDomainInfo(tmpStats) // vm simple cpu usage
+
+		vcpustat, _ := dom.GetCPUStats(-1, 0, 0)
+		//DumpCpuStats(&vcpustat)
+		CalcEachCPUUsage(vcpustat, i, name, vcpumax)
+
+		/** memory */
+		//memstat, _ := dom.MemoryStats(4, 0)
+		//DumpDomainMemStats(memstat)
+
+		//mempeek, _ := dom.MemoryPeek(0, 64000, 0)
+		//DumpDomainMemPeek(mempeek)
+
+		//memmax, _ := dom.GetMaxMemory()
+		//DumpDomainMemMax(memmax)
+
+		//memparam, _ := dom.GetMemoryParameters(0)
+		//DumpDomainMemParam(memparam)
+
+		//fsinfo, _ := dom.GetFSInfo(0)
+		//DumpFSInfo(fsinfo)
+
 	}
 	//SystemCpu()
+}
+
+func DumpFSInfo(fs []libvirt.DomainFSInfo) string {
+	pretty, _ := json.MarshalIndent(fs, "", "  ")
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
+}
+
+func DumpDomainMemParam(m *libvirt.DomainMemoryParameters) string {
+	pretty, _ := json.MarshalIndent(m, "", "  ")
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
+}
+
+func DumpDomainMemMax(m uint64) string {
+	pretty, _ := json.MarshalIndent(m, "", "  ")
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
+}
+
+func DumpDomainMemStats(m []libvirt.DomainMemoryStat) string {
+	pretty, _ := json.MarshalIndent(m, "", "  ")
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
 }
 
 func DumpDomainJobInfo(c *libvirt.DomainJobInfo) string {
@@ -91,31 +132,19 @@ func DumpDomainJobInfo(c *libvirt.DomainJobInfo) string {
 	return string(pretty)
 }
 
-func CalcTotalCPUUsage (s libvirt.DomainInfo, cpu []libvirt.DomainCPUStats, i int) {
-	//fmt.Println("CPU: ", i, ", Time: ", cpu.CpuTime / 1000000000.)
-	if len(cpu) > 0 {
-		fmt.Println("CPU ", i, " USAGE: ",
-			//float64(s.CpuTime- testVal[i].TotalCpu - cpu[0].SystemTime - cpu[0].UserTime + testVal[i].EachCpu)*100/(NANO_SECONDS), "%")
-		float64(s.CpuTime- testVal[i].TotalCpu)*100/(5*NANO_SECONDS), "%")
-		testVal[i].TotalCpu = s.CpuTime
-		testVal[i].EachCpu = cpu[0].SystemTime + cpu[0].UserTime
-	}
-}
-
-func CalcEachCPUUsage (s []libvirt.DomainCPUStats, i int) {
+func CalcEachCPUUsage (s []libvirt.DomainCPUStats, i int, name string, max uint) {
 	for _, cpu := range(s) {
-		//fmt.Println("CPU: ", i, ", Time: ", cpu.CpuTime / 1000000000.)
-		fmt.Println(float64(cpu.CpuTime - cpu.UserTime - cpu.SystemTime))
-		fmt.Println(math.Abs(float64(cpu.CpuTime - cpu.UserTime - cpu.SystemTime)))
-		fmt.Println(((math.Abs(float64(cpu.CpuTime - cpu.UserTime - cpu.SystemTime)) - float64(testVal[i].TotalCpu)))*100)
-		fmt.Println("CPU ", i, " USAGE: ", ((math.Abs(float64(cpu.CpuTime - cpu.UserTime - cpu.SystemTime)) - float64(testVal[i].TotalCpu))*100*10000)/(5*NANO_SECONDS), "%")
-		testVal[i].TotalCpu = uint64(math.Abs(float64(cpu.CpuTime - cpu.UserTime - cpu.SystemTime)))
+		deltaCpuTime := cpu.CpuTime - cpu.UserTime - cpu.SystemTime
+		timeUnit := uint64(INTERVAL_SECONDS * NANO_SECONDS)
+		result := float64(deltaCpuTime - testVal[i].TotalCpu) / float64(timeUnit)
+
+		fmt.Printf("%s cpu (used : %.2f %%)\n", name, result * 100)
+		testVal[i].TotalCpu = uint64(math.Abs(float64(deltaCpuTime)))
 	}
 }
 
 func CalcCPUUsage (s []libvirt.DomainCPUStats, i int) {
 	for _, cpu := range(s) {
-		//fmt.Println("CPU: ", i, ", Time: ", cpu.CpuTime / 1000000000.)
 		fmt.Println("CPU ", i, " USAGE: ", (float64(cpu.CpuTime-cpu.SystemTime-cpu.UserTime) - float64(testVal[i].TotalCpu))/(2*NANO_SECONDS), "%")
 		testVal[i].TotalCpu = cpu.CpuTime-cpu.SystemTime-cpu.UserTime
 	}
