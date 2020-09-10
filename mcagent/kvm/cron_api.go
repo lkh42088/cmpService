@@ -281,3 +281,18 @@ func AddSnapshotCronBySecond(num string) {
 	c.Stop()
 	time.Sleep(1 * time.Minute)
 }
+
+func UpdateVmStatus(msg *messages.VmStatusActionMsg) {
+	switch(msg.Status) {
+	case "start":
+		KvmStartVm(msg.VmName)
+	case "stop":
+		KvmDestroyVm(msg.VmName)
+	case "restart":
+		KvmResumeVm(msg.VmName)
+	case "suspend":
+		KvmSuspendVm(msg.VmName)
+	case "resume":
+		KvmResumeVm(msg.VmName)
+	}
+}

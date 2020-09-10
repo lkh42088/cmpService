@@ -12,19 +12,22 @@ import (
 
 var libvirtConn *libvirt.Connect
 
-func GetQemuConnect() (*libvirt.Connect, error){
-	if libvirtConn == nil {
-		conn, err := libvirt.NewConnect("qemu:///system")
-		if err != nil {
-			fmt.Println("GetQemuConnect error:", err)
-			return conn, err
-		}
-		if conn != nil {
-			libvirtConn = conn
-		}
+func GetQemuConnect() (*libvirt.Connect, error) {
+	if libvirtConn != nil {
+		return libvirtConn, nil
+	}
+
+	conn, err := libvirt.NewConnect("qemu:///system")
+	if err != nil {
+		fmt.Println("GetQemuConnect error:", err)
 		return conn, err
 	}
-	return libvirtConn, nil
+
+	if conn != nil {
+		libvirtConn = conn
+	}
+
+	return conn, err
 }
 
 func ConvertVmStatus(status libvirt.DomainState) string {

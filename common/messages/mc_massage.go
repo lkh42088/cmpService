@@ -1,6 +1,7 @@
 package messages
 
 type SnapshotConfigMsg struct {
+	ServerIdx uint `json:"serverIdx"`
 	VmName  string `json:"vmName"`
 	Type    string `json:"type"`
 	Days    string `json:"days"`
@@ -17,4 +18,10 @@ type SnapshotEntryMsg struct {
 	CompanyIdx   string `json:"companyIdx"`
 	SerialNumber string `json:"serialNumber"`
 	Entry *[]SnapshotEntry `json:"snapEntry"`
+}
+
+type VmStatusActionMsg struct {
+	ServerIdx uint `json:"serverIdx"`
+	VmName  string `json:"vmName"`
+	Status string `json:"status"` // start, stop, reset
 }

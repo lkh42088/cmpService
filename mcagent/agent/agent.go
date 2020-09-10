@@ -45,11 +45,11 @@ func Start (config string) {
 		wg.Done()
 	}
 
-	if kvm.LibvirtS != nil {
-		go kvm.LibvirtS.Start(&wg)
-	} else {
-		wg.Done()
-	}
+	//if kvm.LibvirtS != nil {
+	//	go kvm.LibvirtS.Start(&wg)
+	//} else {
+	//	wg.Done()
+	//}
 
 	wg.Wait()
 }

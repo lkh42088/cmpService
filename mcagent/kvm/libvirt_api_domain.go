@@ -52,17 +52,20 @@ func GetXmlDomainByName(name string) *libvirtxml.Domain {
 		fmt.Println("GetXmlDomainByName error1")
 		return nil
 	}
+
 	dom, err := conn.LookupDomainByName(name)
 	if err != nil {
 		fmt.Println("GetXmlDomainByName error2")
 		return nil
 	}
+
 	xmldoc, err :=dom.GetXMLDesc(0)
 	if err != nil {
 		fmt.Println("GetXmlDomainByName error3")
+		return nil
 	}
-	fmt.Println("xml:", xmldoc)
 
+	fmt.Println("xml:", xmldoc)
 	domcfg := &libvirtxml.Domain{}
 	err = domcfg.Unmarshal(xmldoc)
 	if err != nil {
@@ -155,12 +158,12 @@ func KvmUndefineVm(name string) {
 func KvmStartVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmUndefine error:", err)
+		fmt.Println("KvmStart error:", err)
 		return
 	}
 	err = dom.Create()
 	if err != nil {
-		fmt.Println("KvmUndefine error:", err)
+		fmt.Println("KvmStart error:", err)
 		return
 	}
 }
@@ -168,12 +171,12 @@ func KvmStartVm(name string) {
 func KvmRebootVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmUndefine error:", err)
+		fmt.Println("KvmRebootVm error:", err)
 		return
 	}
 	err = dom.Reboot(0)
 	if err != nil {
-		fmt.Println("KvmUndefine error:", err)
+		fmt.Println("KvmRebootVm error:", err)
 		return
 	}
 }
@@ -181,12 +184,12 @@ func KvmRebootVm(name string) {
 func KvmResetVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmUndefine error:", err)
+		fmt.Println("KvmResetVm error:", err)
 		return
 	}
 	err = dom.Reset(0)
 	if err != nil {
-		fmt.Println("KvmUndefine error:", err)
+		fmt.Println("KvmResetVm error:", err)
 		return
 	}
 }
