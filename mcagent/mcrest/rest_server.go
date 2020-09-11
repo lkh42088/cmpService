@@ -52,6 +52,9 @@ func Start(parentwg *sync.WaitGroup) {
 	// Search Client Ip
 	rg.GET(lib.McUrlPublicIp, GetClientIp)
 
+	// Windows System API
+	rg.POST(lib.McUrlHealthCheckFromWin, CheckHealth)
+
 	Router.Run(address)
 	if parentwg != nil {
 		parentwg.Done()

@@ -21,4 +21,8 @@ const (
 	McUrlPublicIp           = McUrlPrefix + "/myip"
 	McUrlVmInterfaceTraffic = McUrlMon + "/interface/traffic/:mac"
 	McUrlMonServer          = McUrlMon + "/server"
+
+	// Window system api
+	McUrlWinPrefix			= "/win"
+	McUrlHealthCheckFromWin = McUrlWinPrefix + "/health"
 )
