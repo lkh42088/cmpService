@@ -1,8 +1,8 @@
 package agent
 
 import (
-	"cmpService/vmagent/config"
-	"cmpService/vmagent/vmrest"
+	"cmpService/winagent/config"
+	"cmpService/winagent/winrest"
 	"fmt"
 	"sync"
 )
@@ -19,17 +19,17 @@ func Start (conf string) {
 		return
 	}
 
-	wg.Add(4)
+	wg.Add(1)
 
 	// Rest Api Server
-	go vmrest.Start(&wg)
+	go winrest.Start(&wg)
 
 	// MonitorRoutine VMs
-	if MonitorR != nil {
-		go MonitorR.StartByVirsh(&wg)
-	} else {
-		wg.Done()
-	}
+	//if MonitorR != nil {
+	//	go MonitorR.StartByVirsh(&wg)
+	//} else {
+	//	wg.Done()
+	//}
 
 	wg.Wait()
 }

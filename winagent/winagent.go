@@ -1,24 +1,36 @@
 package main
 
 import (
-	"cmpService/vmagent/agent"
+	"cmpService/winagent/agent"
 	"flag"
 	//"golang.org/x/sys/windows/svc"
 	//"io/ioutil"
+	"os"
 	//"time"
 )
 
+// global variable
+const CONFIG_PATH = "src\\cmpService\\winagent\\winagent.conf"
+
+//var (
+//	user32DLL = windows.NewLazyDLL("user32.dll")
+//	procSystemParamInfo	= user32DLL.NewProc("SystemParametersInfoW")
+//)
+
+/** This is the application for WINDOWS OS VM */
 func main() {
-	config := flag.String("file", "/home/nubes/go/src/cmpService/vmagent/vmagent.conf",
+	gopath := os.Getenv("GOPATH")
+	config := flag.String("file", gopath + CONFIG_PATH,
 		"Input configuration file")
 	flag.Parse()
 	agent.Start(*config)
 }
 
 //type dummyService struct {
+//	Test 	string
 //}
-
-// svc.Handler 인터페이스 구현
+//
+//// svc.Handler 인터페이스 구현
 //func (srv *dummyService) Execute(args []string, req <-chan svc.ChangeRequest, stat chan<- svc.Status) (svcSpecificEC bool, exitCode uint32) {
 //	stat <- svc.Status{State: svc.StartPending}
 //
@@ -59,11 +71,11 @@ func main() {
 //		default:
 //			// 10초 마다 현재시간 새로 쓰기
 //			time.Sleep(10 * time.Second)
-//			ioutil.WriteFile("C:/temp/log.txt", []byte(time.Now().String()), 0)
+//			ioutil.WriteFile("C:\\Users\\user\\log.txt", []byte(time.Now().String()), 0)
 //		}
 //	}
 //}
-//
+
 //func main() {
 //	err := svc.Run("DummyService", &dummyService{})
 //	//err := debug.Run("DummyService", &dummyService{}) //콘솔출력 디버깅시
@@ -74,3 +86,9 @@ func main() {
 
 
 
+//func main()  {
+//	imagePath, _ := windows.UTF16PtrFromString(`C:\Users\User\Pictures\image.jpg`)
+//	fmt.Println("[+] Changing background now...")
+//	procSystemParamInfo.Call(20, 0, uintptr(unsafe.Pointer(imagePath)), 0x001A)
+//
+//}

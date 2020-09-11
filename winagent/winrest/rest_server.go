@@ -1,8 +1,9 @@
-package vmrest
+package winrest
 
 import (
 	"cmpService/common/lib"
-	"cmpService/vmagent/config"
+	"cmpService/winagent/config"
+	"cmpService/winagent/winapi"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -21,10 +22,16 @@ func Start(parentwg *sync.WaitGroup) {
 	fmt.Printf("REST API Server: port %s\n", conf.VmAgentPort)
 	fmt.Printf("REST API Server: address %s\n", address)
 
+	// Health Check
+	winapi.SendMsgToMcAgent("CHECK", lib.ToMcUrlHealth)
+
 	Router = gin.Default()
 
 	//rg := Router.Group(lib.McUrlPrefix)
-	_ = Router.Group(lib.McUrlPrefix)
+	rg := Router.Group(lib.WinUrlPrefix)
+
+	// Health Check
+	rg.GET(lib.WinUrlHealth, HealthCheck)
 
 	// Registration
 	//rg.POST(lib.McUrlRegisterServer, registerServerHandler)
