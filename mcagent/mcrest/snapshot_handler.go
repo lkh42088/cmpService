@@ -33,3 +33,10 @@ func updateVmSnapshot(c *gin.Context) {
 	kvm.UpdateVmSnapshotByConfig(&msg)
 	c.JSON(http.StatusOK, msg)
 }
+
+func updateVmStatus(c *gin.Context) {
+	var msg messages.VmStatusActionMsg
+	c.ShouldBindJSON(&msg)
+	kvm.UpdateVmStatus(&msg)
+	c.JSON(http.StatusOK, msg)
+}

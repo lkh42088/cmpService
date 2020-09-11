@@ -396,3 +396,61 @@ func (h *Handler) GetMcNetworksByServerIdx(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, images)
 }
+
+func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
+	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
+	fmt.Println("GetVmSnapshotConfig")
+	server, err := h.db.GetMcServerByServerIdx(uint(serverIdx))
+	if err != nil {
+		return
+	}
+	vms, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(server.Idx))
+	if err != nil {
+		return
+	}
+	c.JSON(http.StatusOK, vms)
+}
+
+func (h *Handler) AddVmSnapshot(c *gin.Context) {
+	var msg messages.SnapshotConfigMsg
+	c.Bind(&msg)
+	fmt.Println("AddVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendAddVmSnapshot(msg, server)
+}
+
+func (h *Handler) DeleteVmSnapshot(c *gin.Context) {
+	var msg messages.SnapshotConfigMsg
+	c.Bind(&msg)
+	fmt.Println("DeleteVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendDeleteVmSnapshot(msg, server)
+}
+
+func (h *Handler) UpdateVmSnapshot(c *gin.Context) {
+	var msg messages.SnapshotConfigMsg
+	c.Bind(&msg)
+	fmt.Println("UpdateVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendUpdateVmSnapshot(msg, server)
+}
+
+func (h *Handler) UpdateVmStatus(c *gin.Context) {
+	var msg messages.VmStatusActionMsg
+	c.Bind(&msg)
+	fmt.Println("UpdateVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendUpdateVmStatus(msg, server)
+}
