@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+var globalSysInfo SysInfo
+
 func Start (conf string) {
 	var wg sync.WaitGroup
 
@@ -22,19 +24,16 @@ func Start (conf string) {
 	wg.Add(1)
 
 	// Rest Api Server
-	go winrest.Start(&wg)
-
-	// MonitorRoutine VMs
-	//if MonitorR != nil {
-	//	go MonitorR.StartByVirsh(&wg)
-	//} else {
-	//	wg.Done()
-	//}
+	winrest.Start(nil)
 
 	wg.Wait()
 }
 
 func configure() bool {
+
+	CheckMySystem()
+	InsertMacInTelegrafConf(globalSysInfo.IfMac)
+	RestartTelegraf()
 
 	return true
 }

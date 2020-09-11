@@ -15,8 +15,8 @@ func SendMsgToMcAgent(data interface{}, uri string) bool {
 	pbytes, _ := json.Marshal(data)
 	buff := bytes.NewBuffer(pbytes)
 
-	url := fmt.Sprintf("http://%s%s", conf.McAgentIp, uri)
-	fmt.Println("URL: ", url)
+	url := fmt.Sprintf("http://%s%s%s", conf.McAgentIp, ":" + conf.McAgentPort, uri)
+	//fmt.Println("URL: ", url)
 
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {

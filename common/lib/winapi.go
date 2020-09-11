@@ -9,5 +9,5 @@ const (
 // To MC-Agent
 const (
 	ToMcUrlPrefix = "/api/v1/win"
-	ToMcUrlHealth = WinUrlPrefix + "/health"
+	ToMcUrlHealth = ToMcUrlPrefix + "/health"
 )
