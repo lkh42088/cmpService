@@ -61,6 +61,28 @@ func MakeStructForStats(s *models.VmIfStat, data []interface{}) error {
 	return nil
 }
 
+func MakeStructForWinStats(s *models.WinVmIfStat, data []interface{}) error {
+	//fmt.Println("data @@@@ : ", data)
+	for i := 0; i < len(data); i++ {
+		if data[i] == nil {
+			fmt.Println("data[i] : ", data[i])
+			return fmt.Errorf("Data interface is nil.(%d)\n", i)
+		}
+	}
+
+	//s.Hostname = "none"
+	s.BytesReceivedPersec, _ = data[1].(json.Number).Float64()
+	s.BytesSentPersec, _ = data[2].(json.Number).Float64()
+
+	s.BytesReceivedPersec = s.BytesReceivedPersec * 5
+	s.BytesSentPersec = s.BytesSentPersec * 5
+
+
+	// unit.Yaxis = int64(result.BytesReceivedPersec * 5)
+	//fmt.Println("▣▣▣▣▣▣▣ ▣▣▣▣▣▣▣ s..... : ", s)
+	return nil
+}
+
 func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
 	//delta := make([]VmIfStat, len(s))
 	var delta models.VmIfStatistics
@@ -96,4 +118,38 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
 	return response
 }
 
+func MakeDeltaWinValues(s []models.WinVmIfStat) models.VmStatseRsponse {
+	//delta := make([]VmIfStat, len(s))
+	var delta models.WinVmIfStatistics
+	var result models.WinVmIfStat
+	var response models.VmStatseRsponse
+	var unit models.Stats
 
+	response.Stats[0].Id = "RX"
+	response.Stats[1].Id = "TX"
+
+	for i := 0; i < len(s); i++ {
+		if i == 0 {
+			continue
+		}
+		//fmt.Println(i, s[i])
+		result.Time = s[i].Time
+		//result.Hostname = s[i].Hostname
+		// 여기다 곱하기 해줘야 하는거 아냐?
+		result.BytesReceivedPersec = s[i].BytesReceivedPersec
+		result.BytesSentPersec = s[i].BytesSentPersec
+		delta.Stats = append(delta.Stats, result)
+
+		// Make response data set
+		//unit.Xaxis = result.Time.Format("03:04:05")
+		unit.Xaxis = result.Time
+		unit.Yaxis = int64(result.BytesReceivedPersec * 5)
+		response.Stats[0].Data = append(response.Stats[0].Data, unit)
+		unit.Yaxis = int64(result.BytesSentPersec * 5)
+		response.Stats[1].Data = append(response.Stats[1].Data, unit)
+	}
+	//response.Hostname = result.Hostname
+	//fmt.Println("★★★★★★ response : ", response)
+
+	return response
+}

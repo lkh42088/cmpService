@@ -23,7 +23,6 @@ func GetVmInterfaceCpu(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, "No Data")
 		return
 	}
-
 	// Convert response data
 	v := res.Results[0].Series[0].Values
 	stat := make([]models.CpuStat, len(v))
@@ -54,5 +53,16 @@ func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
 
 	s.Cpu = data[1].(string)
 	s.UsageIdle = data[2].(json.Number)
+	return nil
+}
+
+func MakeStructForStatsWinCpu(s *models.WinCpuStat, data []interface{}) error {
+	for i := 0; i < len(data); i++ {
+		if data[i] == nil {
+			return fmt.Errorf("Data interface is nil.(%d)\n", i)
+		}
+	}
+
+	s.PercentIdleTime = data[1].(json.Number)
 	return nil
 }

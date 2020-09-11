@@ -7,6 +7,7 @@ import (
 	"cmpService/common/models"
 	"cmpService/common/websocketproxy"
 	"cmpService/svcmgr/config"
+	conf "cmpService/svcmgr/config"
 	"cmpService/svcmgr/mcapi"
 	"flag"
 	"fmt"
@@ -15,6 +16,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 func (h *Handler) AddMcServer(c *gin.Context) {
@@ -28,7 +30,7 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	}
 
 	// Send to mc server
-	server, _:= h.db.GetMcServerByServerIdx(msg.Idx)
+	server, _ := h.db.GetMcServerByServerIdx(msg.Idx)
 	mcapi.SendMcRegisterServer(server)
 
 	c.JSON(http.StatusOK, msg)
@@ -48,7 +50,7 @@ func (h *Handler) UpdateMcServerResource(c *gin.Context) {
 }
 
 func DeleteMcImagesByServerIdx(idx int) {
-	images , _ := config.SvcmgrGlobalConfig.Mariadb.GetMcImagesByServerIdx(idx)
+	images, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcImagesByServerIdx(idx)
 	fmt.Println("DeleteMcImage: images ", images)
 	for _, img := range images {
 		fmt.Println("img ", img)
@@ -126,7 +128,7 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 func (h *Handler) GetMcServersByCpIdx(c *gin.Context) {
 	cpIdx, _ := strconv.Atoi(c.Param("cpIdx"))
 	servers, err := h.db.GetMcServersByCpIdx(cpIdx)
-	if err != nil  {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}
 	c.JSON(http.StatusOK, servers)
@@ -201,7 +203,6 @@ func NewVNCProxy(targetAddr string) *vncproxy.Proxy {
 	})
 }
 
-
 func GetWebsockProxy() {
 	addr := "ws://192.168.0.89:15901"
 	flagBackend := flag.String("backend", addr, "Backend URL for proxying")
@@ -264,6 +265,7 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+
 	c.JSON(http.StatusOK, vms)
 }
 
@@ -372,7 +374,7 @@ func (h *Handler) GetMcNetworks(c *gin.Context) {
 func (h *Handler) GetMcImagesByServerIdx(c *gin.Context) {
 	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
 	images, err := h.db.GetMcImagesByServerIdx(serverIdx)
-	if err != nil  {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}
 	c.JSON(http.StatusOK, images)
@@ -381,8 +383,152 @@ func (h *Handler) GetMcImagesByServerIdx(c *gin.Context) {
 func (h *Handler) GetMcNetworksByServerIdx(c *gin.Context) {
 	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
 	images, err := h.db.GetMcNetworksByServerIdx(serverIdx)
-	if err != nil  {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}
 	c.JSON(http.StatusOK, images)
+}
+
+func GetVmWinInterface(c *gin.Context) {
+	fmt.Println("GetMcVmsGraphs start!!")
+	mac := c.Param("mac")
+	fmt.Println("mac : ", mac)
+	/* 20200911 todo where mac  조건 추가하고 mac값이 없을 경우 처리 필요 */
+
+	/*---------------------------------------------------------------------------------------------------CPU*/
+	dbname := "win_cpu"
+	field := `"time","Percent_Idle_Time"`
+	where := fmt.Sprintf(`host = 'win_vm'`) /*MAC 조회 필요*/
+	//where := fmt.Sprintf(`host = 'win_vm' AND "mac_address" =~ /.*%s/`, mac)
+	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
+
+	if res.Results[0].Series == nil ||
+		len(res.Results[0].Series[0].Values) == 0 {
+		/*빈값일때 처리 필요......*/
+		lib.LogWarn("win_cpu InfluxDB Response Error : No Data\n")
+		c.JSON(http.StatusInternalServerError, "No Data")
+		return
+	}
+
+
+	v := res.Results[0].Series[0].Values
+	winCpu := make([]models.WinCpuStat, len(v))
+	var cpuTime time.Time
+	for i, data := range v {
+		cpuTime, _ = time.Parse(time.RFC3339, data[0].(string))
+
+		winCpu[i].Time = cpuTime
+		if err := MakeStructForStatsWinCpu(&winCpu[i], data); err != nil {
+			lib.LogWarn("Error : %s\n", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
+	}
+
+	/*---------------------------------------------------------------------------------------------------MEM*/
+	dbname = "win_mem"
+	field = `"time","Available_Bytes"`
+	where = fmt.Sprintf(`host = 'win_vm'`) /*MAC 조회 필요*/
+	res = conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
+
+	if res.Results[0].Series == nil ||
+		/*빈값일때 처리......*/
+		len(res.Results[0].Series[0].Values) == 0 {
+		lib.LogWarn("win_mem InfluxDB Response Error : No Data\n")
+		c.JSON(http.StatusInternalServerError, "No Data")
+		return
+	}
+
+	v = res.Results[0].Series[0].Values
+	winMem := make([]models.WinMemStat, len(v))
+	var memTime time.Time
+	for i, data := range v {
+		memTime, _ = time.Parse(time.RFC3339, data[0].(string))
+
+		winMem[i].Time = memTime
+		if err := MakeStructForStatsWinMem(&winMem[i], data); err != nil {
+			lib.LogWarn("Error : %s\n", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
+	}
+
+	/*--------------------------------------------------------------------------------------------------DISK*/
+	dbname = "win_disk"
+	field = `"time","Free_Megabytes"`
+	where = fmt.Sprintf(`host = 'win_vm'`) /*MAC 조회 필요*/
+	res = conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
+
+	if res.Results[0].Series == nil ||
+		len(res.Results[0].Series[0].Values) == 0 {
+		lib.LogWarn("win_disk InfluxDB Response Error : No Data\n")
+		c.JSON(http.StatusInternalServerError, "No Data")
+		return
+	}
+
+	v = res.Results[0].Series[0].Values
+	winDisk := make([]models.WinDiskStat, len(v))
+	var diskTime time.Time
+	for i, data := range v {
+		diskTime, _ = time.Parse(time.RFC3339, data[0].(string))
+
+		winDisk[i].Time = diskTime
+		if err := MakeStructForStatsWinDisk(&winDisk[i], data); err != nil {
+			lib.LogWarn("Error : %s\n", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
+	}
+	/*-----------------------------------------------------------------------------------------------TRAFFIC*/
+
+	dbname = "win_net"
+	field = `"time","Bytes_Received_persec","Bytes_Sent_persec"`
+	//where = fmt.Sprintf(`"MAC" =~ /.*%s/ AND time > now() - %s`, mac, "1h")
+	where = fmt.Sprintf(`time > now() - %s`, "10m")
+	res = conf.GetMeasurementsWithCondition(dbname, field, where)
+	//fmt.Println(res.Err)
+	if res.Results[0].Series == nil ||
+		len(res.Results[0].Series[0].Values) == 0 {
+		lib.LogWarn("win_net InfluxDB Response Error : No Data\n")
+		c.JSON(http.StatusInternalServerError, res.Err)
+		return
+	}
+
+	//Bytes_Received_persec RX
+	//Bytes_Sent_persec TX
+	// Convert response data
+	v = res.Results[0].Series[0].Values
+	winTraffic := make([]models.WinVmIfStat, len(v))
+	var convTime time.Time
+	for i, data := range v {
+		// select time check
+		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
+
+		// make struct
+		winTraffic[i].Time = convTime
+		//winTraffic[i].IfPhysAddress = mac
+		if err := MakeStructForWinStats(&winTraffic[i], data); err != nil {
+			lib.LogWarn("Error : %s\n", err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+			return
+		}
+	}
+
+	//deltaStats := MakeDeltaWinValues(winTraffic)
+
+	graph := mcmodel.McWinVmGraph{
+		Cpu:     winCpu[0],
+		Mem:     winMem[0],
+		Disk:    winDisk[0],
+		Traffic: winTraffic,
+	}
+
+	/*fmt.Println("----------------------------------------------------------------------------------")
+	fmt.Println("graph : ", graph)
+	fmt.Println("graph CPU : ", graph.Cpu)
+	fmt.Println("graph Mem : ", graph.Mem)
+	fmt.Println("graph Disk : ", graph.Disk)
+	fmt.Println("graph Traffic : ", graph.Traffic)*/
+
+	c.JSON(http.StatusOK, graph)
 }

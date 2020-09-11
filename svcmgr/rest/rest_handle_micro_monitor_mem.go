@@ -56,3 +56,14 @@ func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
 	s.Total = data[3].(json.Number)
 	return nil
 }
+
+func MakeStructForStatsWinMem(s *models.WinMemStat, data []interface{}) error {
+	for i := 0; i < len(data); i++ {
+		if data[i] == nil {
+			return fmt.Errorf("Data interface is nil.(%d)\n", i)
+		}
+	}
+
+	s.AvailableBytes = data[1].(json.Number)
+	return nil
+}

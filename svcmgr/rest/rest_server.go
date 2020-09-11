@@ -111,6 +111,8 @@ type HandlerInterface interface {
 	GetVmInterfaceCpu(c *gin.Context)
 	GetVmInterfaceMem(c *gin.Context)
 	GetVmInterfaceDisk(c *gin.Context)
+
+	GetVmWinInterface(c *gin.Context)
 }
 
 type Handler struct {
@@ -265,10 +267,12 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetVmInterfaceTrafficByMac)
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
-	// Micro Cloud CPU
+	// Micro Cloud GRAPH
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu", GetVmInterfaceCpu)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/mem", GetVmInterfaceMem)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/disk", GetVmInterfaceDisk)
+
+	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac", GetVmWinInterface)
 
 	return router.Run(address)
 }

@@ -60,3 +60,14 @@ func MakeStructForStatsDisk(s *models.DiskStat, data []interface{}) error {
 	s.UsedPercent = data[6].(json.Number)
 	return nil
 }
+
+func MakeStructForStatsWinDisk(s *models.WinDiskStat, data []interface{}) error {
+	for i := 0; i < len(data); i++ {
+		if data[i] == nil {
+			return fmt.Errorf("Data interface is nil.(%d)\n", i)
+		}
+	}
+
+	s.FreeMegabytes = data[1].(json.Number)
+	return nil
+}

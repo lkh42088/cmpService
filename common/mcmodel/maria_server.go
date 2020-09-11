@@ -166,7 +166,7 @@ type McImages struct {
 	Name        string `gorm:"type:varchar(50);column:img_name;comment:'이미지 이름'" json:"name"`
 	Hdd         int    `gorm:"type:int(11);column:img_hdd;comment:'image size'" json:"hdd"`
 	Desc        string `gorm:"type:varchar(50);column:img_desc;comment:'이미지 desc'" json:"desc"`
-	FullName        string `gorm:"type:varchar(50);column:img_full_name;comment:'이미지 fullname'" json:"fullName"`
+	FullName    string `gorm:"type:varchar(50);column:img_full_name;comment:'이미지 fullname'" json:"fullName"`
 }
 
 func (McImages) TableName() string {
@@ -291,4 +291,11 @@ func (s *McServerMsg) Dump() string {
 	pretty, _ := json.MarshalIndent(s, "", "  ")
 	fmt.Printf("%s\n", string(pretty))
 	return string(pretty)
+}
+
+type McWinVmGraph struct {
+	Cpu     models.WinCpuStat
+	Mem     models.WinMemStat
+	Disk    models.WinDiskStat
+	Traffic []models.WinVmIfStat
 }

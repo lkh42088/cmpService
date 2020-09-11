@@ -28,9 +28,16 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, e
 	}
 	paging.TotalCount = len(vms.Vms)
 	vms.Page = paging
+
 	return vms, err
 }
+/*
+func (db *DBORM) GetMcWinGraphs(mac string) (obj mcmodel.McWinVmGraph, err error) {
+	fmt.Println("McWinVmGraph ~ DB 조회 시작!! : ", mac)
 
+	return obj, err
+}
+*/
 func (db *DBORM) GetMcVmByIdx(idx uint) (vm mcmodel.McVm, err error) {
 	return vm, db.Table("mc_vm_tb").
 		Where(mcmodel.McVm{Idx: idx}).

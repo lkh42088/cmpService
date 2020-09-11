@@ -14,3 +14,9 @@ type DiskStat struct {
 	Used        json.Number `json:"used"`
 	UsedPercent json.Number `json:"used_percent"`
 }
+
+type WinDiskStat struct {
+	Time          time.Time   `json:"time"`
+	FreeMegabytes json.Number `json:"freeMegabytes"`
+	Total         json.Number `json:"total"`
+}
