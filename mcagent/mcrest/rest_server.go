@@ -34,6 +34,13 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.POST(lib.McUrlDeleteVm, deleteVmHandler)
 	rg.GET(lib.McUrlGetVmById, getVmByIdHandler)
 	rg.GET(lib.McUrlVm, getVmAllHandler)
+	//rg.GET(lib.McUrlUpdateVmStatus, updateVmStatus)
+
+	// Snapshot
+	rg.GET(lib.McUrlGetVmSnapshot, getVmSnapshot)
+	rg.GET(lib.McUrlAddVmSnapshot, addVmSnapshot)
+	rg.GET(lib.McUrlDeleteVmSnapshot, deleteVmSnapshot)
+	rg.GET(lib.McUrlUpdateVmSnapshot, updateVmSnapshot)
 
 	// Network
 	rg.POST(lib.McUrlNetworkAdd, addNetworkHandler)
@@ -44,6 +51,9 @@ func Start(parentwg *sync.WaitGroup) {
 
 	// Search Client Ip
 	rg.GET(lib.McUrlPublicIp, GetClientIp)
+
+	// Windows System API
+	rg.POST(lib.McUrlHealthCheckFromWin, CheckHealth)
 
 	Router.Run(address)
 	if parentwg != nil {

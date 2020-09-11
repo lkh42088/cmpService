@@ -92,6 +92,11 @@ type HandlerInterface interface {
 	GetMcServersByCpIdx(c *gin.Context)
 	UpdateMcServerResource(c *gin.Context)
 
+	GetVmSnapshotConfig(c *gin.Context)
+	AddVmSnapshot(c *gin.Context)
+	DeleteVmSnapshot(c *gin.Context)
+	UpdateVmSnapshot(c *gin.Context)
+
 	GetMcVms(c *gin.Context)
 	AddMcVm(c *gin.Context)
 	DeleteMcVm(c *gin.Context)
@@ -248,11 +253,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroServerRegister, h.AddMcServer)
 	router.POST(lib.SvcmgrApiMicroServerUnRegister, h.DeleteMcServer)
 	router.GET(lib.SvcmgrApiMicroServerSearchCompany+"/:cpIdx", h.GetMcServersByCpIdx)
-	router.GET(lib.SvcmgrApiMicroServerPaging+pagingParam, h.GetMcServers)
+	router.GET(lib.SvcmgrApiMicroServerPaging+pagingParam+"/:cpName", h.GetMcServers)
 
 	router.POST(lib.SvcmgrApiMicroVmRegister, h.AddMcVm)
 	router.POST(lib.SvcmgrApiMicroVmUnRegister, h.DeleteMcVm)
-	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam, h.GetMcVms)
+	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam+"/:cpName", h.GetMcVms)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
 	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
 
@@ -266,8 +271,23 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetVmInterfaceTrafficByMac)
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
-
+	/*<<<<<<< HEAD
 	// Micro Cloud GRAPH
+	=======
+	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
+	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
+
+	// Micro Cloud CPU
+	>>>>>>> d05604a9bd6a003bc0ebf44748c287c5f85fd51e*/
+	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
+	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
+
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu", GetVmInterfaceCpu)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/mem", GetVmInterfaceMem)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/disk", GetVmInterfaceDisk)

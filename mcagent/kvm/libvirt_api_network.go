@@ -21,8 +21,12 @@ func GetAllNetwork() (networks []libvirt.Network, err error) {
 		fmt.Println("GetAllNetwork: error", err)
 		return networks, err
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	networks, err = conn.ListAllNetworks(0)
+	if err != nil {
+		fmt.Println("GetAllNetwork: error2", err)
+		return networks, err
+	}
 	//for index, net := range networks {
 	//	name, _ := net.GetName()
 	//	bridge, _ := net.GetBridgeName()
@@ -37,7 +41,7 @@ func GetNetworkByName(name string) (*libvirt.Network, error) {
 	if err != nil {
 		fmt.Println("error1")
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	return conn.LookupNetworkByName("net11")
 }
 
@@ -47,7 +51,7 @@ func GetXmlNetworkByName() {
 	if err != nil {
 		fmt.Println("error1")
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	net, err := conn.LookupNetworkByName("net11")
 	name, _ := net.GetName()
 	fmt.Println(name, "------------")
@@ -69,7 +73,7 @@ func GetMgoNetworksFromXmlNetwork() (list []mcmodel.MgoNetwork, err error) {
 	if err != nil {
 		fmt.Println("error1")
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	networks, err := conn.ListAllNetworks(0)
 	for index, net := range networks {
 		var entry mcmodel.MgoNetwork
@@ -155,7 +159,7 @@ func CreateNetworkByMgoNetwork(net mcmodel.MgoNetwork) {
 	if err != nil {
 		fmt.Println("error1")
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	netcfg := MakeXmlNetwork(net.Name, net.Bridge, net.Ip, net.Netmask)
 	output, _:= xml.MarshalIndent(netcfg, "  ", "    ")
 	fmt.Println(string(output))

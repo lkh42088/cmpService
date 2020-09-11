@@ -30,6 +30,11 @@ func CreateMicroCloudTable(db *gorm.DB) {
 		db.AutoMigrate(&mcmodel.McVm{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McVm{})
 	}
+
+	if db.HasTable(&mcmodel.McVmSnapshot{}) == false {
+		db.AutoMigrate(&mcmodel.McVmSnapshot{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McVmSnapshot{})
+	}
 }
 
 func DropMicroCloudTable(db *gorm.DB) {
@@ -51,5 +56,9 @@ func DropMicroCloudTable(db *gorm.DB) {
 
 	if db.HasTable(&mcmodel.McVm{}) {
 		db.DropTable(&mcmodel.McVm{})
+	}
+
+	if db.HasTable(&mcmodel.McVmSnapshot{}) {
+		db.DropTable(&mcmodel.McVmSnapshot{})
 	}
 }

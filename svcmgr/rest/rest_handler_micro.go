@@ -108,6 +108,11 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
+	cpName := c.Param("cpName")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
 
 	page := models.Pagination{
 		TotalCount:  0,
@@ -118,7 +123,7 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 	}
 	fmt.Println("1. page:")
 	page.String()
-	servers, err := h.db.GetMcServersPage(page)
+	servers, err := h.db.GetMcServersPage(page, cpName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -251,6 +256,11 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
 		return
 	}
+	cpName := c.Param("cpName")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
 
 	page := models.Pagination{
 		TotalCount:  0,
@@ -261,7 +271,7 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 	}
 	fmt.Println("1. page:")
 	page.String()
-	vms, err := h.db.GetMcVmsPage(page)
+	vms, err := h.db.GetMcVmsPage(page, cpName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -410,7 +420,6 @@ func GetVmWinInterface(c *gin.Context) {
 		return
 	}
 
-
 	v := res.Results[0].Series[0].Values
 	winCpu := make([]models.WinCpuStat, len(v))
 	var cpuTime time.Time
@@ -531,4 +540,62 @@ func GetVmWinInterface(c *gin.Context) {
 	fmt.Println("graph Traffic : ", graph.Traffic)*/
 
 	c.JSON(http.StatusOK, graph)
+}
+
+func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
+	serverIdx, _ := strconv.Atoi(c.Param("serverIdx"))
+	fmt.Println("GetVmSnapshotConfig")
+	server, err := h.db.GetMcServerByServerIdx(uint(serverIdx))
+	if err != nil {
+		return
+	}
+	vms, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(server.Idx))
+	if err != nil {
+		return
+	}
+	c.JSON(http.StatusOK, vms)
+}
+
+func (h *Handler) AddVmSnapshot(c *gin.Context) {
+	var msg messages.SnapshotConfigMsg
+	c.Bind(&msg)
+	fmt.Println("AddVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendAddVmSnapshot(msg, server)
+}
+
+func (h *Handler) DeleteVmSnapshot(c *gin.Context) {
+	var msg messages.SnapshotConfigMsg
+	c.Bind(&msg)
+	fmt.Println("DeleteVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendDeleteVmSnapshot(msg, server)
+}
+
+func (h *Handler) UpdateVmSnapshot(c *gin.Context) {
+	var msg messages.SnapshotConfigMsg
+	c.Bind(&msg)
+	fmt.Println("UpdateVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendUpdateVmSnapshot(msg, server)
+}
+
+func (h *Handler) UpdateVmStatus(c *gin.Context) {
+	var msg messages.VmStatusActionMsg
+	c.Bind(&msg)
+	fmt.Println("UpdateVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(msg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendUpdateVmStatus(msg, server)
 }

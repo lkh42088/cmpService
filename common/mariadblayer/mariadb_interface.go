@@ -164,7 +164,7 @@ type MariaDBLayer interface {
 	DeleteSubnets(idx []string) error
 
 	// Micro Cloud
-	GetMcServersPage(paging models.Pagination) (servers mcmodel.McServerPage, err error)
+	GetMcServersPage(paging models.Pagination, cpName string) (servers mcmodel.McServerPage, err error)
 	AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
@@ -172,7 +172,7 @@ type MariaDBLayer interface {
 	GetMcServerByServerIdx(idx uint) (server mcmodel.McServerDetail, err error)
 	GetMcServerBySerialNumber(sn string) (server mcmodel.McServerDetail, err error)
 
-	GetMcVmsPage(paging models.Pagination) (vms mcmodel.McVmPage, err error)
+	GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmodel.McVmPage, err error)
 	GetMcVmByIdx(idx uint) (mcmodel.McVm, error)
 	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
