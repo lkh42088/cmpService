@@ -188,4 +188,9 @@ type MariaDBLayer interface {
 	DeleteMcImage(obj mcmodel.McImages) (mcmodel.McImages, error)
 	GetMcImagesPage(paging models.Pagination) (vms mcmodel.McImagePage, err error)
 	GetMcImagesByServerIdx(serverIdx int) (obj []mcmodel.McImages, err error)
+
+	// Baremetal system info
+	AddSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error)
+	GetSystemInfoByMac(mac string) (mcmodel.SysInfo, error)
+	UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error)
 }

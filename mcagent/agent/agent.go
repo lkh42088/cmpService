@@ -51,6 +51,9 @@ func Start (config string) {
 	//	wg.Done()
 	//}
 
+	//Baremetal system info
+	SendSysInfo()
+
 	wg.Wait()
 }
 

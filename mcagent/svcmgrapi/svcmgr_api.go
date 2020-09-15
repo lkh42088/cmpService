@@ -50,3 +50,24 @@ func SendUpdateVm2Svcmgr(vm mcmodel.MgoVm, addr string) bool {
 	fmt.Println("response: ", string(data))
 	return true
 }
+
+// Baremetal system info
+func SendSysInfoToSvcmgr(info mcmodel.SysInfo, addr string) bool {
+	pbytes, _ := json.Marshal(info)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroSystemInfo)
+	//fmt.Println("Notify: ", url)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("post error: ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("response error: ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
