@@ -16,7 +16,7 @@ type DiskStat struct {
 }
 
 type WinDiskStat struct {
-	Time          time.Time   `json:"time"`
-	FreeMegabytes json.Number `json:"freeMegabytes"`
-	Total         json.Number `json:"total"`
+	Time          time.Time `json:"time"`
+	FreeMegabytes float64   `json:"freeMegabytes"`
+	Total         float64   `json:"total"`
 }

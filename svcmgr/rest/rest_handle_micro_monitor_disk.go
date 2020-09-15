@@ -68,6 +68,6 @@ func MakeStructForStatsWinDisk(s *models.WinDiskStat, data []interface{}) error 
 		}
 	}
 
-	s.FreeMegabytes = data[1].(json.Number)
+	s.FreeMegabytes, _ = data[1].(json.Number).Float64()
 	return nil
 }
