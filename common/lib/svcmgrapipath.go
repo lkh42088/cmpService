@@ -60,3 +60,4 @@ const (
 	SvcmgrApiMicroVmStats           = SvcmgrApiMicroVmMonitor + "/stats"
 	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
 )
+
