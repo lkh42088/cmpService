@@ -24,16 +24,6 @@ const (
 	SvcmgrApiMicroServerResource      = SvcmgrApiMicroServer + "/resource"
 	SvcmgrApiMicroSystemInfo		  = SvcmgrApiMicro + "/sysinfo"
 	// /v1/micro/vms
-	/*<<<<<<< HEAD
-		SvcmgrApiMicroVm             = SvcmgrApiMicro + "/vms"
-		SvcmgrApiMicroVmRegister     = SvcmgrApiMicroVm + "/register"
-		SvcmgrApiMicroVmUnRegister   = SvcmgrApiMicroVm + "/unregister"
-		SvcmgrApiMicroVmUpdate       = SvcmgrApiMicroVm + "/update"
-		SvcmgrApiMicroVmUpdateFromMc = SvcmgrApiMicroVm + "/update-from-mc"
-		SvcmgrApiMicroVmVnc          = SvcmgrApiMicroVm + "/vnc"
-		SvcmgrApiMicroVmPaging       = SvcmgrApiMicro + "/vms-paging"
-		SvcmgrApiMicroVmGraph        = SvcmgrApiMicro + "/vms-graph"
-	=======*/
 	SvcmgrApiMicroVm               = SvcmgrApiMicro + "/vms"
 	SvcmgrApiMicroVmRegister       = SvcmgrApiMicroVm + "/register"
 	SvcmgrApiMicroVmUnRegister     = SvcmgrApiMicroVm + "/unregister"
@@ -48,7 +38,6 @@ const (
 	SvcmgrApiMicroVmDeleteSnapshot = SvcmgrApiMicroVm + "/snapshot/delete"
 	SvcmgrApiMicroVmStatus         = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph          = SvcmgrApiMicro + "/vms-graph"
-	//>>>>>>> d05604a9bd6a003bc0ebf44748c287c5f85fd51e
 	// /v1/micro/images
 	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
 	SvcmgrApiMicroImagePaging = SvcmgrApiMicro + "/images-paging"
