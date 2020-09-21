@@ -13,7 +13,7 @@ type MemStat struct {
 }
 
 type WinMemStat struct {
-	Time           time.Time   `json:"time"`
-	AvailableBytes json.Number `json:"availableBytes"`
-	Total          json.Number `json:"total"`
+	Time           time.Time `json:"time"`
+	AvailableBytes float64   `json:"availableBytes"`
+	Total          float64   `json:"total"`
 }

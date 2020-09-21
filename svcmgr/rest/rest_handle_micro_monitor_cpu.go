@@ -56,13 +56,17 @@ func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
 	return nil
 }
 
-func MakeStructForStatsWinCpu(s *models.WinCpuStat, data []interface{}) error {
+func MakeStructForStatsWinCpu(s *models.WinCpuStat, data []interface{}, mac string) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
 		}
 	}
 
-	s.PercentIdleTime = data[1].(json.Number)
+	//s.PercentIdleTime = data[1].(json.Number).(float64)
+	s.PercentIdleTime, _ = data[1].(json.Number).Float64()
+
+	/*fmt.Println("")
+	fmt.Println(mac, "😡😡😡😡😡 CPU DATA 1 : ", s.PercentIdleTime)*/
 	return nil
 }

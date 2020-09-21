@@ -77,9 +77,6 @@ func MakeStructForWinStats(s *models.WinVmIfStat, data []interface{}) error {
 	s.BytesReceivedPersec = s.BytesReceivedPersec * 5
 	s.BytesSentPersec = s.BytesSentPersec * 5
 
-
-	// unit.Yaxis = int64(result.BytesReceivedPersec * 5)
-	//fmt.Println("▣▣▣▣▣▣▣ ▣▣▣▣▣▣▣ s..... : ", s)
 	return nil
 }
 

@@ -12,7 +12,7 @@ var infClient client.Client
 func GetMeasurementsWithCondition(collector string, field string, where string) *client.Response {
 	query := "SELECT " + field + " FROM " + collector
 	query += " WHERE " + where
-	//fmt.Printf("Query: %s\n", query)	// Need to debuggig
+	//fmt.Printf(collector, "★★★ -> Query: %s\n", query)	// Need to debuggig
 	res, err := InfluxdbQuery(query)
 	if err != nil {
 		return nil
@@ -26,7 +26,7 @@ func GetMeasurementsWithConditionOrderLimit(collector string, field string, wher
 		query += " WHERE " + where
 	}
 	query += " ORDER BY time DESC LIMIT 1"
-	//fmt.Printf("Query: %s\n", query)	// Need to debuggig
+	//fmt.Printf(collector, "♨♨♨ -> Query: %s\n", query)	// Need to debuggig
 	res, err := InfluxdbQuery(query)
 	if err != nil {
 		return nil

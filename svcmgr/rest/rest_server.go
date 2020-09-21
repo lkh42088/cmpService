@@ -91,6 +91,7 @@ type HandlerInterface interface {
 	DeleteMcServer(c *gin.Context)
 	GetMcServersByCpIdx(c *gin.Context)
 	UpdateMcServerResource(c *gin.Context)
+	CheckNStoreSystemInfo(c *gin.Context)
 
 	GetVmSnapshotConfig(c *gin.Context)
 	AddVmSnapshot(c *gin.Context)
@@ -272,6 +273,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetVmInterfaceTrafficByMac)
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
+	router.POST(lib.SvcmgrApiMicroSystemInfo, h.CheckNStoreSystemInfo)
+	// Micro Cloud GRAPH
 	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
 	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
@@ -285,6 +288,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Micro Cloud Graph
 	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac", GetVmWinInterface)
+	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac/:currentStatus", GetVmWinInterface)
 
 	return router.Run(address)
 }

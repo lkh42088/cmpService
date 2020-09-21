@@ -12,7 +12,7 @@ type CpuStat struct {
 }
 
 type WinCpuStat struct {
-	Time            time.Time   `json:"time"`
-	PercentIdleTime json.Number `json:"percentIdleTime"`
-	Total           json.Number `json:"total"`
+	Time            time.Time `json:"time"`
+	PercentIdleTime float64   `json:"percentIdleTime"`
+	Total           float64   `json:"total"`
 }

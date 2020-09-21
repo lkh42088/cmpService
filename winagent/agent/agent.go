@@ -1,13 +1,14 @@
 package agent
 
 import (
+	"cmpService/common/mcmodel"
 	"cmpService/winagent/config"
 	"cmpService/winagent/winrest"
 	"fmt"
 	"sync"
 )
 
-var globalSysInfo SysInfo
+var globalSysInfo mcmodel.SysInfo
 
 func Start (conf string) {
 	var wg sync.WaitGroup

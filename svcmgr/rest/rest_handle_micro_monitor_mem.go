@@ -64,6 +64,6 @@ func MakeStructForStatsWinMem(s *models.WinMemStat, data []interface{}) error {
 		}
 	}
 
-	s.AvailableBytes = data[1].(json.Number)
+	s.AvailableBytes, _ = data[1].(json.Number).Float64()
 	return nil
 }

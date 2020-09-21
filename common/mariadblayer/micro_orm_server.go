@@ -93,3 +93,36 @@ func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) 
 func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Delete(&obj).Error
 }
+
+// Baremetal system info
+func (db *DBORM) GetSystemInfoByMac(mac string) (info mcmodel.SysInfo, err error) {
+	err = db.Where(mcmodel.SysInfo{IfMac: mac}).Find(&info).Error
+
+	return info, err
+}
+
+func (db *DBORM) AddSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) {
+	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) {
+	return obj, db.Model(&obj).
+		Update(map[string]interface{}{
+			"hostname":         obj.Hostname,
+			"os":               obj.OS,
+			"uptime":           obj.Uptime,
+			"boottime":         obj.BootTime,
+			"cpu_core":         obj.CpuCore,
+			"cpu_model":        obj.CpuModel,
+			"platform":         obj.Platform,
+			"platform_version": obj.PlatformVersion,
+			"kernel_arch":      obj.KernelArch,
+			"kernel_version":   obj.KernelVersion,
+			"ip":               obj.IP,
+			"if_name":          obj.IfName,
+			"if_mac":           obj.IfMac,
+			"mem_total":        obj.MemTotal,
+			"disk_total":       obj.DiskTotal,
+			"update_time":		obj.UpdateTime,
+		}).Error
+}
