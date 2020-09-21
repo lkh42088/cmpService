@@ -44,13 +44,19 @@ func SetSerialNumber2GlobalConfig(sn string) {
 	globalConfig.SerialNumber = sn
 	if sn != "" {
 		fmt.Println("config Telegraf...")
-		SetTelegraf(sn)
+		SetTelegraf(sn, "")
 		RestartTelegraf()
 	}
 }
 
 func SetGlobalConfigByVmNumber(index, value uint) {
 	globalConfig.VmNumber[index] = value
+}
+
+func SetGlobalConfigWithSysInfo(ip string, ifName string, mac string) {
+	globalConfig.ServerIp = ip
+	globalConfig.ServerPort = ifName
+	globalConfig.ServerMac = mac
 }
 
 func ApplyGlobalConfig(file string) bool {
@@ -85,7 +91,7 @@ func ApplyGlobalConfig(file string) bool {
 	return true
 }
 
-func SetTelegraf(sn string) bool {
+func SetTelegraf(sn string, mac string) bool {
 	orgin_file := "/etc/telegraf/telegraf.conf"
 	fd, err := os.Open(orgin_file)
 	if err != nil {
@@ -111,6 +117,7 @@ func SetTelegraf(sn string) bool {
 	isFind := false
 	global_tags_area := false
 	findStr := "serial_number"
+	macStr := "mac_address"
 	reader := bufio.NewReader(fd)
 	for {
 		line, isPrefix, err := reader.ReadLine()
@@ -119,22 +126,45 @@ func SetTelegraf(sn string) bool {
 			break
 		}
 		lineStr := string(line)
-		if isFind == true {
-			w.WriteString(lineStr+"\n")
-		} else if strings.Contains(lineStr, findStr) == true {
-			w.WriteString(fmt.Sprintf("  %s = \"%s\"\n", findStr, sn))
-			isFind = true
-		} else if strings.Contains(lineStr, "[global_tags]") == true {
-			w.WriteString(lineStr+"\n")
-			global_tags_area = true
-		} else if isFind == false &&
-			global_tags_area == true &&
-			len(strings.Trim(lineStr, " ")) == 0 {
-			w.WriteString(fmt.Sprintf("  %s = \"%s\"\n", findStr, sn))
-			w.WriteString("\n")
-			isFind = true
-		} else {
-			w.WriteString(lineStr+"\n")
+		if sn != "" {
+			if isFind == true {
+				w.WriteString(lineStr + "\n")
+			} else if strings.Contains(lineStr, findStr) == true {
+				w.WriteString(fmt.Sprintf("  %s = \"%s\"\n", findStr, sn))
+				isFind = true
+			} else if strings.Contains(lineStr, "[global_tags]") == true {
+				w.WriteString(lineStr + "\n")
+				global_tags_area = true
+			} else if isFind == false &&
+				global_tags_area == true &&
+				len(strings.Trim(lineStr, " ")) == 0 {
+				w.WriteString(fmt.Sprintf("  %s = \"%s\"\n", findStr, sn))
+				w.WriteString("\n")
+				isFind = true
+			} else {
+				w.WriteString(lineStr + "\n")
+			}
+		}
+
+		// INSERT SERVER MAC TO CONFIG FILE
+		if mac != "" {
+			if isFind == true {
+				w.WriteString(lineStr + "\n")
+			} else if strings.Contains(lineStr, macStr) == true {
+				w.WriteString(fmt.Sprintf("  %s = \"%s\"\n", macStr, mac))
+				isFind = true
+			} else if strings.Contains(lineStr, "[global_tags]") == true {
+				w.WriteString(lineStr + "\n")
+				global_tags_area = true
+			} else if isFind == false &&
+				global_tags_area == true &&
+				len(strings.Trim(lineStr, " ")) == 0 {
+				w.WriteString(fmt.Sprintf("  %s = \"%s\"\n", macStr, sn))
+				w.WriteString("\n")
+				isFind = true
+			} else {
+				w.WriteString(lineStr + "\n")
+			}
 		}
 	}
 	w.Flush()
