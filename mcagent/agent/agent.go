@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"cmpService/common/utils"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
@@ -20,6 +21,8 @@ func Start (config string) {
 		fmt.Println("Fatal: Failed configuration!")
 		return
 	}
+
+	SetSysInfo()
 
 	wg.Add(4)
 
@@ -51,7 +54,7 @@ func Start (config string) {
 	//	wg.Done()
 	//}
 
-	//Baremetal system info
+	// BareMetal system info
 	SendSysInfo()
 
 	wg.Wait()
@@ -63,6 +66,8 @@ func configure() bool {
 	//	fmt.Println("Failed to configure mongodb!")
 	//	return false
 	//}
+
+	utils.DeleteAllDnat()
 
 	if !mcinflux.ConfigureInfluxDB() {
 		fmt.Println("Failed to configure influxdb!")

@@ -25,6 +25,9 @@ func Start(parentwg *sync.WaitGroup) {
 
 	rg := Router.Group(lib.McUrlPrefix)
 
+	// Internal Resource
+	rg.GET(lib.McUrlResource, getResourceHandler)
+
 	// Registration
 	rg.POST(lib.McUrlRegisterServer, registerServerHandler)
 	rg.POST(lib.McUrlUnRegisterServer, unRegisterServerHandler)

@@ -2,6 +2,7 @@ package lib
 
 const (
 	McUrlPrefix             = "/api/v1"
+	McUrlResource           = "/resource"
 	McUrlServer             = "/server"
 	McUrlMon                = "/mon"
 	McUrlRegisterServer     = McUrlServer + "/register"

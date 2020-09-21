@@ -3,6 +3,7 @@ package config
 import (
 	"bufio"
 	"cmpService/common/config"
+	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	"encoding/json"
 	"fmt"
@@ -12,7 +13,7 @@ import (
 	"strings"
 )
 
-const MAX_VM_COUNT = 10
+const MAX_VM_COUNT = 12
 
 type McAgentConfig struct {
 	config.MongoDbConfig
@@ -30,8 +31,9 @@ type McAgentConfig struct {
 	ServerStatusRepo   string             `json:"server_status_repo"`
 	MonitoringInterval int                `json:"monitoring_interval"`
 	DnatBasePortNum    int                `json:"dnat_base_port_num"`
-	SerialNumber       string             `json:"-"`
-	VmNumber           [MAX_VM_COUNT]uint `json:"-"`
+	SerialNumber       string             `json:"serialNumber"`
+	VmNumber           [MAX_VM_COUNT]uint `json:"vmNumber"`
+	SystemInfo		   mcmodel.SysInfo    `json:"sysInfo"`
 }
 
 var globalConfig McAgentConfig
@@ -53,10 +55,11 @@ func SetGlobalConfigByVmNumber(index, value uint) {
 	globalConfig.VmNumber[index] = value
 }
 
-func SetGlobalConfigWithSysInfo(ip string, ifName string, mac string) {
-	globalConfig.ServerIp = ip
-	globalConfig.ServerPort = ifName
-	globalConfig.ServerMac = mac
+func SetGlobalConfigWithSysInfo(info mcmodel.SysInfo) {
+	globalConfig.ServerIp = info.IP
+	globalConfig.ServerPort = info.IfName
+	globalConfig.ServerMac = info.IfMac
+	globalConfig.SystemInfo = info
 }
 
 func ApplyGlobalConfig(file string) bool {
@@ -178,7 +181,7 @@ func SetTelegraf(sn string, mac string) bool {
 	binary := "mv"
 	cmd := exec.Command(binary, args...)
 	output, _ := cmd.Output()
-	fmt.Println("output:", string(output))
+	fmt.Println("SetTelegraf output:", string(output))
 
 	return true
 }
@@ -192,5 +195,5 @@ func RestartTelegraf () {
 	binary := "systemctl"
 	cmd := exec.Command(binary, args...)
 	output, _ := cmd.Output()
-	fmt.Println("output:", string(output))
+	fmt.Println("RestartTelegraf output:", string(output))
 }

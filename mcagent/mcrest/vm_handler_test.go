@@ -9,7 +9,7 @@ import (
 
 func TestGetMgoServer(t *testing.T) {
 	config.ApplyGlobalConfig("../etc/mcagent.conf")
-	GetMgoServer()
+	GetMcServer()
 }
 
 func TestGetVmInterfaceTrafficByMac(t *testing.T) {
