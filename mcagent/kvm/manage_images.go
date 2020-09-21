@@ -17,9 +17,12 @@ func GetMgoImageByName (name string) mcmodel.MgoImage {
 	//fmt.Println(list)
 	if list[0] == "windows10" {
 		image.Variant = "win10"
-	} else {
+	} else if list[0] == "ubuntu18" {
 		image.Variant = "ubuntu18"
+	} else {
+		image.Variant = "ubuntu16"
 	}
+
 	image.Hdd, _ = strconv.Atoi(list[1][:strings.LastIndexAny(list[1],"G")])
 	//fmt.Println(image)
 	return image

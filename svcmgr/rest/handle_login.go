@@ -426,6 +426,7 @@ func responseWithToken(c *gin.Context, user models.UserDetail, authEmail string)
 			Name:               user.Name,
 			Email:              user.Email,
 			Level:              user.AuthLevel,
+			CpIdx:              user.CompanyIdx,
 			CpName:             user.CompanyName,
 			EmailAuthFlag:      user.EmailAuth,
 			EmailAuthGroupFlag: user.GroupEmailAuth,

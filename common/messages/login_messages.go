@@ -77,6 +77,7 @@ type UserInfo struct {
 	Name               string                `json:"name"`
 	Email              string                `json:"email"`
 	Level              int                   `json:"level"`
+	CpIdx              int                   `json:"cpIdx"`
 	CpName             string                `json:"cpName"`
 	EmailAuthFlag      bool                  `json:"emailAuthFlag"`
 	EmailAuthGroupFlag bool                  `json:"emailAuthGroupFlag"`

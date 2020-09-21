@@ -2,11 +2,11 @@ package agent
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/common/package/routing"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/svcmgrapi"
 	"encoding/json"
 	"fmt"
-	"github.com/google/gopacket/routing"
 	"github.com/pkg/errors"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
@@ -118,13 +118,13 @@ func FindRouteInterface(addr string) (network.IP, error) {
 		//return nil, errors.Wrap(err, "error while creating routing object")
 	}
 
-	//_, gatewayIP, preferredSrc, err := router.Route(ip)
-	_, _, preferredSrc, err := router.Route(ip)
+	_, gatewayIP, preferredSrc, err := router.Route(ip)
+	//_, _, preferredSrc, err := router.Route(ip)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error routing to ip: %s", addr)
 	}
 
-	//fmt.Printf("\ngatewayIP: %v preferredSrc: %v\n\n", gatewayIP, preferredSrc)
+	fmt.Printf("\ngatewayIP: %v preferredSrc: %v\n\n", gatewayIP, preferredSrc)
 	return preferredSrc, nil
 }
 

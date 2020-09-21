@@ -2,6 +2,7 @@ package agent
 
 import (
 	"bufio"
+	"cmpService/common/mcmodel"
 	"encoding/json"
 	"fmt"
 	"github.com/shirou/gopsutil/cpu"
@@ -9,57 +10,55 @@ import (
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
-	"golang.org/x/sys/windows"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
-	"syscall"
 )
 
-type NetInterface struct {
-	Name    string   `json:name`
-	Address []string `json:address`
-}
+//type NetInterface struct {
+//	Name    string   `json:name`
+//	Address []string `json:address`
+//}
+//
+//type SysInfo struct {
+//	Idx             int    `gorm:"primary_key;column:idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
+//	Hostname        string `gorm:"column:hostname;not null;comment:'SERVER 이름'" json:"hostname"`
+//	OS              string `gorm:"column:os;comment:'OS 명'" json:"os"`
+//	Uptime          uint64 `gorm:"column:uptime;comment:'UPTIME'" json:"uptime"`
+//	BootTime        uint64 `gorm:"column:boottime;comment:'SERVER BOOTTIME'" json:"bootTime"`
+//	CpuCore         int    `gorm:"column:cpu_core;comment:'CPU Core 개수'" json:"cpuCore"`
+//	CpuModel        string `gorm:"column:cpu_model;comment:'CPU 모델명'" json:"cpuModel"`
+//	Platform        string `gorm:"column:platform;comment:'Platform'" json:"platform"`
+//	PlatformVersion string `gorm:"column:platform_version;comment:'Platform 버전'" json:"platformVersion"`
+//	KernelArch      string `gorm:"column:kernel_arch;comment:'KERNEL 아키텍처'" json:"kernelArch"`
+//	KernelVersion   string `gorm:"column:kernel_version;comment:'KERNEL 버전'" json:"kernelVersion"`
+//	IP              string `gorm:"column:ip;not null;comment:'SERVER IP'" json:"ip"`
+//	IfName          string `gorm:"column:if_name;comment:'Interface Name'" json:"ifName"`
+//	IfMac           string `gorm:"column:if_mac;comment:'Interface MAC'" json:"ifMac"`
+//	MemTotal        int64  `gorm:"column:mem_total;comment:'MEMORY 용량'" json:"mem"`
+//	DiskTotal       int64  `gorm:"column:disk_total;comment:'HDD DISK 용량'" json:"disk"`
+//}
+//
+//type SysInfoDetail struct {
+//	Host        host.InfoStat          `json:hostname`
+//	Temperature []host.TemperatureStat `json:temperature`
+//	Platform    string                 `json:platform`
+//	CPU         []cpu.InfoStat         `json:cpu`
+//	RAM         uint64                 `json:ram`
+//	DiskUsage   uint64                 `json:diskUsage`
+//	DiskPart    []disk.PartitionStat   `json:disk`
+//	Net         []net.InterfaceStat    `json:interface`
+//}
 
-type SysInfo struct {
-	Idx             int    `gorm:"primary_key;column:idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
-	Hostname        string `gorm:"column:hostname;not null;comment:'SERVER 이름'" json:"hostname"`
-	OS              string `gorm:"column:os;comment:'OS 명'" json:"os"`
-	Uptime          uint64 `gorm:"column:uptime;comment:'UPTIME'" json:"uptime"`
-	BootTime        uint64 `gorm:"column:boottime;comment:'SERVER BOOTTIME'" json:"bootTime"`
-	CpuCore         int    `gorm:"column:cpu_core;comment:'CPU Core 개수'" json:"cpuCore"`
-	CpuModel        string `gorm:"column:cpu_model;comment:'CPU 모델명'" json:"cpuModel"`
-	Platform        string `gorm:"column:platform;comment:'Platform'" json:"platform"`
-	PlatformVersion string `gorm:"column:platform_version;comment:'Platform 버전'" json:"platformVersion"`
-	KernelArch      string `gorm:"column:kernel_arch;comment:'KERNEL 아키텍처'" json:"kernelArch"`
-	KernelVersion   string `gorm:"column:kernel_version;comment:'KERNEL 버전'" json:"kernelVersion"`
-	IP              string `gorm:"column:ip;not null;comment:'SERVER IP'" json:"ip"`
-	IfName          string `gorm:"column:if_name;comment:'Interface Name'" json:"ifName"`
-	IfMac           string `gorm:"column:if_mac;comment:'Interface MAC'" json:"ifMac"`
-	MemTotal        int64  `gorm:"column:mem_total;comment:'MEMORY 용량'" json:"mem"`
-	DiskTotal       int64  `gorm:"column:disk_total;comment:'HDD DISK 용량'" json:"disk"`
-}
-
-type SysInfoDetail struct {
-	Host        host.InfoStat          `json:hostname`
-	Temperature []host.TemperatureStat `json:temperature`
-	Platform    string                 `json:platform`
-	CPU         []cpu.InfoStat         `json:cpu`
-	RAM         uint64                 `json:ram`
-	DiskUsage   uint64                 `json:diskUsage`
-	DiskPart    []disk.PartitionStat   `json:disk`
-	Net         []net.InterfaceStat    `json:interface`
-}
-
-func GetSysInfo() SysInfo {
+func GetSysInfo() mcmodel.SysInfo {
 	hostStat, _ := host.Info()
 	cpuStat, _ := cpu.Info()
 	vmStat, _ := mem.VirtualMemory()
 	diskStat, _ := disk.Usage("/")
 	netIf, _ := net.Interfaces()
 
-	info := new(SysInfo)
+	info := new(mcmodel.SysInfo)
 	info.Hostname = hostStat.Hostname
 	info.OS = hostStat.OS
 	info.Uptime = hostStat.Uptime
@@ -87,7 +86,7 @@ func GetSysInfo() SysInfo {
 	return *info
 }
 
-func GetSysInfoAll() SysInfoDetail {
+func GetSysInfoAll() mcmodel.SysInfoDetail {
 	hostStat, _ := host.Info()
 	temper, _ := host.SensorsTemperatures()
 	cpuStat, _ := cpu.Info()
@@ -96,7 +95,7 @@ func GetSysInfoAll() SysInfoDetail {
 	diskPart, _ := disk.Partitions(true)
 	netIf, _ := net.Interfaces()
 
-	info := new(SysInfoDetail)
+	info := new(mcmodel.SysInfoDetail)
 	info.Host = *hostStat
 	info.Platform = hostStat.Platform
 	info.RAM = vmStat.Total / 1024 / 1024
@@ -128,7 +127,7 @@ func CheckMySystem() bool {
 	return true
 }
 
-func GetGlbalSysInfo() SysInfo {
+func GetGlbalSysInfo() mcmodel.SysInfo {
 	return globalSysInfo
 }
 
@@ -266,21 +265,21 @@ func RestartTelegraf () {
 }
 
 
-func commandWindowsApp(command string, path string) {
-	verb := "runas"
-	exe, _ := os.Executable()
-	cwd, _ := os.Getwd()
-	args := strings.Join(os.Args[1:], " ")
-
-	verbPtr, _ := syscall.UTF16PtrFromString(verb)
-	exePtr, _ := syscall.UTF16PtrFromString(exe)
-	cwdPtr, _ := syscall.UTF16PtrFromString(cwd)
-	argPtr, _ := syscall.UTF16PtrFromString(args)
-
-	var showCmd int32 = windows.SW_HIDE
-
-	err := windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
+//func commandWindowsApp(command string, path string) {
+//	verb := "runas"
+//	exe, _ := os.Executable()
+//	cwd, _ := os.Getwd()
+//	args := strings.Join(os.Args[1:], " ")
+//
+//	verbPtr, _ := syscall.UTF16PtrFromString(verb)
+//	exePtr, _ := syscall.UTF16PtrFromString(exe)
+//	cwdPtr, _ := syscall.UTF16PtrFromString(cwd)
+//	argPtr, _ := syscall.UTF16PtrFromString(args)
+//
+//	var showCmd int32 = windows.SW_HIDE
+//
+//	err := windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
+//	if err != nil {
+//		fmt.Println(err)
+//	}
+//}
