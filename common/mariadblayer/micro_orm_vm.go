@@ -13,6 +13,12 @@ func (db *DBORM) GetMcVmsByServerIdx(serverIdx int) (obj []mcmodel.McVm, err err
 		Find(&obj).Error
 }
 
+func (db *DBORM) GetMcVmByMac(mac string) (obj mcmodel.McVm, err error) {
+	return obj, db.Table("mc_vm_tb").
+		Where(mcmodel.McVm{Mac: mac}).
+		Find(&obj).Error
+}
+
 func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmodel.McVmPage, err error) {
 	var query string
 	if cpName == "all" {
