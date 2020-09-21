@@ -121,7 +121,7 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 		OrderBy:     orderBy,
 		Order:       order,
 	}
-	fmt.Println("1. page:")
+	fmt.Println("GetMcServers 1. page:")
 	page.String()
 	servers, err := h.db.GetMcServersPage(page, cpName)
 	if err != nil {
@@ -317,6 +317,7 @@ func (h *Handler) GetMcImages(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
+	
 	c.JSON(http.StatusOK, images)
 }
 

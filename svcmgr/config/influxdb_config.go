@@ -3,6 +3,7 @@ package config
 import (
 	"cmpService/common/lib"
 	"errors"
+	"fmt"
 	client "github.com/influxdata/influxdb1-client/v2"
 )
 
@@ -26,7 +27,12 @@ func GetMeasurementsWithConditionOrderLimit(collector string, field string, wher
 		query += " WHERE " + where
 	}
 	query += " ORDER BY time DESC LIMIT 1"
-	//fmt.Printf(collector, "♨♨♨ -> Query: %s\n", query)	// Need to debuggig
+
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("query : ", query)
+	fmt.Println("where: ", where)
+	fmt.Printf(collector, "♨♨♨ -> Query: %s\n", query)	// Need to debuggig
 	res, err := InfluxdbQuery(query)
 	if err != nil {
 		return nil

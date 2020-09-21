@@ -291,11 +291,14 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 
-	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu", GetVmInterfaceCpu)
-	router.GET(lib.SvcmgrApiMicroVmMonitor+"/mem", GetVmInterfaceMem)
-	router.GET(lib.SvcmgrApiMicroVmMonitor+"/disk", GetVmInterfaceDisk)
+	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu/:mac", GetVmInterfaceCpu)
+	router.GET(lib.SvcmgrApiMicroVmMonitor+"/mem/:mac", GetVmInterfaceMem)
+	router.GET(lib.SvcmgrApiMicroVmMonitor+"/disk/:mac", GetVmInterfaceDisk)
 
 	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac/:currentStatus", GetVmWinInterface)
+
+	// Micro Cloud Dashboard
+	/*router.GET(lib.SvcmgrApiMicroDashboard+"/:type", )*/
 
 	return router.Run(address)
 }

@@ -12,37 +12,50 @@ import (
 )
 
 func GetVmInterfaceDisk(c *gin.Context) {
+	mac := c.Param("mac")
 	dbname := "disk"
 	field := `"time","device","fstype","path","total","used","used_percent"`
-	where := fmt.Sprintf(`path = '/'`)
+	//where := fmt.Sprintf(`path = '/'`)
+	where := fmt.Sprintf(`path = '/' AND mac_address = '%s'`, mac)
 	res := config.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
+
+	disk := make([]models.DiskStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
-		lib.LogWarn("InfluxDB Response Error : No Data\n")
-		c.JSON(http.StatusInternalServerError, "No Data")
-		return
-	}
+		fmt.Println("")
+		lib.LogWarn("DISK InfluxDB Response Error : No Data\n")
 
-	// Convert response data
-	v := res.Results[0].Series[0].Values
-	stat := make([]models.DiskStat, len(v))
-	var convTime time.Time
-	for i, data := range v {
-		// select time check
-		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
+		disk[0].Err = "nodata"
+		disk[0].Device = ""
+		disk[0].Fstype = ""
+		disk[0].Path = "/"
+		disk[0].Total = 0
+		disk[0].Used = 0
+		disk[0].UsedPercent = 100
+		/*c.JSON(http.StatusInternalServerError, "No Data")
+		return*/
+	} else {
+		// Convert response data
+		v := res.Results[0].Series[0].Values
+		disk := make([]models.DiskStat, len(v))
+		var convTime time.Time
+		for i, data := range v {
+			// select time check
+			convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 
-		// make struct
-		stat[i].Time = convTime
-		if err := MakeStructForStatsDisk(&stat[i], data); err != nil {
-			lib.LogWarn("Error : %s\n", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-			return
+			// make struct
+			disk[i].Time = convTime
+			if err := MakeStructForStatsDisk(&disk[i], data); err != nil {
+				lib.LogWarn("Error : %s\n", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+				return
+			}
 		}
 	}
 
 	//fmt.Printf("%+v\n", deltaStats)
-	c.JSON(http.StatusOK, stat)
+	c.JSON(http.StatusOK, disk)
 }
 
 func MakeStructForStatsDisk(s *models.DiskStat, data []interface{}) error {
@@ -52,12 +65,13 @@ func MakeStructForStatsDisk(s *models.DiskStat, data []interface{}) error {
 		}
 	}
 
+	s.Err = ""
 	s.Device = data[1].(string)
 	s.Fstype = data[2].(string)
 	s.Path = data[3].(string)
-	s.Total = data[4].(json.Number)
-	s.Used = data[5].(json.Number)
-	s.UsedPercent = data[6].(json.Number)
+	s.Total, _ = data[4].(json.Number).Float64()
+	s.Used, _ = data[5].(json.Number).Float64()
+	s.UsedPercent, _ = data[6].(json.Number).Float64()
 	return nil
 }
 

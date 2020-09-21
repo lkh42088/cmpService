@@ -1,15 +1,15 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 )
 
 type MemStat struct {
-	Time             time.Time   `json:"time"`
-	Available        json.Number `json:"available"`
-	AvailablePercent json.Number `json:"available_percent"`
-	Total            json.Number `json:"total"`
+	Time             time.Time `json:"time"`
+	Available        float64   `json:"available"`
+	AvailablePercent float64   `json:"available_percent"`
+	Total            float64   `json:"total"`
+	Err              string    `json:"err"`
 }
 
 type WinMemStat struct {

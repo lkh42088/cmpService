@@ -12,37 +12,48 @@ import (
 )
 
 func GetVmInterfaceMem(c *gin.Context) {
+	mac := c.Param("mac")
+	fmt.Println("-------------------------------------")
+	fmt.Println("memory mac : ", mac)
 	dbname := "mem"
 	field := `"time","available","available_percent", total`
-	where := ""
+	where := fmt.Sprintf(`mac_address = '%s'`, mac)
 	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
+
+	mem := make([]models.MemStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
-		lib.LogWarn("InfluxDB Response Error : No Data\n")
-		c.JSON(http.StatusInternalServerError, "No Data")
-		return
-	}
+		fmt.Println("")
+		lib.LogWarn("MEM InfluxDB Response Error : No Data\n")
 
-	// Convert response data
-	v := res.Results[0].Series[0].Values
-	stat := make([]models.MemStat, len(v))
-	var convTime time.Time
-	for i, data := range v {
-		// select time check
-		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
+		mem[0].Err = "nodata"
+		mem[0].Available = 0
+		mem[0].AvailablePercent = 0
+		mem[0].Total = 0
+		/*c.JSON(http.StatusInternalServerError, "No Data")
+		return*/
+	} else {
+		// Convert response data
+		v := res.Results[0].Series[0].Values
+		mem := make([]models.MemStat, len(v))
+		var convTime time.Time
+		for i, data := range v {
+			// select time check
+			convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 
-		// make struct
-		stat[i].Time = convTime
-		if err := MakeStructForStatsMem(&stat[i], data); err != nil {
-			lib.LogWarn("Error : %s\n", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-			return
+			// make struct
+			mem[i].Time = convTime
+			if err := MakeStructForStatsMem(&mem[i], data); err != nil {
+				lib.LogWarn("Error : %s\n", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+				return
+			}
 		}
 	}
 
 	//fmt.Printf("%+v\n", deltaStats)
-	c.JSON(http.StatusOK, stat)
+	c.JSON(http.StatusOK, mem)
 }
 
 func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
@@ -51,9 +62,11 @@ func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
 		}
 	}
-	s.Available = data[1].(json.Number)
-	s.AvailablePercent = data[2].(json.Number)
-	s.Total = data[3].(json.Number)
+
+	s.Err = ""
+	s.Available, _ = data[1].(json.Number).Float64()
+	s.AvailablePercent, _ = data[2].(json.Number).Float64()
+	s.Total, _ = data[3].(json.Number).Float64()
 	return nil
 }
 
