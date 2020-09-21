@@ -3,7 +3,6 @@ package kvm
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
-	"cmpService/mcagent/mcmongo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"sync"
@@ -12,30 +11,30 @@ import (
 
 type KvmRoutine struct {
 	Interval int
-	Vms map[uint]mcmodel.MgoVm
+	Vms map[uint]mcmodel.McVm
 }
 
 var KvmR *KvmRoutine
 
-func InitKvmRByDb() {
-	for _, vm := range KvmR.Vms {
-		delete(KvmR.Vms, vm.Idx)
-	}
-	vms, err := mcmongo.McMongo.GetVmAll()
-	if err != nil {
-		return
-	}
-	for _, vm := range vms {
-		if vm.IsProcess {
-			KvmR.Vms[vm.Idx] = vm
-		}
-	}
-}
+//func InitKvmRByDb() {
+//	for _, vm := range KvmR.Vms {
+//		delete(KvmR.Vms, vm.Idx)
+//	}
+//	vms, err := mcmongo.McMongo.GetVmAll()
+//	if err != nil {
+//		return
+//	}
+//	for _, vm := range vms {
+//		if vm.IsProcess {
+//			KvmR.Vms[vm.Idx] = vm
+//		}
+//	}
+//}
 
 func NewKvmRoutine(interval int) *KvmRoutine {
 	return &KvmRoutine{
 		Interval: interval,
-		Vms: map[uint]mcmodel.MgoVm{},
+		Vms: map[uint]mcmodel.McVm{},
 	}
 }
 
@@ -76,7 +75,7 @@ func (k *KvmRoutine) Run() {
 	svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
 
 	for _, vm := range list {
-		go func(vm *mcmodel.MgoVm) {
+		go func(vm *mcmodel.McVm) {
 			defer wg.Done()
 
 			delete(k.Vms, vm.Idx)

@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-func GetMgoImageByName (name string) mcmodel.MgoImage {
-	var image mcmodel.MgoImage
+func GetMgoImageByName (name string) mcmodel.McImages {
+	var image mcmodel.McImages
 	image.FullName = name
 	image.Name = name[:strings.LastIndexAny(name,".")]
 	list := strings.Split(name, "-")
@@ -38,7 +38,7 @@ func InitImages() {
 	}
 }
 
-func GetImages() (list []mcmodel.MgoImage) {
+func GetImages() (list []mcmodel.McImages) {
 	cfg := config.GetGlobalConfig()
 	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
 	for _, image := range images {

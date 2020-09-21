@@ -274,12 +274,6 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
 	router.POST(lib.SvcmgrApiMicroSystemInfo, h.CheckNStoreSystemInfo)
-	//// Micro Cloud GRAPH
-	//router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
-	//router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
-	//router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
-	//router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
-	//router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 
 	// Micro Cloud CPU
 	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)

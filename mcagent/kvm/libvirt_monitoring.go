@@ -6,19 +6,18 @@ import (
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
-	"strings"
 	"sync"
 	"time"
 )
 
 type LibvirtResource struct {
 	Interval int
-	Old *mcmodel.MgoServer
+	Old *mcmodel.McServerMsg
 }
 
 var LibvirtR *LibvirtResource
 
-func (l *LibvirtResource) GetVmByName(name string) *mcmodel.MgoVm {
+func (l *LibvirtResource) GetVmByName(name string) *mcmodel.McVm {
 	server := l.Old
 	if server == nil && server.Vms == nil {
 		return nil
@@ -79,7 +78,7 @@ func (l *LibvirtResource) Run() {
 	}
 }
 
-func ApplyChangeFactor(server *mcmodel.MgoServer) {
+func ApplyChangeFactor(server *mcmodel.McServerMsg) {
 	if server == nil { return }
 	if server.Vms != nil {
 		for _, vm := range *server.Vms {
@@ -93,7 +92,7 @@ func ApplyChangeFactor(server *mcmodel.MgoServer) {
 	}
 }
 
-func GetDnatRuleConfigByVm(vm *mcmodel.MgoVm) *utils.DnatRule{
+func GetDnatRuleConfigByVm(vm *mcmodel.McVm) *utils.DnatRule{
 	cfg := config.GetGlobalConfig()
 	// apply DNAT
 	return &utils.DnatRule{
@@ -104,73 +103,13 @@ func GetDnatRuleConfigByVm(vm *mcmodel.MgoVm) *utils.DnatRule{
 	}
 }
 
-const (
-	DNAT_NEXT_DST_IP = 1
-	DNAT_NEXT_DPORT = 2
-	DNAT_NEXT_TO_DEST = 3
-)
-
-func GetDnatRuleConfigByRule(rule string) *utils.DnatRule {
-	var dnat utils.DnatRule
-	if strings.Contains(rule, "DNAT") == false {
-		return nil
-	}
-	arr := strings.Fields(rule)
-	var next int
-	for _, obj := range arr {
-		//fmt.Println("GetDnatRuleConfigByRule:", obj)
-		if next > 0 {
-			switch next {
-			case DNAT_NEXT_DST_IP:
-				if strings.Contains(obj, "/") {
-					tmp := strings.Split(obj, "/")
-					dnat.WantAddr = tmp[0]
-				} else {
-					dnat.WantAddr = obj
-				}
-			case DNAT_NEXT_DPORT:
-				dnat.WantPort = obj
-			case DNAT_NEXT_TO_DEST:
-				tmp := strings.Split(obj, ":")
-				dnat.ToAddr = tmp[0]
-				dnat.ToPort = tmp[1]
-			default:
-			}
-			next = 0
-			continue
-		}
-		if obj == "-d" {
-			next = DNAT_NEXT_DST_IP
-		} else if obj == "--dport" {
-			next = DNAT_NEXT_DPORT
-		} else if obj == "--to-destination" {
-			next = DNAT_NEXT_TO_DEST
-		} else {
-			next = 0
-		}
-	}
-	return &dnat
-}
-
-func GetDnatList() *[]utils.DnatRule {
-	var DNATList []utils.DnatRule
-	natList := utils.GetNATRule()
-	for _, rule := range natList {
-		dnat := GetDnatRuleConfigByRule(rule)
-		if dnat != nil {
-			DNATList = append(DNATList, *dnat)
-		}
-	}
-	return &DNATList
-}
-
-func AddDnatRuleByVm(vm *mcmodel.MgoVm) {
+func AddDnatRuleByVm(vm *mcmodel.McVm) {
 	if vm.IpAddr == "" {
 		return
 	}
 	rule := GetDnatRuleConfigByVm(vm)
 	// Get Dnat Rules
-	dnatList := GetDnatList()
+	dnatList := utils.GetDnatList()
 	isExist := false
 	for _, nat := range *dnatList {
 		if nat.Compare(rule) {
@@ -184,7 +123,7 @@ func AddDnatRuleByVm(vm *mcmodel.MgoVm) {
 	}
 }
 
-func DeleteDnatRulByVm(vm *mcmodel.MgoVm) {
+func DeleteDnatRulByVm(vm *mcmodel.McVm) {
 	rule := GetDnatRuleConfigByVm(vm)
 	utils.DeleteDNATRule(rule)
 }

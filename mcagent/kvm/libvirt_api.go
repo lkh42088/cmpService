@@ -55,7 +55,7 @@ func ConvertVmStatus(status libvirt.DomainState) string {
 	return res
 }
 
-func ConvertImageFile2MgoVM(vm *mcmodel.MgoVm, file string) {
+func ConvertImageFile2MgoVM(vm *mcmodel.McVm, file string) {
 	// /opt/vm_instances/windows10-40G-0.qcow2
 	vm.FullPath = file
 	arr := strings.Split(file, "/")
@@ -88,7 +88,7 @@ func DumpMcVirtInfo() {
 	mcmodel.DumpImageList(imgList)
 }
 
-func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
+func GetMgoVmByLibvirt() (vmList []mcmodel.McVm){
 	// Get Vms Domains
 	doms, err := GetDomainListAll()
 	if err != nil {
@@ -99,7 +99,7 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 	if err == nil {
 		for _, dom := range doms {
 			// vm name
-			var vm mcmodel.MgoVm
+			var vm mcmodel.McVm
 			name, _ := dom.GetName()
 
 			vm.Name = name
@@ -171,7 +171,7 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.MgoVm){
 	return vmList
 }
 
-func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
+func GetMgoNetworkByLibvirt() (netList []mcmodel.McNetworks){
 
 	// Get Networks
 	nets, err := GetAllNetwork()
@@ -181,7 +181,7 @@ func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
 	}
 
 	for _, net := range nets {
-		var network mcmodel.MgoNetwork
+		var network mcmodel.McNetworks
 		name, _ := net.GetName()
 		network.Name = name
 		bridge, _ := net.GetBridgeName()
@@ -220,7 +220,7 @@ func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
 		for _, dhcp := range dhcps {
 			//fmt.Printf("   dhcp %d: %s, %s, %s, %s\n",
 			//	i, dhcp.Iface, dhcp.Mac, dhcp.IPaddr, dhcp.Hostname)
-			var host mcmodel.MgoNetworkHost
+			var host mcmodel.McNetHost
 			host.Mac = dhcp.Mac
 			host.Ip = dhcp.IPaddr
 			host.Hostname = dhcp.Hostname
@@ -233,8 +233,8 @@ func GetMgoNetworkByLibvirt() (netList []mcmodel.MgoNetwork){
 	return netList
 }
 
-func GetMcServerInfo() mcmodel.MgoServer {
-	var server mcmodel.MgoServer
+func GetMcServerInfo() mcmodel.McServerMsg{
+	var server mcmodel.McServerMsg
 	vmList := GetMgoVmByLibvirt()
 	netList := GetMgoNetworkByLibvirt()
 	imgList := GetImages()
@@ -250,14 +250,14 @@ func GetMcServerInfo() mcmodel.MgoServer {
 	return server
 }
 
-func GetMcVirtInfo() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork, imgList []mcmodel.MgoImage) {
+func GetMcVirtInfo() (vmList []mcmodel.McVm, netList []mcmodel.McNetworks, imgList []mcmodel.McImages) {
 	vmList = GetMgoVmByLibvirt()
 	netList = GetMgoNetworkByLibvirt()
 	imgList = GetImages()
 	return  vmList, netList, imgList
 }
 
-func GetMcVirtInfoDebug() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork, imgList []mcmodel.MgoImage) {
+func GetMcVirtInfoDebug() (vmList []mcmodel.McVm, netList []mcmodel.McNetworks, imgList []mcmodel.McImages) {
 	// Get Vms Domains
 	doms, err := GetDomainListAll()
 	if err == nil {
@@ -265,7 +265,7 @@ func GetMcVirtInfoDebug() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork,
 		fmt.Println("VMs")
 		for index, dom := range doms {
 			// vm name
-			var vm mcmodel.MgoVm
+			var vm mcmodel.McVm
 			name, _ := dom.GetName()
 			fmt.Printf("%d. %s\n", index, name)
 
@@ -347,7 +347,7 @@ func GetMcVirtInfoDebug() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork,
 		fmt.Println("--------------------------------")
 		fmt.Println("Networks")
 		for index, net := range nets {
-			var network mcmodel.MgoNetwork
+			var network mcmodel.McNetworks
 			name, _ := net.GetName()
 			fmt.Printf("%d. %s\n", index, name)
 			network.Name = name
@@ -391,7 +391,7 @@ func GetMcVirtInfoDebug() (vmList []mcmodel.MgoVm, netList []mcmodel.MgoNetwork,
 			for i, dhcp := range dhcps {
 				fmt.Printf("   dhcp %d: %s, %s, %s, %s\n",
 					i, dhcp.Iface, dhcp.Mac, dhcp.IPaddr, dhcp.Hostname)
-				var host mcmodel.MgoNetworkHost
+				var host mcmodel.McNetHost
 				host.Mac = dhcp.Mac
 				host.Ip = dhcp.IPaddr
 				host.Hostname = dhcp.Hostname

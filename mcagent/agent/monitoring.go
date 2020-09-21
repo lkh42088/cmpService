@@ -4,7 +4,6 @@ import (
 	"cmpService/common/mcmodel"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
-	"cmpService/mcagent/mcmongo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"sync"
@@ -59,7 +58,7 @@ func (m *MonitorRoutine) RunByVirsh() {
 	wg.Add(len(McVms.List))
 
 	for _, vm := range McVms.List {
-		go func(vm *mcmodel.MgoVm) {
+		go func(vm *mcmodel.McVm) {
 			defer wg.Done()
 			updated := false
 
@@ -91,7 +90,7 @@ func (m *MonitorRoutine) RunByVirsh() {
 			// update mongodb
 			if updated {
 				fmt.Println("Update vm: ", *vm)
-				mcmongo.McMongo.UpdateVmByInternal(vm)
+				//mcmongo.McMongo.UpdateVmByInternal(vm)
 				// notify svcmgr
 				svcmgrapi.SendUpdateVm2Svcmgr(*vm,"192.168.0.72:8081")
 			}
@@ -101,7 +100,7 @@ func (m *MonitorRoutine) RunByVirsh() {
 	wg.Wait()
 }
 
-func UpdateVmAddress (vm *mcmodel.MgoVm) bool {
+func UpdateVmAddress (vm *mcmodel.McVm) bool {
 	updated := false
 	ip, mac, res := kvm.GetIpAddressOfVm(*vm)
 	if res < 0 {
@@ -120,7 +119,7 @@ func UpdateVmAddress (vm *mcmodel.MgoVm) bool {
 	return updated
 }
 
-func UpdateVmStatus (vm *mcmodel.MgoVm) bool {
+func UpdateVmStatus (vm *mcmodel.McVm) bool {
 	updated := false
 	status := kvm.StatusVm(*vm)
 	if vm.CurrentStatus != status {
