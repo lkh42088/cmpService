@@ -14,12 +14,12 @@ func (db *DBORM) GetMcServersPage(paging models.Pagination, cpName string) (
 	} else {
 		query = "c.cp_name = '" + cpName + "'"
 	}
-	err = db.
+	err = db.Debug().
 		Table("mc_server_tb").
 		Select("mc_server_tb.*, c.cp_name").
 		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_server_tb.mc_cp_idx").
 		Order(servers.GetOrderBy(paging.OrderBy, paging.Order)).
-		Limit(paging.RowsPerPage).
+		/*Limit(paging.RowsPerPage).*/
 		Offset(paging.Offset).
 		//Where("c.cp_name = ?", cpName).
 		Where(query).

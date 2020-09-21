@@ -59,6 +59,10 @@ func ConvertImageFile2MgoVM(vm *mcmodel.McVm, file string) {
 	// /opt/vm_instances/windows10-40G-0.qcow2
 	vm.FullPath = file
 	arr := strings.Split(file, "/")
+	if len(arr) < 3 || !strings.Contains(arr[1], "opt") {
+		fmt.Println("The directory isn't valid.", arr)
+		return
+	}
 	name := arr[3]
 	fmt.Printf("%s\n", arr)
 	fmt.Printf("%s\n", arr[3])

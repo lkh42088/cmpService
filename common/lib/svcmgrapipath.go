@@ -49,5 +49,6 @@ const (
 	SvcmgrApiMicroVmMonitor         = SvcmgrApiMicro + "/monitor"
 	SvcmgrApiMicroVmStats           = SvcmgrApiMicroVmMonitor + "/stats"
 	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
+	SvcmgrApiMicroDashboard        = SvcmgrApiMicro + "/dashboard"
 )
 

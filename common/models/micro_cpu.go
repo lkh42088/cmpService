@@ -1,14 +1,14 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 )
 
 type CpuStat struct {
-	Time      time.Time   `json:"time"`
-	Cpu       string      `json:"cpu"`
-	UsageIdle json.Number `json:"usage_idle"`
+	Time      time.Time `json:"time"`
+	Cpu       string    `json:"cpu"`
+	UsageIdle float64   `json:"usage_idle"`
+	Err       string    `json:"err"`
 }
 
 type WinCpuStat struct {

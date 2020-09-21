@@ -12,36 +12,48 @@ import (
 )
 
 func GetVmInterfaceCpu(c *gin.Context) {
+	mac := c.Param("mac")
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("mac : ", mac)
+	fmt.Println("")
 	dbname := "cpu"
 	field := `"time","cpu","usage_idle"`
-	where := fmt.Sprintf(`cpu = 'cpu-total'`)
+	where := fmt.Sprintf(`cpu = 'cpu-total' AND mac_address = '%s'`, mac)
+	//where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "1h")
 	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
+
+	cpu := make([]models.CpuStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
-		lib.LogWarn("InfluxDB Response Error : No Data\n")
-		c.JSON(http.StatusInternalServerError, "No Data")
-		return
-	}
-	// Convert response data
-	v := res.Results[0].Series[0].Values
-	stat := make([]models.CpuStat, len(v))
-	var convTime time.Time
-	for i, data := range v {
-		// select time check
-		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
+		fmt.Println("")
+		lib.LogWarn("CPU InfluxDB Response Error : No Data\n")
+		/*c.JSON(http.StatusInternalServerError, "No Data")
+		return*/
+		cpu[0].Err = "nodata"
+		cpu[0].UsageIdle = 0
+	} else {
+		// Convert response data
+		v := res.Results[0].Series[0].Values
+		cpu := make([]models.CpuStat, len(v))
+		var convTime time.Time
+		for i, data := range v {
+			// select time check
+			convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 
-		// make struct
-		stat[i].Time = convTime
-		if err := MakeStructForStatsCpu(&stat[i], data); err != nil {
-			lib.LogWarn("Error : %s\n", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-			return
+			// make struct
+			cpu[i].Time = convTime
+			if err := MakeStructForStatsCpu(&cpu[i], data); err != nil {
+				lib.LogWarn("Error : %s\n", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+				return
+			}
 		}
 	}
 
 	//fmt.Printf("%+v\n", deltaStats)
-	c.JSON(http.StatusOK, stat)
+	c.JSON(http.StatusOK, cpu)
 }
 
 func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
@@ -52,7 +64,8 @@ func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
 	}
 
 	s.Cpu = data[1].(string)
-	s.UsageIdle = data[2].(json.Number)
+	s.Err = ""
+	s.UsageIdle, _ = data[2].(json.Number).Float64()
 	return nil
 }
 
