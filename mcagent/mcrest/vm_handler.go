@@ -7,17 +7,15 @@ import (
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
-	"cmpService/mcagent/mcmongo"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"time"
 )
 
-func checkValidation(msg mcmodel.MgoVm) bool {
+func checkValidation(msg mcmodel.McVm) bool {
 	if msg.Idx == 0 {
 		fmt.Printf("error: idx is zero!\n")
 		return false
@@ -45,8 +43,8 @@ func checkValidation(msg mcmodel.MgoVm) bool {
 	return true
 }
 
-func GetMgoServer() (mcmodel.MgoServer, error) {
-	var server mcmodel.MgoServer
+func GetMgoServer() (mcmodel.McServerMsg, error) {
+	var server mcmodel.McServerMsg
 	networks, err := kvm.GetMgoNetworksFromXmlNetwork()
 	if err != nil {
 		return server, err
@@ -97,7 +95,7 @@ func unRegisterServerHandler(c *gin.Context) {
 }
 
 func addVmHandler(c *gin.Context) {
-	var msg mcmodel.MgoVm
+	var msg mcmodel.McVm
 	err := c.ShouldBindJSON(&msg)
 	fmt.Printf("addVmHandler: %s\n", msg.Dump())
 	if err != nil {
@@ -138,7 +136,7 @@ func addVmHandler(c *gin.Context) {
 }
 
 func deleteVmHandler(c *gin.Context) {
-	var msg mcmodel.MgoVm
+	var msg mcmodel.McVm
 	err := c.ShouldBindJSON(&msg)
 	fmt.Printf("deleteVmHandler: %v\n", msg)
 	if err != nil {
@@ -173,48 +171,48 @@ func deleteVmHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
-func deleteVmHandlerOld(c *gin.Context) {
-	var msg mcmodel.MgoVm
-	err := c.ShouldBindJSON(&msg)
-	fmt.Printf("deleteVmHandler: %v\n", msg)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+//func deleteVmHandlerOld(c *gin.Context) {
+//	var msg mcmodel.McVm
+//	err := c.ShouldBindJSON(&msg)
+//	fmt.Printf("deleteVmHandler: %v\n", msg)
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	vm, err := mcmongo.McMongo.GetVmById(int(msg.Idx))
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	err = mcmongo.McMongo.DeleteVm(int(msg.Idx))
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//		return
+//	}
+//
+//	fmt.Printf("deleteVmHandler: success\n")
+//	c.JSON(http.StatusOK, msg)
+//
+//	// 1. Delete Vm instance
+//	kvm.DeleteVm(vm)
+//	// 2. Delete Vm image
+//	kvm.DeleteVmInstance(vm)
+//}
 
-	vm, err := mcmongo.McMongo.GetVmById(int(msg.Idx))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	err = mcmongo.McMongo.DeleteVm(int(msg.Idx))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	fmt.Printf("deleteVmHandler: success\n")
-	c.JSON(http.StatusOK, msg)
-
-	// 1. Delete Vm instance
-	kvm.DeleteVm(vm)
-	// 2. Delete Vm image
-	kvm.DeleteVmInstance(vm)
-}
-
-func getVmByIdHandler(c *gin.Context) {
-	idStr := c.Param("id")
-
-	// Get VMs from Mongodb
-	id, _ := strconv.Atoi(idStr)
-	vm, err := mcmongo.McMongo.GetVmById(id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
-
-	c.JSON(http.StatusOK, vm)
-}
+//func getVmByIdHandler(c *gin.Context) {
+//	idStr := c.Param("id")
+//
+//	// Get VMs from Mongodb
+//	id, _ := strconv.Atoi(idStr)
+//	vm, err := mcmongo.McMongo.GetVmById(id)
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//	}
+//
+//	c.JSON(http.StatusOK, vm)
+//}
 
 func getServerHandler(c *gin.Context) {
 	if kvm.LibvirtR == nil {
@@ -228,25 +226,25 @@ func getServerHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, server)
 }
 
-func getVmAllHandler(c *gin.Context) {
-	// Get VMs from Mongodb
-	vm, err := mcmongo.McMongo.GetVmAll()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
-
-	c.JSON(http.StatusOK, vm)
-}
+//func getVmAllHandler(c *gin.Context) {
+//	// Get VMs from Mongodb
+//	vm, err := mcmongo.McMongo.GetVmAll()
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+//	}
+//
+//	c.JSON(http.StatusOK, vm)
+//}
 
 func addNetworkHandler(c *gin.Context) {
-	var msg mcmodel.MgoNetwork
+	var msg mcmodel.McNetworks
 	c.ShouldBindJSON(&msg)
 	kvm.CreateNetworkByMgoNetwork(msg)
 	c.JSON(http.StatusOK, msg)
 }
 
 func deleteNetworkHandler(c *gin.Context) {
-	var msg mcmodel.MgoNetwork
+	var msg mcmodel.McNetworks
 	c.ShouldBindJSON(&msg)
 
 	kvm.DeleteNetwork(msg.Name)

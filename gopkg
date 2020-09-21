@@ -30,3 +30,7 @@ go get -t golang.org/x/net/websocket
 go get -t github.com/coreos/go-iptables/iptables
 
 go get -t github.com/robfig/cron/v3@v3.0.0
+go get -t github.com/shirou/gopsutil/cpu
+go get -t github.com/shirou/gopsutil/disk
+go get -t github.com/shirou/gopsutil/host
+go get -t github.com/shirou/gopsutil/net

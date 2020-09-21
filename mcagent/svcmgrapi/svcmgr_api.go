@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func SendUpdateServer2Svcmgr(obj mcmodel.MgoServer, addr string) bool {
+func SendUpdateServer2Svcmgr(obj mcmodel.McServerMsg, addr string) bool {
 	pbytes, _ := json.Marshal(obj)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroServerResource)
@@ -31,7 +31,7 @@ func SendUpdateServer2Svcmgr(obj mcmodel.MgoServer, addr string) bool {
 	return true
 }
 
-func SendUpdateVm2Svcmgr(vm mcmodel.MgoVm, addr string) bool {
+func SendUpdateVm2Svcmgr(vm mcmodel.McVm, addr string) bool {
 	pbytes, _ := json.Marshal(vm)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroVmUpdateFromMc)

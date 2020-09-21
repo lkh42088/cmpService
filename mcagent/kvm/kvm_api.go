@@ -14,12 +14,12 @@ import (
 	"time"
 )
 
-func CreateXrdpNat(vm mcmodel.MgoVm) {
+func CreateXrdpNat(vm mcmodel.McVm) {
 	// iptables -t nat -A PREROUTING -d 192.168.0.57 -p tcp --dport 10022 -j DNAT --to 10.0.0.197:22
 	// iptables-save
 }
 
-func GetIpAddressOfVm(vm mcmodel.MgoVm) (ip, mac string, res int) {
+func GetIpAddressOfVm(vm mcmodel.McVm) (ip, mac string, res int) {
 	res = 0
 
 	// virsh domifaddr NAME
@@ -64,7 +64,7 @@ func GetIpAddressOfVm(vm mcmodel.MgoVm) (ip, mac string, res int) {
 	return ip, mac, res
 }
 
-func MakeFilename(vm *mcmodel.MgoVm) string {
+func MakeFilename(vm *mcmodel.McVm) string {
 	cfg := config.GetGlobalConfig()
 	for index, num := range cfg.VmNumber {
 		if num == 0 {
@@ -77,12 +77,12 @@ func MakeFilename(vm *mcmodel.MgoVm) string {
 	return ""
 }
 
-func DeleteFilename(vm mcmodel.MgoVm) {
+func DeleteFilename(vm mcmodel.McVm) {
 	cfg := config.GetGlobalConfig()
 	cfg.VmNumber[vm.VmIndex] = 0
 }
 
-func ConfigDNAT(vm *mcmodel.MgoVm) {
+func ConfigDNAT(vm *mcmodel.McVm) {
 	cfg := config.GetGlobalConfig()
 	//iptables -t nat -A PREROUTING -d 192.168.0.73 -p tcp --dport 13389 -j DNAT --to 10.0.0.159:3389
 	dport:= fmt.Sprintf("%d", cfg.DnatBasePortNum+vm.VmIndex)
@@ -114,7 +114,7 @@ func ConfigDNAT(vm *mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func CopyVmInstance(vm *mcmodel.MgoVm) {
+func CopyVmInstance(vm *mcmodel.McVm) {
 	cfg := config.GetGlobalConfig()
 	org := fmt.Sprintf("%s/%s.qcow2", cfg.VmImageDir, vm.Image)
 	target := fmt.Sprintf("%s/%s.qcow2", cfg.VmInstanceDir, vm.Filename)
@@ -131,7 +131,7 @@ func CopyVmInstance(vm *mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func CreateVmInstance(vm mcmodel.MgoVm) {
+func CreateVmInstance(vm mcmodel.McVm) {
 	cfg := config.GetGlobalConfig()
 	if vm.Filename == "" {
 		fmt.Printf("CreateVmInstance: %s failed to get filename!\n", vm.Name)
@@ -175,7 +175,7 @@ func CreateVmInstance(vm mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func StartVm(vm mcmodel.MgoVm) {
+func StartVm(vm mcmodel.McVm) {
 	// virsh shutdown NAME
 	args := []string{
 		"start",
@@ -190,7 +190,7 @@ func StartVm(vm mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func ShutdownVm(vm mcmodel.MgoVm) {
+func ShutdownVm(vm mcmodel.McVm) {
 	// virsh shutdown NAME
 	args := []string{
 		"shutdown",
@@ -205,7 +205,7 @@ func ShutdownVm(vm mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func UndefineVm(vm mcmodel.MgoVm) {
+func UndefineVm(vm mcmodel.McVm) {
 	// virsh undefine NAME
 	args := []string{
 		"undefine",
@@ -218,7 +218,7 @@ func UndefineVm(vm mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func DestroyVm(vm mcmodel.MgoVm) {
+func DestroyVm(vm mcmodel.McVm) {
 	// virsh undefine NAME
 	args := []string{
 		"destroy",
@@ -231,7 +231,7 @@ func DestroyVm(vm mcmodel.MgoVm) {
 	fmt.Println("output", string(output))
 }
 
-func StatusVm(vm mcmodel.MgoVm) string {
+func StatusVm(vm mcmodel.McVm) string {
 	// virsh undefine NAME
 	args := []string{
 		"list",
@@ -275,12 +275,12 @@ func StatusVm(vm mcmodel.MgoVm) string {
 	return arr[2]
 }
 
-func DeleteVm(vm mcmodel.MgoVm) {
+func DeleteVm(vm mcmodel.McVm) {
 	DestroyVm(vm)
 	UndefineVm(vm)
 }
 
-func DeleteVmInstance(vm mcmodel.MgoVm) {
+func DeleteVmInstance(vm mcmodel.McVm) {
 	DeleteFilename(vm)
 	cfg := config.GetGlobalConfig()
 	args := []string{

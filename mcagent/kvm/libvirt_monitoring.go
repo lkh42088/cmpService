@@ -13,12 +13,12 @@ import (
 
 type LibvirtResource struct {
 	Interval int
-	Old *mcmodel.MgoServer
+	Old *mcmodel.McServerMsg
 }
 
 var LibvirtR *LibvirtResource
 
-func (l *LibvirtResource) GetVmByName(name string) *mcmodel.MgoVm {
+func (l *LibvirtResource) GetVmByName(name string) *mcmodel.McVm {
 	server := l.Old
 	if server == nil && server.Vms == nil {
 		return nil
@@ -79,7 +79,7 @@ func (l *LibvirtResource) Run() {
 	}
 }
 
-func ApplyChangeFactor(server *mcmodel.MgoServer) {
+func ApplyChangeFactor(server *mcmodel.McServerMsg) {
 	if server == nil { return }
 	if server.Vms != nil {
 		for _, vm := range *server.Vms {
@@ -93,7 +93,7 @@ func ApplyChangeFactor(server *mcmodel.MgoServer) {
 	}
 }
 
-func GetDnatRuleConfigByVm(vm *mcmodel.MgoVm) *utils.DnatRule{
+func GetDnatRuleConfigByVm(vm *mcmodel.McVm) *utils.DnatRule{
 	cfg := config.GetGlobalConfig()
 	// apply DNAT
 	return &utils.DnatRule{
@@ -164,7 +164,7 @@ func GetDnatList() *[]utils.DnatRule {
 	return &DNATList
 }
 
-func AddDnatRuleByVm(vm *mcmodel.MgoVm) {
+func AddDnatRuleByVm(vm *mcmodel.McVm) {
 	if vm.IpAddr == "" {
 		return
 	}
@@ -184,7 +184,7 @@ func AddDnatRuleByVm(vm *mcmodel.MgoVm) {
 	}
 }
 
-func DeleteDnatRulByVm(vm *mcmodel.MgoVm) {
+func DeleteDnatRulByVm(vm *mcmodel.McVm) {
 	rule := GetDnatRuleConfigByVm(vm)
 	utils.DeleteDNATRule(rule)
 }

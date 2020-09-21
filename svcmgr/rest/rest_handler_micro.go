@@ -144,14 +144,21 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 	c.Bind(&msg)
 
 	fmt.Printf("Add McVm : %v\n", msg)
+	msg.Dump()
 
 	msg.CurrentStatus = "Ready"
 	msg, err := h.db.AddMcVm(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	// send to mcagent
 	mcapi.SendAddVm(msg, server)
 
