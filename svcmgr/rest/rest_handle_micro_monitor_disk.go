@@ -38,7 +38,7 @@ func GetVmInterfaceDisk(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		disk := make([]models.DiskStat, len(v))
+		disk = make([]models.DiskStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -65,7 +65,7 @@ func MakeStructForStatsDisk(s *models.DiskStat, data []interface{}) error {
 		}
 	}
 
-	s.Err = ""
+	s.Err = "indata"
 	s.Device = data[1].(string)
 	s.Fstype = data[2].(string)
 	s.Path = data[3].(string)

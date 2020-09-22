@@ -124,6 +124,7 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 	fmt.Println("GetMcServers 1. page:")
 	page.String()
 	servers, err := h.db.GetMcServersPage(page, cpName)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

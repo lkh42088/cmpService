@@ -17,33 +17,41 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	field := `"time","hostname","ifDescr","ifPhysAddress","ifInOctets","ifOutOctets"`
 	where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "1h")
 	res := conf.GetMeasurementsWithCondition(dbname, field, where)
-    //fmt.Println(res.Err)
+    fmt.Println(res.Err)
+
+	stat := make([]models.VmIfStat, 1)
+
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
 		lib.LogWarn("InfluxDB Response Error : No Data\n")
-		c.JSON(http.StatusInternalServerError, res.Err)
-		return
-	}
+		/*c.JSON(http.StatusInternalServerError, res.Err)
+		return*/
+		stat[0].IfDescr = ""
+		stat[0].Hostname = ""
+		stat[0].IfInOctets = 0
+		stat[0].IfOutOctets = 0
+	} else {
+		// Convert response data
+		v := res.Results[0].Series[0].Values
+		stat = make([]models.VmIfStat, len(v))
+		var convTime time.Time
+		for i, data := range v {
+			// select time check
+			convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 
-	// Convert response data
-	v := res.Results[0].Series[0].Values
-	stat := make([]models.VmIfStat, len(v))
-	var convTime time.Time
-	for i, data := range v {
-		// select time check
-		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
-
-		// make struct
-		stat[i].Time = convTime
-		stat[i].IfPhysAddress = mac
-		if err := MakeStructForStats(&stat[i], data); err != nil {
-			lib.LogWarn("Error : %s\n", err)
-			c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
-			return
+			// make struct
+			stat[i].Time = convTime
+			stat[i].IfPhysAddress = mac
+			if err := MakeStructForStats(&stat[i], data); err != nil {
+				lib.LogWarn("Error : %s\n", err)
+				c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+				return
+			}
 		}
 	}
 
 	deltaStats := MakeDeltaValues(stat)
+
 	//fmt.Printf("%+v\n", deltaStats)
 	c.JSON(http.StatusOK, deltaStats)
 }
@@ -102,6 +110,11 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
 		result.IfInOctets = s[i].IfInOctets - s[i-1].IfInOctets
 		result.IfOutOctets = s[i].IfOutOctets - s[i-1].IfOutOctets
 		delta.Stats = append(delta.Stats, result)
+		fmt.Println("")
+		fmt.Println("")
+		fmt.Println("delta : ", delta)
+		fmt.Println("")
+		fmt.Println("")
 
 		// Make response data set
 		//unit.Xaxis = result.Time.Format("03:04:05")

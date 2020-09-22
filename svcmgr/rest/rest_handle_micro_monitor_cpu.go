@@ -13,10 +13,6 @@ import (
 
 func GetVmInterfaceCpu(c *gin.Context) {
 	mac := c.Param("mac")
-	fmt.Println("")
-	fmt.Println("")
-	fmt.Println("mac : ", mac)
-	fmt.Println("")
 	dbname := "cpu"
 	field := `"time","cpu","usage_idle"`
 	where := fmt.Sprintf(`cpu = 'cpu-total' AND mac_address = '%s'`, mac)
@@ -36,7 +32,7 @@ func GetVmInterfaceCpu(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		cpu := make([]models.CpuStat, len(v))
+		cpu = make([]models.CpuStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -51,7 +47,6 @@ func GetVmInterfaceCpu(c *gin.Context) {
 			}
 		}
 	}
-
 	//fmt.Printf("%+v\n", deltaStats)
 	c.JSON(http.StatusOK, cpu)
 }
@@ -63,9 +58,10 @@ func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
 		}
 	}
 
+	s.Err = "indata"
 	s.Cpu = data[1].(string)
-	s.Err = ""
 	s.UsageIdle, _ = data[2].(json.Number).Float64()
+
 	return nil
 }
 
