@@ -14,7 +14,8 @@ func (db *DBORM) GetMcVmsByServerIdx(serverIdx int) (obj []mcmodel.McVm, err err
 }
 
 func (db *DBORM) GetMcVmByMac(mac string) (obj mcmodel.McVm, err error) {
-	return obj, db.Table("mc_vm_tb").
+	return obj, db.
+		Table("mc_vm_tb").
 		Where(mcmodel.McVm{Mac: mac}).
 		Find(&obj).Error
 }

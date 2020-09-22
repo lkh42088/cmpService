@@ -490,6 +490,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 				return
 			}
 		}
+		winMem[0].Total = float64(vmInfo.Ram)
 		graph.Mem = winMem[0]
 	}
 
@@ -525,6 +526,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 				return
 			}
 		}
+		winDisk[0].Total = float64(vmInfo.Hdd)
 		graph.Disk = winDisk[0]
 	}
 	/*-----------------------------------------------------------------------------------------------TRAFFIC*/
