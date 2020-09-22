@@ -124,6 +124,7 @@ func (h *Handler) GetMcServers(c *gin.Context) {
 	fmt.Println("GetMcServers 1. page:")
 	page.String()
 	servers, err := h.db.GetMcServersPage(page, cpName)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
@@ -410,12 +411,17 @@ func (h *Handler) GetMcNetworksByServerIdx(c *gin.Context) {
 	c.JSON(http.StatusOK, images)
 }
 
-func GetVmWinInterface(c *gin.Context) {
+func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	fmt.Println("GetMcVmsGraphs start!!")
 	mac := c.Param("mac")
 	currentStatus := c.Param("currentStatus")
 
 	var graph mcmodel.McWinVmGraph
+
+	vmInfo, err := h.db.GetMcVmByMac(mac)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+	}
 
 	/*---------------------------------------------------------------------------------------------------CPU*/
 	dbname := "win_cpu"
@@ -469,7 +475,7 @@ func GetVmWinInterface(c *gin.Context) {
 		//c.JSON(http.StatusInternalServerError, "No Data")
 		//return
 		winMem[0].AvailableBytes = 0
-		winMem[0].Total = 0
+		winMem[0].Total = float64(vmInfo.Ram)
 		graph.Mem = winMem[0]
 	} else {
 		v := res.Results[0].Series[0].Values
@@ -485,6 +491,7 @@ func GetVmWinInterface(c *gin.Context) {
 				return
 			}
 		}
+		winMem[0].Total = float64(vmInfo.Ram)
 		graph.Mem = winMem[0]
 	}
 
@@ -504,7 +511,7 @@ func GetVmWinInterface(c *gin.Context) {
 		//c.JSON(http.StatusInternalServerError, "No Data")
 		//return
 		winDisk[0].FreeMegabytes = 0
-		winDisk[0].Total = 0
+		winDisk[0].Total = float64(vmInfo.Hdd)
 		graph.Disk = winDisk[0]
 	} else {
 		v := res.Results[0].Series[0].Values
@@ -520,6 +527,7 @@ func GetVmWinInterface(c *gin.Context) {
 				return
 			}
 		}
+		winDisk[0].Total = float64(vmInfo.Hdd)
 		graph.Disk = winDisk[0]
 	}
 	/*-----------------------------------------------------------------------------------------------TRAFFIC*/
@@ -563,12 +571,12 @@ func GetVmWinInterface(c *gin.Context) {
 	}
 
 	//deltaStats := MakeDeltaWinValues(winTraffic)
-	/*fmt.Println("")
+	fmt.Println("")
 	fmt.Println(mac, "-------------------------------------------------------------------------------------------------------------------")
 	fmt.Println("graph CPU : ", graph.Cpu)
 	fmt.Println("graph Mem : ", graph.Mem)
 	fmt.Println("graph Disk : ", graph.Disk)
-	fmt.Println("graph Traffic : ", graph.Traffic)*/
+	fmt.Println("graph Traffic : ", graph.Traffic)
 
 	c.JSON(http.StatusOK, graph)
 }

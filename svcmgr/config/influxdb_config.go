@@ -13,6 +13,13 @@ var infClient client.Client
 func GetMeasurementsWithCondition(collector string, field string, where string) *client.Response {
 	query := "SELECT " + field + " FROM " + collector
 	query += " WHERE " + where
+
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("query : ", query)
+	fmt.Println("where: ", where)
+	fmt.Println("")
+	fmt.Println("")
 	//fmt.Printf(collector, "★★★ -> Query: %s\n", query)	// Need to debuggig
 	res, err := InfluxdbQuery(query)
 	if err != nil {
