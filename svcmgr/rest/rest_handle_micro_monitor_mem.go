@@ -36,7 +36,7 @@ func GetVmInterfaceMem(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		mem := make([]models.MemStat, len(v))
+		mem = make([]models.MemStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -63,7 +63,7 @@ func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
 		}
 	}
 
-	s.Err = ""
+	s.Err = "indata"
 	s.Available, _ = data[1].(json.Number).Float64()
 	s.AvailablePercent, _ = data[2].(json.Number).Float64()
 	s.Total, _ = data[3].(json.Number).Float64()

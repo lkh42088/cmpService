@@ -29,6 +29,7 @@ func (db *DBORM) GetMcServersPage(paging models.Pagination, cpName string) (
 	}
 	paging.TotalCount = len(servers.Servers)
 	servers.Page = paging
+
 	return servers, err
 }
 
