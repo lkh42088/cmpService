@@ -274,12 +274,6 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
 	router.POST(lib.SvcmgrApiMicroSystemInfo, h.CheckNStoreSystemInfo)
-	// Micro Cloud GRAPH
-	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
-	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
-	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
-	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
-	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 
 	// Micro Cloud CPU
 /*	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
@@ -293,8 +287,8 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/disk/:mac", GetVmInterfaceDisk)
 
 	// Micro Cloud Graph
-	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac", GetVmWinInterface)
-	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac/:currentStatus", GetVmWinInterface)
+	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac", h.GetVmWinInterface)
+	router.GET(lib.SvcmgrApiMicroVmGraph+"/:mac/:currentStatus", h.GetVmWinInterface)
 
 	// Micro Cloud Dashboard
 	/*router.GET(lib.SvcmgrApiMicroDashboard+"/:type", )*/

@@ -128,7 +128,7 @@ func FindRouteInterface(addr string) (network.IP, error) {
 	return preferredSrc, nil
 }
 
-func SendSysInfo() {
+func SetSysInfo() {
 	conf := config.GetGlobalConfig()
 	fmt.Println(conf)
 	info := GetSysInfo()
@@ -136,7 +136,16 @@ func SendSysInfo() {
 		return
 	}
 
+	// set to global config
+	config.SetGlobalConfigWithSysInfo(info)
+
+	config.SetTelegraf("", info.IfMac)
+	config.RestartTelegraf()
+}
+
+func SendSysInfo() {
+	conf := config.GetGlobalConfig()
+
 	url := conf.SvcmgrIp+ ":" + conf.SvcmgrPort
-	svcmgrapi.SendSysInfoToSvcmgr(info, url)
-	fmt.Println(info)
+	svcmgrapi.SendSysInfoToSvcmgr(conf.SystemInfo, url)
 }

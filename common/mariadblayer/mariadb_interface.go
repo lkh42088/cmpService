@@ -174,6 +174,7 @@ type MariaDBLayer interface {
 
 	GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmodel.McVmPage, err error)
 	GetMcVmByIdx(idx uint) (mcmodel.McVm, error)
+	GetMcVmByMac(mac string) (obj mcmodel.McVm, err error)
 	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)

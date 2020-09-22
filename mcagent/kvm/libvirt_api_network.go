@@ -67,7 +67,7 @@ func GetXmlNetworkByName() {
 	fmt.Println(res)
 }
 
-func GetMgoNetworksFromXmlNetwork() (list []mcmodel.MgoNetwork, err error) {
+func GetMgoNetworksFromXmlNetwork() (list []mcmodel.McNetworks, err error) {
 	//conn, err := libvirt.NewConnect("qemu:///system")
 	conn, err := GetQemuConnect()
 	if err != nil {
@@ -76,7 +76,7 @@ func GetMgoNetworksFromXmlNetwork() (list []mcmodel.MgoNetwork, err error) {
 	//defer conn.Close()
 	networks, err := conn.ListAllNetworks(0)
 	for index, net := range networks {
-		var entry mcmodel.MgoNetwork
+		var entry mcmodel.McNetworks
 		name, _ := net.GetName()
 		fmt.Println(index, ": ", name, "------------")
 		xmlstr, _ := net.GetXMLDesc(0)
@@ -153,7 +153,7 @@ func MakeXmlNetwork(name, bridgeName, ipAddr, netmask string) *libvirtxml.Networ
 	return netcfg
 }
 
-func CreateNetworkByMgoNetwork(net mcmodel.MgoNetwork) {
+func CreateNetworkByMgoNetwork(net mcmodel.McNetworks) {
 	//conn, err := libvirt.NewConnect("qemu:///system")
 	conn, err := GetQemuConnect()
 	if err != nil {

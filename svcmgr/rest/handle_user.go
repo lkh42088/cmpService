@@ -443,7 +443,7 @@ func (h *Handler) UnRegisterUserBackup(c *gin.Context) {
 	fmt.Println("UnRegister Message: ", userMsg)
 	user, err := h.db.GetUserById(userMsg.Id)
 	if err != nil || user.UserId != userMsg.Id {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": "Id dose not exist"})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": "Idx dose not exist"})
 		return
 	}
 

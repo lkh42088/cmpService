@@ -19,8 +19,8 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	s.Mac = recvMsg.Mac
 	s.Status = 1
 	s.Port = recvMsg.Port
-	s.IpAddr = recvMsg.IpAddr
-	s.PublicIpAddr = recvMsg.PublicIpAddr
+	s.IpAddr = recvMsg.Ip
+	s.PublicIpAddr = recvMsg.PublicIp
 	s, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcServer(s)
 	if err != nil {
 		fmt.Println("UpdateMcServer: error - ", err)
@@ -140,7 +140,7 @@ func SendMcRegisterServerOld(server mcmodel.McServerDetail) bool {
 	}
 	fmt.Println("response: ", string(data))
 
-	var mcserver mcmodel.MgoServer
+	var mcserver mcmodel.McServerMsg
 	json.Unmarshal(data, &mcserver)
 	// Dao: Server
 	fmt.Println("mcserver:", mcserver.Mac)
