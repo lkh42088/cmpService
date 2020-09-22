@@ -13,7 +13,7 @@ var Router *gin.Engine
 
 func Start(parentwg *sync.WaitGroup) {
 
-	config := config2.GetGlobalConfig()
+	config := config2.GetMcGlobalConfig()
 	address := config.McagentIp + ":" + config.McagentPort
 
 	fmt.Printf("global config: %v\n", config)

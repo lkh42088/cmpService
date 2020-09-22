@@ -19,7 +19,7 @@ type McServerStatus struct {
 var serverStatus McServerStatus
 
 func GetServerStatus() *McServerStatus {
-	cfg := GetGlobalConfig()
+	cfg := GetMcGlobalConfig()
 
 	if serverStatus.init {
 		return &serverStatus
@@ -49,16 +49,16 @@ func GetServerStatus() *McServerStatus {
 }
 
 func GetSerialNumber() string {
-	cfg := GetGlobalConfig()
+	cfg := GetMcGlobalConfig()
 	if cfg.SerialNumber == "" {
 		serverStatus := GetServerStatus()
 		SetSerialNumber2GlobalConfig(serverStatus.SerialNumber)
 	}
-	return GetGlobalConfig().SerialNumber
+	return GetMcGlobalConfig().SerialNumber
 }
 
 func WriteServerStatus(sn, cpName string, cpIdx int, isEnable bool) {
-	cfg := GetGlobalConfig()
+	cfg := GetMcGlobalConfig()
 	serverStatus.CompanyName = cpName
 	serverStatus.CompanyIdx = cpIdx
 	serverStatus.SerialNumber = sn
@@ -67,7 +67,7 @@ func WriteServerStatus(sn, cpName string, cpIdx int, isEnable bool) {
 }
 
 func DeleteServerStatus() {
-	cfg := GetGlobalConfig()
+	cfg := GetMcGlobalConfig()
 	serverStatus.Enable = false
 	lib.WriteJsonFile(cfg.ServerStatusRepo, &serverStatus)
 }

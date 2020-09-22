@@ -65,25 +65,11 @@ func GetIpAddressOfVm(vm mcmodel.McVm) (ip, mac string, res int) {
 }
 
 func MakeFilename(vm *mcmodel.McVm) string {
-	cfg := config.GetGlobalConfig()
-	for index, num := range cfg.VmNumber {
-		if num == 0 {
-			config.SetGlobalConfigByVmNumber(uint(index), vm.Idx)
-			//cfg.VmNumber[index] = vm.Idx
-			vm.VmIndex = index
-			return fmt.Sprintf("%s-%d", vm.Image, index)
-		}
-	}
-	return ""
-}
-
-func DeleteFilename(vm mcmodel.McVm) {
-	cfg := config.GetGlobalConfig()
-	cfg.VmNumber[vm.VmIndex] = 0
+	return fmt.Sprintf("%s-%d", vm.Image, vm.VmIndex)
 }
 
 func ConfigDNAT(vm *mcmodel.McVm) {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	//iptables -t nat -A PREROUTING -d 192.168.0.73 -p tcp --dport 13389 -j DNAT --to 10.0.0.159:3389
 	dport:= fmt.Sprintf("%d", cfg.DnatBasePortNum+vm.VmIndex)
 	//ip := strings.Split(vm.IpAddr,"/")
@@ -115,7 +101,7 @@ func ConfigDNAT(vm *mcmodel.McVm) {
 }
 
 func CopyVmInstance(vm *mcmodel.McVm) {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	org := fmt.Sprintf("%s/%s.qcow2", cfg.VmImageDir, vm.Image)
 	target := fmt.Sprintf("%s/%s.qcow2", cfg.VmInstanceDir, vm.Filename)
 	args := []string{
@@ -132,7 +118,7 @@ func CopyVmInstance(vm *mcmodel.McVm) {
 }
 
 func CreateVmInstance(vm mcmodel.McVm) {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	if vm.Filename == "" {
 		fmt.Printf("CreateVmInstance: %s failed to get filename!\n", vm.Name)
 		return
@@ -281,8 +267,7 @@ func DeleteVm(vm mcmodel.McVm) {
 }
 
 func DeleteVmInstance(vm mcmodel.McVm) {
-	DeleteFilename(vm)
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	args := []string{
 		cfg.VmInstanceDir+"/"+vm.Filename+".qcow2",
 		"-f",

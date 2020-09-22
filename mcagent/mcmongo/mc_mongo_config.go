@@ -45,7 +45,7 @@ func (m *McMongoAccessor) Close() error {
 }
 
 func Configure() bool {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	if cfg.MongoIp == "" || cfg.MongoDb == "" || cfg.MongoCollection == "" {
 		lib.LogWarn("Failed MongoDb configuration!\n")
 		return false

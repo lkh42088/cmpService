@@ -106,3 +106,12 @@ func (m McVmPage) GetOrderBy(orderby, order string) string {
 	}
 	return val + " " + order
 }
+
+func (v McVm) LookupList(list *[]McVm) (bool, int, *McVm){
+	for index, vm := range *list {
+		if vm.Name == v.Name {
+			return true, index, &vm
+		}
+	}
+	return false, 0, nil
+}

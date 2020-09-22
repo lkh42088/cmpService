@@ -6,6 +6,8 @@ import (
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mcrest"
+	"cmpService/mcagent/repo"
+	"cmpService/svcmgr/config"
 	"fmt"
 	"sync"
 )
@@ -36,8 +38,8 @@ func Start (config string) {
 		wg.Done()
 	}
 
-	if kvm.KvmR != nil {
-		go kvm.KvmR.Start(&wg)
+	if kvm.CreateVmFsm != nil {
+		go kvm.CreateVmFsm.Start(&wg)
 	} else {
 		wg.Done()
 	}
@@ -61,12 +63,27 @@ func Start (config string) {
 }
 
 func configure() bool {
-	// ConfigureMonitoring Mongo DB
-	//if ! mcmongo.Configure() {
-	//	fmt.Println("Failed to configure mongodb!")
-	//	return false
-	//}
 
+	/********************************
+	 * Configure Mariadb
+	 ********************************/
+	cfg := config2.GetMcGlobalConfig()
+	db, err := config.SetMariaDB(cfg.MariaUser, cfg.MariaPassword, cfg.MariaDb,
+		cfg.MariaIp, 3306)
+	if err != nil {
+		fmt.Println("Main: ERROR - ", err)
+		return false
+	}
+	config2.SetDbOrm(db)
+
+	/********************************
+	 * Init Caching VMs
+	 ********************************/
+	repo.InitCachingVms()
+
+	/********************************
+	 * Clear DNAT Rule in iptables
+	 ********************************/
 	utils.DeleteAllDnat()
 
 	if !mcinflux.ConfigureInfluxDB() {
@@ -82,10 +99,24 @@ func configure() bool {
 
 	//ConfigureVmList()
 
-	kvm.ConfigureKvmRoutine()
+	/********************************
+	 * Config Create Vm FSM
+	 ********************************/
+	kvm.ConfigCreateVmFsm()
 
-	kvm.ConfigureLibvirtResource()
+	/********************************
+	 * Sync Resource with current info
+	 ********************************/
+	server := SyncRepoWithCurrentInfo()
 
+	/********************************
+	 * Monitoring Resource
+	 ********************************/
+	kvm.ConfigureLibvirtResource(server)
+
+	/********************************
+	 * Statistics
+	 ********************************/
 	kvm.ConfigureLibvirtStatstics()
 
 	return true

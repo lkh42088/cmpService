@@ -129,7 +129,7 @@ func FindRouteInterface(addr string) (network.IP, error) {
 }
 
 func SetSysInfo() {
-	conf := config.GetGlobalConfig()
+	conf := config.GetMcGlobalConfig()
 	fmt.Println(conf)
 	info := GetSysInfo()
 	if info.IfMac == "" {
@@ -144,7 +144,7 @@ func SetSysInfo() {
 }
 
 func SendSysInfo() {
-	conf := config.GetGlobalConfig()
+	conf := config.GetMcGlobalConfig()
 
 	url := conf.SvcmgrIp+ ":" + conf.SvcmgrPort
 	svcmgrapi.SendSysInfoToSvcmgr(conf.SystemInfo, url)

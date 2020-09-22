@@ -3,6 +3,7 @@ package config
 import (
 	"bufio"
 	"cmpService/common/config"
+	"cmpService/common/mariadblayer"
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	"encoding/json"
@@ -16,30 +17,36 @@ import (
 const MAX_VM_COUNT = 12
 
 type McAgentConfig struct {
+	config.MariaDbConfig
 	config.MongoDbConfig
 	config.InfluxDbConfig
-	McagentIp          string             `json:"mcagent_ip"`
-	McagentPort        string             `json:"mcagent_port"`
-	SvcmgrIp           string             `json:"svcmgr_ip"`
-	SvcmgrPort         string             `json:"svcmgr_port"`
-	VmImageDir         string             `json:"vm_image_dir"`
-	VmInstanceDir      string             `json:"vm_instance_dir"`
-	ServerPort         string             `json:"server_port"`
-	ServerMac          string             `json:"server_mac"`
-	ServerIp           string             `json:"server_ip"`
-	ServerPublicIp     string             `json:"server_public_ip"`
-	ServerStatusRepo   string             `json:"server_status_repo"`
-	MonitoringInterval int                `json:"monitoring_interval"`
-	DnatBasePortNum    int                `json:"dnat_base_port_num"`
-	SerialNumber       string             `json:"serialNumber"`
-	VmNumber           [MAX_VM_COUNT]uint `json:"vmNumber"`
-	SystemInfo		   mcmodel.SysInfo    `json:"sysInfo"`
+	McagentIp          string              `json:"mcagent_ip"`
+	McagentPort        string              `json:"mcagent_port"`
+	SvcmgrIp           string              `json:"svcmgr_ip"`
+	SvcmgrPort         string              `json:"svcmgr_port"`
+	VmImageDir         string              `json:"vm_image_dir"`
+	VmInstanceDir      string              `json:"vm_instance_dir"`
+	ServerPort         string              `json:"server_port"`
+	ServerMac          string              `json:"server_mac"`
+	ServerIp           string              `json:"server_ip"`
+	ServerPublicIp     string              `json:"server_public_ip"`
+	ServerStatusRepo   string              `json:"server_status_repo"`
+	MonitoringInterval int                 `json:"monitoring_interval"`
+	DnatBasePortNum    int                 `json:"dnat_base_port_num"`
+	SerialNumber       string              `json:"serialNumber"`
+	VmNumber           [MAX_VM_COUNT]uint  `json:"vmNumber"`
+	SystemInfo         mcmodel.SysInfo     `json:"sysInfo"`
+	DbOrm              *mariadblayer.DBORM `json:"-"`
 }
 
 var globalConfig McAgentConfig
 
-func GetGlobalConfig() McAgentConfig {
+func GetMcGlobalConfig() McAgentConfig {
 	return globalConfig
+}
+
+func SetDbOrm(db *mariadblayer.DBORM) {
+	globalConfig.DbOrm = db
 }
 
 func SetSerialNumber2GlobalConfig(sn string) {
@@ -51,8 +58,21 @@ func SetSerialNumber2GlobalConfig(sn string) {
 	}
 }
 
-func SetGlobalConfigByVmNumber(index, value uint) {
-	globalConfig.VmNumber[index] = value
+func AllocateVmIndex(index uint) {
+	globalConfig.VmNumber[index] = 1
+}
+
+func ReleaseVmIndex(index uint) {
+	globalConfig.VmNumber[index] = 0
+}
+
+func GetAvailableVmIndex() int {
+	for index, num := range globalConfig.VmNumber {
+		if num == 0 {
+			return index
+		}
+	}
+	return -1
 }
 
 func SetGlobalConfigWithSysInfo(info mcmodel.SysInfo) {
@@ -103,7 +123,7 @@ func SetTelegraf(sn string, mac string) bool {
 	}
 	defer fd.Close()
 
-	backup_file := orgin_file +".backup"
+	backup_file := orgin_file + ".backup"
 	backup_fd, err := os.Create(backup_file)
 	if err != nil {
 		fmt.Println("SetTelegraf: error", err)
@@ -124,7 +144,7 @@ func SetTelegraf(sn string, mac string) bool {
 	reader := bufio.NewReader(fd)
 	for {
 		line, isPrefix, err := reader.ReadLine()
-		if isPrefix  || err != nil {
+		if isPrefix || err != nil {
 			fmt.Println(isPrefix, "error", err)
 			break
 		}
@@ -186,7 +206,7 @@ func SetTelegraf(sn string, mac string) bool {
 	return true
 }
 
-func RestartTelegraf () {
+func RestartTelegraf() {
 	args := []string{
 		"restart",
 		"telegraf",

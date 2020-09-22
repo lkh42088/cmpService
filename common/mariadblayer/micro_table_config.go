@@ -5,6 +5,28 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// For mcagent
+func CreateMcPcTable(db *gorm.DB) {
+	if db.HasTable(&mcmodel.McVm{}) == false {
+		db.AutoMigrate(&mcmodel.McVm{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McVm{})
+	}
+	if db.HasTable(&mcmodel.McServer{}) == false {
+		db.AutoMigrate(&mcmodel.McServer{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McServer{})
+	}
+}
+
+func DropMcPcTable(db *gorm.DB) {
+	if db.HasTable(&mcmodel.McVm{}) {
+		db.DropTable(&mcmodel.McVm{})
+	}
+	if db.HasTable(&mcmodel.McServer{}) {
+		db.DropTable(&mcmodel.McServer{})
+	}
+}
+
+// For svcmgr
 func CreateMicroCloudTable(db *gorm.DB) {
 	if db.HasTable(&mcmodel.McServer{}) == false {
 		db.AutoMigrate(&mcmodel.McServer{})
@@ -71,5 +93,4 @@ func DropMicroCloudTable(db *gorm.DB) {
 	if db.HasTable(&mcmodel.SysInfo{}) {
 		db.DropTable(&mcmodel.SysInfo{})
 	}
-
 }

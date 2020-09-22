@@ -11,7 +11,6 @@ import (
 
 var ipaddr = "192.168.0.2"
 
-
 func TestGetResource(t *testing.T) {
 	url := fmt.Sprintf("http://%s:8082%s%s",
 		ipaddr, lib.McUrlPrefix, lib.McUrlResource)

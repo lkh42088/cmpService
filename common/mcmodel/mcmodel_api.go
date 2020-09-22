@@ -82,6 +82,49 @@ func (v McVm) Compare(n McVm) bool {
 	return false
 }
 
+func (v McVm) Update(n McVm) McVm {
+	if v.Cpu != n.Cpu {
+		v.Cpu = n.Cpu
+	}
+	if v.Ram != n.Ram {
+		v.Ram = n.Ram
+	}
+	if v.Hdd != n.Hdd {
+		v.Hdd = n.Hdd
+	}
+	if v.Desc != n.Desc {
+		v.Desc = n.Desc
+	}
+	if v.OS != n.OS {
+		v.OS = n.OS
+	}
+	if v.Image != n.Image {
+		v.Image = n.Image
+	}
+	if v.Filename != n.Filename {
+		v.Filename = n.Filename
+	}
+	if v.VmIndex != n.VmIndex {
+		v.VmIndex = n.VmIndex
+	}
+	if v.FullPath != n.FullPath {
+		v.FullPath = n.FullPath
+	}
+	if v.IpAddr != n.IpAddr {
+		v.IpAddr = n.IpAddr
+	}
+	if v.Mac != n.Mac {
+		v.Mac = n.Mac
+	}
+	if v.CurrentStatus != n.CurrentStatus {
+		v.CurrentStatus = n.CurrentStatus
+	}
+	if v.RemoteAddr != n.RemoteAddr {
+		v.RemoteAddr = n.RemoteAddr
+	}
+	return v
+}
+
 func (v McNetworks) Compare(n McNetworks) bool {
 	if v.Name != n.Name {
 		return true

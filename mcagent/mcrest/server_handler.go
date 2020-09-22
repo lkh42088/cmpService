@@ -18,7 +18,7 @@ func GetMcServer() (mcmodel.McServerMsg, error) {
 		return server, err
 	}
 	images := kvm.GetImages()
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	server.Mac = cfg.ServerMac
 	server.Port = cfg.ServerPort
 	server.Ip = cfg.ServerIp
@@ -48,7 +48,7 @@ func (n *McResourceMsg) Dump() string {
 
 func getResourceHandler(c *gin.Context) {
 	var resource McResourceMsg
-	resource.GlobalConfig = config.GetGlobalConfig()
+	resource.GlobalConfig = config.GetMcGlobalConfig()
 	resource.DnatList = utils.GetDnatList()
 	c.JSON(http.StatusOK, resource)
 }
