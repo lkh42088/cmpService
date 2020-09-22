@@ -3,6 +3,7 @@ package repo
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"fmt"
 )
 
 var GlobalVmCache []mcmodel.McVm
@@ -25,10 +26,12 @@ func UpdateVmList(list *[]mcmodel.McVm) {
 		return
 	}
 
+	fmt.Println("UpdateVmList --- ")
 	for _, obj := range *list {
 		_, vm := getVmByName(obj.Name)
 		if vm != nil {
 			if vm.Compare(obj) == true {
+				fmt.Println("UpdateVmList: change vm!", vm.Name)
 				// Changed vm
 				UpdateVm2Repo(&obj)
 			}
@@ -93,7 +96,8 @@ func UpdateVm2Repo(v *mcmodel.McVm) bool {
 				return false
 			}
 			GlobalVmCache[i] = dbVm.Update(*v)
-			UpdateVm2Db(dbVm)
+			fmt.Println("UpdateVm2Repo: update ", dbVm.Name)
+			UpdateVm2Db(GlobalVmCache[i])
 			return true
 		}
 	}
