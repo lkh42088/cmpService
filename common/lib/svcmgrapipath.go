@@ -48,6 +48,7 @@ const (
 	SvcmgrApiMicroNetworkPaging     = SvcmgrApiMicro + "/networks-paging"
 	SvcmgrApiMicroVmMonitor         = SvcmgrApiMicro + "/monitor"
 	SvcmgrApiMicroVmStats           = SvcmgrApiMicroVmMonitor + "/stats"
+	SvcmgrApiMicroVmInfo           = SvcmgrApiMicroVmMonitor + "/info"
 	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
 	SvcmgrApiMicroDashboard        = SvcmgrApiMicro + "/dashboard"
 )

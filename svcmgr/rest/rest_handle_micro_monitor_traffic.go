@@ -80,11 +80,11 @@ func MakeStructForWinStats(s *models.WinVmIfStat, data []interface{}) error {
 	return nil
 }
 
-func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
+func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
 	//delta := make([]VmIfStat, len(s))
 	var delta models.VmIfStatistics
 	var result models.VmIfStat
-	var response models.VmStatseRsponse
+	var response models.VmStatsRsponse
 	var unit models.Stats
 
 	response.Stats[0].Id = "RX"
@@ -115,11 +115,11 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
 	return response
 }
 
-func MakeDeltaWinValues(s []models.WinVmIfStat) models.VmStatseRsponse {
+func MakeDeltaWinValues(s []models.WinVmIfStat) models.VmStatsRsponse {
 	//delta := make([]VmIfStat, len(s))
 	var delta models.WinVmIfStatistics
 	var result models.WinVmIfStat
-	var response models.VmStatseRsponse
+	var response models.VmStatsRsponse
 	var unit models.Stats
 
 	response.Stats[0].Id = "RX"
