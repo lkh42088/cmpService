@@ -2,7 +2,7 @@ package rest
 
 import (
 	"cmpService/common/lib"
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	conf "cmpService/svcmgr/config"
 	"encoding/json"
 	"fmt"
@@ -29,7 +29,7 @@ func ChangeWhereString(instance string, mac string) string {
 }
 
 func GetVmInfoStats(c *gin.Context) {
-	var result models.VmInfoStatsResponse
+	var result mcmodel.VmInfoStatsResponse
 	mac := c.Param("mac")
 
 	// GET CPU
@@ -62,8 +62,8 @@ func GetVmInfoStats(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func MakeDataSet(dataType string, res *client.Response) models.VmStatsSet {
-	var response models.VmStatsSet
+func MakeDataSet(dataType string, res *client.Response) mcmodel.VmStatsSet {
+	var response mcmodel.VmStatsSet
 	response.Id = dataType
 
 	if res.Results[0].Series == nil ||
@@ -78,7 +78,7 @@ func MakeDataSet(dataType string, res *client.Response) models.VmStatsSet {
 		// select time check
 		convTime, _ = time.Parse(time.RFC3339, data[0].(string))
 		val, _ := data[1].(json.Number).Float64()
-		data := models.Stats{
+		data := mcmodel.Stats{
 			Xaxis: convTime,
 			Yaxis: int64(math.Round(val)),
 		}

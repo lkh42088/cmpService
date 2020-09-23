@@ -54,5 +54,6 @@ const (
 	SvcmgrApiMicroDashboard        = SvcmgrApiMicro + "/dashboard"
 	SvcmgrApiMicroServerCount      = SvcmgrApiMicroDashboard + "/servercnt"
 	SvcmgrApiMicroVmCount    	   = SvcmgrApiMicroDashboard + "/vmcnt"
+	SvcmgrApiMicroVmTop5    	   = SvcmgrApiMicroDashboard + "/top5"
 )
 

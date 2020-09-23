@@ -1,4 +1,4 @@
-package models
+package mcmodel
 
 import "time"
 
@@ -42,9 +42,9 @@ type VmStatsRsponse struct {
 }
 
 type VmInfoStatsResponse struct {
-	VmCpu		VmStatsSet	`json:"cpu"`
-	VmMem		VmStatsSet	`json:"mem"`
-	VmDisk 		VmStatsSet	`json:"disk"`
-	VmRx		VmStatsSet	`json:"rx"`
-	VmTx		VmStatsSet	`json:"tx"`
+	VmCpu  VmStatsSet `json:"cpu"`
+	VmMem  VmStatsSet `json:"mem"`
+	VmDisk VmStatsSet `json:"disk"`
+	VmRx   VmStatsSet `json:"rx"`
+	VmTx   VmStatsSet `json:"tx"`
 }

@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	conf "cmpService/svcmgr/config"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -30,7 +30,7 @@ func BenchmarkGetVmInterfaceTrafficByMac(b *testing.B) {
 
 	// Convert response data
 	v := res.Results[0].Series[0].Values
-	stat := make([]models.VmIfStat, len(v))
+	stat := make([]mcmodel.VmIfStat, len(v))
 	var convTime time.Time
 	for i, data := range v {
 		// select time check

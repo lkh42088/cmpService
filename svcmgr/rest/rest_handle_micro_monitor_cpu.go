@@ -2,7 +2,7 @@ package rest
 
 import (
 	"cmpService/common/lib"
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	conf "cmpService/svcmgr/config"
 	"encoding/json"
 	"fmt"
@@ -19,7 +19,7 @@ func GetVmInterfaceCpu(c *gin.Context) {
 	//where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "1h")
 	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
-	cpu := make([]models.CpuStat, 1)
+	cpu := make([]mcmodel.CpuStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
@@ -32,7 +32,7 @@ func GetVmInterfaceCpu(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		cpu = make([]models.CpuStat, len(v))
+		cpu = make([]mcmodel.CpuStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -51,7 +51,7 @@ func GetVmInterfaceCpu(c *gin.Context) {
 	c.JSON(http.StatusOK, cpu)
 }
 
-func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
+func MakeStructForStatsCpu(s *mcmodel.CpuStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
@@ -65,7 +65,7 @@ func MakeStructForStatsCpu(s *models.CpuStat, data []interface{}) error {
 	return nil
 }
 
-func MakeStructForStatsWinCpu(s *models.WinCpuStat, data []interface{}, mac string) error {
+func MakeStructForStatsWinCpu(s *mcmodel.WinCpuStat, data []interface{}, mac string) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)

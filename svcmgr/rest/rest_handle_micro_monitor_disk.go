@@ -2,7 +2,7 @@ package rest
 
 import (
 	"cmpService/common/lib"
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	"cmpService/svcmgr/config"
 	"encoding/json"
 	"fmt"
@@ -19,7 +19,7 @@ func GetVmInterfaceDisk(c *gin.Context) {
 	where := fmt.Sprintf(`path = '/' AND mac_address = '%s'`, mac)
 	res := config.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
-	disk := make([]models.DiskStat, 1)
+	disk := make([]mcmodel.DiskStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
@@ -38,7 +38,7 @@ func GetVmInterfaceDisk(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		disk = make([]models.DiskStat, len(v))
+		disk = make([]mcmodel.DiskStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -58,7 +58,7 @@ func GetVmInterfaceDisk(c *gin.Context) {
 	c.JSON(http.StatusOK, disk)
 }
 
-func MakeStructForStatsDisk(s *models.DiskStat, data []interface{}) error {
+func MakeStructForStatsDisk(s *mcmodel.DiskStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
@@ -75,7 +75,7 @@ func MakeStructForStatsDisk(s *models.DiskStat, data []interface{}) error {
 	return nil
 }
 
-func MakeStructForStatsWinDisk(s *models.WinDiskStat, data []interface{}) error {
+func MakeStructForStatsWinDisk(s *mcmodel.WinDiskStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
