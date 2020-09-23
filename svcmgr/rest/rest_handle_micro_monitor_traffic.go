@@ -112,11 +112,6 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
 		result.IfInOctets = s[i].IfInOctets - s[i-1].IfInOctets
 		result.IfOutOctets = s[i].IfOutOctets - s[i-1].IfOutOctets
 		delta.Stats = append(delta.Stats, result)
-		//fmt.Println("")
-		//fmt.Println("")
-		//fmt.Println("delta : ", delta)
-		//fmt.Println("")
-		//fmt.Println("")
 
 		CheckInt32Overflow (&result, s, i)
 
