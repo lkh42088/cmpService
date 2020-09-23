@@ -2,7 +2,7 @@ package rest
 
 import (
 	"cmpService/common/lib"
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	conf "cmpService/svcmgr/config"
 	"encoding/json"
 	"fmt"
@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"time"
 )
+
+const INT32_VALUE = 0xFFFFFFFF
 
 func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	mac := c.Param("mac")
@@ -19,7 +21,7 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	res := conf.GetMeasurementsWithCondition(dbname, field, where)
     fmt.Println(res.Err)
 
-	stat := make([]models.VmIfStat, 1)
+	stat := make([]mcmodel.VmIfStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
@@ -33,7 +35,7 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		stat = make([]models.VmIfStat, len(v))
+		stat = make([]mcmodel.VmIfStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -56,7 +58,7 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	c.JSON(http.StatusOK, deltaStats)
 }
 
-func MakeStructForStats(s *models.VmIfStat, data []interface{}) error {
+func MakeStructForStats(s *mcmodel.VmIfStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
@@ -69,7 +71,7 @@ func MakeStructForStats(s *models.VmIfStat, data []interface{}) error {
 	return nil
 }
 
-func MakeStructForWinStats(s *models.WinVmIfStat, data []interface{}) error {
+func MakeStructForWinStats(s *mcmodel.WinVmIfStat, data []interface{}) error {
 	//fmt.Println("data @@@@ : ", data)
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
@@ -88,12 +90,12 @@ func MakeStructForWinStats(s *models.WinVmIfStat, data []interface{}) error {
 	return nil
 }
 
-func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
+func MakeDeltaValues(s []mcmodel.VmIfStat) mcmodel.VmStatsRsponse {
 	//delta := make([]VmIfStat, len(s))
-	var delta models.VmIfStatistics
-	var result models.VmIfStat
-	var response models.VmStatsRsponse
-	var unit models.Stats
+	var delta mcmodel.VmIfStatistics
+	var result mcmodel.VmIfStat
+	var response mcmodel.VmStatsRsponse
+	var unit mcmodel.Stats
 
 	response.Stats[0].Id = "RX"
 	response.Stats[1].Id = "TX"
@@ -110,11 +112,8 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
 		result.IfInOctets = s[i].IfInOctets - s[i-1].IfInOctets
 		result.IfOutOctets = s[i].IfOutOctets - s[i-1].IfOutOctets
 		delta.Stats = append(delta.Stats, result)
-		fmt.Println("")
-		fmt.Println("")
-		fmt.Println("delta : ", delta)
-		fmt.Println("")
-		fmt.Println("")
+
+		CheckInt32Overflow (&result, s, i)
 
 		// Make response data set
 		//unit.Xaxis = result.Time.Format("03:04:05")
@@ -128,12 +127,22 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
 	return response
 }
 
-func MakeDeltaWinValues(s []models.WinVmIfStat) models.VmStatsRsponse {
+func CheckInt32Overflow(val *mcmodel.VmIfStat, data []mcmodel.VmIfStat, i int) {
+	if  val.IfInOctets < 0 {
+		val.IfInOctets = INT32_VALUE - data[i-1].IfInOctets	+ data[i].IfInOctets
+	}
+
+	if val.IfOutOctets < 0 {
+		val.IfOutOctets = INT32_VALUE - data[i-1].IfOutOctets + data[i].IfOutOctets
+	}
+}
+
+func MakeDeltaWinValues(s []mcmodel.WinVmIfStat) mcmodel.VmStatsRsponse {
 	//delta := make([]VmIfStat, len(s))
-	var delta models.WinVmIfStatistics
-	var result models.WinVmIfStat
-	var response models.VmStatsRsponse
-	var unit models.Stats
+	var delta mcmodel.WinVmIfStatistics
+	var result mcmodel.WinVmIfStat
+	var response mcmodel.VmStatsRsponse
+	var unit mcmodel.Stats
 
 	response.Stats[0].Id = "RX"
 	response.Stats[1].Id = "TX"

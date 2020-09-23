@@ -460,7 +460,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	where := fmt.Sprintf(`instance = '_Total' AND "mac_address" = '%s'`, mac)
 	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
-	winCpu := make([]models.WinCpuStat, 1)
+	winCpu := make([]mcmodel.WinCpuStat, 1)
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
 		//fmt.Println("")
@@ -473,7 +473,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 		graph.Cpu = winCpu[0]
 	} else {
 		v := res.Results[0].Series[0].Values
-		winCpu := make([]models.WinCpuStat, len(v))
+		winCpu := make([]mcmodel.WinCpuStat, len(v))
 		var cpuTime time.Time
 		for i, data := range v {
 			cpuTime, _ = time.Parse(time.RFC3339, data[0].(string))
@@ -496,7 +496,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	where = fmt.Sprintf(`mac_address = '%s'`, mac)
 	res = conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
-	winMem := make([]models.WinMemStat, 1)
+	winMem := make([]mcmodel.WinMemStat, 1)
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
 		lib.LogWarn("win_mem InfluxDB Response Error : No Data\n")
@@ -509,7 +509,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 		graph.Mem = winMem[0]
 	} else {
 		v := res.Results[0].Series[0].Values
-		winMem := make([]models.WinMemStat, len(v))
+		winMem := make([]mcmodel.WinMemStat, len(v))
 		var memTime time.Time
 		for i, data := range v {
 			memTime, _ = time.Parse(time.RFC3339, data[0].(string))
@@ -532,7 +532,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	where = fmt.Sprintf(`instance = 'C:' AND "mac_address" = '%s'`, mac)
 	res = conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
-	winDisk := make([]models.WinDiskStat, 1)
+	winDisk := make([]mcmodel.WinDiskStat, 1)
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
 		lib.LogWarn("win_disk InfluxDB Response Error : No Data\n")
@@ -545,7 +545,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 		graph.Disk = winDisk[0]
 	} else {
 		v := res.Results[0].Series[0].Values
-		winDisk := make([]models.WinDiskStat, len(v))
+		winDisk := make([]mcmodel.WinDiskStat, len(v))
 		var diskTime time.Time
 		for i, data := range v {
 			diskTime, _ = time.Parse(time.RFC3339, data[0].(string))
@@ -569,7 +569,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	//where = fmt.Sprintf(`host = 'win_vm' AND "mac_address" =~ /.*%s/`, mac)
 	where = fmt.Sprintf(`"mac_address" = '%s' AND time > now() - %s`, mac, "10m")
 	res = conf.GetMeasurementsWithCondition(dbname, field, where)
-	winTraffic := make([]models.WinVmIfStat, 1)
+	winTraffic := make([]mcmodel.WinVmIfStat, 1)
 	//fmt.Println(res.Err)
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
@@ -582,7 +582,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 		graph.Traffic = winTraffic
 	} else {
 		v := res.Results[0].Series[0].Values
-		winTraffic = make([]models.WinVmIfStat, len(v))
+		winTraffic = make([]mcmodel.WinVmIfStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check

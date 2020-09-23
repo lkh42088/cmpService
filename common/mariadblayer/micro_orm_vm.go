@@ -134,3 +134,18 @@ func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 
 	return vm, err
 }
+
+func (db *DBORM) GetVmTotalCount() (total int, operate int, err error) {
+	// VM total count
+	err = db.
+		Table("mc_vm_tb").
+		Select("count(distinct(vm_mac))").
+		Count(&total).Error
+	// Operating VM count
+	err = db.
+		Table("mc_vm_tb").
+		Select("count(distinct(vm_mac))").
+		Where(mcmodel.McVm{CurrentStatus: "running"}).
+		Count(&operate).Error
+	return total, operate, err
+}

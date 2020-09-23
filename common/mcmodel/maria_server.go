@@ -151,10 +151,10 @@ func (n *McServerMsg) DumpSummary() {
 }
 
 type McWinVmGraph struct {
-	Cpu     models.WinCpuStat
-	Mem     models.WinMemStat
-	Disk    models.WinDiskStat
-	Traffic []models.WinVmIfStat
+	Cpu     WinCpuStat
+	Mem     WinMemStat
+	Disk    WinDiskStat
+	Traffic []WinVmIfStat
 }
 
 func DumpVmList(list []McVm) {

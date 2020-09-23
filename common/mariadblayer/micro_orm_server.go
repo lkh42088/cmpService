@@ -127,3 +127,18 @@ func (db *DBORM) UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) 
 			"update_time":		obj.UpdateTime,
 		}).Error
 }
+
+func (db *DBORM) GetServerTotalCount() (total int, operate int, err error) {
+	// Server total count
+	err = db.
+		Table("mc_server_tb").
+		Select("count(distinct(mc_mac))").
+		Count(&total).Error
+	// Operating server count
+	err = db.
+		Table("mc_server_tb").
+		Select("count(distinct(mc_mac))").
+		Where(mcmodel.McServer{Status: 1}).
+		Count(&operate).Error
+	return total, operate, err
+}

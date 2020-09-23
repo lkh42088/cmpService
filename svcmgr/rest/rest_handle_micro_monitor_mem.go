@@ -2,7 +2,7 @@ package rest
 
 import (
 	"cmpService/common/lib"
-	"cmpService/common/models"
+	"cmpService/common/mcmodel"
 	conf "cmpService/svcmgr/config"
 	"encoding/json"
 	"fmt"
@@ -20,7 +20,7 @@ func GetVmInterfaceMem(c *gin.Context) {
 	where := fmt.Sprintf(`mac_address = '%s'`, mac)
 	res := conf.GetMeasurementsWithConditionOrderLimit(dbname, field, where)
 
-	mem := make([]models.MemStat, 1)
+	mem := make([]mcmodel.MemStat, 1)
 
 	if res.Results[0].Series == nil ||
 		len(res.Results[0].Series[0].Values) == 0 {
@@ -36,7 +36,7 @@ func GetVmInterfaceMem(c *gin.Context) {
 	} else {
 		// Convert response data
 		v := res.Results[0].Series[0].Values
-		mem = make([]models.MemStat, len(v))
+		mem = make([]mcmodel.MemStat, len(v))
 		var convTime time.Time
 		for i, data := range v {
 			// select time check
@@ -56,7 +56,7 @@ func GetVmInterfaceMem(c *gin.Context) {
 	c.JSON(http.StatusOK, mem)
 }
 
-func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
+func MakeStructForStatsMem(s *mcmodel.MemStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
@@ -70,7 +70,7 @@ func MakeStructForStatsMem(s *models.MemStat, data []interface{}) error {
 	return nil
 }
 
-func MakeStructForStatsWinMem(s *models.WinMemStat, data []interface{}) error {
+func MakeStructForStatsWinMem(s *mcmodel.WinMemStat, data []interface{}) error {
 	for i := 0; i < len(data); i++ {
 		if data[i] == nil {
 			return fmt.Errorf("Data interface is nil.(%d)\n", i)
