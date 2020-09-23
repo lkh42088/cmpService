@@ -110,11 +110,6 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
 		result.IfInOctets = s[i].IfInOctets - s[i-1].IfInOctets
 		result.IfOutOctets = s[i].IfOutOctets - s[i-1].IfOutOctets
 		delta.Stats = append(delta.Stats, result)
-		fmt.Println("")
-		fmt.Println("")
-		fmt.Println("delta : ", delta)
-		fmt.Println("")
-		fmt.Println("")
 
 		// Make response data set
 		//unit.Xaxis = result.Time.Format("03:04:05")

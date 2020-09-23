@@ -292,6 +292,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Micro Cloud Dashboard
 	/*router.GET(lib.SvcmgrApiMicroDashboard+"/:type", )*/
+	router.GET(lib.SvcmgrApiMicroDashboard+"/system/:mac", h.GetSystemInfoByMac)
 
 	return router.Run(address)
 }
