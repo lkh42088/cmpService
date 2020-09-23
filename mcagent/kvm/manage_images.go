@@ -29,7 +29,7 @@ func GetMgoImageByName (name string) mcmodel.McImages {
 }
 
 func InitImages() {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
 	for _, image := range images {
 		img := GetMgoImageByName(image[len(cfg.VmImageDir)+1:])
@@ -39,7 +39,7 @@ func InitImages() {
 }
 
 func GetImages() (list []mcmodel.McImages) {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	images := utils.GetQcowFileInFolder(cfg.VmImageDir)
 	for _, image := range images {
 		img := GetMgoImageByName(image[len(cfg.VmImageDir)+1:])

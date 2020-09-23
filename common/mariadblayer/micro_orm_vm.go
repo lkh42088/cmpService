@@ -58,6 +58,17 @@ func (db *DBORM) GetMcVmByIdx(idx uint) (vm mcmodel.McVm, err error) {
 		Find(&vm).Error
 }
 
+func (db *DBORM) GetAllMcVm() (vms []mcmodel.McVm, err error) {
+	return vms, db.Table("mc_vm_tb").
+		Find(&vms).Error
+}
+
+func (db *DBORM) GetMcVmByName(name string) (vm mcmodel.McVm, err error) {
+	return vm, db.Table("mc_vm_tb").
+		Where(mcmodel.McVm{Name: name}).
+		Find(&vm).Error
+}
+
 func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error) {
 	return vm, db.Table("mc_vm_tb").
 		Where(mcmodel.McVm{Name: name, CompanyIdx: cpidx}).

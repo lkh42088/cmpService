@@ -5,24 +5,13 @@ import (
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/repo"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func checkValidation(msg mcmodel.McVm) bool {
-	if msg.Idx == 0 {
-		fmt.Printf("error: idx is zero!\n")
-		return false
-	}
-	if msg.McServerIdx == 0 {
-		fmt.Printf("error: serverIdx is zero!\n")
-		return false
-	}
-	if msg.CompanyIdx == 0 {
-		fmt.Printf("error: cpIdx is zero!\n")
-		return false
-	}
 	if msg.Name == "" {
 		fmt.Printf("error: name is nil!\n")
 		return false
@@ -47,17 +36,14 @@ func addVmHandler(c *gin.Context) {
 		return
 	}
 
+	msg.Idx = 0
+	msg.McServerIdx = 0
+	msg.CompanyIdx = 0
+
 	if !checkValidation(msg) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid message"})
 		return
 	}
-
-	// Insert VM to Mongodb
-	//_, err = mcmongo.McMongo.AddVm(&msg)
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	//	return
-	//}
 
 	msg.CurrentStatus = "Ready"
 
@@ -69,14 +55,14 @@ func addVmHandler(c *gin.Context) {
 	msg.IsCreated = false
 	msg.IsProcess = true
 
-	cfg := config.GetGlobalConfig()
-	//_, err = mcmongo.McMongo.UpdateVmByInternal(&msg)
+	cfg := config.GetMcGlobalConfig()
 
 	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
 	if ! utils.IsExistFile(filepath) {
-		//kvm.KvmR.Vms = append(kvm.KvmR.Vms, msg)
-		kvm.KvmR.Vms[msg.Idx] = msg
+		//kvm.CreateVmFsm.Vms = append(kvm.CreateVmFsm.Vms, msg)
+		kvm.CreateVmFsm.Vms[msg.Idx] = msg
 	}
+	repo.AddVm2Repo(&msg)
 }
 
 func deleteVmHandler(c *gin.Context) {
@@ -88,20 +74,12 @@ func deleteVmHandler(c *gin.Context) {
 		return
 	}
 
-	//vm, err := mcmongo.McMongo.GetVmById(int(msg.Idx))
 	vm := kvm.LibvirtR.GetVmByName(msg.Name)
 	if vm == nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "The vm does not exist!"})
 		return
 	}
 
-	//err = mcmongo.McMongo.DeleteVm(int(msg.Idx))
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	//	return
-	//}
-
-	config.SetGlobalConfigByVmNumber(uint(vm.VmIndex), 0)
 	// 1. Delete Dnat Rule
 	kvm.DeleteDnatRulByVm(vm)
 
@@ -111,7 +89,8 @@ func deleteVmHandler(c *gin.Context) {
 	// 3. Delete Vm image
 	kvm.DeleteVmInstance(*vm)
 
+	repo.DeleteVmFromRepo(*vm)
+
 	fmt.Printf("deleteVmHandler: success\n")
 	c.JSON(http.StatusOK, msg)
 }
-

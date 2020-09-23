@@ -128,7 +128,7 @@ func InfluxdbQuery(query string) (*client.Response, error) {
 
 func ConfigureInfluxDB() bool {
 	var influxConfig *InfluxAccessor
-	globalCfg := config2.GetGlobalConfig()
+	globalCfg := config2.GetMcGlobalConfig()
 	if globalCfg.InfluxUser == "" || globalCfg.InfluxIp == "" || globalCfg.InfluxDb == "" {
 		lib.LogWarn("Failed MongoDb configuration!\n")
 		return false

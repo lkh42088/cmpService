@@ -3,64 +3,48 @@ package kvm
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"sync"
 	"time"
 )
 
-type KvmRoutine struct {
+type CreateVmFSM struct {
 	Interval int
 	Vms map[uint]mcmodel.McVm
 }
 
-var KvmR *KvmRoutine
+var CreateVmFsm *CreateVmFSM
 
-//func InitKvmRByDb() {
-//	for _, vm := range KvmR.Vms {
-//		delete(KvmR.Vms, vm.Idx)
-//	}
-//	vms, err := mcmongo.McMongo.GetVmAll()
-//	if err != nil {
-//		return
-//	}
-//	for _, vm := range vms {
-//		if vm.IsProcess {
-//			KvmR.Vms[vm.Idx] = vm
-//		}
-//	}
-//}
-
-func NewKvmRoutine(interval int) *KvmRoutine {
-	return &KvmRoutine{
+func NewCreateVmFsm(interval int) *CreateVmFSM {
+	return &CreateVmFSM{
 		Interval: interval,
 		Vms: map[uint]mcmodel.McVm{},
 	}
 }
 
-func SetKvmRoutine(k *KvmRoutine) {
-	KvmR = k
+func SetCreateVmFsm(k *CreateVmFSM) {
+	CreateVmFsm = k
 }
 
-func ConfigureKvmRoutine() {
-	k := NewKvmRoutine(5)
-	SetKvmRoutine(k)
+func ConfigCreateVmFsm() {
+	k := NewCreateVmFsm(5)
+	SetCreateVmFsm(k)
 }
 
-func (k *KvmRoutine) Start(parentwg *sync.WaitGroup) {
+func (k *CreateVmFSM) Start(parentwg *sync.WaitGroup) {
 	loop := 1
 	for {
 		k.Run()
 		time.Sleep(time.Duration(k.Interval * int(time.Second)))
-		//fmt.Printf("%d. KvmRoutine(%ds)\n", loop, k.Interval)
+		//fmt.Printf("%d. CreateVmFSM(%ds)\n", loop, k.Interval)
 		loop += 1
 	}
 	parentwg.Done()
 }
 
-func (k *KvmRoutine) Run() {
-
-	//InitKvmRByDb()
+func (k *CreateVmFSM) Run() {
 
 	if len(k.Vms) == 0 {
 		return
@@ -71,7 +55,7 @@ func (k *KvmRoutine) Run() {
 	var wg sync.WaitGroup
 	wg.Add(len(list))
 
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
 
 	for _, vm := range list {
@@ -80,34 +64,39 @@ func (k *KvmRoutine) Run() {
 
 			delete(k.Vms, vm.Idx)
 
-			// 1. copy image
+			/*****************************************************************
+			 * 1. copy image
+			 *****************************************************************/
 			vm.CurrentStatus = "coping image"
 			vm.IsProcess = false
 
-			//mcmongo.McMongo.UpdateVmByInternal(vm)
-			fmt.Println("KvmRoutine: copy image - ", vm)
+			fmt.Println("CreateVmFSM: copy image - ", vm)
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
 			CopyVmInstance(vm)
 
-			// 2. Create vm
+			/*****************************************************************
+			 * 2. Create vm
+			 *****************************************************************/
 			CreateVmInstance(*vm)
 			vm.CurrentStatus = "created vm"
 			vm.IsCreated = true
-			fmt.Println("KvmRoutine: create vm- ", vm)
+			fmt.Println("CreateVmFSM: create vm- ", vm)
 			//mcmongo.McMongo.UpdateVmByInternal(vm)
 
-			// 3. Notify svcmgr
-			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
+			repo.UpdateVm2Repo(vm)
 
+			/*****************************************************************
+			 * 3. Notify svcmgr
+			 *****************************************************************/
+			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
 		}(&vm)
 	}
 	wg.Wait()
 }
 
-func (k *KvmRoutine) RunGetLibvirtInfo() {
+func (k *CreateVmFSM) RunGetLibvirtInfo() {
 	vmList, netList, imgList := GetMcVirtInfo()
 	mcmodel.DumpVmList(vmList)
 	mcmodel.DumpNetworkList(netList)
 	mcmodel.DumpImageList(imgList)
 }
-

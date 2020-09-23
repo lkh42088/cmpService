@@ -4,6 +4,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"sync"
@@ -40,8 +41,9 @@ func SetLibvirtResource(l *LibvirtResource) {
 	LibvirtR = l
 }
 
-func ConfigureLibvirtResource() {
+func ConfigureLibvirtResource(server *mcmodel.McServerMsg) {
 	l := NewLibvirtResource(10)
+	l.Old = server
 	SetLibvirtResource(l)
 }
 
@@ -70,7 +72,8 @@ func (l *LibvirtResource) Run() {
 	if isChanged {
 		l.Old = &server
 		ApplyChangeFactor(l.Old)
-		cfg := config.GetGlobalConfig()
+		repo.UpdateVmList(server.Vms)
+		cfg := config.GetMcGlobalConfig()
 		svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
 		// Notify ...
 		fmt.Printf("Changed! --> Notify...\n")
@@ -93,7 +96,7 @@ func ApplyChangeFactor(server *mcmodel.McServerMsg) {
 }
 
 func GetDnatRuleConfigByVm(vm *mcmodel.McVm) *utils.DnatRule{
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	// apply DNAT
 	return &utils.DnatRule{
 		vm.IpAddr,
@@ -129,6 +132,6 @@ func DeleteDnatRulByVm(vm *mcmodel.McVm) {
 }
 
 func GetDnatPort(vmIndex int) string {
-	cfg := config.GetGlobalConfig()
+	cfg := config.GetMcGlobalConfig()
 	return fmt.Sprintf("%d", cfg.DnatBasePortNum + vmIndex)
 }

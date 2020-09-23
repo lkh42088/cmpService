@@ -36,7 +36,15 @@ type VmStatsSet struct {
 	Data []Stats `json:"data"`
 }
 
-type VmStatseRsponse struct {
+type VmStatsRsponse struct {
 	Hostname string        `json:"hostname"`
 	Stats    [2]VmStatsSet `json:"stats"`
+}
+
+type VmInfoStatsResponse struct {
+	VmCpu		VmStatsSet	`json:"cpu"`
+	VmMem		VmStatsSet	`json:"mem"`
+	VmDisk 		VmStatsSet	`json:"disk"`
+	VmRx		VmStatsSet	`json:"rx"`
+	VmTx		VmStatsSet	`json:"tx"`
 }

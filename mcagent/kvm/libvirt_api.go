@@ -88,11 +88,11 @@ func DumpMcVirtInfo() {
 	mcmodel.DumpImageList(imgList)
 }
 
-func GetMgoVmByLibvirt() (vmList []mcmodel.McVm){
+func GetVmByLibvirt() (vmList []mcmodel.McVm){
 	// Get Vms Domains
 	doms, err := GetDomainListAll()
 	if err != nil {
-		fmt.Println("GetMgoVmByLibvirt error:", err)
+		fmt.Println("GetVmByLibvirt error:", err)
 		return vmList
 	}
 
@@ -157,11 +157,11 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.McVm){
 					vm.IpAddr = ip.Addr
 				}
 			}
-			cfg := config.GetGlobalConfig()
+			cfg := config.GetMcGlobalConfig()
 			vm.RemoteAddr = fmt.Sprintf("%s:%d",
 				cfg.ServerIp,
 				cfg.DnatBasePortNum + vm.VmIndex)
-			config.SetGlobalConfigByVmNumber(uint(vm.VmIndex), 1)
+			//config.AllocateVmIndex(uint(vm.VmIndex))
 			//fmt.Printf("\n")
 			vm.IsCreated = true
 			vmList = append(vmList, vm)
@@ -171,12 +171,12 @@ func GetMgoVmByLibvirt() (vmList []mcmodel.McVm){
 	return vmList
 }
 
-func GetMgoNetworkByLibvirt() (netList []mcmodel.McNetworks){
+func GetNetworkByLibvirt() (netList []mcmodel.McNetworks){
 
 	// Get Networks
 	nets, err := GetAllNetwork()
 	if err != nil {
-		fmt.Println("GetMgoNetworkByLibvirt error:", err)
+		fmt.Println("GetNetworkByLibvirt error:", err)
 		return netList
 	}
 
@@ -235,15 +235,15 @@ func GetMgoNetworkByLibvirt() (netList []mcmodel.McNetworks){
 
 func GetMcServerInfo() mcmodel.McServerMsg{
 	var server mcmodel.McServerMsg
-	vmList := GetMgoVmByLibvirt()
-	netList := GetMgoNetworkByLibvirt()
+	vmList := GetVmByLibvirt()
+	netList := GetNetworkByLibvirt()
 	imgList := GetImages()
 
 	server.SerialNumber = config.GetSerialNumber()
-	server.Ip = config.GetGlobalConfig().ServerIp
-	server.Port = config.GetGlobalConfig().ServerPort
-	server.Mac = config.GetGlobalConfig().ServerMac
-	server.PublicIp = config.GetGlobalConfig().ServerPublicIp
+	server.Ip = config.GetMcGlobalConfig().ServerIp
+	server.Port = config.GetMcGlobalConfig().ServerPort
+	server.Mac = config.GetMcGlobalConfig().ServerMac
+	server.PublicIp = config.GetMcGlobalConfig().ServerPublicIp
 	server.Vms = &vmList
 	server.Networks = &netList
 	server.Images = &imgList
@@ -251,8 +251,8 @@ func GetMcServerInfo() mcmodel.McServerMsg{
 }
 
 func GetMcVirtInfo() (vmList []mcmodel.McVm, netList []mcmodel.McNetworks, imgList []mcmodel.McImages) {
-	vmList = GetMgoVmByLibvirt()
-	netList = GetMgoNetworkByLibvirt()
+	vmList = GetVmByLibvirt()
+	netList = GetNetworkByLibvirt()
 	imgList = GetImages()
 	return  vmList, netList, imgList
 }

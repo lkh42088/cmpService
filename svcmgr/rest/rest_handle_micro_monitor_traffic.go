@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const INT32_VALUE = 0xFFFFFFFF
+
 func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	mac := c.Param("mac")
 	dbname := "interface"
@@ -88,11 +90,11 @@ func MakeStructForWinStats(s *models.WinVmIfStat, data []interface{}) error {
 	return nil
 }
 
-func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
+func MakeDeltaValues(s []models.VmIfStat) models.VmStatsRsponse {
 	//delta := make([]VmIfStat, len(s))
 	var delta models.VmIfStatistics
 	var result models.VmIfStat
-	var response models.VmStatseRsponse
+	var response models.VmStatsRsponse
 	var unit models.Stats
 
 	response.Stats[0].Id = "RX"
@@ -111,6 +113,8 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
 		result.IfOutOctets = s[i].IfOutOctets - s[i-1].IfOutOctets
 		delta.Stats = append(delta.Stats, result)
 
+		CheckInt32Overflow (&result, s, i)
+
 		// Make response data set
 		//unit.Xaxis = result.Time.Format("03:04:05")
 		unit.Xaxis = result.Time
@@ -123,11 +127,21 @@ func MakeDeltaValues(s []models.VmIfStat) models.VmStatseRsponse {
 	return response
 }
 
-func MakeDeltaWinValues(s []models.WinVmIfStat) models.VmStatseRsponse {
+func CheckInt32Overflow(val *models.VmIfStat, data []models.VmIfStat, i int) {
+	if  val.IfInOctets < 0 {
+		val.IfInOctets = INT32_VALUE - data[i-1].IfInOctets	+ data[i].IfInOctets
+	}
+
+	if val.IfOutOctets < 0 {
+		val.IfOutOctets = INT32_VALUE - data[i-1].IfOutOctets + data[i].IfOutOctets
+	}
+}
+
+func MakeDeltaWinValues(s []models.WinVmIfStat) models.VmStatsRsponse {
 	//delta := make([]VmIfStat, len(s))
 	var delta models.WinVmIfStatistics
 	var result models.WinVmIfStat
-	var response models.VmStatseRsponse
+	var response models.VmStatsRsponse
 	var unit models.Stats
 
 	response.Stats[0].Id = "RX"

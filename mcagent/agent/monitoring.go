@@ -27,7 +27,7 @@ func SetMonitoring(m *MonitorRoutine) {
 }
 
 func ConfigureMonitoring() bool {
-	cfg := config2.GetGlobalConfig()
+	cfg := config2.GetMcGlobalConfig()
 
 	// ConfigureMonitoring MonitorRoutine
 	monitoring := NewMonitorRoutine(cfg.MonitoringInterval)
@@ -77,7 +77,7 @@ func (m *MonitorRoutine) RunByVirsh() {
 
 			// check mac/ip address: virsh
 			if UpdateVmAddress(vm) {
-				cfg := config2.GetGlobalConfig()
+				cfg := config2.GetMcGlobalConfig()
 				fmt.Println("Changed Address!")
 				updated = true
 				// NAT setup
