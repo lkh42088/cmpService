@@ -37,6 +37,7 @@ func GetMcServer() (mcmodel.McServerMsg, error) {
 type McResourceMsg struct {
 	GlobalConfig config.McAgentConfig
 	DnatList *[]utils.DnatRule
+	CreateVmList *map[uint]mcmodel.McVm
 }
 
 func (n *McResourceMsg) Dump() string {
@@ -50,6 +51,7 @@ func getResourceHandler(c *gin.Context) {
 	var resource McResourceMsg
 	resource.GlobalConfig = config.GetMcGlobalConfig()
 	resource.DnatList = utils.GetDnatList()
+	resource.CreateVmList = &kvm.CreateVmFsm.Vms
 	c.JSON(http.StatusOK, resource)
 }
 

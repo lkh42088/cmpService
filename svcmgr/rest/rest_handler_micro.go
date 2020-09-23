@@ -171,11 +171,19 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 	var msg mcmodel.McVm
 	c.Bind(&msg)
 
-	fmt.Printf("Add McVm : %v\n", msg)
+	fmt.Printf("update McVm : %v\n", msg)
 
-	msg, err := h.db.UpdateMcVm(msg)
+	vm, err := h.db.GetMcVmByNameAndCpIdx(msg.Name, msg.CompanyIdx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	msg.Idx = vm.Idx
+	msg, err = h.db.UpdateMcVm(msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, msg)

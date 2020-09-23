@@ -38,8 +38,6 @@ func addVmHandler(c *gin.Context) {
 	}
 
 	msg.Idx = 0
-	msg.McServerIdx = 0
-	msg.CompanyIdx = 0
 
 	if !checkValidation(msg) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "invalid message"})
@@ -47,6 +45,8 @@ func addVmHandler(c *gin.Context) {
 	}
 
 	msg.CurrentStatus = "Ready"
+
+	repo.AddVm2Repo(&msg)
 
 	fmt.Printf("addVmHandler: success - %v\n", msg)
 	c.JSON(http.StatusOK, msg)
@@ -60,10 +60,10 @@ func addVmHandler(c *gin.Context) {
 
 	filepath := cfg.VmInstanceDir+"/"+msg.Filename+".qcow2"
 	if ! utils.IsExistFile(filepath) {
-		//kvm.CreateVmFsm.Vms = append(kvm.CreateVmFsm.Vms, msg)
+		fmt.Println("addVmHandler: not exist file!")
 		kvm.CreateVmFsm.Vms[msg.Idx] = msg
 	}
-	repo.AddVm2Repo(&msg)
+	repo.UpdateVm2Repo(&msg)
 }
 
 func deleteVmHandler(c *gin.Context) {

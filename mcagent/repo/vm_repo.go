@@ -117,7 +117,10 @@ func DeleteVmFromRepo(v mcmodel.McVm) bool {
 			/*************************
 			 * Delete from Database
 			 *************************/
-			DeleteVmFromDb(v)
+			dbVm, err  := GetVmFromDbByName(v.Name) // For real vm.Idx value
+			if err == nil {
+				DeleteVmFromDb(dbVm)
+			}
 			return true
 		}
 	}
