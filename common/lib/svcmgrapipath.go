@@ -31,6 +31,7 @@ const (
 	SvcmgrApiMicroVmUpdateFromMc   = SvcmgrApiMicroVm + "/update-from-mc"
 	SvcmgrApiMicroVmVnc            = SvcmgrApiMicroVm + "/vnc"
 	SvcmgrApiMicroVmPaging         = SvcmgrApiMicro + "/vms-paging"
+	SvcmgrApiMicroVmAction         = SvcmgrApiMicroVm + "/action"
 	SvcmgrApiMicroVmSnapshot       = SvcmgrApiMicroVm + "/snapshot"
 	SvcmgrApiMicroVmSnapshotConfig = SvcmgrApiMicroVm + "/snapshot-config"
 	SvcmgrApiMicroVmAddSnapshot    = SvcmgrApiMicroVm + "/snapshot/add"

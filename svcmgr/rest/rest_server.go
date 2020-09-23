@@ -261,6 +261,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam+"/:cpName", h.GetMcVms)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
 	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
+	router.POST(lib.SvcmgrApiMicroVmAction, h.ApplyVmAction)
 
 	router.GET(lib.SvcmgrApiMicroImagePaging+pagingParam, h.GetMcImages)
 	router.GET(lib.SvcmgrApiMicroImage+"/:serverIdx", h.GetMcImagesByServerIdx)

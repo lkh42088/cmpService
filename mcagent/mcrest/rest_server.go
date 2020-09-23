@@ -35,6 +35,7 @@ func Start(parentwg *sync.WaitGroup) {
 	// VM
 	rg.POST(lib.McUrlCreateVm, addVmHandler)
 	rg.POST(lib.McUrlDeleteVm, deleteVmHandler)
+	rg.POST(lib.McUrlApplyVmAction, applyVmActionHandler)
 	//rg.GET(lib.McUrlGetVmById, getVmByIdHandler)
 	//rg.GET(lib.McUrlVm, getVmAllHandler)
 	//rg.GET(lib.McUrlUpdateVmStatus, updateVmStatus)

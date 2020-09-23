@@ -181,6 +181,36 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
+func (h *Handler) ApplyVmAction(c *gin.Context) {
+	var msg messages.VmActionMsg
+	c.Bind(&msg)
+
+	fmt.Printf("ApplyVmAction: %d, %d\n", msg.VmIdx, msg.VmAction)
+	vm, err := h.db.GetMcVmByIdx(uint(msg.VmIdx))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Printf("ApplyVmAction: vm = %v\n", vm)
+	server, err := h.db.GetMcServerByServerIdx(uint(vm.McServerIdx))
+	if err != nil {
+		fmt.Println("ApplyVmAction: error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Printf("ApplyVmAction: server = %v\n", server)
+	var sendMsg messages.McVmActionMsg
+	sendMsg.VmName = vm.Name
+	sendMsg.VmAction = msg.VmAction
+	res := mcapi.SendMcVmAction(sendMsg, server)
+	if res == false {
+		fmt.Println("ApplyVmAction: Failed to send mcagent!")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, msg)
+}
+
 func (h *Handler) DeleteMcVm(c *gin.Context) {
 	var msg messages.DeleteDataMessage
 	c.Bind(&msg)

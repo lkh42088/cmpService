@@ -10,6 +10,7 @@ const (
 	McUrlVm                 = "/vms"
 	McUrlCreateVm           = McUrlVm + "/create"
 	McUrlDeleteVm           = McUrlVm + "/delete"
+	McUrlApplyVmAction      = McUrlVm + "/action"
 	McUrlUpdateVmStatus     = McUrlVm + "/status"
 	McUrlGetVmById          = McUrlVm + "/:id"
 	McUrlGetVmSnapshot      = "/snapshot"
@@ -24,6 +25,6 @@ const (
 	McUrlMonServer          = McUrlMon + "/server"
 
 	// Window system api
-	McUrlWinPrefix			= "/win"
+	McUrlWinPrefix          = "/win"
 	McUrlHealthCheckFromWin = McUrlWinPrefix + "/health"
 )

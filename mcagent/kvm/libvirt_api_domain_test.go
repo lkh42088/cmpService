@@ -5,29 +5,29 @@ import "testing"
 var vmName2 = "vm03"
 
 func TestShutdownVm2(t *testing.T) {
-	KvmShutdownVm(vmName2)
+	LibvirtShutdownVm(vmName2)
 }
 
 func TestKvmSuspendVm(t *testing.T) {
-	KvmSuspendVm(vmName2)
+	LibvirtSuspendVm(vmName2)
 }
 
 func TestKvmResumeVm(t *testing.T) {
-	KvmResumeVm(vmName2)
+	LibvirtResumeVm(vmName2)
 }
 
 func TestKvmDestroyVm(t *testing.T) {
-	KvmDestroyVm(vmName2)
+	LibvirtDestroyVm(vmName2)
 }
 
 func TestKvmUndefineVm(t *testing.T) {
-	KvmUndefineVm(vmName2)
+	LibvirtUndefineVm(vmName2)
 }
 
 func TestKvmStartVm(t *testing.T) {
-	KvmStartVm(vmName2)
+	LibvirtStartVm(vmName2)
 }
 
 func TestGetKvmVmState(t *testing.T) {
-	GetKvmVmState(vmName2)
+	GetLibvirtVmState(vmName2)
 }

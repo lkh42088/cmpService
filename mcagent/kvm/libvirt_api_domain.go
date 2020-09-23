@@ -75,7 +75,7 @@ func GetXmlDomainByName(name string) *libvirtxml.Domain {
 	return domcfg
 }
 
-func KvmShutdownVm(name string) {
+func LibvirtShutdownVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
 		fmt.Println("ShutdownVm error:", err)
@@ -88,61 +88,61 @@ func KvmShutdownVm(name string) {
 	}
 }
 
-func KvmSuspendVm(name string) {
+func LibvirtSuspendVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmSuspendVm error:", err)
+		fmt.Println("LibvirtSuspendVm error:", err)
 		return
 	}
 	err = dom.Suspend()
 	if err != nil {
-		fmt.Println("KvmSuspendVm error:", err)
+		fmt.Println("LibvirtSuspendVm error:", err)
 		return
 	}
 }
 
-func KvmResumeVm(name string) {
+func LibvirtResumeVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmResumeVm error:", err)
+		fmt.Println("LibvirtResumeVm error:", err)
 		return
 	}
 	err = dom.Resume()
 	if err != nil {
-		fmt.Println("KvmResumeVm error:", err)
+		fmt.Println("LibvirtResumeVm error:", err)
 		return
 	}
 }
 
-func GetKvmVmState(name string) string {
+func GetLibvirtVmState(name string) string {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("GetKvmVmState error:", err)
+		fmt.Println("GetLibvirtVmState error:", err)
 		return "unknown"
 	}
 	status, _, err := dom.GetState()
 	if err != nil {
-		fmt.Println("GetKvmVmState error:", err)
+		fmt.Println("GetLibvirtVmState error:", err)
 		return "unknown"
 	}
 	fmt.Println(name, ConvertVmStatus(status))
 	return ConvertVmStatus(status)
 }
 
-func KvmDestroyVm(name string) {
+func LibvirtDestroyVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmDestroyVm error:", err)
+		fmt.Println("LibvirtDestroyVm error:", err)
 		return
 	}
 	err = dom.Destroy()
 	if err != nil {
-		fmt.Println("KvmDestroyVm error:", err)
+		fmt.Println("LibvirtDestroyVm error:", err)
 		return
 	}
 }
 
-func KvmUndefineVm(name string) {
+func LibvirtUndefineVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
 		fmt.Println("KvmUndefine error:", err)
@@ -155,7 +155,7 @@ func KvmUndefineVm(name string) {
 	}
 }
 
-func KvmStartVm(name string) {
+func LibvirtStartVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
 		fmt.Println("KvmStart error:", err)
@@ -168,28 +168,28 @@ func KvmStartVm(name string) {
 	}
 }
 
-func KvmRebootVm(name string) {
+func LibvirtRebootVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmRebootVm error:", err)
+		fmt.Println("LibvirtRebootVm error:", err)
 		return
 	}
 	err = dom.Reboot(0)
 	if err != nil {
-		fmt.Println("KvmRebootVm error:", err)
+		fmt.Println("LibvirtRebootVm error:", err)
 		return
 	}
 }
 
-func KvmResetVm(name string) {
+func LibvirtResetVm(name string) {
 	dom, err := GetDomainByName(name)
 	if err != nil {
-		fmt.Println("KvmResetVm error:", err)
+		fmt.Println("LibvirtResetVm error:", err)
 		return
 	}
 	err = dom.Reset(0)
 	if err != nil {
-		fmt.Println("KvmResetVm error:", err)
+		fmt.Println("LibvirtResetVm error:", err)
 		return
 	}
 }

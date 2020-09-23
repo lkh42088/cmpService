@@ -11,6 +11,25 @@ import (
 	"net/http"
 )
 
+func SendMcVmAction(msg messages.McVmActionMsg, server mcmodel.McServerDetail) bool {
+	pbytes, _ := json.Marshal(msg)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlApplyVmAction)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
 func SendAddVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)

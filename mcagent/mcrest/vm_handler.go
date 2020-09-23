@@ -2,6 +2,7 @@ package mcrest
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/common/messages"
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
@@ -92,5 +93,28 @@ func deleteVmHandler(c *gin.Context) {
 	repo.DeleteVmFromRepo(*vm)
 
 	fmt.Printf("deleteVmHandler: success\n")
+	c.JSON(http.StatusOK, msg)
+}
+
+func applyVmActionHandler(c *gin.Context) {
+	var msg messages.McVmActionMsg
+	err := c.ShouldBindJSON(&msg)
+	fmt.Printf("applyVmACtionHandler: %v\n", msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	switch(msg.VmAction) {
+	case 1:
+		// shutdown
+		kvm.LibvirtDestroyVm(msg.VmName)
+	case 2:
+		// start
+		kvm.LibvirtStartVm(msg.VmName)
+	case 3:
+		// restart
+		kvm.LibvirtResetVm(msg.VmName)
+	default:
+	}
 	c.JSON(http.StatusOK, msg)
 }

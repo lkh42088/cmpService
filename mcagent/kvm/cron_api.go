@@ -285,14 +285,14 @@ func AddSnapshotCronBySecond(num string) {
 func UpdateVmStatus(msg *messages.VmStatusActionMsg) {
 	switch(msg.Status) {
 	case "start":
-		KvmStartVm(msg.VmName)
+		LibvirtStartVm(msg.VmName)
 	case "stop":
-		KvmDestroyVm(msg.VmName)
+		LibvirtDestroyVm(msg.VmName)
 	case "restart":
-		KvmResumeVm(msg.VmName)
+		LibvirtResumeVm(msg.VmName)
 	case "suspend":
-		KvmSuspendVm(msg.VmName)
+		LibvirtSuspendVm(msg.VmName)
 	case "resume":
-		KvmResumeVm(msg.VmName)
+		LibvirtResumeVm(msg.VmName)
 	}
 }
