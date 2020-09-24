@@ -1,12 +1,31 @@
 package mcmodel
 
-import "time"
+import (
+	"time"
+)
 
 // Get VM Interface traffic
 type VmIfStat struct {
 	Time          time.Time `json:"time"`
 	Hostname      string    `json:"hostname"`
 	IfDescr       string    `json:"ifDescr"`
+	IfPhysAddress string    `json:"ifPhysAddress"`
+	IfInOctets    int64     `json:"ifInOctets"`
+	IfOutOctets   int64     `json:"ifOutOctets"`
+}
+
+type VmIfStatForRank struct {
+	Time          time.Time `json:"time"`
+	SN 		      string	`json:"serial_number"`
+	IfPhysAddress string    `json:"ifPhysAddress"`
+	IfInOctets    int64     `json:"ifInOctets"`
+	IfOutOctets   int64     `json:"ifOutOctets"`
+	Avg 		  int64		`json:"avg"`
+}
+
+type VmIfStatForRankResponse struct {
+	Time          time.Time `json:"time"`
+	SN 		      string	`json:"serial_number"`
 	IfPhysAddress string    `json:"ifPhysAddress"`
 	IfInOctets    int64     `json:"ifInOctets"`
 	IfOutOctets   int64     `json:"ifOutOctets"`

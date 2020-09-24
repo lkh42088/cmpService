@@ -48,3 +48,10 @@ func BenchmarkGetVmInterfaceTrafficByMac(b *testing.B) {
 	resStat:= MakeDeltaValues(stat)
 	fmt.Println(resStat)
 }
+
+func TestGetServerTop5(t *testing.T) {
+	conf.SvcmgrConfigPath = "../etc/svcmgr.lkh.conf"
+	conf.SetInfluxDB()
+	var c *gin.Context
+	GetServerRank(c)
+}

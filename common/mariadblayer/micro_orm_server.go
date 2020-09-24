@@ -107,7 +107,7 @@ func (db *DBORM) AddSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) {
 }
 
 func (db *DBORM) UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) {
-	return obj, db.Model(&obj).
+	return obj, db.Model(&obj).Where(mcmodel.SysInfo{IfMac: obj.IfMac}).
 		Update(map[string]interface{}{
 			"hostname":         obj.Hostname,
 			"os":               obj.OS,
