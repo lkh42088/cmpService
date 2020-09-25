@@ -82,7 +82,7 @@ func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.
 		Model(&obj).
-		Where(mcmodel.McServer{Mac: obj.Mac}).
+		Where(mcmodel.McServer{Idx: obj.Idx}).
 		Update(map[string]interface{}{
 			"mc_status":         obj.Status,
 			"mc_port":           obj.Port,
