@@ -89,6 +89,12 @@ func (k *CreateVmFSM) Run() {
 			 * 3. Notify svcmgr
 			 *****************************************************************/
 			svcmgrapi.SendUpdateVm2Svcmgr(*vm, svcmgrRestAddr)
+
+			/*****************************************************************
+			 * 4. Apply Snapshot
+			 *****************************************************************/
+			//AddSnapshotCronDailyTime(vm.Name, strconv.Itoa(vm.SnapHours), strconv.Itoa(vm.SnapMinutes))
+			AddSnapshotByMcVm(vm)
 		}(&vm)
 	}
 	wg.Wait()

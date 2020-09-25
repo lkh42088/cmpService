@@ -15,6 +15,8 @@ import (
 func Start (config string) {
 	var wg sync.WaitGroup
 
+	wg.Add(5)
+
 	if !config2.ApplyGlobalConfig(config) {
 		return
 	}
@@ -26,7 +28,12 @@ func Start (config string) {
 
 	SetSysInfo()
 
-	wg.Add(4)
+	// Start Cron
+	if kvm.CronSnap != nil {
+		go kvm.CronSnap.Start(&wg)
+	} else {
+		wg.Done()
+	}
 
 	// Rest Api Server
 	go mcrest.Start(&wg)
@@ -56,8 +63,15 @@ func Start (config string) {
 	//	wg.Done()
 	//}
 
-	// BareMetal system info
+	/*********************************
+	 * BareMetal system info
+	 *********************************/
 	SendSysInfo()
+
+	/*********************************
+	 * Apply Cron for snapshot
+	 *********************************/
+	ApplyCronForSnapshot()
 
 	wg.Wait()
 }
@@ -100,6 +114,11 @@ func configure() bool {
 	//ConfigureVmList()
 
 	/********************************
+	 * Config Cron
+	 ********************************/
+	kvm.ConfigCron()
+
+	/********************************
 	 * Config Create Vm FSM
 	 ********************************/
 	kvm.ConfigCreateVmFsm()
@@ -120,4 +139,15 @@ func configure() bool {
 	kvm.ConfigureLibvirtStatstics()
 
 	return true
+}
+
+func ApplyCronForSnapshot() {
+	for _, vm := range repo.GlobalVmCache {
+		if vm.SnapType == false {
+			continue
+		}
+		// apply cron
+		fmt.Println("ApplyCronForSnapshot: ", vm.Name)
+		kvm.AddSnapshotByMcVm(&vm)
+	}
 }
