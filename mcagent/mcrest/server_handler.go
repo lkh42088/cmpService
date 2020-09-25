@@ -5,6 +5,7 @@ import (
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/repo"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -38,6 +39,9 @@ type McResourceMsg struct {
 	GlobalConfig config.McAgentConfig
 	DnatList *[]utils.DnatRule
 	CreateVmList *map[uint]mcmodel.McVm
+	CacheVmList *[]mcmodel.McVm
+	LibvirtVmList *[]mcmodel.McVm
+	CronVmList *[]kvm.SnapVm
 }
 
 func (n *McResourceMsg) Dump() string {
@@ -52,6 +56,9 @@ func getResourceHandler(c *gin.Context) {
 	resource.GlobalConfig = config.GetMcGlobalConfig()
 	resource.DnatList = utils.GetDnatList()
 	resource.CreateVmList = &kvm.CreateVmFsm.Vms
+	resource.CacheVmList = &repo.GlobalVmCache
+	resource.LibvirtVmList = kvm.LibvirtR.Old.Vms
+	resource.CronVmList = &kvm.CronSnap.Vms
 	c.JSON(http.StatusOK, resource)
 }
 

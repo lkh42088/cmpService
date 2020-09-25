@@ -1,9 +1,11 @@
 package kvm
 
 import (
+	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"fmt"
 	"github.com/robfig/cron/v3"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -19,7 +21,6 @@ var CronSnap *CronSnapshot
 type SnapVm struct {
 	VmName string
 	CronId cron.EntryID
-	Cfg *messages.SnapshotConfigMsg
 }
 
 var vmSliceMutex sync.Mutex
@@ -58,6 +59,11 @@ func NewCronSnapshot(interval int) *CronSnapshot {
 	return &CronSnapshot{
 		Interval: interval,
 	}
+}
+
+func ConfigCron() {
+	c := NewCronSnapshot(5)
+	SetCronSnapshot(c)
 }
 
 func SetCronSnapshot(c *CronSnapshot) {
@@ -109,6 +115,7 @@ func AddSnapshotCronDaily(vmName string) (id cron.EntryID, err error){
 
 func AddSnapshotCronDailyTime(vmName, hour, min string) (id cron.EntryID, err error){
 	cronTime := fmt.Sprintf("CRON_TZ=Asia/Seoul %s %s * * *", hour, min)
+	fmt.Println("AddSnapshotCronDailyTime:", vmName, "-", cronTime)
 	id, err = CronSnap.Cr.AddFunc(cronTime, func() {
 		fmt.Println(fmt.Sprintf("run at %s:%s Seoul time every day", hour, min))
 		SafeSnapshot(vmName, GetTimeWord(), "Daily Time, snapshot by Cron")
@@ -122,6 +129,30 @@ func AddSnapshotCronPeriodically(vmName, hour, min string) (id cron.EntryID, err
 		SafeSnapshot(vmName, GetTimeWord(), "Periodically, snapshot by Cron")
 	})
 	return id, err
+}
+
+func AddSnapshotByMcVm(vm *mcmodel.McVm) {
+	if vm.SnapType == false {
+		return
+	}
+
+	if CronSnap.LookupVm(vm.Name) {
+		fmt.Println("AddVmSnapshotByConifg: Already have snapshot config!")
+		return
+	}
+
+	var id cron.EntryID
+	var err error
+	id, err = AddSnapshotCronDailyTime(vm.Name, strconv.Itoa(vm.SnapHours), strconv.Itoa(vm.SnapMinutes))
+	if err != nil {
+		fmt.Println("AddSnapshotConDailyTime: error", err)
+		return
+	}
+	entry := SnapVm{
+		VmName: vm.Name,
+		CronId: id,
+	}
+	CronSnap.Vms = append(CronSnap.Vms, entry)
 }
 
 func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
