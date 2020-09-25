@@ -1,7 +1,6 @@
 package mcmongo
 
 import (
-	"cmpService/common/mcmodel"
 	"github.com/globalsign/mgo"
 )
 //
@@ -43,16 +42,16 @@ func (m *McMongoAccessor) DeleteVmAll() (*mgo.ChangeInfo, error) {
 }
 
 // Image
-func (m *McMongoAccessor) AddImage(obj *mcmodel.MgoImage) (err error) {
-	err = m.Session.DB(m.Database).C("vm_image").UpdateId(obj.Id, obj)
-	return err
-}
-
-func (m *McMongoAccessor) DeleteImage(id int) error {
-	return m.Session.DB(m.Database).C("vm_image").RemoveId(id)
-}
-
-func (m*McMongoAccessor) GetImageAll() (images []mcmodel.MgoImage, err error) {
-	err = m.Collection.Find(nil).All(&images)
-	return images, err
-}
+//func (m *McMongoAccessor) AddImage(obj *mcmodel.MgoImage) (err error) {
+//	err = m.Session.DB(m.Database).C("vm_image").UpdateId(obj.Id, obj)
+//	return err
+//}
+//
+//func (m *McMongoAccessor) DeleteImage(id int) error {
+//	return m.Session.DB(m.Database).C("vm_image").RemoveId(id)
+//}
+//
+//func (m*McMongoAccessor) GetImageAll() (images []mcmodel.MgoImage, err error) {
+//	err = m.Collection.Find(nil).All(&images)
+//	return images, err
+//}

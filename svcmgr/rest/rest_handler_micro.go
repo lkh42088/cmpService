@@ -609,12 +609,12 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	}
 
 	//deltaStats := MakeDeltaWinValues(winTraffic)
-	fmt.Println("")
-	fmt.Println(mac, "-------------------------------------------------------------------------------------------------------------------")
-	fmt.Println("graph CPU : ", graph.Cpu)
-	fmt.Println("graph Mem : ", graph.Mem)
-	fmt.Println("graph Disk : ", graph.Disk)
-	fmt.Println("graph Traffic : ", graph.Traffic)
+	//fmt.Println("")
+	//fmt.Println(mac, "-------------------------------------------------------------------------------------------------------------------")
+	//fmt.Println("graph CPU : ", graph.Cpu)
+	//fmt.Println("graph Mem : ", graph.Mem)
+	//fmt.Println("graph Disk : ", graph.Disk)
+	//fmt.Println("graph Traffic : ", graph.Traffic)
 
 	c.JSON(http.StatusOK, graph)
 }
