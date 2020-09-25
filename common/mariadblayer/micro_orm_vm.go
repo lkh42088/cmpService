@@ -94,7 +94,7 @@ func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
 	}
 
 	err = db.Model(&server).
-		Where(mcmodel.McServer{Mac: server.Mac}).
+		Where(mcmodel.McServer{Idx: server.Idx}).
 		Updates(map[string]interface{}{
 			"mc_vm_count": server.VmCount,
 		}).Error
@@ -115,7 +115,7 @@ func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 func (db *DBORM) UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
 	return obj, db.
 		Model(&obj).
-		Where(mcmodel.McVm{Mac: obj.Mac}).
+		Where(mcmodel.McVm{Idx: obj.Idx}).
 		Updates(map[string]interface{}{
 			"vm_filename":       obj.Filename,
 			"vm_full_path":      obj.FullPath,
