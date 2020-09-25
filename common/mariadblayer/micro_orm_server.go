@@ -80,7 +80,7 @@ func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 }
 
 func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
-	return obj, db.Model(&obj).
+	return obj, db.Model(&obj).Where(mcmodel.McServer{SerialNumber: obj.SerialNumber}).
 		Update(map[string]interface{}{
 			"mc_status":         obj.Status,
 			"mc_port":           obj.Port,
@@ -107,7 +107,7 @@ func (db *DBORM) AddSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) {
 }
 
 func (db *DBORM) UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) {
-	return obj, db.Model(&obj).
+	return obj, db.Model(&obj).Where(mcmodel.SysInfo{IfMac: obj.IfMac}).
 		Update(map[string]interface{}{
 			"hostname":         obj.Hostname,
 			"os":               obj.OS,

@@ -15,6 +15,15 @@ type DiskStat struct {
 	Err         string    `json:"err"`
 }
 
+type DiskStatForRank struct {
+	Time        time.Time `json:"time"`
+	SN 		    string	  `json:"serial_number"`
+	Device      string    `json:"device"`
+	Total       float64   `json:"total"`
+	Used        float64   `json:"used"`
+	UsedPercent float64   `json:"used_percent"`
+}
+
 type WinDiskStat struct {
 	Time          time.Time `json:"time"`
 	FreeMegabytes float64   `json:"freeMegabytes"`
