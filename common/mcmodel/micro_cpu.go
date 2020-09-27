@@ -16,6 +16,7 @@ type CpuStatForRank struct {
 	SN 		  string	`json:"serial_number"`
 	Cpu       string    `json:"cpu"`
 	UsageIdle float64   `json:"usage_idle"`
+	Avg   	  float64  	`json:"avg"`
 }
 
 type WinCpuStat struct {

@@ -1,8 +1,6 @@
 package kvm
 
 import (
-	"cmpService/common/mcmodel"
-	"cmpService/mcagent/config"
 	"fmt"
 	"os"
 	"os/exec"
@@ -37,74 +35,74 @@ import (
 //	dumpVm()
 //}
 
-func getData() (vm mcmodel.MgoVm, server mcmodel.McServerDetail) {
-	vm = mcmodel.MgoVm{
-		Idx:         1,
-		McServerIdx: 1,
-		CompanyIdx:  1,
-		Name:        "win10-01",
-		Cpu:         4,
-		Ram:         8192,
-		Hdd:         40,
-		OS:          "win10",
-		Image:       "windows10-40G",
-		Network:     "default",
-		Filename:    "windows10-40G-0",
-	}
-	server = mcmodel.McServerDetail{
-		McServer: mcmodel.McServer{
-			Idx:    1,
-			IpAddr: "192.168.0.89",
-		},
-	}
-	return vm, server
-}
-
-func TestCreateVmInstance(t *testing.T) {
-	config.ApplyGlobalConfig("../etc/mcagent.conf")
-	vm, _ := getData()
-
-	fmt.Println("start...")
-	CreateVmInstance(vm)
-	fmt.Println("finished...")
-}
-
-func TestStartVm(t *testing.T) {
-	vm, _ := getData()
-	StartVm(vm)
-}
-
-func TestGetIpAddressOfVm(t *testing.T) {
-	vm, _ := getData()
-	GetIpAddressOfVm(vm)
-}
-
-func TestShutdownVm(t *testing.T) {
-	vm, _ := getData()
-	ShutdownVm(vm)
-}
-
-func TestUndefineVm(t *testing.T) {
-	vm, _ := getData()
-	UndefineVm(vm)
-}
-
-func TestStatusVm(t *testing.T) {
-	vm, _ := getData()
-	StatusVm(vm)
-}
-
-func TestDeleteVm(t *testing.T) {
-	vm, _ := getData()
-	ShutdownVm(vm)
-	UndefineVm(vm)
-}
-
-func TestCopyVmInstance(t *testing.T) {
-	config.ApplyGlobalConfig("../etc/mcagent.conf")
-	vm, _ := getData()
-	CopyVmInstance(&vm)
-}
+//func getData() (vm mcmodel.MgoVm, server mcmodel.McServerDetail) {
+//	vm = mcmodel.MgoVm {
+//		Idx:         1,
+//		McServerIdx: 1,
+//		CompanyIdx:  1,
+//		Name:        "win10-01",
+//		Cpu:         4,
+//		Ram:         8192,
+//		Hdd:         40,
+//		OS:          "win10",
+//		Image:       "windows10-40G",
+//		Network:     "default",
+//		Filename:    "windows10-40G-0",
+//	}
+//	server = mcmodel.McServerDetail{
+//		McServer: mcmodel.McServer{
+//			Idx:    1,
+//			IpAddr: "192.168.0.89",
+//		},
+//	}
+//	return vm, server
+//}
+//
+//func TestCreateVmInstance(t *testing.T) {
+//	config.ApplyGlobalConfig("../etc/mcagent.conf")
+//	vm, _ := getData()
+//
+//	fmt.Println("start...")
+//	CreateVmInstance(vm)
+//	fmt.Println("finished...")
+//}
+//
+//func TestStartVm(t *testing.T) {
+//	vm, _ := getData()
+//	StartVm(vm)
+//}
+//
+//func TestGetIpAddressOfVm(t *testing.T) {
+//	vm, _ := getData()
+//	GetIpAddressOfVm(vm)
+//}
+//
+//func TestShutdownVm(t *testing.T) {
+//	vm, _ := getData()
+//	ShutdownVm(vm)
+//}
+//
+//func TestUndefineVm(t *testing.T) {
+//	vm, _ := getData()
+//	UndefineVm(vm)
+//}
+//
+//func TestStatusVm(t *testing.T) {
+//	vm, _ := getData()
+//	StatusVm(vm)
+//}
+//
+//func TestDeleteVm(t *testing.T) {
+//	vm, _ := getData()
+//	ShutdownVm(vm)
+//	UndefineVm(vm)
+//}
+//
+//func TestCopyVmInstance(t *testing.T) {
+//	config.ApplyGlobalConfig("../etc/mcagent.conf")
+//	vm, _ := getData()
+//	CopyVmInstance(&vm)
+//}
 
 func TestGetVmFromLibvirt(t *testing.T) {
 	GetVmFromLibvirt()

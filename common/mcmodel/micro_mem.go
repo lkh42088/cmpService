@@ -18,6 +18,7 @@ type MemStatForRank struct {
 	Available        float64   `json:"available"`
 	AvailablePercent float64   `json:"available_percent"`
 	Total            float64   `json:"total"`
+	Avg 			 float64   `json:"avg"`
 }
 
 type WinMemStat struct {

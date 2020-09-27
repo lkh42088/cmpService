@@ -22,6 +22,7 @@ type DiskStatForRank struct {
 	Total       float64   `json:"total"`
 	Used        float64   `json:"used"`
 	UsedPercent float64   `json:"used_percent"`
+	Avg         float64   `json:"avg"`
 }
 
 type WinDiskStat struct {

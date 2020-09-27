@@ -56,7 +56,7 @@ type McServer struct {
 	VmCount      int    `gorm:"type:int(11);column:mc_vm_count;comment:'vm 개수'" json:"vmCount"`
 	Port         string `gorm:"type:varchar(50);column:mc_port;comment:'Port'" json:"port"`
 	Mac          string `gorm:"type:varchar(50);column:mc_mac;comment:'Mac Address'" json:"mac"`
-	IpAddr       string `gorm:"type:varchar(50);column:mc_ip_addr;comment:'IP Address'" json:"ip"`
+	IpAddr       string `gorm:"type:varchar(50);column:mc_ip_addr;comment:'IP Address'" json:"ipAddr"`
 	PublicIpAddr string `gorm:"type:varchar(50);column:mc_public_ip_addr;comment:'Public IP Address'" json:"publicIp"`
 }
 
