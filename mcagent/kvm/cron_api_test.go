@@ -10,7 +10,7 @@ func TestAddSnapshotCron(t *testing.T) {
 }
 
 func TestAddSnapshotCronByMin(t *testing.T) {
-	AddSnapshotCronByMin("1")
+	AddSnapshotCronByMin("vm01", "1")
 }
 
 func TestAddSnapshotCronBySecond(t *testing.T) {

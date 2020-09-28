@@ -184,7 +184,7 @@ func AddSnapshotByMcVm(vm *mcmodel.McVm) {
 	entry := SnapVm{
 		VmName: vm.Name,
 		CronId: id,
-		Timer: fmt.Sprintf("%s days %d hours %d minutes",
+		Timer: fmt.Sprintf("%d days %d hours %d minutes",
 			vm.SnapDays, vm.SnapHours, vm.SnapMinutes),
 	}
 	CronSnap.Vms = append(CronSnap.Vms, entry)

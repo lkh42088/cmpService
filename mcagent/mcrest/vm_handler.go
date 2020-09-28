@@ -84,10 +84,13 @@ func deleteVmHandler(c *gin.Context) {
 	// 1. Delete Dnat Rule
 	kvm.DeleteDnatRulByVm(vm)
 
-	// 2. Delete Vm instance
+	// 2. Delete Vm snapshot
+	kvm.DeleteAllSnapshot(vm.Name)
+
+	// 3. Delete Vm instance
 	kvm.DeleteVm(*vm)
 
-	// 3. Delete Vm image
+	// 4. Delete Vm image
 	kvm.DeleteVmInstance(*vm)
 
 	repo.DeleteVmFromRepo(*vm)

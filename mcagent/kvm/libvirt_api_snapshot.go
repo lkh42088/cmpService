@@ -96,8 +96,8 @@ func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
 	for index, snap := range snaps {
 		name, _ := snap.GetName()
 		fmt.Println("index ", index, " name:", name)
-		desc, _ := snap.GetXMLDesc(0)
-		fmt.Println("        desc: ", desc)
+		//desc, _ := snap.GetXMLDesc(0)
+		//fmt.Println("        desc: ", desc)
 	}
 	return snaps, err
 }
