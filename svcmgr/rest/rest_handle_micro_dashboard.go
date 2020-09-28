@@ -56,33 +56,39 @@ func GetServerRank(c *gin.Context) {
 	// GET SERVER CPU
 	dbname := "cpu"
 	field := `"time","serial_number","cpu","usage_idle"`
-	query := fmt.Sprintf(`WHERE cpu = 'cpu-total' group by mac_address order by time desc limit 10`)
+	query := fmt.Sprintf(`WHERE cpu = 'cpu-total' AND time > now() - %s 
+		group by mac_address limit 10`, "5m")
 	resCpu := conf.GetMeasurementsWithQuery(dbname, field, query)
 	result.Cpu = MakeAvgCpuData(*resCpu)
 
 	// GET SERVER MEM
 	dbname = "mem"
 	field = `"time","serial_number","available","available_percent","total"`
-	query = fmt.Sprintf(`group by mac_address order by time desc limit 10`)
+	query = fmt.Sprintf(`WHERE time > now()- %s 
+		group by mac_address limit 10`, "5m")
 	resMem := conf.GetMeasurementsWithQuery(dbname, field, query)
 	result.Mem = MakeAvgMemData(*resMem)
 
 	// GET SERVER DISK
 	dbname = "disk"
 	field = `"time","serial_number","device","total","used","used_percent"`
-	query = fmt.Sprintf(`WHERE path = '/' group by mac_address order by time desc limit 10`)
+	query = fmt.Sprintf(`WHERE path = '/' AND time > now() - %s 
+		group by mac_address limit 10`, "5m")
 	resDisk := conf.GetMeasurementsWithQuery(dbname, field, query)
 	result.Disk = MakeAvgDiskData(*resDisk)
 
 	// GET SERVER RX/TX
 	dbname = "interface"
 	field = `"time","serial_number","ifPhysAddress","ifInOctets","ifOutOctets"`
-	query = fmt.Sprintf(`group by mac_address order by time desc limit 10`)
+	// ifIndex=2 : ethernet interface index (todo : need to fix)
+	query = fmt.Sprintf(`WHERE ifIndex = '2' AND time > now() - %s 
+		group by mac_address limit 10`, "5m")
 	resRxTx := conf.GetMeasurementsWithQuery(dbname, field, query)
 	result.Traffic = MakeAvgRxTxData(*resRxTx)
 
-	fmt.Printf("RANK RESULT : %+v\n", result)
-	//c.JSON(http.StatusOK, result)
+	//pretty, _ := json.MarshalIndent(result, "", "  ")
+	//fmt.Printf("%s\n", string(pretty))
+	c.JSON(http.StatusOK, result)
 }
 
 func MakeAvgCpuData(res client.Response) []mcmodel.CpuStatForRank {
@@ -110,7 +116,7 @@ func MakeAvgCpuData(res client.Response) []mcmodel.CpuStatForRank {
 
 			// Calc avg
 			for _, data := range stat {
-				total += data.UsageIdle
+				total += 100 - data.UsageIdle
 			}
 			avg = total / float64(len(stat))
 			tmp.Time = stat[0].Time
@@ -159,7 +165,7 @@ func MakeAvgMemData(res client.Response) []mcmodel.MemStatForRank {
 
 			// Calc avg
 			for _, data := range stat {
-				total += data.Available
+				total += 100 - data.AvailablePercent
 			}
 			avg = total / float64(len(stat))
 			tmp.Time = stat[0].Time
@@ -209,7 +215,7 @@ func MakeAvgDiskData(res client.Response) []mcmodel.DiskStatForRank {
 
 			// Calc avg
 			for _, data := range stat {
-				total += data.Used
+				total += data.UsedPercent
 			}
 			avg = total / float64(len(stat))
 			tmp.Time = stat[0].Time
@@ -224,7 +230,7 @@ func MakeAvgDiskData(res client.Response) []mcmodel.DiskStatForRank {
 
 		// Sorting
 		sort.Slice(rank, func(i, j int) bool {
-			return rank[i].Used > rank[j].Used
+			return rank[i].Avg > rank[j].Avg
 		})
 		if len(rank) >= TOP_USAGE_COUNT {
 			rank = rank[:5]
@@ -265,7 +271,11 @@ func MakeAvgRxTxData(res client.Response) []mcmodel.VmIfStatForRank {
 			lastValue := stat[lastIdx].IfInOctets + stat[lastIdx].IfOutOctets
 			startValue := stat[0].IfInOctets + stat[0].IfOutOctets
 			total = lastValue - startValue
-			avg = total / int64(lastIdx + 1)
+			// overflow check
+			if total < 0 {
+				total = INT32_VALUE - startValue + lastValue
+			}
+			avg = total
 
 			tmp.Time = stat[lastIdx].Time
 			tmp.SN = stat[lastIdx].SN
