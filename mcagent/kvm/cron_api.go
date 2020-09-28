@@ -21,6 +21,7 @@ var CronSnap *CronSnapshot
 type SnapVm struct {
 	VmName string
 	CronId cron.EntryID
+	Timer string
 }
 
 var vmSliceMutex sync.Mutex
@@ -137,20 +138,54 @@ func AddSnapshotByMcVm(vm *mcmodel.McVm) {
 	}
 
 	if CronSnap.LookupVm(vm.Name) {
-		fmt.Println("AddVmSnapshotByConifg: Already have snapshot config!")
+		fmt.Println("AddSnapshotByMcVm: Already have snapshot config!")
 		return
 	}
 
 	var id cron.EntryID
 	var err error
-	id, err = AddSnapshotCronDailyTime(vm.Name, strconv.Itoa(vm.SnapHours), strconv.Itoa(vm.SnapMinutes))
-	if err != nil {
-		fmt.Println("AddSnapshotConDailyTime: error", err)
-		return
+	switch (vm.SnapDays) {
+	case 2:
+		/**************
+		 * Daily
+		 **************/
+		id, err = AddSnapshotCronDailyTime(vm.Name,
+			strconv.Itoa(vm.SnapHours),
+			strconv.Itoa(vm.SnapMinutes))
+		if err != nil {
+			fmt.Println("AddSnapshotByMcVm: error", err)
+			return
+		}
+	case 7:
+		/**************
+		 * Weekly
+		 **************/
+	case 30:
+		/**************
+		 * Monthly
+		 **************/
+	default:
+		/**************
+		 * etc
+		 **************/
+		if vm.SnapHours == 0 && vm.SnapMinutes == 0  {
+			fmt.Println("AddSnapshotByMcVm: hours 0, minutes 0 --> skip")
+			return
+		} else if vm.SnapHours == 0 {
+			AddSnapshotCronByMin(vm.Name,
+				strconv.Itoa(vm.SnapMinutes))
+		} else {
+			AddSnapshotCronByHoursMin(vm.Name,
+				strconv.Itoa(vm.SnapHours),
+				strconv.Itoa(vm.SnapMinutes))
+		}
 	}
+
 	entry := SnapVm{
 		VmName: vm.Name,
 		CronId: id,
+		Timer: fmt.Sprintf("%d days %d hours %d minutes",
+			vm.SnapDays, vm.SnapHours, vm.SnapMinutes),
 	}
 	CronSnap.Vms = append(CronSnap.Vms, entry)
 }
@@ -286,16 +321,22 @@ func AddSnapshotCron(hour, min string) {
 	})
 }
 
-func AddSnapshotCronByMin(min string) {
-	c := cron.New()
-	cronTime := fmt.Sprintf("*/%s * * * *", min)
-	c.AddFunc(cronTime, func() {
-		fmt.Println(fmt.Sprintf("every minits - %s", min))
+func AddSnapshotCronByHoursMin(vmName, hour, min string) (id cron.EntryID, err error){
+	cronTime := fmt.Sprintf("@every %sh%sm0s", hour, min)
+	id, err = CronSnap.Cr.AddFunc(cronTime, func() {
+		fmt.Printf("Snapshot: %s - %s\n", vmName, cronTime)
+		SafeSnapshot(vmName, GetTimeWord(), cronTime)
 	})
-	fmt.Println("start cron")
-	fmt.Printf("Entry %+v\n", c.Entries())
-	c.Start()
-	time.Sleep(3 * time.Minute)
+	return id, err
+}
+
+func AddSnapshotCronByMin(vmName, min string) (id cron.EntryID, err error){
+	cronTime := fmt.Sprintf("@every 0h%sm0s", min)
+	id, err = CronSnap.Cr.AddFunc(cronTime, func() {
+		fmt.Printf("Snapshot: %s - %s\n", vmName, cronTime)
+		SafeSnapshot(vmName, GetTimeWord(), cronTime)
+	})
+	return id, err
 }
 
 func AddSnapshotCronBySecond(num string) {

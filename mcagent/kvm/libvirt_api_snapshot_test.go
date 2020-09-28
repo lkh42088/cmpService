@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var vmName = "vm01"
+var vmName = "vm6"
 
 func TestCreateSnapshot(t *testing.T) {
 	CreateSnapshot(vmName, "snap 02", "test snap 02")

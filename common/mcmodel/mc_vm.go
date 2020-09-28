@@ -62,6 +62,12 @@ type McVm struct {
 	SnapDays       int    `gorm:"type:int(11);column:vm_snap_days" json:"snapDays"`
 	SnapHours      int    `gorm:"type:int(11);column:vm_snap_hours" json:"snapHours"`
 	SnapMinutes    int    `gorm:"type:int(11);column:vm_snap_minutes" json:"snapMinutes"`
+	SnapCount      int    `gorm:"type:int(11);column:vm_snap_count" json:"snapCount"`
+	BackupType     bool   `gorm:"type:tinyint(1);column:vm_backup_type" json:"backupType"`
+	BackupDays     int    `gorm:"type:int(11);column:vm_backup_days" json:"backupDays"`
+	BackupHours    int    `gorm:"type:int(11);column:vm_backup_hours" json:"backupHours"`
+	BackupMinutes  int    `gorm:"type:int(11);column:vm_backup_minutes" json:"backupMinutes"`
+	BackupCount    int    `gorm:"type:int(11);column:vm_backup_count" json:"backupCount"`
 	IsCreated      bool   `gorm:"-" json:"isCreated"`
 	IsProcess      bool   `gorm:"-" json:"isProcess"`
 	IsChangeIpAddr bool   `gorm:"-" json:"-"`
@@ -107,7 +113,7 @@ func (m McVmPage) GetOrderBy(orderby, order string) string {
 	return val + " " + order
 }
 
-func (v McVm) LookupList(list *[]McVm) (bool, int, *McVm){
+func (v McVm) LookupList(list *[]McVm) (bool, int, *McVm) {
 	for index, vm := range *list {
 		if vm.Name == v.Name {
 			return true, index, &vm
