@@ -25,9 +25,9 @@ func GetMeasurementsWithQuery(collector string, field string, phrase string) *cl
 	query := "SELECT " + field + " FROM " + collector
 	query += " " + phrase
 
-	fmt.Println("")
-	fmt.Println("query : ", query)
-	fmt.Println("")
+	//fmt.Println("")
+	//fmt.Println("query : ", query)
+	//fmt.Println("")
 	//fmt.Printf(collector, "★★★ -> Query: %s\n", query)	// Need to debuggig
 	res, err := InfluxdbQuery(query)
 	if err != nil {

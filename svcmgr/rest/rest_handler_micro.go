@@ -322,9 +322,6 @@ func (h *Handler) GetMcVms(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	fmt.Println("😡😡😡 😡😡😡 😡😡😡 😡😡😡 😡😡😡 😡😡😡 vms : ", vms)
-	fmt.Println("😡😡😡 cpName : ", cpName)
-
 	c.JSON(http.StatusOK, vms)
 }
 

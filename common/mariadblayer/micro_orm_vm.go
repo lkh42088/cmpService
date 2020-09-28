@@ -27,7 +27,7 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmo
 	} else {
 		query = "c.cp_name = '" + cpName + "'"
 	}
-	err = db.
+	err = db.Debug().
 		Table("mc_vm_tb").
 		Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
 		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
@@ -44,6 +44,29 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmo
 	vms.Page = paging
 
 	return vms, err
+}
+
+
+func (db *DBORM) GetMcVmsCount(cpName string) (total int, operate int, vm int, err error) {
+	var query string
+	if cpName == "all" {
+		query = ""
+	} else {
+		query = "c.cp_name = '" + cpName + "'"
+	}
+	err = db.Debug().
+		Table("mc_vm_tb").
+		Select("count(distinct(vm_mac))").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
+		Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
+		Where(query).
+		Count(&vm).Error
+		//Find(&vms.Vms).Error
+	if err != nil {
+		lib.LogWarn("[Error] %s\n", err)
+	}
+
+	return total, operate, vm, err
 }
 /*
 func (db *DBORM) GetMcWinGraphs(mac string) (obj mcmodel.McWinVmGraph, err error) {
