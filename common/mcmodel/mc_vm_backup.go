@@ -13,15 +13,25 @@ type McVmSnapshot struct {
 	VmName      string `gorm:"type:varchar(50);column:snap_vm_name;comment:'vm 이름'" json:"vmName"`
 	Name        string `gorm:"type:varchar(50);column:snap_name;comment:'snapshot 이름'" json:"name"`
 	Desc        string `gorm:"type:varchar(50);column:snap_desc;comment:'snapshot description'" json:"desc"`
+	Year        int    `gorm:"type:int(11);column:snap_year;comment:'year'" json:"year"`
 	Month       int    `gorm:"type:int(11);column:snap_month;comment:'month'" json:"month"`
 	Day         int    `gorm:"type:int(11);column:snap_day;comment:'day'" json:"day"`
 	Hour        int    `gorm:"type:int(11);column:snap_hour;comment:'hour'" json:"hour"`
 	Minute      int    `gorm:"type:int(11);column:snap_minute;comment:'minute'" json:"minute"`
+	Second      int    `gorm:"type:int(11);column:snap_second;comment:'second'" json:"second"`
 	Current     bool   `gorm:"type:tinyint(1);column:snap_current;comment:'current vm'" json:"current"`
+	ServerSn    string `gorm:"-" json:"serverSn"`
 }
 
 func (McVmSnapshot) TableName() string {
 	return "mc_vm_snapshot_tb"
+}
+
+func (s *McVmSnapshot) Dump() {
+	pretty, _ := json.MarshalIndent(s, "", "  ")
+	fmt.Printf("------------------------------------------------------------\n")
+	fmt.Printf("VM Snapshot : %s\n", s.VmName)
+	fmt.Printf("%s\n", string(pretty))
 }
 
 func DumpMcVmSnapList(list []McVmSnapshot) {
@@ -71,4 +81,3 @@ func DumpMcVmBackupList(list []McVmBackup) {
 	fmt.Printf("VM Backup List: %d\n", len(list))
 	fmt.Printf("%s\n", string(pretty))
 }
-

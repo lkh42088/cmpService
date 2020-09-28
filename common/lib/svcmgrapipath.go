@@ -22,7 +22,7 @@ const (
 	SvcmgrApiMicroServerUnRegister    = SvcmgrApiMicroServer + "/unregister"
 	SvcmgrApiMicroServerSearchCompany = SvcmgrApiMicroServer + "/search-company"
 	SvcmgrApiMicroServerResource      = SvcmgrApiMicroServer + "/resource"
-	SvcmgrApiMicroSystemInfo		  = SvcmgrApiMicro + "/sysinfo"
+	SvcmgrApiMicroSystemInfo          = SvcmgrApiMicro + "/sysinfo"
 	// /v1/micro/vms
 	SvcmgrApiMicroVm               = SvcmgrApiMicro + "/vms"
 	SvcmgrApiMicroVmRegister       = SvcmgrApiMicroVm + "/register"
@@ -39,6 +39,8 @@ const (
 	SvcmgrApiMicroVmDeleteSnapshot = SvcmgrApiMicroVm + "/snapshot/delete"
 	SvcmgrApiMicroVmStatus         = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph          = SvcmgrApiMicro + "/vms-graph"
+	// snapshot from mcagent
+	SvcmgrApiMicroMcAgentVmAddSnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/add"
 	// /v1/micro/images
 	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
 	SvcmgrApiMicroImagePaging = SvcmgrApiMicro + "/images-paging"
@@ -49,12 +51,11 @@ const (
 	SvcmgrApiMicroNetworkPaging     = SvcmgrApiMicro + "/networks-paging"
 	SvcmgrApiMicroVmMonitor         = SvcmgrApiMicro + "/monitor"
 	SvcmgrApiMicroVmStats           = SvcmgrApiMicroVmMonitor + "/stats"
-	SvcmgrApiMicroVmInfo           = SvcmgrApiMicroVmMonitor + "/info"
+	SvcmgrApiMicroVmInfo            = SvcmgrApiMicroVmMonitor + "/info"
 	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
 	// /v1/micro/dashboard
-	SvcmgrApiMicroDashboard        = SvcmgrApiMicro + "/dashboard"
-	SvcmgrApiMicroServerCount      = SvcmgrApiMicroDashboard + "/servercnt"
-	SvcmgrApiMicroVmCount    	   = SvcmgrApiMicroDashboard + "/vmcnt"
-	SvcmgrApiMicroServerRank    	   = SvcmgrApiMicroDashboard + "/rank"
+	SvcmgrApiMicroDashboard   = SvcmgrApiMicro + "/dashboard"
+	SvcmgrApiMicroServerCount = SvcmgrApiMicroDashboard + "/servercnt"
+	SvcmgrApiMicroVmCount     = SvcmgrApiMicroDashboard + "/vmcnt"
+	SvcmgrApiMicroServerRank  = SvcmgrApiMicroDashboard + "/rank"
 )
-

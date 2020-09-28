@@ -52,6 +52,8 @@ func AddVm2Repo(v *mcmodel.McVm) bool {
 	v.VmIndex = config.GetAvailableVmIndex()
 	// Allocate Vm Index
 	config.AllocateVmIndex(uint(v.VmIndex))
+	// Get Micro Cloud Server Idx
+	v.McServerIdx = int(GetMcServer().Idx)
 	// Insert to Cache List
 	GlobalVmCache = append(GlobalVmCache, *v)
 	/********************

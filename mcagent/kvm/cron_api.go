@@ -308,8 +308,10 @@ func AddSnapshotCronSecond(min, domName string) {
 func GetTimeWord() string {
 	t := time.Now()
 	fmt.Println(t)
-	return fmt.Sprintf("%d%s%d-%d-%d-%d",
-		t.Year(), t.Month().String()[:3], t.Day(),
+	return fmt.Sprintf("%d-%s-%d-%d-%d-%d",
+		t.Year(),
+		t.Month().String()[:3],
+		t.Day(),
 		t.Hour(), t.Minute(), t.Second())
 }
 
@@ -326,6 +328,9 @@ func AddSnapshotCronByHoursMin(vmName, hour, min string) (id cron.EntryID, err e
 	id, err = CronSnap.Cr.AddFunc(cronTime, func() {
 		fmt.Printf("Snapshot: %s - %s\n", vmName, cronTime)
 		SafeSnapshot(vmName, GetTimeWord(), cronTime)
+		/*************************************
+		 * Send snapshot entry to svcmgr
+		 *************************************/
 	})
 	return id, err
 }
@@ -335,6 +340,9 @@ func AddSnapshotCronByMin(vmName, min string) (id cron.EntryID, err error){
 	id, err = CronSnap.Cr.AddFunc(cronTime, func() {
 		fmt.Printf("Snapshot: %s - %s\n", vmName, cronTime)
 		SafeSnapshot(vmName, GetTimeWord(), cronTime)
+		/*************************************
+		 * Send snapshot entry to svcmgr
+		 *************************************/
 	})
 	return id, err
 }
