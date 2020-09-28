@@ -198,4 +198,5 @@ type MariaDBLayer interface {
 	// Micro-Dashboard
 	GetServerTotalCount() (int, int, error)
 	GetVmTotalCount() (int, int, error)
+	GetMcVmsCount(cpName string) (int, int, int, error)
 }

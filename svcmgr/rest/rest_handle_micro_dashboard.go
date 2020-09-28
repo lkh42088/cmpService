@@ -15,6 +15,7 @@ import (
 type DeviceCount struct {
 	Total			int		`json:"total"`
 	Operate			int		`json:"operate"`
+	Vm				int		`json:"vm"`
 }
 
 const TOP_USAGE_COUNT = 5
@@ -43,6 +44,19 @@ func (h *Handler) GetVmTotalCount(c *gin.Context) {
 	count, operCount, err := h.db.GetVmTotalCount()
 	deviceCount.Total = count
 	deviceCount.Operate = operCount
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
+	c.JSON(http.StatusOK, deviceCount)
+}
+
+func (h *Handler) GetVmTotalCountByCpName(c *gin.Context) {
+	cpName := c.Param("cpName")
+	var deviceCount DeviceCount
+	count, operCount, vm, err := h.db.GetMcVmsCount(cpName)
+	deviceCount.Total = count
+	deviceCount.Operate = operCount
+	deviceCount.Vm = vm
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
