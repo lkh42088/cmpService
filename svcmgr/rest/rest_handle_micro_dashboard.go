@@ -79,6 +79,22 @@ func (h *Handler) GetVmTotalCountByCpName(c *gin.Context) {
 	c.JSON(http.StatusOK, deviceCount)
 }
 
+//func (h *Handler) GetSysPlatform (c *gin.Context) {
+//	platform, err := h.db.GetSysPlatform()
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+//	}
+//	c.JSON(http.StatusOK, platform)
+//}
+//
+//func (h *Handler) GetVmOsInfo (c *gin.Context) {
+//	osInfo, err := h.db.GetVmOsInfo()
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+//	}
+//	c.JSON(http.StatusOK, osInfo)
+//}
+
 // FOR INFLUX-DB
 func GetServerRank(c *gin.Context) {
 	var result DeviceRank
