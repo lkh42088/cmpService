@@ -18,6 +18,22 @@ type DeviceCount struct {
 	Vm				int		`json:"vm"`
 }
 
+type DevicePlatform struct {
+	Count 			int		`json:"count"`
+	Platform		string	`json:"platform"`
+}
+
+type DeviceOsInfo struct {
+	Count 			int 	`json:"count"`
+	OS 				string	`json:"os"`
+}
+
+type DeviceInfoForAdmin struct {
+	count		DeviceCount			`json:"count"`
+	baremetal 	[]DevicePlatform	`json:"baremetal"`
+	vm 			[]DeviceOsInfo		`json:"vm"`
+}
+
 const TOP_USAGE_COUNT = 5
 
 type DeviceRank struct {
