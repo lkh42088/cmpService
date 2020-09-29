@@ -17,7 +17,7 @@ func GetVmInterfaceTrafficByMac(c *gin.Context) {
 	mac := c.Param("mac")
 	dbname := "interface"
 	field := `"time","hostname","ifDescr","ifPhysAddress","ifInOctets","ifOutOctets"`
-	where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "1h")
+	where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "30m")
 	res := conf.GetMeasurementsWithCondition(dbname, field, where)
     fmt.Println(res.Err)
 

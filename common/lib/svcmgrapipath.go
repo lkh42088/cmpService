@@ -54,8 +54,8 @@ const (
 	SvcmgrApiMicroVmInfo            = SvcmgrApiMicroVmMonitor + "/info"
 	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
 	// /v1/micro/dashboard
-	SvcmgrApiMicroDashboard   = SvcmgrApiMicro + "/dashboard"
-	SvcmgrApiMicroServerCount = SvcmgrApiMicroDashboard + "/servercnt"
-	SvcmgrApiMicroVmCount     = SvcmgrApiMicroDashboard + "/vmcnt"
-	SvcmgrApiMicroServerRank  = SvcmgrApiMicroDashboard + "/rank"
+	SvcmgrApiMicroDashboard  = SvcmgrApiMicro + "/dashboard"
+	SvcmgrApiMicroTotalCount = SvcmgrApiMicroDashboard + "/total-cnt"
+	SvcmgrApiMicroVmCount    = SvcmgrApiMicroDashboard + "/vmcnt"
+	SvcmgrApiMicroServerRank = SvcmgrApiMicroDashboard + "/rank"
 )
