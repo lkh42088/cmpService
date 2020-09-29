@@ -9,66 +9,36 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 )
 
-type DeviceCount struct {
-	Total			int		`json:"total"`
-	Operate			int		`json:"operate"`
-	Vm				int		`json:"vm"`
-}
-
-type DevicePlatform struct {
-	Count 			int		`json:"count"`
-	Platform		string	`json:"platform"`
-}
-
-type DeviceOsInfo struct {
-	Count 			int 	`json:"count"`
-	OS 				string	`json:"os"`
-}
-
-type DeviceInfoForAdmin struct {
-	count		DeviceCount			`json:"count"`
-	baremetal 	[]DevicePlatform	`json:"baremetal"`
-	vm 			[]DeviceOsInfo		`json:"vm"`
-}
-
-const TOP_USAGE_COUNT = 5
-
-type DeviceRank struct {
-	Cpu 		[]mcmodel.CpuStatForRank	`json:"cpu"`
-	Mem 		[]mcmodel.MemStatForRank	`json:"mem"`
-	Disk 		[]mcmodel.DiskStatForRank	`json:"disk"`
-	Traffic		[]mcmodel.VmIfStatForRank	`json:"traffic"`
-}
-
 // FOR MARIA-DB
-func (h *Handler) GetServerTotalCount(c *gin.Context) {
-	var deviceCount	DeviceCount
+func (h *Handler) GetServerTotalCount() (mcmodel.DeviceCount, error) {
+	var deviceCount	mcmodel.DeviceCount
 	count, operCount, err := h.db.GetServerTotalCount()
 	deviceCount.Total = count
 	deviceCount.Operate = operCount
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return deviceCount, err
 	}
-	c.JSON(http.StatusOK, deviceCount)
+	return deviceCount, nil
 }
 
-func (h *Handler) GetVmTotalCount(c *gin.Context) {
-	var deviceCount DeviceCount
+func (h *Handler) GetVmTotalCount() (mcmodel.DeviceCount, error) {
+	var deviceCount mcmodel.DeviceCount
 	count, operCount, err := h.db.GetVmTotalCount()
 	deviceCount.Total = count
 	deviceCount.Operate = operCount
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return deviceCount, err
 	}
-	c.JSON(http.StatusOK, deviceCount)
+	return deviceCount, nil
 }
 
 func (h *Handler) GetVmTotalCountByCpName(c *gin.Context) {
 	cpName := c.Param("cpName")
-	var deviceCount DeviceCount
+	var deviceCount mcmodel.DeviceCount
 	count, operCount, vm, err := h.db.GetMcVmsCount(cpName)
 	deviceCount.Total = count
 	deviceCount.Operate = operCount
@@ -79,25 +49,67 @@ func (h *Handler) GetVmTotalCountByCpName(c *gin.Context) {
 	c.JSON(http.StatusOK, deviceCount)
 }
 
-//func (h *Handler) GetSysPlatform (c *gin.Context) {
-//	platform, err := h.db.GetSysPlatform()
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-//	}
-//	c.JSON(http.StatusOK, platform)
-//}
-//
-//func (h *Handler) GetVmOsInfo (c *gin.Context) {
-//	osInfo, err := h.db.GetVmOsInfo()
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-//	}
-//	c.JSON(http.StatusOK, osInfo)
-//}
+func (h *Handler) GetSysPlatform() ([]mcmodel.DevicePlatform, error) {
+	platform, err := h.db.GetSysPlatform()
+	if err != nil {
+		return platform, err
+	}
+	for i, v := range platform {
+		if len(v.ModelName) > 15 {
+			str := strings.Split(v.ModelName, " ")
+			platform[i].ModelName = str[0] + " " + str[2]
+		}
+	}
+
+	return platform, nil
+}
+
+func (h *Handler) GetVmOsInfo () ([]mcmodel.DeviceOsInfo, error) {
+	osInfo, err := h.db.GetVmOsInfo()
+	if err != nil {
+		return osInfo, err
+	}
+	return osInfo, nil
+}
+
+func (h *Handler) GetTotalCount(c *gin.Context) {
+	if h.db == nil {
+		return
+	}
+	result := mcmodel.DeviceInfoForAdmin{}
+
+	serverCount, err := h.GetServerTotalCount()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+	vmCount, err := h.GetVmTotalCount()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+	platform, err := h.GetSysPlatform()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+	osInfo, err := h.GetVmOsInfo()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+
+	result.Count = append(result.Count, serverCount)
+	result.Count = append(result.Count, vmCount)
+	for _, v := range platform {
+		result.Platform = append(result.Platform, v)
+	}
+	for _, v := range osInfo {
+		result.OsInfo = append(result.OsInfo, v)
+	}
+
+	c.JSON(http.StatusOK, result)
+}
 
 // FOR INFLUX-DB
 func GetServerRank(c *gin.Context) {
-	var result DeviceRank
+	var result mcmodel.DeviceRank
 
 	// GET SERVER CPU
 	dbname := "cpu"
@@ -177,7 +189,7 @@ func MakeAvgCpuData(res client.Response) []mcmodel.CpuStatForRank {
 		sort.Slice(rank, func(i, j int) bool {
 			return rank[i].Avg > rank[j].Avg
 		})
-		if len(rank) >= TOP_USAGE_COUNT {
+		if len(rank) >= mcmodel.TOP_USAGE_COUNT {
 			rank = rank[:5]
 		}
 	}
@@ -227,7 +239,7 @@ func MakeAvgMemData(res client.Response) []mcmodel.MemStatForRank {
 		sort.Slice(rank, func(i, j int) bool {
 			return rank[i].Avg > rank[j].Avg
 		})
-		if len(rank) >= TOP_USAGE_COUNT {
+		if len(rank) >= mcmodel.TOP_USAGE_COUNT {
 			rank = rank[:5]
 		}
 	}
@@ -278,7 +290,7 @@ func MakeAvgDiskData(res client.Response) []mcmodel.DiskStatForRank {
 		sort.Slice(rank, func(i, j int) bool {
 			return rank[i].Avg > rank[j].Avg
 		})
-		if len(rank) >= TOP_USAGE_COUNT {
+		if len(rank) >= mcmodel.TOP_USAGE_COUNT {
 			rank = rank[:5]
 		}
 	}
@@ -337,7 +349,7 @@ func MakeAvgRxTxData(res client.Response) []mcmodel.VmIfStatForRank {
 			return rank[i].Avg > rank[j].Avg
 		})
 
-		if len(rank) >= TOP_USAGE_COUNT {
+		if len(rank) >= mcmodel.TOP_USAGE_COUNT {
 			rank = rank[:5]
 		}
 	}
