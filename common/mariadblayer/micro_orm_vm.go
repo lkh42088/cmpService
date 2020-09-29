@@ -40,7 +40,12 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmo
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
-	paging.TotalCount = len(vms.Vms)
+	db.Table("mc_vm_tb").
+		Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
+		Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
+		Offset(paging.Offset).
+		Where(query).Count(&paging.TotalCount)
 	vms.Page = paging
 
 	return vms, err

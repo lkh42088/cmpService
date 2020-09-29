@@ -281,6 +281,7 @@ func (h *Handler) GetMcVmVnc(c *gin.Context) {
 
 }
 
+
 func (h *Handler) GetMcVms(c *gin.Context) {
 	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
 	if err != nil {
@@ -643,6 +644,50 @@ func (h *Handler) AddMcAgentVmSnapshot(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
+func (h *Handler) GetMcVmSnapshot(c *gin.Context) {
+	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	offset, err := strconv.Atoi(c.Param("offset"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	cpName := c.Param("cpName")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
+	}
+	fmt.Println("1. page:")
+	page.String()
+	vms, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotPage(page, cpName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, vms)
+}
 func (h *Handler) AddVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.Bind(&msg)

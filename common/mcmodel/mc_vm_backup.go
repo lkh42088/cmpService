@@ -4,7 +4,24 @@ import (
 	"cmpService/common/models"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
+
+var McVmSnapOrmMap = map[string]string{
+	"snap_idx": "idx",
+	"snap_server_idx": "serverIdx",
+	"snap_cp_idx": "cpIdx",
+	"snap_vm_name": "vmName",
+	"snap_name": "name",
+}
+
+var McVmSnapJsonMap = map[string]string{
+	"idx": "snap_idx",
+	"serverIdx": "snap_server_idx",
+	"cpIdx": "snap_cp_idx",
+	"vmName": "snap_vm_name",
+	"name": "snap_name",
+}
 
 type McVmSnapshot struct {
 	Idx         uint   `gorm:"primary_key;column:snap_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
@@ -49,7 +66,19 @@ type McVmSnapDetail struct {
 
 type McVmSnapPage struct {
 	Page models.Pagination `json:"page"`
-	Vms  []McVmSnapDetail  `json:"data"`
+	Data []McVmSnapDetail  `json:"data"`
+}
+
+func (o McVmSnapPage) GetOrderBy(orderby, order string) string {
+	val, exists := McVmSnapJsonMap[orderby]
+	if !exists {
+		val = "snap_idx"
+	}
+	order = strings.ToLower(order)
+	if !(order == "asc" || order == "desc") {
+		order = "desc"
+	}
+	return val + " " + order
 }
 
 type McVmBackup struct {

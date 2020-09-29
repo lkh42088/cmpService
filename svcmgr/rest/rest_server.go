@@ -280,6 +280,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroSystemInfo, h.CheckNStoreSystemInfo)
 
 	// Snapshot
+	router.GET(lib.SvcmgrApiMicroVmSnapshotPaging+pagingParam+"/:cpName", h.GetMcVmSnapshot)
 	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
 	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
