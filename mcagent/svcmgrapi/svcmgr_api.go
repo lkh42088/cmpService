@@ -13,7 +13,7 @@ import (
 func SendMcVmSnapshot2Svcmgr(obj mcmodel.McVmSnapshot, addr string) bool {
 	pbytes, _ := json.Marshal(obj)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroMcAgentVmAddSnapshot)
+	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroMcAgentNotifySnapshot)
 	fmt.Println("Notify: ", url)
 	obj.Dump()
 	response, err := http.Post(url, "application/json", buff)

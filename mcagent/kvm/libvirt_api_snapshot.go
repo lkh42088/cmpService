@@ -74,11 +74,24 @@ func SafeSnapshot(name, snapName, desc string) (entry *mcmodel.McVmSnapshot, sna
 	* Make Snapshot entry
 	*****************/
 	entry = GetSnapEntry(name, snapName, desc)
+	entry.Command = "add"
 	entry.Dump()
 	cfg := config.GetMcGlobalConfig()
 	svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+	/*****************************
+	 * Notify to svcmgr
+	 *****************************/
 	svcmgrapi.SendMcVmSnapshot2Svcmgr(*entry, svcmgrRestAddr)
 	return entry, snap, err
+}
+
+func GetSimplySnapEntry(vmName, snapName string) (*mcmodel.McVmSnapshot) {
+	var snap mcmodel.McVmSnapshot
+	snap.VmName = vmName
+	snap.Name = snapName
+	snap.ServerSn = repo.GetMcServer().SerialNumber
+	snap.CompanyIdx = repo.GetMcServer().CompanyIdx
+	return &snap
 }
 
 func GetSnapEntry(vmName, snapName, desc string) (*mcmodel.McVmSnapshot) {
@@ -153,8 +166,8 @@ func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
 	return snaps, err
 }
 
-func DeleteAllSnapshot(name string) (snaps []libvirt.DomainSnapshot, err error) {
-	dom, err := GetDomainByName(name)
+func DeleteAllSnapshot(vmName string) (snaps []libvirt.DomainSnapshot, err error) {
+	dom, err := GetDomainByName(vmName)
 	if err != nil {
 		return nil, err
 	}
@@ -166,6 +179,15 @@ func DeleteAllSnapshot(name string) (snaps []libvirt.DomainSnapshot, err error) 
 		err = snap.Delete(0)
 		if err != nil {
 			fmt.Println(" error:", err)
+		} else {
+			/*****************************
+			 * Notify to svcmgr
+			 *****************************/
+			cfg := config.GetMcGlobalConfig()
+			svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+			entry := GetSimplySnapEntry(vmName, name)
+			entry.Command = "delete"
+			svcmgrapi.SendMcVmSnapshot2Svcmgr(*entry, svcmgrRestAddr)
 		}
 	}
 	return snaps, err

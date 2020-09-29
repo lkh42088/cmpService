@@ -40,7 +40,7 @@ const (
 	SvcmgrApiMicroVmStatus         = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph          = SvcmgrApiMicro + "/vms-graph"
 	// snapshot from mcagent
-	SvcmgrApiMicroMcAgentVmAddSnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/add"
+	SvcmgrApiMicroMcAgentNotifySnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/notify"
 	// /v1/micro/images
 	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
 	SvcmgrApiMicroImagePaging = SvcmgrApiMicro + "/images-paging"

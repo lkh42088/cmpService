@@ -38,6 +38,7 @@ type McVmSnapshot struct {
 	Second      int    `gorm:"type:int(11);column:snap_second;comment:'second'" json:"second"`
 	Current     bool   `gorm:"type:tinyint(1);column:snap_current;comment:'current vm'" json:"current"`
 	ServerSn    string `gorm:"-" json:"serverSn"`
+	Command     string `gorm:"-" json:"command"`
 }
 
 func (McVmSnapshot) TableName() string {

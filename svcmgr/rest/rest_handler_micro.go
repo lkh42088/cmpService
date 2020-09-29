@@ -631,16 +631,25 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, vms)
 }
 
-func (h *Handler) AddMcAgentVmSnapshot(c *gin.Context) {
+func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot
 	c.Bind(&msg)
-	fmt.Println("AddMcAgentVmSnapshot:", msg)
+	fmt.Println("NotifyMcAgentVmSnapshot:", msg)
 	server, err := h.db.GetMcServerBySerialNumber(msg.ServerSn)
 	if err != nil {
 		return
 	}
 	msg.McServerIdx = int(server.Idx)
-	config.SvcmgrGlobalConfig.Mariadb.AddMcVmSnapshot(msg)
+	if msg.Command == "add" {
+		// Add Snapshot
+		config.SvcmgrGlobalConfig.Mariadb.AddMcVmSnapshot(msg)
+	} else {
+		// Delete Snapshot
+		snap, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotByName(msg.Name)
+		if err != nil {
+			config.SvcmgrGlobalConfig.Mariadb.DeleteMcVmSnapshot(snap)
+		}
+	}
 	c.JSON(http.StatusOK, msg)
 }
 

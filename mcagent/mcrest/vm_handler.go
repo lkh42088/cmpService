@@ -84,13 +84,19 @@ func deleteVmHandler(c *gin.Context) {
 	// 1. Delete Dnat Rule
 	kvm.DeleteDnatRulByVm(vm)
 
-	// 2. Delete Vm snapshot
+	// 2. Delete Cron Rule
+	inVm := repo.GetVmFromRepoByName(vm.Name)
+	if inVm != nil && inVm.SnapType == true {
+		kvm.CronSnap.DeleteVm(inVm.Name)
+	}
+
+	// 3. Delete Vm snapshot
 	kvm.DeleteAllSnapshot(vm.Name)
 
-	// 3. Delete Vm instance
+	// 4. Delete Vm instance
 	kvm.DeleteVm(*vm)
 
-	// 4. Delete Vm image
+	// 5. Delete Vm image
 	kvm.DeleteVmInstance(*vm)
 
 	repo.DeleteVmFromRepo(*vm)

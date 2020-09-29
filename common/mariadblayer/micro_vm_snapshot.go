@@ -24,6 +24,11 @@ func (db *DBORM) GetMcVmSnapshotByCpIdx(idx int) (obj []mcmodel.McVmSnapshot, er
 		Where(mcmodel.McVmSnapshot{CompanyIdx: idx}).Find(&obj).Error
 }
 
+func (db *DBORM) GetMcVmSnapshotByName(name string) (obj mcmodel.McVmSnapshot, err error) {
+	return obj, db.Table("mc_vm_snapshot_tb").
+		Where(mcmodel.McVmSnapshot{Name: name}).Find(&obj).Error
+}
+
 func (db *DBORM) GetMcVmSnapshotPage(paging models.Pagination, cpName string) (obj mcmodel.McVmSnapPage, err error) {
 	var query string
 	if cpName == "all" {
