@@ -39,6 +39,8 @@ const (
 	SvcmgrApiMicroVmDeleteSnapshot = SvcmgrApiMicroVm + "/snapshot/delete"
 	SvcmgrApiMicroVmStatus         = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph          = SvcmgrApiMicro + "/vms-graph"
+	// snapshot from mcagent
+	SvcmgrApiMicroMcAgentVmAddSnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/add"
 	// /v1/micro/images
 	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
 	SvcmgrApiMicroImagePaging = SvcmgrApiMicro + "/images-paging"

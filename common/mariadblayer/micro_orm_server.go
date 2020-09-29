@@ -75,8 +75,32 @@ func (db *DBORM) GetMcServersByCpIdx(cpIdx int) (servers []mcmodel.McServerDetai
 	return servers, err
 }
 
+func (db *DBORM) GetMcServer() (servers []mcmodel.McServer, err error) {
+	return servers, db.Table("mc_server_tb").
+		Select("mc_server_tb.*").
+		Find(&servers).Error
+}
+
 func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Create(&obj).Error
+}
+
+func (db *DBORM) UpdateMcServerAll(obj mcmodel.McServer) (mcmodel.McServer, error) {
+	// Update Serial Number !!!
+	return obj, db.
+		Model(&obj).
+		Where(mcmodel.McServer{Idx: obj.Idx}).
+		Update(map[string]interface{}{
+			"mc_cp_idx":         obj.CompanyIdx,
+			"mc_serial_number":  obj.SerialNumber,
+			"mc_type":           obj.Type,
+			"mc_status":         obj.Status,
+			"mc_port":           obj.Port,
+			"mc_mac":            obj.Mac,
+			"mc_vm_count":       obj.VmCount,
+			"mc_ip_addr":        obj.IpAddr,
+			"mc_public_ip_addr": obj.PublicIpAddr,
+		}).Error
 }
 
 func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
@@ -128,7 +152,7 @@ func (db *DBORM) UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) 
 			"if_mac":           obj.IfMac,
 			"mem_total":        obj.MemTotal,
 			"disk_total":       obj.DiskTotal,
-			"update_time":		obj.UpdateTime,
+			"update_time":      obj.UpdateTime,
 		}).Error
 }
 

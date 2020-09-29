@@ -73,6 +73,11 @@ func registerServerHandler(c *gin.Context) {
 	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx, true)
 	config.SetSerialNumber2GlobalConfig(msg.SerialNumber)
 
+	/*********************
+	 * Add Repo
+	 *********************/
+	repo.AddServer2Repo(&msg)
+
 	//server, _ := GetMcServer()
 	server := kvm.GetMcServerInfo()
 	c.JSON(http.StatusOK, server)
@@ -87,6 +92,12 @@ func unRegisterServerHandler(c *gin.Context) {
 	}
 	fmt.Printf("unRegisterServerHandler: %v\n", msg)
 	config.DeleteServerStatus()
+
+	/*********************
+	 * Delete Repo
+	 *********************/
+	repo.DeleteServer2Repo()
+
 	c.JSON(http.StatusOK, msg)
 }
 

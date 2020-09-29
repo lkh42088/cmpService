@@ -98,6 +98,8 @@ type HandlerInterface interface {
 	DeleteVmSnapshot(c *gin.Context)
 	UpdateVmSnapshot(c *gin.Context)
 
+	AddMcAgentVmSnapshot(c *gin.Context)
+
 	GetMcVms(c *gin.Context)
 	AddMcVm(c *gin.Context)
 	DeleteMcVm(c *gin.Context)
@@ -277,13 +279,17 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	router.POST(lib.SvcmgrApiMicroSystemInfo, h.CheckNStoreSystemInfo)
 
-	// Micro Cloud CPU
-/*	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
+	// Snapshot
+	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
 	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
-	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)*/
+	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 
+	// Snapshot from mcagent
+	router.POST(lib.SvcmgrApiMicroMcAgentVmAddSnapshot, h.AddMcAgentVmSnapshot)
+
+	// Micro Cloud CPU
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu/:mac", GetVmInterfaceCpu)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/mem/:mac", GetVmInterfaceMem)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/disk/:mac", GetVmInterfaceDisk)

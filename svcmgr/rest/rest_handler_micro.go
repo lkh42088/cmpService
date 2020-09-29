@@ -630,6 +630,19 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, vms)
 }
 
+func (h *Handler) AddMcAgentVmSnapshot(c *gin.Context) {
+	var msg mcmodel.McVmSnapshot
+	c.Bind(&msg)
+	fmt.Println("AddMcAgentVmSnapshot:", msg)
+	server, err := h.db.GetMcServerBySerialNumber(msg.ServerSn)
+	if err != nil {
+		return
+	}
+	msg.McServerIdx = int(server.Idx)
+	config.SvcmgrGlobalConfig.Mariadb.AddMcVmSnapshot(msg)
+	c.JSON(http.StatusOK, msg)
+}
+
 func (h *Handler) AddVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.Bind(&msg)
