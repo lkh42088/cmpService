@@ -634,7 +634,8 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot
 	c.Bind(&msg)
-	fmt.Println("NotifyMcAgentVmSnapshot:", msg)
+	fmt.Println("NotifyMcAgentVmSnapshot:")
+	msg.Dump()
 	server, err := h.db.GetMcServerBySerialNumber(msg.ServerSn)
 	if err != nil {
 		return
@@ -646,7 +647,9 @@ func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	} else {
 		// Delete Snapshot
 		snap, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotByName(msg.Name)
-		if err != nil {
+		if err == nil {
+			fmt.Println("snap: delete...")
+			snap.Dump()
 			config.SvcmgrGlobalConfig.Mariadb.DeleteMcVmSnapshot(snap)
 		}
 	}
@@ -697,6 +700,7 @@ func (h *Handler) GetMcVmSnapshot(c *gin.Context) {
 
 	c.JSON(http.StatusOK, vms)
 }
+
 func (h *Handler) AddVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.Bind(&msg)
@@ -717,6 +721,35 @@ func (h *Handler) DeleteVmSnapshot(c *gin.Context) {
 		return
 	}
 	mcapi.SendDeleteVmSnapshot(msg, server)
+}
+
+func (h *Handler) DeleteVmSnapshotEntryList(c *gin.Context) {
+	var msg messages.DeleteDataMessage
+	c.Bind(&msg)
+	fmt.Println("DeleteVmSnapshot:", msg)
+	var sendMsg messages.SnapshotEntryMsg
+	var entryList []messages.SnapshotEntry
+	var serverIdx int
+	for _, idx := range msg.IdxList {
+		var entry messages.SnapshotEntry
+		snap, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotByIdx(uint(idx))
+		if err == nil {
+			entry.VmName = snap.VmName
+			entry.SnapName = snap.Name
+			entryList = append(entryList, entry)
+		}
+		if serverIdx == 0 {
+			serverIdx = snap.McServerIdx
+		}
+	}
+	sendMsg.Entry = &entryList
+	if serverIdx != 0 {
+		server, err := h.db.GetMcServerByServerIdx(uint(serverIdx))
+		if err != nil {
+			return
+		}
+		mcapi.SendDeleteVmSnapshotList(sendMsg, server)
+	}
 }
 
 func (h *Handler) UpdateVmSnapshot(c *gin.Context) {

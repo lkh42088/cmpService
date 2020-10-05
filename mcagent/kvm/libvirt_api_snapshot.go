@@ -176,21 +176,26 @@ func DeleteAllSnapshot(vmName string) (snaps []libvirt.DomainSnapshot, err error
 	for index, snap := range snaps {
 		name, _ := snap.GetName()
 		fmt.Println("index ", index, " name:", name)
-		err = snap.Delete(0)
-		if err != nil {
-			fmt.Println(" error:", err)
-		} else {
-			/*****************************
-			 * Notify to svcmgr
-			 *****************************/
-			cfg := config.GetMcGlobalConfig()
-			svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
-			entry := GetSimplySnapEntry(vmName, name)
-			entry.Command = "delete"
-			svcmgrapi.SendMcVmSnapshot2Svcmgr(*entry, svcmgrRestAddr)
-		}
+		DeleteSnap(vmName, &snap)
 	}
 	return snaps, err
+}
+
+func DeleteSnap(vmName string, snap *libvirt.DomainSnapshot) {
+	err := snap.Delete(0)
+	if err != nil {
+		fmt.Println(" error:", err)
+	} else {
+		/*****************************
+		 * Notify to svcmgr
+		 *****************************/
+		cfg := config.GetMcGlobalConfig()
+		svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+		snapName, _ := snap.GetName()
+		entry := GetSimplySnapEntry(vmName, snapName)
+		entry.Command = "delete"
+		svcmgrapi.SendMcVmSnapshot2Svcmgr(*entry, svcmgrRestAddr)
+	}
 }
 
 func ApplySnapshot(domName, snapName string) error {

@@ -43,7 +43,8 @@ func Start(parentwg *sync.WaitGroup) {
 	// Snapshot
 	rg.GET(lib.McUrlGetVmSnapshot, getVmSnapshot)
 	rg.GET(lib.McUrlAddVmSnapshot, addVmSnapshot)
-	rg.GET(lib.McUrlDeleteVmSnapshot, deleteVmSnapshot)
+	rg.POST(lib.McUrlDeleteVmSnapshot, deleteVmSnapshot)
+	rg.POST(lib.McUrlDeleteVmSnapshotList, deleteVmSnapshotEntryList)
 	rg.GET(lib.McUrlUpdateVmSnapshot, updateVmSnapshot)
 
 	// Network
