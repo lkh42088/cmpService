@@ -642,6 +642,14 @@ func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	}
 	msg.McServerIdx = int(server.Idx)
 	if msg.Command == "add" {
+		// Change Current Snapshot
+		snapList, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotCurrentByVmName(msg.VmName)
+		if err == err {
+			for _, obj := range snapList {
+				obj.Current = false
+				config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmSnapshotCurrent(obj)
+			}
+		}
 		// Add Snapshot
 		config.SvcmgrGlobalConfig.Mariadb.AddMcVmSnapshot(msg)
 	} else {

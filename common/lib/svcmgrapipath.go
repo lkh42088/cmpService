@@ -16,15 +16,14 @@ const (
 // About Micro Cloud
 const (
 	// /v1/micro/servers
-	SvcmgrApiMicroServer              = SvcmgrApiMicro + "/servers"
-	SvcmgrApiMicroServerPaging        = SvcmgrApiMicro + "/servers-paging"
-	SvcmgrApiMicroServerRegister      = SvcmgrApiMicroServer + "/register"
-	SvcmgrApiMicroServerUnRegister    = SvcmgrApiMicroServer + "/unregister"
-	SvcmgrApiMicroServerSearchCompany = SvcmgrApiMicroServer + "/search-company"
-	SvcmgrApiMicroServerResource      = SvcmgrApiMicroServer + "/resource"
-	SvcmgrApiMicroSystemInfo          = SvcmgrApiMicro + "/sysinfo"
-	// /v1/micro/vms
-	SvcmgrApiMicroVm                        = SvcmgrApiMicro + "/vms"
+	SvcmgrApiMicroServer                    = SvcmgrApiMicro + "/servers"
+	SvcmgrApiMicroServerPaging              = SvcmgrApiMicro + "/servers-paging"
+	SvcmgrApiMicroServerRegister            = SvcmgrApiMicroServer + "/register"
+	SvcmgrApiMicroServerUnRegister          = SvcmgrApiMicroServer + "/unregister"
+	SvcmgrApiMicroServerSearchCompany       = SvcmgrApiMicroServer + "/search-company"
+	SvcmgrApiMicroServerResource            = SvcmgrApiMicroServer + "/resource"
+	SvcmgrApiMicroSystemInfo                = SvcmgrApiMicro + "/sysinfo"
+	SvcmgrApiMicroVm                        = SvcmgrApiMicro + "/vms" 					// /v1/micro/vms
 	SvcmgrApiMicroVmRegister                = SvcmgrApiMicroVm + "/register"
 	SvcmgrApiMicroVmUnRegister              = SvcmgrApiMicroVm + "/unregister"
 	SvcmgrApiMicroVmUpdate                  = SvcmgrApiMicroVm + "/update"
@@ -40,23 +39,19 @@ const (
 	SvcmgrApiMicroVmDeleteSnapshotEntryList = SvcmgrApiMicroVm + "/snapshot/delete-entry-list"
 	SvcmgrApiMicroVmStatus                  = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph                   = SvcmgrApiMicro + "/vms-graph"
-	// snapshot from mcagent
-	SvcmgrApiMicroMcAgentNotifySnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/notify"
-	// /v1/micro/images
-	SvcmgrApiMicroImage       = SvcmgrApiMicro + "/images"
-	SvcmgrApiMicroImagePaging = SvcmgrApiMicro + "/images-paging"
-	// /v1/micro/networks
-	SvcmgrApiMicroNetwork           = SvcmgrApiMicro + "/networks"
-	SvcmgrApiMicroNetworkRegister   = SvcmgrApiMicroNetwork + "/register"
-	SvcmgrApiMicroNetworkUnRegister = SvcmgrApiMicroNetwork + "/unregister"
-	SvcmgrApiMicroNetworkPaging     = SvcmgrApiMicro + "/networks-paging"
-	SvcmgrApiMicroVmMonitor         = SvcmgrApiMicro + "/monitor"
-	SvcmgrApiMicroVmStats           = SvcmgrApiMicroVmMonitor + "/stats"
-	SvcmgrApiMicroVmInfo            = SvcmgrApiMicroVmMonitor + "/info"
-	SvcmgrApiMicroMonitorCPU        = SvcmgrApiMicro + "/monitor/cpu"
-	// /v1/micro/dashboard
-	SvcmgrApiMicroDashboard  = SvcmgrApiMicro + "/dashboard"
-	SvcmgrApiMicroTotalCount = SvcmgrApiMicroDashboard + "/total-cnt"
-	SvcmgrApiMicroVmCount    = SvcmgrApiMicroDashboard + "/vmcnt"
-	SvcmgrApiMicroServerRank = SvcmgrApiMicroDashboard + "/rank"
+	SvcmgrApiMicroMcAgentNotifySnapshot     = SvcmgrApiMicroVm + "/mcagent/snapshot/notify" // snapshot from mcagent
+	SvcmgrApiMicroImage                     = SvcmgrApiMicro + "/images"                    // /v1/micro/images
+	SvcmgrApiMicroImagePaging               = SvcmgrApiMicro + "/images-paging"
+	SvcmgrApiMicroNetwork                   = SvcmgrApiMicro + "/networks" 				// /v1/micro/networks
+	SvcmgrApiMicroNetworkRegister           = SvcmgrApiMicroNetwork + "/register"
+	SvcmgrApiMicroNetworkUnRegister         = SvcmgrApiMicroNetwork + "/unregister"
+	SvcmgrApiMicroNetworkPaging             = SvcmgrApiMicro + "/networks-paging"
+	SvcmgrApiMicroVmMonitor                 = SvcmgrApiMicro + "/monitor"
+	SvcmgrApiMicroVmStats                   = SvcmgrApiMicroVmMonitor + "/stats"
+	SvcmgrApiMicroVmInfo                    = SvcmgrApiMicroVmMonitor + "/info"
+	SvcmgrApiMicroMonitorCPU                = SvcmgrApiMicro + "/monitor/cpu"
+	SvcmgrApiMicroDashboard                 = SvcmgrApiMicro + "/dashboard" 			// /v1/micro/dashboard
+	SvcmgrApiMicroTotalCount                = SvcmgrApiMicroDashboard + "/total-cnt"
+	SvcmgrApiMicroVmCount                   = SvcmgrApiMicroDashboard + "/vmcnt"
+	SvcmgrApiMicroServerRank                = SvcmgrApiMicroDashboard + "/rank"
 )
