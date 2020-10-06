@@ -643,12 +643,11 @@ func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	msg.McServerIdx = int(server.Idx)
 	if msg.Command == "add" {
 		// Change Current Snapshot
-		snapList, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotCurrentByVmName(msg.VmName)
-		if err == err {
-			for _, obj := range snapList {
-				obj.Current = false
-				config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmSnapshotCurrent(obj)
-			}
+		snapList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotCurrentByVmName(msg.VmName)
+		for _, obj := range snapList {
+			fmt.Println("NotifyMcAgentVmSnapshot: update vm", obj.VmName, "snap", obj.Name, " false")
+			obj.Current = false
+			config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmSnapshotCurrent(obj)
 		}
 		// Add Snapshot
 		config.SvcmgrGlobalConfig.Mariadb.AddMcVmSnapshot(msg)
@@ -785,7 +784,7 @@ func (h *Handler) UpdateVmStatus(c *gin.Context) {
 func (h *Handler) RecoverySnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot
 	c.Bind(&msg)
-	fmt.Println("UpdateVmSnapshot:", msg)
+	fmt.Println("RecoverySnapshot:", msg)
 	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
 	if err != nil {
 		return
@@ -793,5 +792,21 @@ func (h *Handler) RecoverySnapshot(c *gin.Context) {
 	var sendMsg messages.SnapshotEntry
 	sendMsg.VmName = msg.VmName
 	sendMsg.SnapName = msg.Name
-	mcapi.SendRecoverySnapshot(sendMsg, server)
+	result := mcapi.SendRecoverySnapshot(sendMsg, server)
+	if result == true {
+		fmt.Println("RecoverySnapshot: update")
+		// Update current snapshot
+		snapList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotCurrentByVmName(msg.VmName)
+		for _, obj := range snapList {
+			obj.Current = false
+			config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmSnapshotCurrent(obj)
+		}
+		// Update
+		snap, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotByName(msg.Name)
+		if snap.Idx != 0 {
+			fmt.Println("RecoverySnapshot: update snap idx", snap.Idx, ", name", snap.Name)
+			snap.Current = true
+			config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmSnapshotCurrent(snap)
+		}
+	}
 }

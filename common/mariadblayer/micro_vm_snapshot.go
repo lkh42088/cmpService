@@ -25,7 +25,9 @@ func (db *DBORM) GetMcVmSnapshotByCpIdx(idx int) (obj []mcmodel.McVmSnapshot, er
 }
 
 func (db *DBORM) UpdateMcVmSnapshotCurrent(obj mcmodel.McVmSnapshot) (mcmodel.McVmSnapshot, error) {
-	return obj, db.Table("mc_vm_snapshot_tb").
+	return obj, db.Debug().
+		Table("mc_vm_snapshot_tb").
+		Where(mcmodel.McVmSnapshot{Idx: obj.Idx}).
 		Updates(map[string]interface{}{
 			"snap_current": obj.Current,
 	}).Error

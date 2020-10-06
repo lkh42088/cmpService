@@ -123,6 +123,15 @@ func applyVmActionHandler(c *gin.Context) {
 	case 3:
 		// restart
 		kvm.LibvirtResetVm(msg.VmName)
+	case 4:
+		// suspend
+		kvm.LibvirtSuspendVm(msg.VmName)
+	case 5:
+		// resume
+		kvm.LibvirtResumeVm(msg.VmName)
+	case 6:
+		// snapshot
+		kvm.SafeSnapshot(msg.VmName, kvm.GetTimeWord(), "By action command")
 	default:
 	}
 	c.JSON(http.StatusOK, msg)

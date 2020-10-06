@@ -62,7 +62,6 @@ func updateVmStatus(c *gin.Context) {
 func recoveryVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotEntry
 	c.ShouldBindJSON(&msg)
-	//
-	//kvm.UpdateVmSnapshotByConfig(&msg)
+	kvm.Revert2Snapshot(msg.VmName, msg.SnapName)
 	c.JSON(http.StatusOK, msg)
 }

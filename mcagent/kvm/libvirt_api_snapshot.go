@@ -198,12 +198,36 @@ func DeleteSnap(vmName string, snap *libvirt.DomainSnapshot) {
 	}
 }
 
-func ApplySnapshot(domName, snapName string) error {
+func Revert2Snapshot(domName, snapName string) error {
 	dom, err := GetDomainByName(domName)
+	fmt.Println("Revert2Snapshot: vm", domName, ", snapshot", snapName)
+	if err != nil {
+		fmt.Println("Revert2Snapshot: error 1", err)
+		return err
+	}
+	snap, err := dom.SnapshotLookupByName(snapName, 0)
+	if err != nil {
+		fmt.Println("Revert2Snapshot: error 2", err)
+		return err
+	}
+	err = snap.RevertToSnapshot(0)
+	if err != nil {
+		fmt.Println("Revert2Snapshot: error 3", err)
+		return err
+	}
+	fmt.Println("Revert2Snapshot: Success")
+	dom, err = GetDomainByName(domName)
 	if err != nil {
 		return nil
 	}
-	snap, err := dom.SnapshotLookupByName(snapName, 0)
-	err = snap.RevertToSnapshot(0)
-	return err
+	state, _, err := dom.GetState()
+	if err == nil {
+		switch state {
+		case libvirt.DOMAIN_PAUSED:
+			LibvirtResumeVm(domName)
+		case libvirt.DOMAIN_SHUTOFF:
+			LibvirtStartVm(domName)
+		}
+	}
+	return nil
 }
