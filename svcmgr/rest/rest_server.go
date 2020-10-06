@@ -306,6 +306,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmCount+"/:cpName", h.GetVmTotalCountByCpName)
 	router.GET(lib.SvcmgrApiMicroDashboard+"/system/:mac", h.GetSystemInfoByMac)
 	router.GET(lib.SvcmgrApiMicroServerRank, GetServerRank)
+	router.GET(lib.SvcmgrApiMicroSnapshotCount+"/:cpIdx", h.GetMcVmSnapshotByCpIdx)
 
 	return router.Run(address)
 }

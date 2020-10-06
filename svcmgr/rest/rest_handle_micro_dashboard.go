@@ -9,6 +9,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -354,5 +355,24 @@ func MakeAvgRxTxData(res client.Response) []mcmodel.VmIfStatForRank {
 		}
 	}
 	return rank
+}
+
+func (h *Handler) GetMcVmSnapshotByCpIdx(c *gin.Context) {
+	idx := c.Param("cpIdx")
+	var deviceCount mcmodel.DeviceCount
+	var mcVmSnapshot []mcmodel.McVmSnapshot
+	/* Snapshot */
+	num, _ := strconv.Atoi(idx)
+	mcVmSnapshot, err := h.db.GetMcVmSnapshotByCpIdx(num)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
+
+	deviceCount.Snapshot = len(mcVmSnapshot);
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+	}
+	c.JSON(http.StatusOK, deviceCount)
 }
 

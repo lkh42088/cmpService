@@ -4,6 +4,7 @@ type DeviceCount struct {
 	Total			int		`json:"total"`
 	Operate			int		`json:"operate"`
 	Vm				int		`json:"vm"`
+	Snapshot        int		`json:"snapshot"`
 }
 
 type DevicePlatform struct {

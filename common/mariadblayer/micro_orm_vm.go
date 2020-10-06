@@ -66,7 +66,6 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmo
 	return vms, err
 }
 
-
 func (db *DBORM) GetMcVmsCount(cpName string) (total int, operate int, vm int, err error) {
 	var query string
 	if cpName == "all" {

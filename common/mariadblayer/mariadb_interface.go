@@ -201,4 +201,5 @@ type MariaDBLayer interface {
 	GetMcVmsCount(cpName string) (int, int, int, error)
 	GetSysPlatform() ([]mcmodel.DevicePlatform, error)
 	GetVmOsInfo() ([]mcmodel.DeviceOsInfo, error)
+	GetMcVmSnapshotByCpIdx(idx int) ([]mcmodel.McVmSnapshot, error)
 }
