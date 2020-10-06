@@ -17,16 +17,16 @@ func SendMcVmAction(msg messages.McVmActionMsg, server mcmodel.McServerDetail) b
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlApplyVmAction)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendAddVm: error 1 ", err)
+		fmt.Println("SendMcVmAction: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendAddVm: error 2 ", err)
+		fmt.Println("SendMcVmAction: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendMcVmAction: success - ", string(data))
 	return true
 }
 
@@ -36,16 +36,16 @@ func SendAddVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServerDe
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlAddVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendAddVm: error 1 ", err)
+		fmt.Println("SendAddVmSnapshot: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendAddVm: error 2 ", err)
+		fmt.Println("SendAddVmSnapshot: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendAddVmSnapshot: success - ", string(data))
 	return true
 }
 
@@ -55,16 +55,16 @@ func SendDeleteVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServe
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendDeleteVm: error 1 ", err)
+		fmt.Println("SendDeleteVmSnapshot: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendDeleteVm: error 2 ", err)
+		fmt.Println("SendDeleteVmSnapshot: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendDeleteVmSnapshot: success - ", string(data))
 	return true
 }
 
@@ -74,16 +74,16 @@ func SendDeleteVmSnapshotList(msg messages.SnapshotEntryMsg, server mcmodel.McSe
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmSnapshotList)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendAddVm: error 1 ", err)
+		fmt.Println("SendDeleteVmSnapshotList: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendAddVm: error 2 ", err)
+		fmt.Println("SendDeleteVmSnapshotList: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendDeleteVmSnapshotList : success - ", string(data))
 	return true
 }
 
@@ -93,16 +93,16 @@ func SendUpdateVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServe
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendAddVm: error 1 ", err)
+		fmt.Println("SendUpdateVmSnapshot: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendAddVm: error 2 ", err)
+		fmt.Println("SendUpdateVmSnapshot: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendUpdateVmSnapshot: success - ", string(data))
 	return true
 }
 
@@ -112,16 +112,16 @@ func SendUpdateVmStatus(msg messages.VmStatusActionMsg, server mcmodel.McServerD
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendAddVm: error 1 ", err)
+		fmt.Println("SendUpdateVmStatus: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendAddVm: error 2 ", err)
+		fmt.Println("SendUpdateVmStatus: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendUpdateVmStatus: success - ", string(data))
 	return true
 }
 
@@ -131,15 +131,15 @@ func SendRecoverySnapshot(msg messages.SnapshotEntry, server mcmodel.McServerDet
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlRecoveryVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendAddVm: error 1 ", err)
+		fmt.Println("SendRecoverySnapshot: error 1 ", err)
 		return false
 	}
 	defer response.Body.Close()
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendAddVm: error 2 ", err)
+		fmt.Println("SendRecoverySnapshot: error 2 ", err)
 		return false
 	}
-	fmt.Println("response: ", string(data))
+	fmt.Println("SendRecoverySnapshot: success - ", string(data))
 	return true
 }

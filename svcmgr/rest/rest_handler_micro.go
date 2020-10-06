@@ -634,7 +634,7 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot
 	c.Bind(&msg)
-	fmt.Println("NotifyMcAgentVmSnapshot:")
+	fmt.Println("NotifyMcAgentVmSnapshot:", msg.Command)
 	msg.Dump()
 	server, err := h.db.GetMcServerBySerialNumber(msg.ServerSn)
 	if err != nil {
@@ -651,6 +651,8 @@ func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 		}
 		// Add Snapshot
 		config.SvcmgrGlobalConfig.Mariadb.AddMcVmSnapshot(msg)
+		// Check Snapshot count
+		CheckSnapshotCount(msg.VmName)
 	} else {
 		// Delete Snapshot
 		snap, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotByName(msg.Name)
@@ -661,6 +663,44 @@ func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, msg)
+}
+
+func CheckSnapshotCount(vmName string) {
+	snapList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotByVmName(vmName)
+	fmt.Printf("%s : %d\n", vmName, len(snapList))
+	deleteCount := len(snapList) - 10
+	if deleteCount > 0 {
+		var sendMsg messages.SnapshotEntryMsg
+		var entryList []messages.SnapshotEntry
+		var serverIdx int
+		// Delete the old entry of snapshot
+		for index, snap := range snapList {
+			if deleteCount < 0 {
+				break
+			}
+			if snap.Current == true {
+				continue
+			}
+			fmt.Printf(">>>>>> Delete entry - %2d: %4d, %s\n", index, snap.Idx, snap.Name)
+			deleteCount -= 1
+			// Delete Entry
+			var entry messages.SnapshotEntry
+			entry.VmName = snap.VmName
+			entry.SnapName = snap.Name
+			entryList = append(entryList, entry)
+			if serverIdx == 0 {
+				serverIdx = snap.McServerIdx
+			}
+		}
+		sendMsg.Entry = &entryList
+		if serverIdx != 0 {
+			server, err := config.SvcmgrGlobalConfig.Mariadb.GetMcServerByServerIdx(uint(serverIdx))
+			if err != nil {
+				return
+			}
+			mcapi.SendDeleteVmSnapshotList(sendMsg, server)
+		}
+	}
 }
 
 func (h *Handler) GetMcVmSnapshot(c *gin.Context) {
