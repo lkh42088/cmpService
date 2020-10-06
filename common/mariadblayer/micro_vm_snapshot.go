@@ -24,9 +24,26 @@ func (db *DBORM) GetMcVmSnapshotByCpIdx(idx int) (obj []mcmodel.McVmSnapshot, er
 		Where(mcmodel.McVmSnapshot{CompanyIdx: idx}).Find(&obj).Error
 }
 
+func (db *DBORM) UpdateMcVmSnapshotCurrent(obj mcmodel.McVmSnapshot) (mcmodel.McVmSnapshot, error) {
+	return obj, db.Table("mc_vm_snapshot_tb").
+		Updates(map[string]interface{}{
+			"snap_current": obj.Current,
+	}).Error
+}
+
+func (db *DBORM) GetMcVmSnapshotCurrentByVmName(vmName string) (obj []mcmodel.McVmSnapshot, err error) {
+	return obj, db.Table("mc_vm_snapshot_tb").
+		Where(mcmodel.McVmSnapshot{VmName: vmName, Current: true}).Find(&obj).Error
+}
+
 func (db *DBORM) GetMcVmSnapshotByName(name string) (obj mcmodel.McVmSnapshot, err error) {
 	return obj, db.Table("mc_vm_snapshot_tb").
 		Where(mcmodel.McVmSnapshot{Name: name}).Find(&obj).Error
+}
+
+func (db *DBORM) GetMcVmSnapshotByIdx(idx uint) (obj mcmodel.McVmSnapshot, err error) {
+	return obj, db.Table("mc_vm_snapshot_tb").
+		Where(mcmodel.McVmSnapshot{Idx: idx}).Find(&obj).Error
 }
 
 func (db *DBORM) GetMcVmSnapshotPage(paging models.Pagination, cpName string) (obj mcmodel.McVmSnapPage, err error) {
