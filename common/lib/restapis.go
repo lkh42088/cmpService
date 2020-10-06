@@ -18,6 +18,7 @@ const (
 	McUrlUpdateVmSnapshot     = McUrlGetVmSnapshot + "/update"
 	McUrlDeleteVmSnapshot     = McUrlGetVmSnapshot + "/delete"
 	McUrlDeleteVmSnapshotList = McUrlGetVmSnapshot + "/delete-entry-list"
+	McUrlRecoveryVmSnapshot     = McUrlGetVmSnapshot + "/recovery"
 	McUrlNetwork              = "/networks"
 	McUrlNetworkAdd           = McUrlNetwork + "/add"
 	McUrlNetworkDelete        = McUrlNetwork + "/delete"

@@ -37,6 +37,7 @@ const (
 	SvcmgrApiMicroVmUpdateSnapshot          = SvcmgrApiMicroVm + "/snapshot/update"
 	SvcmgrApiMicroVmDeleteSnapshot          = SvcmgrApiMicroVm + "/snapshot/delete"
 	SvcmgrApiMicroVmDeleteSnapshotEntryList = SvcmgrApiMicroVm + "/snapshot/delete-entry-list"
+	SvcmgrApiMicroVmRecoverySnapshot          = SvcmgrApiMicroVm + "/snapshot/recovery"
 	SvcmgrApiMicroVmStatus                  = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph                   = SvcmgrApiMicro + "/vms-graph"
 	SvcmgrApiMicroMcAgentNotifySnapshot     = SvcmgrApiMicroVm + "/mcagent/snapshot/notify" // snapshot from mcagent

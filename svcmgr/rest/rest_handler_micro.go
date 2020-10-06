@@ -781,3 +781,17 @@ func (h *Handler) UpdateVmStatus(c *gin.Context) {
 	}
 	mcapi.SendUpdateVmStatus(msg, server)
 }
+
+func (h *Handler) RecoverySnapshot(c *gin.Context) {
+	var msg mcmodel.McVmSnapshot
+	c.Bind(&msg)
+	fmt.Println("UpdateVmSnapshot:", msg)
+	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	if err != nil {
+		return
+	}
+	var sendMsg messages.SnapshotEntry
+	sendMsg.VmName = msg.VmName
+	sendMsg.SnapName = msg.Name
+	mcapi.SendRecoverySnapshot(sendMsg, server)
+}

@@ -286,7 +286,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
-	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshotEntryList, h.DeleteVmSnapshotEntryList)
+	router.POST(lib.SvcmgrApiMicroVmRecoverySnapshot, h.RecoverySnapshot)
 
 	// Snapshot from mcagent
 	router.POST(lib.SvcmgrApiMicroMcAgentNotifySnapshot, h.NotifyMcAgentVmSnapshot)
