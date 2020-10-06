@@ -27,16 +27,31 @@ func (db *DBORM) GetMcVmsPage(paging models.Pagination, cpName string) (vms mcmo
 	} else {
 		query = "c.cp_name = '" + cpName + "'"
 	}
-	err = db.Debug().
-		Table("mc_vm_tb").
-		Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
-		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
-		Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
-		Order(vms.GetOrderBy(paging.OrderBy, paging.Order)).
-		Limit(paging.RowsPerPage).
-		Offset(paging.Offset).
-		Where(query).
-		Find(&vms.Vms).Error
+
+	if paging.RowsPerPage != 0 {
+		err = db.Debug().
+			Table("mc_vm_tb").
+			Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
+			Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
+			Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
+			Order(vms.GetOrderBy(paging.OrderBy, paging.Order)).
+			Limit(paging.RowsPerPage).
+			Offset(paging.Offset).
+			Where(query).
+			Find(&vms.Vms).Error
+	} else {
+		err = db.Debug().
+			Table("mc_vm_tb").
+			Select("mc_vm_tb.*, c.cp_name, m.mc_serial_number").
+			Joins("INNER JOIN company_tb c ON c.cp_idx = mc_vm_tb.vm_cp_idx").
+			Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
+			Order(vms.GetOrderBy(paging.OrderBy, paging.Order)).
+			Limit(nil).
+			Offset(paging.Offset).
+			Where(query).
+			Find(&vms.Vms).Error
+	}
+
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
