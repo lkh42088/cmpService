@@ -167,6 +167,7 @@ func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
 }
 
 func DeleteAllSnapshot(vmName string) (snaps []libvirt.DomainSnapshot, err error) {
+	fmt.Println("DeleteAllSnap: vm ", vmName)
 	dom, err := GetDomainByName(vmName)
 	if err != nil {
 		return nil, err
@@ -182,6 +183,7 @@ func DeleteAllSnapshot(vmName string) (snaps []libvirt.DomainSnapshot, err error
 }
 
 func DeleteSnap(vmName string, snap *libvirt.DomainSnapshot) {
+	fmt.Println("^^^||||| DeleteSnap: vm ", vmName)
 	err := snap.Delete(0)
 	if err != nil {
 		fmt.Println(" error:", err)

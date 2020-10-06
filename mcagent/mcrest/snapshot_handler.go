@@ -3,6 +3,7 @@ package mcrest
 import (
 	"cmpService/common/messages"
 	"cmpService/mcagent/kvm"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -23,6 +24,7 @@ func addVmSnapshot(c *gin.Context) {
 func deleteVmSnapshotEntryList(c *gin.Context) {
 	var msg messages.SnapshotEntryMsg
 	c.ShouldBindJSON(&msg)
+	fmt.Println("^^^||||| deleteVmSnapshotEntryList")
 	for _, entry := range *msg.Entry {
 		dom, err := kvm.GetDomainByName(entry.VmName)
 		if err != nil {

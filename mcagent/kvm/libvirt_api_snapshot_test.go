@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var vmName = "vm10"
+var vmName = "vm01"
 
 func TestCreateSnapshot(t *testing.T) {
 	CreateSnapshot(vmName, "snap 02", "test snap 02")
@@ -22,6 +22,10 @@ func TestGetSnapshotListName(t *testing.T) {
 
 func TestDeleteAllSnapshot(t *testing.T) {
 	DeleteAllSnapshot(vmName)
+}
+
+func TestGetSnapshotList(t *testing.T) {
+
 }
 
 func TestTimeDate(a *testing.T) {
