@@ -33,6 +33,11 @@ func (db *DBORM) UpdateMcVmSnapshotCurrent(obj mcmodel.McVmSnapshot) (mcmodel.Mc
 	}).Error
 }
 
+func (db *DBORM) GetMcVmSnapshotByVmName(vmName string) (obj []mcmodel.McVmSnapshot, err error) {
+	return obj, db.Table("mc_vm_snapshot_tb").
+		Where(mcmodel.McVmSnapshot{VmName: vmName}).Find(&obj).Error
+}
+
 func (db *DBORM) GetMcVmSnapshotCurrentByVmName(vmName string) (obj []mcmodel.McVmSnapshot, err error) {
 	return obj, db.Table("mc_vm_snapshot_tb").
 		Where(mcmodel.McVmSnapshot{VmName: vmName, Current: true}).Find(&obj).Error

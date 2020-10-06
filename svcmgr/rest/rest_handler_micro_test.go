@@ -155,4 +155,9 @@ func TestDeleteMcVm(t*testing.T) {
 	SendSvcDeleteVm(rvm, svcmgrAddr)
 }
 
+var vmName = "vm01"
+
+func TestSnapCount(t*testing.T) {
+	CheckSnapshotClout(vmName)
+}
 
