@@ -91,6 +91,16 @@ func unRegisterServerHandler(c *gin.Context) {
 		return
 	}
 	fmt.Printf("unRegisterServerHandler: %v\n", msg)
+
+	/*********************
+	 * Check Vm
+	 *********************/
+	list, err := repo.GetAllVmFromDb()
+	if len(list) > 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "VMs exist!!"})
+		return
+	}
+
 	config.DeleteServerStatus()
 
 	/*********************

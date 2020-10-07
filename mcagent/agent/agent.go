@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
@@ -76,12 +77,36 @@ func Start (config string) {
 	wg.Wait()
 }
 
+func processSerialNumber() {
+	// 1. Get From DB
+	server := repo.GetMcServer()
+	if server != nil {
+		config2.SetSerialNumber2GlobalConfig(server.SerialNumber)
+		return
+	}
+
+	// 2. Get From ETC file
+	serverStatus := config2.GetServerStatus()
+	if serverStatus.SerialNumber != "" {
+		config2.SetSerialNumber2GlobalConfig(serverStatus.SerialNumber)
+		// Write DB
+		var msg mcmodel.McServerDetail
+		msg.SerialNumber = serverStatus.SerialNumber
+		msg.CompanyIdx = serverStatus.CompanyIdx
+		msg.CompanyName = serverStatus.CompanyName
+		repo.AddServer2Repo(&msg)
+		return
+	}
+
+	fmt.Println("processSerialNumber: it dose not Serial Number!")
+}
+
 func configure() bool {
 
+	cfg := config2.GetMcGlobalConfig()
 	/********************************
 	 * Configure Mariadb
 	 ********************************/
-	cfg := config2.GetMcGlobalConfig()
 	db, err := config.SetMariaDB(cfg.MariaUser, cfg.MariaPassword, cfg.MariaDb,
 		cfg.MariaIp, 3306)
 	if err != nil {
@@ -89,6 +114,13 @@ func configure() bool {
 		return false
 	}
 	config2.SetDbOrm(db)
+
+	/********************************
+	 * Serial Number
+	 ********************************/
+	if  cfg.SerialNumber == "" {
+		processSerialNumber()
+	}
 
 	/********************************
 	 * Init Caching VMs
