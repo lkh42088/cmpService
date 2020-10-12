@@ -66,19 +66,12 @@ func addVmHandler(c *gin.Context) {
 	repo.UpdateVm2Repo(&msg)
 }
 
-func deleteVmHandler(c *gin.Context) {
-	var msg mcmodel.McVm
-	err := c.ShouldBindJSON(&msg)
-	fmt.Printf("deleteVmHandler: %v\n", msg)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+func deleteVm(vmName string) bool {
 
-	vm := kvm.LibvirtR.GetVmByName(msg.Name)
+	// Get VM Domain from Libvirt
+	vm := kvm.LibvirtR.GetVmByName(vmName)
 	if vm == nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "The vm does not exist!"})
-		return
+		return false
 	}
 
 	// 1. Delete Dnat Rule
@@ -100,6 +93,24 @@ func deleteVmHandler(c *gin.Context) {
 	kvm.DeleteVmInstance(*vm)
 
 	repo.DeleteVmFromRepo(*vm)
+
+	return true
+}
+
+func deleteVmHandler(c *gin.Context) {
+	var msg mcmodel.McVm
+	err := c.ShouldBindJSON(&msg)
+	fmt.Printf("deleteVmHandler: %v\n", msg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	res := deleteVm(msg.Name)
+	if res == false {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "The vm does not exist!"})
+		return
+	}
 
 	fmt.Printf("deleteVmHandler: success\n")
 	c.JSON(http.StatusOK, msg)

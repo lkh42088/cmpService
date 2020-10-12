@@ -27,6 +27,7 @@ func Start(parentwg *sync.WaitGroup) {
 
 	// Internal Resource
 	rg.GET(lib.McUrlResource, getResourceHandler)
+	rg.POST(lib.McUrlResource, resourceControlHandler)
 
 	// Registration
 	rg.POST(lib.McUrlRegisterServer, registerServerHandler)

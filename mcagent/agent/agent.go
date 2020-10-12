@@ -77,12 +77,25 @@ func Start (config string) {
 	wg.Wait()
 }
 
-func processSerialNumber() {
+func processSerialNumberByConfigFile(sn string) {
 	// 1. Get From DB
 	server := repo.GetMcServer()
 	if server != nil {
 		config2.SetSerialNumber2GlobalConfig(server.SerialNumber)
 		return
+	}
+
+	var newServer mcmodel.McServerDetail
+	newServer.SerialNumber = sn
+	mcrest.AddMcServer(newServer, false)
+}
+
+func processSerialNumber() bool {
+	// 1. Get From DB
+	server := repo.GetMcServer()
+	if server != nil {
+		config2.SetSerialNumber2GlobalConfig(server.SerialNumber)
+		return true
 	}
 
 	// 2. Get From ETC file
@@ -95,10 +108,11 @@ func processSerialNumber() {
 		msg.CompanyIdx = serverStatus.CompanyIdx
 		msg.CompanyName = serverStatus.CompanyName
 		repo.AddServer2Repo(&msg)
-		return
+		return true
 	}
 
 	fmt.Println("processSerialNumber: it dose not Serial Number!")
+	return false
 }
 
 func configure() bool {
@@ -118,8 +132,10 @@ func configure() bool {
 	/********************************
 	 * Serial Number
 	 ********************************/
-	if  cfg.SerialNumber == "" {
+	if cfg.SerialNumber == "" {
 		processSerialNumber()
+	} else {
+		processSerialNumberByConfigFile(cfg.SerialNumber)
 	}
 
 	/********************************
