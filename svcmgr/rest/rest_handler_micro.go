@@ -29,9 +29,16 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	// Send to mc server
-	server, _ := h.db.GetMcServerByServerIdx(msg.Idx)
-	mcapi.SendMcRegisterServer(server)
+	/**
+	 * RegisterType
+	 *  - 0: Internal(Private) IP Address
+	 *  - 1: Domain
+	 */
+	if msg.RegisterType == 0 {
+		// Send to mc server
+		server, _ := h.db.GetMcServerByServerIdx(msg.Idx)
+		mcapi.SendMcRegisterServer(server)
+	}
 
 	c.JSON(http.StatusOK, msg)
 }
