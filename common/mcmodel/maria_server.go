@@ -52,6 +52,7 @@ type McServer struct {
 	SerialNumber   string `gorm:"unique;type:varchar(50);column:mc_serial_number;comment:'시리얼넘버'" json:"serialNumber"`
 	CompanyIdx     int    `gorm:"type:int(11);column:mc_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
 	Type           string `gorm:"type:varchar(50);column:mc_type;comment:'서버 타입'" json:"type"`
+	Enable         bool   `gorm:"type:tinyint(1);column:mc_enable;comment:'registration status'" json:"enable"`
 	Status         int    `gorm:"type:int(11);column:mc_status;comment:'서버 상태'" json:"status"`
 	VmCount        int    `gorm:"type:int(11);column:mc_vm_count;comment:'vm 개수'" json:"vmCount"`
 	Port           string `gorm:"type:varchar(50);column:mc_port;comment:'Port'" json:"port"`

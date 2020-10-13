@@ -3,6 +3,9 @@ package kvm
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
+	"cmpService/mcagent/config"
+	"cmpService/mcagent/repo"
+	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"github.com/robfig/cron/v3"
 	"strconv"
@@ -375,4 +378,32 @@ func UpdateVmStatus(msg *messages.VmStatusActionMsg) {
 	case "resume":
 		LibvirtResumeVm(msg.VmName)
 	}
+}
+
+var RegularSendToSvcmgrCronId cron.EntryID
+
+func RegisterRegularMsg() {
+	cronTime := fmt.Sprintf("@every 0h0m%ss", "30")
+	id, err := CronSnap.Cr.AddFunc(cronTime, func() {
+		var msg messages.ServerRegularMsg
+		cfg := config.GetMcGlobalConfig()
+		addr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+		msg.SerialNumber = cfg.SerialNumber
+		msg.Enable = repo.GlobalServerRepo.Enable
+		if repo.GlobalServerRepo.Enable {
+			// Case 1: Send KeepAlive
+			fmt.Printf("** RegisterRegularMsg(Cron ID:%d): Send keepalive msg to svcmgr\n", RegularSendToSvcmgrCronId)
+			svcmgrapi.SendRegularMsg2Svcmgr(msg, addr)
+		} else {
+			// Case 2: Send Registration
+			fmt.Printf("** RegisterRegularMsg(Cron ID:%d): Send Registration msg to svcmgr\n", RegularSendToSvcmgrCronId)
+			svcmgrapi.SendRegularMsg2Svcmgr(msg, addr)
+		}
+	})
+	if err != nil {
+		fmt.Println("RegisterRegularMsg: error ", err)
+		return
+	}
+	RegularSendToSvcmgrCronId = id
+	fmt.Println(">>> RegisterRegularMsg: Cron Id -", RegularSendToSvcmgrCronId)
 }

@@ -74,6 +74,11 @@ func Start (config string) {
 	 *********************************/
 	ApplyCronForSnapshot()
 
+	/*********************************
+	 * cron for Register, health check
+	 *********************************/
+	kvm.RegisterRegularMsg()
+
 	wg.Wait()
 }
 
@@ -199,3 +204,4 @@ func ApplyCronForSnapshot() {
 		kvm.AddSnapshotByMcVm(&vm)
 	}
 }
+

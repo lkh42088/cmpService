@@ -638,6 +638,14 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, vms)
 }
 
+func (h *Handler) ReceiveRegularMsg(c *gin.Context) {
+	var msg messages.ServerRegularMsg
+	c.Bind(&msg)
+	fmt.Println("ReceiveRegularMsg:")
+	msg.Dump()
+	c.JSON(http.StatusOK, "")
+}
+
 func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot
 	c.Bind(&msg)
