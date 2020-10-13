@@ -23,6 +23,11 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	var msg mcmodel.McServer
 	c.Bind(&msg)
 
+	if msg.RegisterType == 0 {
+		// case: IP Address
+		msg.L4Port = "8082"
+	}
+
 	fmt.Printf("Add McServer : %v\n", msg)
 	msg, err := h.db.AddMcServer(msg)
 	if err != nil {
@@ -41,6 +46,33 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, msg)
+}
+
+func (h *Handler) ReceiveRegularMsg(c *gin.Context) {
+	var msg messages.ServerRegularMsg
+	c.Bind(&msg)
+	fmt.Println("ReceiveRegularMsg:")
+	msg.Dump()
+	if msg.Enable == false {
+		// Process Registration procedure
+		server, err := h.db.GetMcServerBySerialNumber(msg.SerialNumber)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		// Update db
+		server.Enable = true
+		server.PublicIpAddr = msg.PublicIp
+		server.IpAddr = msg.PrivateIp
+		server.L4Port = msg.Port
+		h.db.UpdateMcServer(server.McServer)
+
+		// Send to mcagent
+		mcapi.SendMcRegisterServer(server)
+		c.JSON(http.StatusOK, "")
+		return
+	}
+	c.JSON(http.StatusOK, "")
 }
 
 func (h *Handler) UpdateMcServerResource(c *gin.Context) {
@@ -638,13 +670,6 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 	c.JSON(http.StatusOK, vms)
 }
 
-func (h *Handler) ReceiveRegularMsg(c *gin.Context) {
-	var msg messages.ServerRegularMsg
-	c.Bind(&msg)
-	fmt.Println("ReceiveRegularMsg:")
-	msg.Dump()
-	c.JSON(http.StatusOK, "")
-}
 
 func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot

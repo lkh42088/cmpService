@@ -44,6 +44,9 @@ type VmStatusActionMsg struct {
 type ServerRegularMsg struct {
 	Enable       bool   `json:"enable"`
 	SerialNumber string `json:"serialNumber"`
+	PublicIp     string `json:"publicIp"`
+	PrivateIp    string `json:"privateIp"`
+	Port         string `json:"port"`
 }
 
 func (s *ServerRegularMsg) Dump() {

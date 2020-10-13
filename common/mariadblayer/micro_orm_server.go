@@ -95,11 +95,13 @@ func (db *DBORM) UpdateMcServerAll(obj mcmodel.McServer) (mcmodel.McServer, erro
 			"mc_serial_number":  obj.SerialNumber,
 			"mc_type":           obj.Type,
 			"mc_status":         obj.Status,
+			"mc_enable":         obj.Enable,
 			"mc_port":           obj.Port,
 			"mc_mac":            obj.Mac,
 			"mc_vm_count":       obj.VmCount,
 			"mc_ip_addr":        obj.IpAddr,
 			"mc_public_ip_addr": obj.PublicIpAddr,
+			"mc_l4_port":        obj.L4Port,
 		}).Error
 }
 
@@ -109,12 +111,14 @@ func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) 
 		Where(mcmodel.McServer{Idx: obj.Idx}).
 		Update(map[string]interface{}{
 			"mc_status":         obj.Status,
+			"mc_enable":         obj.Enable,
 			"mc_port":           obj.Port,
 			"mc_mac":            obj.Mac,
 			"mc_vm_count":       obj.VmCount,
 			"mc_ip_addr":        obj.IpAddr,
 			"mc_public_ip_addr": obj.PublicIpAddr,
-		}).Error
+			"mc_l4_port":        obj.L4Port,
+	}).Error
 }
 
 func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {

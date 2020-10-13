@@ -59,6 +59,7 @@ type McServer struct {
 	Mac            string `gorm:"type:varchar(50);column:mc_mac;comment:'Mac Address'" json:"mac"`
 	IpAddr         string `gorm:"type:varchar(50);column:mc_ip_addr;comment:'IP Address'" json:"ipAddr"`
 	PublicIpAddr   string `gorm:"type:varchar(50);column:mc_public_ip_addr;comment:'Public IP Address'" json:"publicIp"`
+	L4Port         string `gorm:"type:varchar(50);column:mc_l4_port;comment:'L4 Port'" json:"l4Port"`
 	RegisterType   int    `gorm:"type:int(11);column:mc_register_type;comment:'Register type'" json:"registerType"`
 	DomainPrefix   string `gorm:"type:varchar(50);column:mc_domain_prefix;comment:'Domain prefix'" json:"domainPrefix"`
 	DomainId       string `gorm:"type:varchar(50);column:mc_domain_id;comment:'Domain id'" json:"domainId"`
