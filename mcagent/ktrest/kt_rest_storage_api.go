@@ -3,233 +3,23 @@ package ktrest
 import (
 	"bytes"
 	"cmpService/common/lib"
-	"crypto/hmac"
-	"crypto/sha1"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"sort"
 	"strconv"
-	"strings"
-	"testing"
 	"time"
 )
 
-// CB KEY
-const apiKey = "fYGnzisuTXlXVgxw9Des2me-CbQ-d2x1oFDAczUa2DknxtwbCXjlYb25CobtJWXpTbvtnhC3pujtZw-O4Qaq-Q"
-const secretKey = "y8-kgAG1cBnunCZQy-SwnKC3m6nh4akXj1p3HGuFesnJB7speDBCZvhv6zjzz3n9LZ9797RnXwlBJ7MuwaM63w"
-
-// NB KEY
-//const apiKey = "zhY6AqhrBuxzBYahVleF57nXYia3wNg1iddLL0ElgwiKU9V76Iu-g2_Qvh2jE5QxSYT9n_z47nahFz0qI-Byug"
-//const secretKey = "DGcIyrljdy28mKMgns9pEkPchMugzmmxnbB1cUU4fgcIvrjpDALFXqLVUhaweRQrM3PGuY1f6N1NO4Nw_etbqA"
-
-// watch listMetricy15
-const listMetrics = "met1ricname=CPUUtilization&command=listMetrics"
-
-// Server VM TEST
-const productypes = "command=listAvailableProductTypes"
-const listIpAddr = "command=listPublicIpAddresses"
-const listVMCharge = "command=listVirtualMachineForCharge"
-const listAccount = "command=listAccounts"
-const listVM = "command=listVirtualMachines"
-const listZone = "command=listZones"
-const listNetworkFlatRate = "command=listNetworkFlatRate"
-const listNetwork = "command=listNetworks"
-const listNetUsage = "command=listNetworkUsages&startdate=2020-04-01&enddate=2020-04-30"
-
-func SortCommandLine(command string) string {
-	var result string = ""
-
-	// Convert to small letter command character
-	// and sort command field alphabetically
-	convert := strings.Split(strings.ToLower(command), "&")
-	sort.Strings(convert)
-	for i := range convert {
-		result += convert[i] + "&"
-	}
-	return result[:len(result)-1]
-}
-
-func ComputeHmac(message string, secret string) string {
-	// HMAC-SHA1 hashing
-	h := hmac.New(sha1.New, []byte(secret))
-	h.Write([]byte(message))
-	message = base64.StdEncoding.EncodeToString(h.Sum(nil))
-	// URL UTF-8 encoding
-	return url.QueryEscape(message)
-}
-
-type SecurityGroup struct {
-	Data interface{}
-}
-
-type AffinityGroup struct {
-	Data interface{}
-}
-
-type Tags struct {
-	Tags string
-}
-
-type SecondaryIp struct {
-	Ip string
-}
-
-type Nic struct {
-	Id           string        `json:"id"`
-	NetworkId    string        `json:"networkid"`
-	NetworkName  string        `json:"networkname"`
-	Netmask      string        `json:"netmask"`
-	Gateway      string        `json:"gateway"`
-	IpAddress    string        `json:"ipaddress"`
-	IsolationUri string        `json:"isolationuri"`
-	BroadcastUri string        `json:"broadcasturi"`
-	TrafficType  string        `json:"traffictype"`
-	NicType      string        `json:"type"`
-	IsDefault    bool          `json:"isdefault"`
-	MacAddress   string        `json:"macaddress"`
-	SecondaryIp  []SecondaryIp `json:"secondaryip"`
-}
-
-type VirtualMachine struct {
-	Id                    string          `json:"id"`
-	Name                  string          `json:"name"`
-	DisplayName           string          `json:"displayname"`
-	Account               string          `json:"account"`
-	UserId                string          `json:"userid"`
-	Username              string          `json:"username"`
-	DomainId              string          `json:"domainid"`
-	Domain                string          `json:"domain"`
-	Created               string          `json:"created"`
-	State                 string          `json:"state"`
-	HaEnable              bool            `json:"haenable"`
-	ZoneId                string          `json:"zoneid"`
-	ZoneName              string          `json:"zonename"`
-	TemplateId            string          `json:"templateid"`
-	TemplateName          string          `json:"templatename"`
-	TemplateDisplayText   string          `json:"templatedisplaytext"`
-	PasswordEnabled       bool            `json:"passwordenabled"`
-	ServiceOfferingId     string          `json:"serviceofferingid"`
-	ServiceOfferingName   string          `json:"serviceofferingname"`
-	CpuNumber             int             `json:"cpunumber"`
-	CpuSpeed              int             `json:"cpuspeed"`
-	Memory                int             `json:"memory"`
-	GuestOsId             string          `json:"guestosid"`
-	RootDeviceId          int             `json:"rootdeviceid"`
-	RootDeviceType        string          `json:"rootdevicetype"`
-	SecurityGroup         []SecurityGroup `json:"securitygroup"`
-	Nic                   []Nic           `json:"nic"`
-	Hypervisor            string          `json:"hypervisor"`
-	AffinityGroup         []AffinityGroup `json:"affinitygroup"`
-	IsDynamicallyScalable bool            `json:"isdynamicallyscalable"`
-	OsTypeId              int             `json:"ostypeid"`
-	Tags                  []Tags          `json:"tags"`
-}
-
-type ListVirtualMachinesResponse struct {
-	VirtualMachine []VirtualMachine `json:"virtualmachine"`
-	Count          int              `json:"count"`
-}
-
-type ListVirtualMachine struct {
-	List ListVirtualMachinesResponse `json:"listvirtualmachinesresponse"`
-}
-
-func KtRestGet(ktURL string, command string) string {
-	// Add apiKey to command
-	tmpStr := command + "&response=json"
-	tmpStr = tmpStr + "&apiKey=" + apiKey
-
-	// command field Tolower() and sort()
-	sortedStr := SortCommandLine(tmpStr)
-
-	// Get signature
-	sig := ComputeHmac(sortedStr, secretKey)
-
-	// Make full api command
-	command = ktURL + "?" + tmpStr + "&signature=" + sig
-	fmt.Printf("URL : %s\n", command)
-
-	// Send command
-	resp, err := http.Get(command)
-	if err != nil {
-		fmt.Println("error:", err)
-		return ""
-	}
-	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
-	//json.Unmarshal(data, resp.Body)
-	if err != nil {
-		fmt.Println("error:", err)
-		return ""
-	}
-
-	// data binding to struct
-	var list ListVirtualMachine
-	err = json.Unmarshal(data, &list)
-	fmt.Printf("%+v\n", list)
-
-	return string(data)
-}
-
-func TestKtRestApi(t *testing.T) {
-	response := KtRestGet(serverURL, listVM)
-	fmt.Println(response)
-}
-
-const resellerApiKey = "asfupvb9-abui-gaeu-z"
-const resellerURL = "https://ucloudbiz.kt.com/jv_ssl_key_openapi.jsp"
-const chargeVM = "startDate=2020-01&endDate=2020-03&type=serviceChargeInfoAccount&emailId=fin_bmetal1@vple.net"
-const chargeListVM = "startDate=2020-01&endDate=2020-03&resellerKey=" + resellerApiKey + "&type=billingInfoListAccounts"
-
-func KtChargeGet(ktURL string, command string) string {
-	baseUrl, _ := url.Parse(resellerURL)
-	params := url.Values{}
-
-	// big
-	params.Add("command", "listCharges")
-	//params.Add("type", "billingInfoListAccounts")
-	//params.Add("type", "useServiceListAccounts")
-	params.Add("type", "serviceChargeInfoAccount")
-	params.Add("emailId", "fin_bmetal1@vple.net")
-	params.Add("startDate", "2020-04")
-	params.Add("endDate", "2020-04")
-	params.Add("resellerKey", resellerApiKey)
-	params.Add("response", "json")
-
-	baseUrl.RawQuery = params.Encode()
-
-	fmt.Printf("URL : %s\n", baseUrl.String())
-
-	//Send API Query
-	resp, err := http.Get(baseUrl.String())
-	if err != nil {
-		fmt.Println("error:", err)
-		return ""
-	}
-	defer resp.Body.Close()
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("error:", err)
-		return ""
-	}
-
-	return string(data)
-}
-
-func TestKtResellerRestApi(t *testing.T) {
-	response := KtChargeGet(resellerURL, chargeListVM)
-	fmt.Println(response)
-}
-
-/** STORAGE API */
-func GetAuthTokens() StorageAuthTokenResponse {
+/**
+ * STORAGE API
+ */
+// Post Auth Token
+func PostAuthTokens() StorageAuthTokenResponse {
 	baseUrl, _ := url.Parse(storageBaseUrlPort + storageAuthTokenUrl)
 	req := StorageAuthRequest{}
+	response := StorageAuthTokenResponse{}
 
 	//Make request
 	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, METHODS_PASSWORD)
@@ -242,34 +32,129 @@ func GetAuthTokens() StorageAuthTokenResponse {
 	body := bytes.NewBuffer(pbytes)
 
 	//Send API Query
-	resp, err := http.Post(baseUrl.String(), CONTENT_TYPE, body)
+	resp, err := http.Post(baseUrl.String(), CONTENT_TYPE_JSON, body)
 	if err != nil {
 		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
 	}
-	defer resp.Body.Close()
 
 	//Parsing data
-	response := StorageAuthTokenResponse{}
 	data, err := ioutil.ReadAll(resp.Body)
 	err = json.Unmarshal(data, &response)
 
-	//fmt.Println("RES: ", response, err)
-	fmt.Println("RESPONSE: ", resp)
+	//tmp, _ := lib.PrettyPrint(data)
+	//fmt.Println("RESPONSE: ", string(tmp))
 	GlobalToken = resp.Header.Get("X-Subject-Token")
+	if len(response.Token.Catalog) < 1 ||
+		response.Token.Catalog[1].EndPoints == nil {
+		return response
+	}
+	GlobalAccountUrl = response.Token.Catalog[1].EndPoints[0].Url
 
 	return response
 }
 
-func GetStorageAccount(token string) StorageAccountResponse {
+// Get storage container name
+func GetStorageAccount(auth StorageAuthTokenResponse) []StorageAccount {
+	var response []StorageAccount
+	if GlobalAccountUrl == "" {
+		return response
+	}
+
 	// Request URL
-	//baseUrl := storageBaseUrl + storageAccountUrl
-	baseUrl := "https://ssproxy2.ucloudbiz.olleh.com/v1/iwhan@nubes-bridge.com"
+	baseUrl := GlobalAccountUrl + formatJsonUrl
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", token)
-	req.Header.Add("Content-Type", CONTENT_TYPE)
+	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
 
-	fmt.Println("TOKEN: ", req.Header.Get("X-Auth-Token"))
+	//fmt.Println("URL: ", req)
+
+	//Send API Query
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
+		//return response
+	}
+
+	//Parsing data
+	data, err := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(data, &response)
+
+	//fmt.Println("RES: ", response)
+	return response
+}
+
+// Get storage container
+func GetStorageContainer(containerName string) (err error) {
+	//var response []StorageContainer
+
+	// Request URL
+	baseUrl := GlobalAccountUrl + "/" + containerName
+	req, _ := http.NewRequest("GET", baseUrl, nil)
+	// Request HEADER
+	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	//fmt.Println("URL: ", req)
+
+	//Send API Query
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
+	}
+
+	//Parsing data
+	if resp.StatusCode != http.StatusOK &&
+		resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("Error: %s", resp.Status)
+	}
+
+	return fmt.Errorf("Success")
+}
+
+// Put storage container
+func PutStorageContainer(token string, containerName string) (err error) {
+	// Request URL
+	baseUrl := GlobalAccountUrl + "/" + containerName
+	req, _ := http.NewRequest("PUT", baseUrl, nil)
+	// Request HEADER
+	req.Header.Add("X-Auth-Token", token)
+	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	req.Header.Add("X-Storage-Policy", ECONOMY_TYPE)		// economy type
+	//fmt.Println("URL: ", req)
+
+	//Send API Query
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
+	}
+
+	//Parsing data
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("Error: %s", resp.Status)
+	}
+
+	return fmt.Errorf("Success")
+}
+
+// Delete storage container
+func DeleteStorageContainer(containerName string) (err error) {
+	// Request URL
+	baseUrl := GlobalAccountUrl + "/" + containerName
+	req, _ := http.NewRequest("DELETE", baseUrl, nil)
+	// Request HEADER
+	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -277,23 +162,21 @@ func GetStorageAccount(token string) StorageAccountResponse {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
 	}
-	defer resp.Body.Close()
 
 	//Parsing data
-	response := StorageAccountResponse{}
-	data, err := ioutil.ReadAll(resp.Body)
-	//err = json.Unmarshal(data, &response)
+	if resp.StatusCode != http.StatusOK &&
+		resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("Error: %s", resp.Status)
+	}
 
-	b, _ := lib.PrettyPrint(data)
-	fmt.Println("RESPONSE: ", resp)
-	fmt.Println("RES: ", string(data))
-	fmt.Println("RES: ", string(b))
-
-	return response
+	return fmt.Errorf("Success")
 }
 
-func GetKtStorageTempUrl() {
+// Make temp-url
+func GetStorageTempUrl() {
 	method := "GET"
 	path := fmt.Sprintf(storagePathUrl, "iwhan@nubes-bridge.com", "Nubes-HC", "")  // Storage db field : account url, filebox name, file name
 	expired := int(time.Now().Add(EXPIRED_TIME).Unix())
@@ -315,8 +198,10 @@ func GetKtStorageTempUrl() {
 	resp, err := http.Get(baseUrl.String())
 	if err != nil {
 		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
+		return
 	}
-	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -326,6 +211,3 @@ func GetKtStorageTempUrl() {
 	fmt.Println("RESPONSE: ", string(b))
 }
 
-func GetKtStorageInfo(c *gin.Context) {
-
-}

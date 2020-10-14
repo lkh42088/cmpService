@@ -4,11 +4,13 @@ import "time"
 
 /** Global Variables */
 var GlobalToken string
+var GlobalAccountUrl string
 
 // KT Storage variables
 const EXPIRED_TIME = 60 * time.Minute
-const CONTENT_TYPE = "application/json"
+const CONTENT_TYPE_JSON = "application/json"
 const METHODS_PASSWORD = "password"
+const ECONOMY_TYPE = "ec"
 
 // DB
 const storageAccessKey = "iwhan@nubes-bridge.com"

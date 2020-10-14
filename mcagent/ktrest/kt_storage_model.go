@@ -106,12 +106,14 @@ type StorageAuthCatalog struct {
 
 type StorageAuthTokenResponse struct {
 	Token		StorageAuthToken 		`json:"token"`
-	//Error 		StorageResponseError	`json:"error"`
+	Error 		StorageResponseError	`json:"error"`
 }
 
 /** Account */
-type StorageAccountResponse struct {
-
+type StorageAccount struct {
+	Count 		int 			`json:"count"`
+	Bytes 		int 			`json:"bytes"`
+	Name 		string 			`json:"name"`
 }
 
 /** ERROR */
