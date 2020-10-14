@@ -226,41 +226,71 @@ func TestKtResellerRestApi(t *testing.T) {
 	fmt.Println(response)
 }
 
-// STORAGE API
-
-
-func GetUserAuth() {
-	baseUrl, _ := url.Parse(storageBaseUrl)
-	contentType := "applicatino/json"
+/** STORAGE API */
+func GetAuthTokens() StorageAuthTokenResponse {
+	baseUrl, _ := url.Parse(storageBaseUrlPort + storageAuthTokenUrl)
 	req := StorageAuthRequest{}
 
-	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, "password")
+	//Make request
+	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, METHODS_PASSWORD)
 	req.Auth.Identity.Password.User.Name = storageAccessKey
 	req.Auth.Identity.Password.User.Domain.Id = storageDomainId
 	req.Auth.Identity.Password.User.Password = storageSecretKey
-	req.Scope.Project.Id = storageProjectId
-	req.Scope.Project.Domain.Id = storageDomainId
+	req.Auth.Scope.Project.Id = storageProjectId
+	req.Auth.Scope.Project.Domain.Id = storageDomainId
 	pbytes, _ := json.Marshal(req)
 	body := bytes.NewBuffer(pbytes)
 
-	fmt.Printf("URL : %s\n", baseUrl.String())
-
 	//Send API Query
-	resp, err := http.Post(baseUrl.String(), contentType, body)
+	resp, err := http.Post(baseUrl.String(), CONTENT_TYPE, body)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
 	defer resp.Body.Close()
-	//data, err := ioutil.ReadAll(resp.Body)
-	//if err != nil {
-	//	fmt.Println("error:", err)
-	//}
-	response := StorageAuthResponse{}
-	data, err := ioutil.ReadAll(resp.Body)
-	json.Unmarshal(data, &response)
 
-	//b, _ := lib.PrettyPrint(response)
-	fmt.Println("RESPONSE: ", response.Versions)
+	//Parsing data
+	response := StorageAuthTokenResponse{}
+	data, err := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(data, &response)
+
+	//fmt.Println("RES: ", response, err)
+	fmt.Println("RESPONSE: ", resp)
+	GlobalToken = resp.Header.Get("X-Subject-Token")
+
+	return response
+}
+
+func GetStorageAccount(token string) StorageAccountResponse {
+	// Request URL
+	//baseUrl := storageBaseUrl + storageAccountUrl
+	baseUrl := "https://ssproxy2.ucloudbiz.olleh.com/v1/iwhan@nubes-bridge.com"
+	req, _ := http.NewRequest("GET", baseUrl, nil)
+	// Request HEADER
+	req.Header.Add("X-Auth-Token", token)
+	req.Header.Add("Content-Type", CONTENT_TYPE)
+
+	fmt.Println("TOKEN: ", req.Header.Get("X-Auth-Token"))
+	fmt.Println("URL: ", req)
+
+	//Send API Query
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	defer resp.Body.Close()
+
+	//Parsing data
+	response := StorageAccountResponse{}
+	data, err := ioutil.ReadAll(resp.Body)
+	//err = json.Unmarshal(data, &response)
+
+	b, _ := lib.PrettyPrint(data)
+	fmt.Println("RESPONSE: ", resp)
+	fmt.Println("RES: ", string(data))
+	fmt.Println("RES: ", string(b))
+
+	return response
 }
 
 func GetKtStorageTempUrl() {
