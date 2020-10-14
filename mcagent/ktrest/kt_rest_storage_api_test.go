@@ -41,6 +41,15 @@ func TestDivisionVmSnapshotFile(t *testing.T) {
 	DivisionVmSnapshotFile("windows10-100G-0.qcow2")
 }
 
+func TestPutStorageObject(t *testing.T) {
+	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
+	flag.Parse()
+	config.ApplyGlobalConfig(*conf)
+	_ = PostAuthTokens()
+	err := PutStorageObject("nubes-test", "a.txt")
+	fmt.Println(err)
+}
+
 func TestPutDynamicLargeObjects(t *testing.T) {
 	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
 	flag.Parse()
@@ -62,11 +71,11 @@ func TestPutDLOManifest(t *testing.T) {
 	_ = PostAuthTokens()
 	err := PutDLOManifest("nubes-test", "windows10-100G-0.qcow2")
 	fmt.Println(err)
-
 }
 
 func TestGetStorageObject(t *testing.T) {
 	_ = PostAuthTokens()
-	err := GetStorageObject("nubes-test", "windows10-100G-0.qcow2")
+	//err := GetStorageObject("nubes-test", "windows10-100G-0.qcow2")
+	err := GetStorageObject("nubes-test", "a.txt")
 	fmt.Println(err)
 }

@@ -45,6 +45,48 @@ func DivisionVmSnapshotFile(fileName string) error {
 	return nil
 }
 
+// Put Storage Object
+func PutStorageObject(container string, fileName string) error {
+	// Get file path
+	conf := config.GetMcGlobalConfig()
+	path := conf.VmInstanceDir
+	lastPath := path + "/" + fileName
+	fmt.Println("PATH: ", lastPath)
+
+	// Get file
+	fileInfo, err := os.Stat(lastPath)
+	if err != nil {
+		return fmt.Errorf("Error: Not find this file.")
+	}
+	file, _ := os.Open(lastPath)
+	data := bufio.NewReader(file)
+
+	// Request URL
+	baseUrl := GlobalAccountUrl + "/" + container + "/" + fileName
+	req, _ := http.NewRequest("PUT", baseUrl, data)
+	// Request HEADER
+	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("Content-Type", "test/plain; charset=UTF-8")
+	req.Header.Add("Content-Length", strconv.Itoa(int(fileInfo.Size())))
+	fmt.Println("URL: ", req)
+
+	//Send API Query
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("error:", err)
+	} else {
+		defer resp.Body.Close()
+	}
+
+	//Parsing data
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("Error: %s", resp.Status)
+	}
+
+	return fmt.Errorf("Success")
+}
+
 // Upload Backup File (DLO)
 func PutDynamicLargeObjects(container string, originFileName string, fileName string) error {
 	// Get file path
