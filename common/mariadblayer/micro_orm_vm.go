@@ -80,13 +80,14 @@ func (db *DBORM) GetMcVmsCount(cpName string) (total int, operate int, vm int, e
 		Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
 		Where(query).
 		Count(&vm).Error
-		//Find(&vms.Vms).Error
+	//Find(&vms.Vms).Error
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}
 
 	return total, operate, vm, err
 }
+
 /*
 func (db *DBORM) GetMcWinGraphs(mac string) (obj mcmodel.McWinVmGraph, err error) {
 	fmt.Println("McWinVmGraph ~ DB 조회 시작!! : ", mac)
@@ -112,7 +113,7 @@ func (db *DBORM) GetMcVmByName(name string) (vm mcmodel.McVm, err error) {
 }
 
 func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error) {
-	return vm, db.Table("mc_vm_tb").
+	return vm, db.Debug().Table("mc_vm_tb").
 		Where(mcmodel.McVm{Name: name, CompanyIdx: cpidx}).
 		Find(&vm).Error
 }
@@ -167,6 +168,17 @@ func (db *DBORM) UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
 			"vm_vnc_port":       obj.VncPort,
 			"vm_current_status": obj.CurrentStatus,
 			"vm_remote_addr":    obj.RemoteAddr,
+		}).Error
+}
+
+func (db *DBORM) UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error) {
+	return obj, db.Debug().
+		Model(&obj).
+		Where(mcmodel.McVm{Idx: obj.Idx}).
+		Updates(map[string]interface{}{
+			"vm_snap_days":    obj.SnapDays,
+			"vm_snap_hours":   obj.SnapHours,
+			"vm_snap_minutes": obj.SnapMinutes,
 		}).Error
 }
 

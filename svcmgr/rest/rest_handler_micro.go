@@ -212,6 +212,8 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 
 	fmt.Printf("update McVm : %v\n", msg)
 
+	fmt.Println("msg")
+
 	vm, err := h.db.GetMcVmByNameAndCpIdx(msg.Name, msg.CompanyIdx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -224,6 +226,31 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	c.JSON(http.StatusOK, msg)
+}
+
+
+func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
+	var mbMsg mcmodel.McVm
+	c.Bind(&mbMsg)
+
+	fmt.Printf("update McVm : %v\n", mbMsg)
+
+	msg, err := h.db.UpdateMcVmSnapshot(mbMsg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var sncMsg messages.SnapshotConfigMsg
+	c.Bind(&sncMsg)
+	fmt.Println("UpdateVmSnapshot:", sncMsg)
+	server, err := h.db.GetMcServerByServerIdx(sncMsg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendUpdateVmSnapshot(sncMsg, server)
 
 	c.JSON(http.StatusOK, msg)
 }

@@ -91,6 +91,7 @@ func SendUpdateVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServe
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
+
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendUpdateVmSnapshot: error 1 ", err)
