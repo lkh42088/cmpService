@@ -390,6 +390,9 @@ func RegisterRegularMsg() {
 		addr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
 		msg.SerialNumber = cfg.SerialNumber
 		msg.Enable = repo.GlobalServerRepo.Enable
+		msg.PrivateIp = cfg.ServerIp
+		msg.PublicIp = cfg.ServerPublicIp
+		msg.Port = cfg.McagentPort
 		if repo.GlobalServerRepo.Enable {
 			// Case 1: Send KeepAlive
 			fmt.Printf("** RegisterRegularMsg(Cron ID:%d): Send keepalive msg to svcmgr\n", RegularSendToSvcmgrCronId)
