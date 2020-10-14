@@ -3,7 +3,6 @@ package rest
 import (
 	"cmpService/common/lib"
 	"cmpService/common/mariadblayer"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -261,7 +260,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroVmRegister, h.AddMcVm)
 	router.POST(lib.SvcmgrApiMicroVmUnRegister, h.DeleteMcVm)
 	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam+"/:cpName", h.GetMcVms)
-	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
+	router.POST(lib.SvcmgrApiMicroVmUpdateFromMcSnapshot, h.UpdateMcVmFromMcSnapshot) //★
 	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
 	router.POST(lib.SvcmgrApiMicroVmAction, h.ApplyVmAction)
 
@@ -284,13 +283,16 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
 	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
-	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot) //★ rest_handler_micro_go
 	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 	router.POST(lib.SvcmgrApiMicroVmRecoverySnapshot, h.RecoverySnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshotEntryList, h.DeleteVmSnapshotEntryList)
 
 	// Snapshot from mcagent
 	router.POST(lib.SvcmgrApiMicroMcAgentNotifySnapshot, h.NotifyMcAgentVmSnapshot)
+
+	// keepalive, registration from mcagent
+	router.POST(lib.SvcmgrApiMicroServerRegularMsg, h.ReceiveRegularMsg)
 
 	// Micro Cloud CPU
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu/:mac", GetVmInterfaceCpu)

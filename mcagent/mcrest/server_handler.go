@@ -124,6 +124,7 @@ func registerServerHandler(c *gin.Context) {
 
 func AddMcServer(msg mcmodel.McServerDetail, enable bool) {
 	// Create etc file
+	msg.Enable = enable
 	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx, enable)
 	config.SetSerialNumber2GlobalConfig(msg.SerialNumber)
 	// Add repo (DB)
