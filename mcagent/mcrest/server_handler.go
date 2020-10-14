@@ -51,6 +51,49 @@ func (n *McResourceMsg) Dump() string {
 	return string(pretty)
 }
 
+type ResourceMsg struct {
+	Command string
+}
+
+func clearAllResource () {
+	/********************************************
+	 * Delete VM
+	 ********************************************/
+	// get Vm List Object
+	vmList := repo.GetVmCacheObject()
+	for _, vm := range vmList {
+		deleteVm(vm.Name)
+	}
+
+	/********************************************
+	 * Delete Server
+	 ********************************************/
+	deleteServer()
+}
+
+func resourceControlHandler(c *gin.Context) {
+	var msg ResourceMsg
+	err := c.ShouldBindJSON(&msg)
+	if err != nil {
+		fmt.Println("resourceControlHandler: error")
+		c.JSON(http.StatusInternalServerError, "error")
+		return
+	}
+
+	fmt.Println("resourceControlHandler:", msg.Command)
+	switch msg.Command  {
+	case "clear":
+		/****************
+		 * Clear Resource
+		 ****************/
+		clearAllResource()
+		c.JSON(http.StatusOK, "success")
+		return
+	default:
+		c.JSON(http.StatusInternalServerError, "default")
+	}
+}
+
 func getResourceHandler(c *gin.Context) {
 	var resource McResourceMsg
 	resource.GlobalConfig = config.GetMcGlobalConfig()
@@ -70,17 +113,28 @@ func registerServerHandler(c *gin.Context) {
 		return
 	}
 	fmt.Printf("registerServerHandler: %v\n", msg)
-	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx, true)
-	config.SetSerialNumber2GlobalConfig(msg.SerialNumber)
 
-	/*********************
-	 * Add Repo
-	 *********************/
-	repo.AddServer2Repo(&msg)
+	// Insert to DB and create etc file.
+	AddMcServer(msg, true)
 
 	//server, _ := GetMcServer()
 	server := kvm.GetMcServerInfo()
 	c.JSON(http.StatusOK, server)
+}
+
+func AddMcServer(msg mcmodel.McServerDetail, enable bool) {
+	// Create etc file
+	msg.Enable = enable
+	config.WriteServerStatus(msg.SerialNumber, msg.CompanyName, msg.CompanyIdx, enable)
+	config.SetSerialNumber2GlobalConfig(msg.SerialNumber)
+	// Add repo (DB)
+	repo.AddServer2Repo(&msg)
+}
+
+func deleteServer() {
+	config.DeleteServerStatus()
+	// Delete Repo
+	repo.DeleteServer2Repo()
 }
 
 func unRegisterServerHandler(c *gin.Context) {
@@ -101,12 +155,10 @@ func unRegisterServerHandler(c *gin.Context) {
 		return
 	}
 
-	config.DeleteServerStatus()
-
 	/*********************
-	 * Delete Repo
+	 * Delete Server
 	 *********************/
-	repo.DeleteServer2Repo()
+	deleteServer()
 
 	c.JSON(http.StatusOK, msg)
 }

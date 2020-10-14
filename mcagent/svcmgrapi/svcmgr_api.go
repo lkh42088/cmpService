@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
+	"cmpService/common/messages"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -87,6 +88,27 @@ func SendSysInfoToSvcmgr(info mcmodel.SysInfo, addr string) bool {
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("response error: ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
+func SendRegularMsg2Svcmgr(obj messages.ServerRegularMsg, addr string) bool {
+	pbytes, _ := json.Marshal(obj)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroServerRegularMsg)
+	fmt.Println("Notify: ", url)
+	obj.Dump()
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error: ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
 		return false
 	}
 	fmt.Println("response: ", string(data))

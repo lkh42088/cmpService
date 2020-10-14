@@ -22,6 +22,7 @@ const (
 	SvcmgrApiMicroServerUnRegister          = SvcmgrApiMicroServer + "/unregister"
 	SvcmgrApiMicroServerSearchCompany       = SvcmgrApiMicroServer + "/search-company"
 	SvcmgrApiMicroServerResource            = SvcmgrApiMicroServer + "/resource"
+	SvcmgrApiMicroServerRegularMsg 			= SvcmgrApiMicroServer + "/regular-msg"
 	SvcmgrApiMicroSystemInfo                = SvcmgrApiMicro + "/sysinfo"
 	SvcmgrApiMicroVm                        = SvcmgrApiMicro + "/vms" // /v1/micro/vms
 	SvcmgrApiMicroVmRegister                = SvcmgrApiMicroVm + "/register"

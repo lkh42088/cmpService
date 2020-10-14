@@ -96,7 +96,9 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	fmt.Printf("McServer : %v\n", server)
 	pbytes, _ := json.Marshal(server)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlRegisterServer)
+	url := fmt.Sprintf("http://%s:%s%s%s",
+		server.IpAddr, server.L4Port,
+		lib.McUrlPrefix, lib.McUrlRegisterServer)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendAddVm: error 1 ", err)

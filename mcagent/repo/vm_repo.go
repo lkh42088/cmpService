@@ -8,6 +8,10 @@ import (
 
 var GlobalVmCache []mcmodel.McVm
 
+func GetVmCacheObject() []mcmodel.McVm {
+	return GlobalVmCache
+}
+
 func GetVmCache() *[]mcmodel.McVm {
 	return &GlobalVmCache
 }

@@ -291,6 +291,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// Snapshot from mcagent
 	router.POST(lib.SvcmgrApiMicroMcAgentNotifySnapshot, h.NotifyMcAgentVmSnapshot)
 
+	// keepalive, registration from mcagent
+	router.POST(lib.SvcmgrApiMicroServerRegularMsg, h.ReceiveRegularMsg)
+
 	// Micro Cloud CPU
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/cpu/:mac", GetVmInterfaceCpu)
 	router.GET(lib.SvcmgrApiMicroVmMonitor+"/mem/:mac", GetVmInterfaceMem)

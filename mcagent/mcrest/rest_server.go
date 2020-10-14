@@ -3,6 +3,7 @@ package mcrest
 import (
 	"cmpService/common/lib"
 	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/ktrest"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -27,6 +28,7 @@ func Start(parentwg *sync.WaitGroup) {
 
 	// Internal Resource
 	rg.GET(lib.McUrlResource, getResourceHandler)
+	rg.POST(lib.McUrlResource, resourceControlHandler)
 
 	// Registration
 	rg.POST(lib.McUrlRegisterServer, registerServerHandler)
@@ -60,6 +62,9 @@ func Start(parentwg *sync.WaitGroup) {
 
 	// Windows System API
 	rg.POST(lib.McUrlHealthCheckFromWin, CheckHealth)
+
+	// KT Rest API : Storage
+	rg.GET(lib.KtUrlStorageInfo, ktrest.GetKtStorageInfo)
 
 	Router.Run(address)
 	if parentwg != nil {
