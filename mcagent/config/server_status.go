@@ -69,6 +69,7 @@ func WriteServerStatus(sn, cpName string, cpIdx int, isEnable bool) {
 func DeleteServerStatus() {
 	cfg := GetMcGlobalConfig()
 	serverStatus.Enable = false
-	lib.WriteJsonFile(cfg.ServerStatusRepo, &serverStatus)
+	//lib.WriteJsonFile(cfg.ServerStatusRepo, &serverStatus)
+	WriteServerStatus(cfg.SerialNumber, "", 0, false)
 }
 

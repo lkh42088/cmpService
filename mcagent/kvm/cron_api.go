@@ -396,11 +396,18 @@ func RegisterRegularMsg() {
 		if repo.GlobalServerRepo.Enable {
 			// Case 1: Send KeepAlive
 			fmt.Printf("** RegisterRegularMsg(Cron ID:%d): Send keepalive msg to svcmgr\n", RegularSendToSvcmgrCronId)
-			svcmgrapi.SendRegularMsg2Svcmgr(msg, addr)
+			svcmgrapi.SendRegularMsg2Svcmgr(msg, addr, repo.GlobalServerRepo.Enable)
+
 		} else {
 			// Case 2: Send Registration
 			fmt.Printf("** RegisterRegularMsg(Cron ID:%d): Send Registration msg to svcmgr\n", RegularSendToSvcmgrCronId)
-			svcmgrapi.SendRegularMsg2Svcmgr(msg, addr)
+			res := svcmgrapi.SendRegularMsg2Svcmgr(msg, addr, repo.GlobalServerRepo.Enable)
+			if res == true {
+				// Send ServerMsg
+				svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+				serverInfo := GetMcServerInfo()
+				svcmgrapi.SendUpdateServer2Svcmgr(serverInfo, svcmgrRestAddr)
+			}
 		}
 	})
 	if err != nil {
