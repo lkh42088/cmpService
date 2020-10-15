@@ -177,6 +177,7 @@ type MariaDBLayer interface {
 	GetMcVmByMac(mac string) (obj mcmodel.McVm, err error)
 	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
+	UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
  	GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error)
 

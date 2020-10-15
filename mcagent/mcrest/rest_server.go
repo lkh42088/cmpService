@@ -3,7 +3,6 @@ package mcrest
 import (
 	"cmpService/common/lib"
 	config2 "cmpService/mcagent/config"
-	"cmpService/mcagent/ktrest"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"sync"
@@ -47,7 +46,7 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.GET(lib.McUrlAddVmSnapshot, addVmSnapshot)
 	rg.POST(lib.McUrlDeleteVmSnapshot, deleteVmSnapshot)
 	rg.POST(lib.McUrlDeleteVmSnapshotList, deleteVmSnapshotEntryList)
-	rg.GET(lib.McUrlUpdateVmSnapshot, updateVmSnapshot)
+	rg.POST(lib.McUrlUpdateVmSnapshot, updateVmSnapshot)
 	rg.POST(lib.McUrlRecoveryVmSnapshot, recoveryVmSnapshot)
 
 	// Network
@@ -64,7 +63,6 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.POST(lib.McUrlHealthCheckFromWin, CheckHealth)
 
 	// KT Rest API : Storage
-	rg.GET(lib.KtUrlStorageInfo, ktrest.GetKtStorageInfo)
 
 	Router.Run(address)
 	if parentwg != nil {
