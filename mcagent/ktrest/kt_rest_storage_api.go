@@ -113,10 +113,10 @@ func GetStorageContainer(containerName string) (err error) {
 	//Parsing data
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("Error: %s", resp.Status)
+		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success")
+	return fmt.Errorf("Success\n")
 }
 
 // Put storage container
@@ -141,10 +141,10 @@ func PutStorageContainer(token string, containerName string) (err error) {
 
 	//Parsing data
 	if resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("Error: %s", resp.Status)
+		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success")
+	return fmt.Errorf("Success\n")
 }
 
 // Delete storage container
@@ -169,10 +169,10 @@ func DeleteStorageContainer(containerName string) (err error) {
 	//Parsing data
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("Error: %s", resp.Status)
+		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success")
+	return fmt.Errorf("Success\n")
 }
 
 // Make temp-url

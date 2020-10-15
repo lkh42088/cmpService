@@ -9,8 +9,11 @@ var GlobalAccountUrl string
 // KT Storage variables
 const EXPIRED_TIME = 60 * time.Minute
 const CONTENT_TYPE_JSON = "application/json"
+const CONTENT_TYPE_BINARY = "binary/octet-stream"
+const RANGE_4096 = "4096"
 const METHODS_PASSWORD = "password"
 const ECONOMY_TYPE = "ec"
+const BACKUP_FILE_PERMISSION = 0644
 
 // DB
 const storageAccessKey = "iwhan@nubes-bridge.com"

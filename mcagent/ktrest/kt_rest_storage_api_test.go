@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestGetUserAuth(t *testing.T) {
@@ -38,7 +39,14 @@ func TestDivisionVmSnapshotFile(t *testing.T) {
 	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
 	flag.Parse()
 	config.ApplyGlobalConfig(*conf)
-	DivisionVmSnapshotFile("windows10-100G-0.qcow2")
+	DivisionVmBackupFile("windows10-100G-0.qcow2")
+}
+
+func TestUnZipVmBackupFile(t *testing.T) {
+	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
+	flag.Parse()
+	config.ApplyGlobalConfig(*conf)
+	UnZipVmBackupFile("windows10-100G-0.qcow2", "./")
 }
 
 func TestPutStorageObject(t *testing.T) {
@@ -74,8 +82,25 @@ func TestPutDLOManifest(t *testing.T) {
 }
 
 func TestGetStorageObject(t *testing.T) {
+	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
+	flag.Parse()
+	config.ApplyGlobalConfig(*conf)
 	_ = PostAuthTokens()
-	//err := GetStorageObject("nubes-test", "windows10-100G-0.qcow2")
-	err := GetStorageObject("nubes-test", "a.txt")
+	ch := make(chan int)
+	go GetStorageObjectByDLO("nubes-test", "windows10-100G-0.qcow2", ch)
+	//go GetStorageObjectByDLO("nubes-test", "a.txt", ch)
+	for {
+		go PrintDownloading(ch)
+		time.Sleep(1 * time.Millisecond)
+		v := <- ch
+		if v == 5 {
+			break
+		}
+	}
+}
+
+func TestDeleteStorageObject(t *testing.T) {
+	_ = PostAuthTokens()
+	err := DeleteStorageObject("nubes-test", "a.txt")
 	fmt.Println(err)
 }

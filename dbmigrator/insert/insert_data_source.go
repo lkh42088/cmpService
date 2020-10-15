@@ -294,16 +294,16 @@ var newAuth = []models.Auth{
 		Level: 1, Tag: "최고 관리자", Login: 2, Device: 2, Platform: 2, Stat: 2, Monitor: 2, Billing: 2,
 		Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
 	},
+	//{
+	//	Level: 2, Tag: "CB 관리자", Login: 2, Device: 2, Platform: 0, Stat: 2, Monitor: 2, Billing: 2,
+	//	Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
+	//},
+	//{
+	//	Level: 3, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+	//	Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	//},
 	{
-		Level: 2, Tag: "CB 관리자", Login: 2, Device: 2, Platform: 0, Stat: 2, Monitor: 2, Billing: 2,
-		Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
-	},
-	{
-		Level: 3, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
-		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
-	},
-	{
-		Level: 4, Tag: "CB 작업자", Login: 2, Device: 2, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Level: 4, Tag: "운영자", Login: 2, Device: 2, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
 		Cloud: 0, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
 	},
 	{
@@ -311,15 +311,15 @@ var newAuth = []models.Auth{
 		Cloud: 2, Board: 2, Manager: 2, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
 	},
 	{
-		Level: 6, Tag: "고객사 사용자", Login: 2, Device: 2, Platform: 0, Stat: 1, Monitor: 1, Billing: 0,
+		Level: 6, Tag: "사용자", Login: 2, Device: 2, Platform: 0, Stat: 1, Monitor: 1, Billing: 0,
 		Cloud: 0, Board: 2, Manager: 0, WorkBoard: 2, TempStart: time.Time{}, TempEnd: time.Time{},
 	},
+	//{
+	//	Level: 7, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+	//	Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
+	//},
 	{
-		Level: 7, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
-		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
-	},
-	{
-		Level: 8, Tag: "", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
+		Level: 8, Tag: "일반 계정", Login: 0, Device: 0, Platform: 0, Stat: 0, Monitor: 0, Billing: 0,
 		Cloud: 0, Board: 0, Manager: 0, WorkBoard: 0, TempStart: time.Time{}, TempEnd: time.Time{},
 	},
 	{
