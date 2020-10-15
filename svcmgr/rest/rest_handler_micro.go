@@ -57,6 +57,7 @@ func (h *Handler) ReceiveRegularMsg(c *gin.Context) {
 		// Process Registration procedure
 		server, err := h.db.GetMcServerBySerialNumber(msg.SerialNumber)
 		if err != nil {
+			fmt.Println("ReceiveRegularMsg: error ", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -65,14 +66,18 @@ func (h *Handler) ReceiveRegularMsg(c *gin.Context) {
 		server.PublicIpAddr = msg.PublicIp
 		server.IpAddr = msg.PrivateIp
 		server.L4Port = msg.Port
-		h.db.UpdateMcServer(server.McServer)
+		server.McServer, err = h.db.UpdateMcServer(server.McServer)
+		//server, err = h.db.GetMcServerBySerialNumber(server.SerialNumber)
 
 		// Send to mcagent
-		mcapi.SendMcRegisterServer(server)
-		c.JSON(http.StatusOK, "")
+		//mcapi.SendMcRegisterServer(server)
+		fmt.Println("ReceiveRegularMsg: send data")
+		server.Dump()
+		c.JSON(http.StatusOK, server)
 		return
 	}
-	c.JSON(http.StatusOK, "")
+	fmt.Println("ReceiveRegularMsg: keepalive")
+	c.JSON(http.StatusOK, "keepalive")
 }
 
 func (h *Handler) UpdateMcServerResource(c *gin.Context) {
