@@ -25,6 +25,10 @@ func (db *DBORM) GetUserById(id string) (user models.User, err error) {
 	return user, db.Where("user_id = ?", id).Find(&user).Error
 }
 
+func (db *DBORM) GetUserByParam(id string, cpIdx string) (user models.User, err error) {
+	return user, db.Where("user_id = ? and cp_idx = ?", id, cpIdx).Find(&user).Error
+}
+
 func (db *DBORM) GetUserDetailsByCpIdx(cpIdx int) (userDetails []models.UserDetail, err error) {
 	return userDetails, db.
 		Table("user_tb").
@@ -39,9 +43,6 @@ func (db *DBORM) GetUserByEmail(email string) (user models.User, err error) {
 }
 
 func (db *DBORM) AddUser(user models.User) (models.User, error) {
-	/*fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 AvataFile : ", user.AvataFile)
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 user : ", user)
-	fmt.Println("💎💎💎💎💎💎💎💎💎💎💎💎💎 UserId : ", user.UserId)*/
 	return user, db.Debug().Create(&user).Error
 }
 
