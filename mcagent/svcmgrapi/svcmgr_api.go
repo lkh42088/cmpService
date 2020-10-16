@@ -5,6 +5,8 @@ import (
 	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
+	"cmpService/mcagent/config"
+	"cmpService/mcagent/repo"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -94,7 +96,7 @@ func SendSysInfoToSvcmgr(info mcmodel.SysInfo, addr string) bool {
 	return true
 }
 
-func SendRegularMsg2Svcmgr(obj messages.ServerRegularMsg, addr string) bool {
+func SendRegularMsg2Svcmgr(obj messages.ServerRegularMsg, addr string, enable bool) bool {
 	pbytes, _ := json.Marshal(obj)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroServerRegularMsg)
@@ -109,6 +111,22 @@ func SendRegularMsg2Svcmgr(obj messages.ServerRegularMsg, addr string) bool {
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("error 2: ", err)
+		return false
+	}
+	if enable == false {
+		var recvServer mcmodel.McServerDetail
+		json.Unmarshal(data, &recvServer)
+		fmt.Println("response: ")
+		recvServer.Dump()
+		// Write etc file
+		if recvServer.Enable && recvServer.SerialNumber == obj.SerialNumber {
+			fmt.Println("SendReqularMsg2Svcmgr: update db --> success")
+			config.WriteServerStatus(recvServer.SerialNumber, recvServer.CompanyName, recvServer.CompanyIdx, enable)
+			// Update DB
+			repo.UpdateMcServer(recvServer)
+			return true
+		}
+		fmt.Println("SendReqularMsg2Svcmgr: uncorrect info - failed!")
 		return false
 	}
 	fmt.Println("response: ", string(data))
