@@ -42,9 +42,11 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	if msg.RegisterType == 0 {
 		// Send to mc server
 		server, _ := h.db.GetMcServerByServerIdx(msg.Idx)
+		fmt.Printf("Add McServer : IP Address\n")
 		mcapi.SendMcRegisterServer(server)
 	}
 
+	fmt.Printf("Add McServer : Dmaoin\n")
 	c.JSON(http.StatusOK, msg)
 }
 
