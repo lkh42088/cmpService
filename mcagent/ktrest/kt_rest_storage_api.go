@@ -175,7 +175,7 @@ func DeleteStorageContainer(containerName string) (err error) {
 	return fmt.Errorf("Success\n")
 }
 
-// Make temp-url
+// Make temp-url (Not complete - need to fix)
 func GetStorageTempUrl() {
 	method := "GET"
 	path := fmt.Sprintf(storagePathUrl, "iwhan@nubes-bridge.com", "Nubes-HC", "")  // Storage db field : account url, filebox name, file name

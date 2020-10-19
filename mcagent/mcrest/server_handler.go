@@ -4,6 +4,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/repo"
 	"encoding/json"
@@ -116,6 +117,7 @@ func registerServerHandler(c *gin.Context) {
 
 	// Insert to DB and create etc file.
 	AddMcServer(msg, true)
+	ddns.ApplyDdns(msg.McServer)
 
 	//server, _ := GetMcServer()
 	server := kvm.GetMcServerInfo()
