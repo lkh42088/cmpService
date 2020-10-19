@@ -4,6 +4,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
@@ -147,6 +148,16 @@ func configure() bool {
 		processSerialNumber()
 	} else {
 		processSerialNumberByConfigFile(cfg.SerialNumber)
+	}
+
+	/********************************
+	 * Apply DDNS
+	 ********************************/
+	mcServer := repo.GetMcServer()
+	fmt.Println("configure: mcServer ")
+	mcServer.Dump()
+	if mcServer != nil && mcServer.Enable {
+		ddns.ApplyDdns(mcServer.McServer)
 	}
 
 	/********************************

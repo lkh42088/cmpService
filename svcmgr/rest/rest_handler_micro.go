@@ -42,9 +42,11 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 	if msg.RegisterType == 0 {
 		// Send to mc server
 		server, _ := h.db.GetMcServerByServerIdx(msg.Idx)
+		fmt.Printf("Add McServer : IP Address\n")
 		mcapi.SendMcRegisterServer(server)
 	}
 
+	fmt.Printf("Add McServer : Dmaoin\n")
 	c.JSON(http.StatusOK, msg)
 }
 
@@ -120,7 +122,11 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		server := serverdetail.McServer
 		fmt.Println("delete server : ", server)
 		// Send to mc server
-		mcapi.SendMcUnRegisterServer(server)
+		res := mcapi.SendMcUnRegisterServer(server)
+		if res == false {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete server"})
+			return
+		}
 		// Dao: Network
 		DeleteMcNetworksByServerIdx(idx)
 		// Dao: Image

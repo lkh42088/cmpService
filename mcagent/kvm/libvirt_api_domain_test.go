@@ -2,7 +2,7 @@ package kvm
 
 import "testing"
 
-var vmName2 = "vm03"
+var vmName2 = "vm01"
 
 func TestShutdownVm2(t *testing.T) {
 	LibvirtShutdownVm(vmName2)

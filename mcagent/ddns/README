@@ -1,0 +1,30 @@
+########################################################################
+# Install ddclient
+########################################################################
+sudo apt-get install ddclient libjson-any-perl libdata-validate-ip-perl
+
+########################################################################
+# Reference configuration
+# /etc/ddclient.conf
+########################################################################
+protocol=dyndns2
+use=web
+server=domains.google.com
+ssl=yes
+server=jungbh
+login=RyzlDBdEB4oK1eci
+password=E1Q0mPlk7IF3bCnI
+bhjung.nubes-bridge.com
+
+########################################################################
+# Description
+# - https://blog.gomgom.net/how-to-set-up-ddclient-for-cloudflare/
+########################################################################
+protocol=cloudflare
+use=web
+ssl=yes
+login=[여러분들의 CloudFlare 로그인 이메일 주소]
+password=[CloudFlare Global API Key (My Settings에서 확인 가능)]
+zone=[여러분들의 도메인 대표 이름]
+[도메인 A 타입 주소 (보통 도메인과 똑같음)]
+
