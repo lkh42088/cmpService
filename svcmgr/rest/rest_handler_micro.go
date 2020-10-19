@@ -122,7 +122,11 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		server := serverdetail.McServer
 		fmt.Println("delete server : ", server)
 		// Send to mc server
-		mcapi.SendMcUnRegisterServer(server)
+		res := mcapi.SendMcUnRegisterServer(server)
+		if res == false {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete server"})
+			return
+		}
 		// Dao: Network
 		DeleteMcNetworksByServerIdx(idx)
 		// Dao: Image
