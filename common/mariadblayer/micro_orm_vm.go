@@ -206,3 +206,7 @@ func (db *DBORM) GetVmTotalCount() (total int, operate int, err error) {
 		Count(&operate).Error
 	return total, operate, err
 }
+
+func (db *DBORM) GetMcVmUserByParam(id string, cpIdx string) (vm mcmodel.McVm, err error) {
+	return vm, db.Where("vm_user_id = ? and cp_idx = ?", id, cpIdx).Find(&vm).Error
+}
