@@ -205,4 +205,7 @@ type MariaDBLayer interface {
 	GetSysPlatform() ([]mcmodel.DevicePlatform, error)
 	GetVmOsInfo() ([]mcmodel.DeviceOsInfo, error)
 	GetMcVmSnapshotByCpIdx(idx int) ([]mcmodel.McVmSnapshot, error)
+
+	// Backup
+	UpdateKtAuthUrl(ip string, authUrl string) (mcmodel.McServer, error)
 }

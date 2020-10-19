@@ -4,6 +4,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mcrest"
@@ -78,6 +79,11 @@ func Start (config string) {
 	 * cron for Register, health check
 	 *********************************/
 	kvm.RegisterRegularMsg()
+
+	/****************************************
+	 * Check kt account & nas info for backup
+	 ****************************************/
+	CheckBackup()
 
 	wg.Wait()
 }
@@ -203,5 +209,10 @@ func ApplyCronForSnapshot() {
 		fmt.Println("ApplyCronForSnapshot: ", vm.Name)
 		kvm.AddSnapshotByMcVm(&vm)
 	}
+}
+
+func CheckBackup() {
+	ktrest.CheckKtAccount()
+	//CheckNasInfo()
 }
 

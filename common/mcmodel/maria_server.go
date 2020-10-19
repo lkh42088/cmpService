@@ -8,43 +8,75 @@ import (
 )
 
 const (
-	McServerOrmIdx          = "mc_idx"
-	McServerOrmSerialNumber = "mc_serial_number"
-	mcServerOrmCompanyIdx   = "mc_cp_idx"
-	mcServerOrmType         = "mc_type"
-	mcServerOrmStatus       = "mc_status"
-	mcServerOrmVmCount      = "mc_vm_count"
-	mcServerOrmIpAddr       = "mc_ip_addr"
+	McServerOrmIdx             = "mc_idx"
+	McServerOrmSerialNumber    = "mc_serial_number"
+	mcServerOrmCompanyIdx      = "mc_cp_idx"
+	mcServerOrmType            = "mc_type"
+	mcServerOrmStatus          = "mc_status"
+	mcServerOrmVmCount         = "mc_vm_count"
+	mcServerOrmIpAddr          = "mc_ip_addr"
+	McServerOrmUcloudAccessKey = "mc_kt_access_key"
+	McServerOrmUcloudSecretKey = "mc_kt_secret_key"
+	McServerOrmUcloudProjectId = "mc_kt_project_id"
+	McServerOrmUcloudDomainId  = "mc_kt_domain_id"
+	McServerOrmUcloudAuthUrl   = "mc_kt_auth_url"
+	McServerOrmNasUrl          = "mc_nas_url"
+	McServerOrmNasId           = "mc_nas_id"
+	McServerOrmNasPassword     = "mc_nas_password"
 )
 
 const (
-	McServerJsonIdx          = "idx"
-	McServerJsonSerialNumber = "serialNumber"
-	mcServerJsonCompanyIdx   = "cpIdx"
-	mcServerJsonType         = "type"
-	mcServerJsonStatus       = "status"
-	mcServerJsonVmCount      = "vmCount"
-	mcServerJsonIpAddr       = "ipAddr"
+	McServerJsonIdx             = "idx"
+	McServerJsonSerialNumber    = "serialNumber"
+	mcServerJsonCompanyIdx      = "cpIdx"
+	mcServerJsonType            = "type"
+	mcServerJsonStatus          = "status"
+	mcServerJsonVmCount         = "vmCount"
+	mcServerJsonIpAddr          = "ipAddr"
+	McServerJsonUcloudAccessKey = "accessKey"
+	McServerJsonUcloudSecretKey = "secretKey"
+	McServerJsonUcloudProjectId = "projectId"
+	McServerJsonUcloudDomainId  = "ktDomainId"
+	McServerJsonUcloudAuthUrl   = "authUrl"
+	McServerJsonNasUrl          = "nasUrl"
+	McServerJsonNasId           = "nasId"
+	McServerJsonNasPassword     = "nasPassword"
 )
 
 var McServerOrmMap = map[string]string{
-	McServerOrmIdx:          McServerJsonIdx,
-	McServerOrmSerialNumber: McServerJsonSerialNumber,
-	mcServerOrmCompanyIdx:   mcServerJsonCompanyIdx,
-	mcServerOrmType:         mcServerJsonType,
-	mcServerOrmStatus:       mcServerJsonStatus,
-	mcServerOrmVmCount:      mcServerJsonVmCount,
-	mcServerOrmIpAddr:       mcServerJsonIpAddr,
+	McServerOrmIdx:             McServerJsonIdx,
+	McServerOrmSerialNumber:    McServerJsonSerialNumber,
+	mcServerOrmCompanyIdx:      mcServerJsonCompanyIdx,
+	mcServerOrmType:            mcServerJsonType,
+	mcServerOrmStatus:          mcServerJsonStatus,
+	mcServerOrmVmCount:         mcServerJsonVmCount,
+	mcServerOrmIpAddr:          mcServerJsonIpAddr,
+	McServerOrmUcloudAccessKey: McServerJsonUcloudAccessKey,
+	McServerOrmUcloudSecretKey: McServerJsonUcloudSecretKey,
+	McServerOrmUcloudProjectId: McServerJsonUcloudProjectId,
+	McServerOrmUcloudDomainId:  McServerJsonUcloudDomainId,
+	McServerOrmUcloudAuthUrl:   McServerJsonUcloudAuthUrl,
+	McServerOrmNasUrl:          McServerJsonNasUrl,
+	McServerOrmNasId:           McServerJsonNasId,
+	McServerOrmNasPassword:     McServerJsonNasPassword,
 }
 
 var McServerJsonMap = map[string]string{
-	McServerJsonIdx:          McServerOrmIdx,
-	McServerJsonSerialNumber: McServerOrmSerialNumber,
-	mcServerJsonCompanyIdx:   mcServerOrmCompanyIdx,
-	mcServerJsonType:         mcServerOrmType,
-	mcServerJsonStatus:       mcServerOrmStatus,
-	mcServerJsonVmCount:      mcServerOrmVmCount,
-	mcServerJsonIpAddr:       mcServerOrmIpAddr,
+	McServerJsonIdx:             McServerOrmIdx,
+	McServerJsonSerialNumber:    McServerOrmSerialNumber,
+	mcServerJsonCompanyIdx:      mcServerOrmCompanyIdx,
+	mcServerJsonType:            mcServerOrmType,
+	mcServerJsonStatus:          mcServerOrmStatus,
+	mcServerJsonVmCount:         mcServerOrmVmCount,
+	mcServerJsonIpAddr:          mcServerOrmIpAddr,
+	McServerJsonUcloudAccessKey: McServerOrmUcloudAccessKey,
+	McServerJsonUcloudSecretKey: McServerOrmUcloudSecretKey,
+	McServerJsonUcloudProjectId: McServerOrmUcloudProjectId,
+	McServerJsonUcloudDomainId:  McServerOrmUcloudDomainId,
+	McServerJsonUcloudAuthUrl:   McServerOrmUcloudAuthUrl,
+	McServerJsonNasUrl:          McServerOrmNasUrl,
+	McServerJsonNasId:           McServerOrmNasId,
+	McServerJsonNasPassword:     McServerOrmNasPassword,
 }
 
 type McServer struct {
@@ -68,6 +100,7 @@ type McServer struct {
 	UcloudSecretKey string `gorm:"type:varchar(50);column:mc_kt_secret_key;comment:'KT Ucloud Secret Key'" json:"secretKey"`
 	UcloudProjectId string `gorm:"type:varchar(50);column:mc_kt_project_id;comment:'KT Ucloud Project ID'" json:"projectId"`
 	UcloudDomainId  string `gorm:"type:varchar(50);column:mc_kt_domain_id;comment:'KT Ucloud Domain ID'" json:"ktDomainId"`
+	UcloudAuthUrl   string `gorm:"type:varchar(255);column:mc_kt_auth_url;comment:'KT 사용자 인증 URL'" json:"authUrl"`
 	NasUrl          string `gorm:"type:varchar(50);column:mc_nas_url;comment:'NAS URL'" json:"nasUrl"`
 	NasId           string `gorm:"type:varchar(50);column:mc_nas_id;comment:'NAS ID'" json:"nasId"`
 	NasPassword     string `gorm:"type:varchar(50);column:mc_nas_password;comment:'NAS PASSWORD'" json:"nasPassword"`
@@ -130,6 +163,7 @@ type McServerMsg struct {
 	UcloudSecretKey string        `json:"secretKey"`
 	UcloudProjectId string        `json:"projectId"`
 	UcloudDomainId  string        `json:"ktDomainId"`
+	UcloudAuthUrl   string        `json:"authUrl"`
 	NasUrl          string        `json:"nasUrl"`
 	NasId           string        `json:"nasId"`
 	NasPassword     string        `json:"nasPassword"`

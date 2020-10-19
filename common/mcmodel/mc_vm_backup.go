@@ -14,6 +14,14 @@ var McVmSnapOrmMap = map[string]string{
 	"snap_cp_idx":     "cpIdx",
 	"snap_vm_name":    "vmName",
 	"snap_name":       "name",
+	"snap_desc":       "desc",
+	"snap_year":       "year",
+	"snap_month":      "month",
+	"snap_day":        "day",
+	"snap_hour":       "hour",
+	"snap_minute":     "minute",
+	"snap_second":     "second",
+	"snap_current":    "current",
 }
 
 var McVmSnapJsonMap = map[string]string{
@@ -22,6 +30,14 @@ var McVmSnapJsonMap = map[string]string{
 	"cpIdx":     "snap_cp_idx",
 	"vmName":    "snap_vm_name",
 	"name":      "snap_name",
+	"desc":      "snap_desc",
+	"year":      "snap_year",
+	"month":     "snap_month",
+	"day":       "snap_day",
+	"hour":      "snap_hour",
+	"minute":    "snap_minute",
+	"second":    "snap_second",
+	"current":   "snap_current",
 }
 
 type McVmSnapshot struct {
@@ -83,6 +99,47 @@ func (o McVmSnapPage) GetOrderBy(orderby, order string) string {
 	return val + " " + order
 }
 
+/** BACKUP */
+var McVmBackupOrmMap = map[string]string{
+	"backup_idx":                  "idx",
+	"backup_cp_idx":               "cpIdx",
+	"backup_server_idx":           "serverIdx",
+	"backup_server_serial_number": "serverSn",
+	"backup_kt_auth_url":          "authUrl",
+	"backup_nas_name":             "nasBackupName",
+	"backup_kt_container_name":    "containerName",
+	"backup_container_date":       "containerDate",
+	"backup_name":                 "name",
+	"backup_register_date":        "registerDate",
+	"backup_size":                 "fileSize",
+	"backup_vm_name":              "vmName",
+	"backup_desc":                 "desc",
+	"backup_month":                "month",
+	"backup_day":                  "day",
+	"backup_hour":                 "hour",
+	"backup_minute":               "minute",
+}
+
+var McVmBackupJsonMap = map[string]string{
+	"idx":           "backup_idx",
+	"cpIdx":         "backup_cp_idx",
+	"serverIdx":     "backup_server_idx",
+	"serverSn":      "backup_server_serial_number",
+	"authUrl":       "backup_kt_auth_url",
+	"nasBackupName": "backup_nas_name",
+	"containerName": "backup_kt_container_name",
+	"containerDate": "backup_container_date",
+	"name":          "backup_name",
+	"registerDate":  "backup_register_date",
+	"fileSize":      "backup_size",
+	"vmName":        "backup_vm_name",
+	"desc":          "backup_desc",
+	"month":         "backup_month",
+	"day":           "backup_day",
+	"hour":          "backup_hour",
+	"minute":        "backup_minute",
+}
+
 type McVmBackup struct {
 	Idx             uint      `gorm:"primary_key;column:backup_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
 	CompanyIdx      int       `gorm:"type:int(11);not null;column:backup_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
@@ -113,9 +170,26 @@ type McVmBackupDetail struct {
 	SerialNumber string `gorm:"type:varchar(50);column:mc_serial_number" json:"serialNumber"`
 }
 
+type McBackupPage struct {
+	Page    models.Pagination  `json:"page"`
+	Backups []McVmBackupDetail `json:"data"`
+}
+
 func DumpMcVmBackupList(list []McVmBackup) {
 	pretty, _ := json.MarshalIndent(list, "", "  ")
 	fmt.Printf("------------------------------------------------------------\n")
 	fmt.Printf("VM Backup List: %d\n", len(list))
 	fmt.Printf("%s\n", string(pretty))
+}
+
+func (m McBackupPage) GetOrderBy(orderby, order string) string {
+	val, exists := McVmBackupJsonMap[orderby]
+	if !exists {
+		val = "mc_idx"
+	}
+	order = strings.ToLower(order)
+	if !(order == "asc" || order == "desc") {
+		order = "desc"
+	}
+	return val + " " + order
 }

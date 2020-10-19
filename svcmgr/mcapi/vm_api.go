@@ -21,14 +21,14 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	s.Port = recvMsg.Port
 	s.IpAddr = recvMsg.Ip
 	s.PublicIpAddr = recvMsg.PublicIp
-	// backup data
-	s.UcloudAccessKey = recvMsg.UcloudAccessKey
-	s.UcloudSecretKey = recvMsg.UcloudSecretKey
-	s.UcloudProjectId = recvMsg.UcloudProjectId
-	s.UcloudDomainId = recvMsg.UcloudDomainId
-	s.NasUrl = recvMsg.NasUrl
-	s.NasId = s.NasId
-	s.NasPassword = recvMsg.NasPassword
+	// backup data : Do not sync to reverse (only svcmgr -> mcmgr)
+	//s.UcloudAccessKey = recvMsg.UcloudAccessKey
+	//s.UcloudSecretKey = recvMsg.UcloudSecretKey
+	//s.UcloudProjectId = recvMsg.UcloudProjectId
+	//s.UcloudDomainId = recvMsg.UcloudDomainId
+	//s.NasUrl = recvMsg.NasUrl
+	//s.NasId = recvMsg.NasId
+	//s.NasPassword = recvMsg.NasPassword
 	s, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcServer(s)
 	if err != nil {
 		fmt.Println("UpdateMcServer: error - ", err)

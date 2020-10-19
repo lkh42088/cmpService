@@ -81,6 +81,13 @@ func (db *DBORM) GetMcServer() (servers []mcmodel.McServer, err error) {
 		Find(&servers).Error
 }
 
+func (db *DBORM) GetMcServerByIp(ip string) (server mcmodel.McServer, err error) {
+	return server, db.Table("mc_server_tb").
+		Select("mc_server_tb.*").
+		Where(mcmodel.McServer{IpAddr: ip}).
+		Find(&server).Error
+}
+
 func (db *DBORM) AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
 	return obj, db.Create(&obj).Error
 }
@@ -106,6 +113,7 @@ func (db *DBORM) UpdateMcServerAll(obj mcmodel.McServer) (mcmodel.McServer, erro
 			"mc_kt_secret_key":  obj.UcloudSecretKey,
 			"mc_kt_project_id":  obj.UcloudProjectId,
 			"mc_kt_domain_id":   obj.UcloudDomainId,
+			"mc_kt_auth_url":	 obj.UcloudAuthUrl,
 			"mc_nas_url":        obj.NasUrl,
 			"mc_nas_id":         obj.NasId,
 			"mc_nas_password":   obj.NasPassword,
@@ -129,7 +137,8 @@ func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) 
 			"mc_kt_secret_key":  obj.UcloudSecretKey,
 			"mc_kt_project_id":  obj.UcloudProjectId,
 			"mc_kt_domain_id":   obj.UcloudDomainId,
-			"mc_nas_url":        obj.NasUrl,
+		    "mc_kt_auth_url":	 obj.UcloudAuthUrl,
+		    "mc_nas_url":        obj.NasUrl,
 			"mc_nas_id":         obj.NasId,
 			"mc_nas_password":   obj.NasPassword,
 		}).Error

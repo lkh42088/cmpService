@@ -49,6 +49,13 @@ type ServerRegularMsg struct {
 	Port         string `json:"port"`
 }
 
+// For Backup
+type KtAuthUrl struct {
+	AuthUrl 	string 			`json:"authUrl"`
+	CpIdx 		int 			`json:"cpIdx"`
+	Ip 			string			`json:"ip"`
+}
+
 func (s *ServerRegularMsg) Dump() {
 	pretty, _ := json.MarshalIndent(s, "", "  ")
 	fmt.Printf("------------------------------------------------------------\n")

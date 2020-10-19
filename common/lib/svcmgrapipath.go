@@ -60,6 +60,7 @@ const (
 	SvcmgrApiMicroServerRank            	= SvcmgrApiMicroDashboard + "/rank"
 	SvcmgrApiMicroSnapshotCount         	= SvcmgrApiMicroDashboard + "/snapshotcnt"
 	SvcmgrApiMicroVmCheckUser				= SvcmgrApiMicroVm + "/check/user"
+	SvcmgrApiMicroKtAuthUrl					= SvcmgrApiMicro + "/auth/url"
 
 	// /v1/micro/vms/check/user
 )

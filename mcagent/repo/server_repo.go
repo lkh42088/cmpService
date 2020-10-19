@@ -83,3 +83,12 @@ func DeleteServer2Db(s mcmodel.McServer) (mcmodel.McServer, error) {
 func GetServerFromDb() ([]mcmodel.McServer, error) {
 	return config2.GetMcGlobalConfig().DbOrm.GetMcServer()
 }
+
+// For Backup
+func GetServerFromDbByIp(ip string) (mcmodel.McServer, error) {
+	return config2.GetMcGlobalConfig().DbOrm.GetMcServerByIp(ip)
+}
+
+func UpdateKtAuthUrl2Db(ip string, authUrl string) (mcmodel.McServer, error) {
+	return config2.GetMcGlobalConfig().DbOrm.UpdateKtAuthUrl(ip, authUrl)
+}

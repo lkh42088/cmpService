@@ -132,3 +132,5 @@ func SendRegularMsg2Svcmgr(obj messages.ServerRegularMsg, addr string, enable bo
 	fmt.Println("response: ", string(data))
 	return true
 }
+
+
