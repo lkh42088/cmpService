@@ -91,17 +91,21 @@ func (db *DBORM) UpdateMcServerAll(obj mcmodel.McServer) (mcmodel.McServer, erro
 		Model(&obj).
 		Where(mcmodel.McServer{Idx: obj.Idx}).
 		Update(map[string]interface{}{
-			"mc_cp_idx":         obj.CompanyIdx,
-			"mc_serial_number":  obj.SerialNumber,
-			"mc_type":           obj.Type,
-			"mc_status":         obj.Status,
-			"mc_enable":         obj.Enable,
-			"mc_port":           obj.Port,
-			"mc_mac":            obj.Mac,
-			"mc_vm_count":       obj.VmCount,
-			"mc_ip_addr":        obj.IpAddr,
-			"mc_public_ip_addr": obj.PublicIpAddr,
-			"mc_l4_port":        obj.L4Port,
+			"mc_cp_idx":          obj.CompanyIdx,
+			"mc_serial_number":   obj.SerialNumber,
+			"mc_type":            obj.Type,
+			"mc_status":          obj.Status,
+			"mc_enable":          obj.Enable,
+			"mc_port":            obj.Port,
+			"mc_mac":             obj.Mac,
+			"mc_vm_count":        obj.VmCount,
+			"mc_ip_addr":         obj.IpAddr,
+			"mc_public_ip_addr":  obj.PublicIpAddr,
+			"mc_l4_port":         obj.L4Port,
+			"mc_register_type":   obj.RegisterType,
+			"mc_domain_prefix":   obj.DomainPrefix,
+			"mc_domain_id":       obj.DomainId,
+			"mc_domain_password": obj.DomainPassword,
 		}).Error
 }
 
@@ -118,7 +122,7 @@ func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) 
 			"mc_ip_addr":        obj.IpAddr,
 			"mc_public_ip_addr": obj.PublicIpAddr,
 			"mc_l4_port":        obj.L4Port,
-	}).Error
+		}).Error
 }
 
 func (db *DBORM) DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) {
