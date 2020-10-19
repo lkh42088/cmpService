@@ -73,7 +73,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 	fmt.Println("GetUserById...")
 
 	value := c.Param("value")
-	fmt.Println("★★★★★★ GetUserById value... : ", value)
+	//fmt.Println("★★★★★★ GetUserById value... : ", value)
 	user, err := h.db.GetUserById(value)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

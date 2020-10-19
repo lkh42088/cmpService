@@ -127,6 +127,7 @@ type MariaDBLayer interface {
 	GetAllUsers() ([]models.User, error)
 	GetUserDetailById(id string) (models.UserDetail, error)
 	GetUserById(id string) (models.User, error)
+	GetUserByParam(id string, cpIdx string) (models.User, error)
 	GetUserByEmail(id string) (models.User, error)
 	GetUsersPage(paging models.Pagination) (models.UserPage, error)
 	GetUserDetailsByCpIdx(cpIdx int) ([]models.UserDetail, error)

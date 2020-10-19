@@ -120,6 +120,7 @@ type HandlerInterface interface {
 	GetVmInterfaceDisk(c *gin.Context)
 
 	GetVmWinInterface(c *gin.Context)
+	GetMcVmCheckUser(c *gin.Context)
 }
 
 type Handler struct {
@@ -310,6 +311,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroDashboard+"/system/:mac", h.GetSystemInfoByMac)
 	router.GET(lib.SvcmgrApiMicroServerRank, GetServerRank)
 	router.GET(lib.SvcmgrApiMicroSnapshotCount+"/:cpIdx", h.GetMcVmSnapshotByCpIdx)
+
+	//user check (vm register)
+	router.GET(lib.SvcmgrApiMicroVmCheckUser+"/:id/:cpIdx", h.GetMcVmCheckUser)
 
 	return router.Run(address)
 }

@@ -5,22 +5,23 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 )
 
 var McVmSnapOrmMap = map[string]string{
-	"snap_idx": "idx",
+	"snap_idx":        "idx",
 	"snap_server_idx": "serverIdx",
-	"snap_cp_idx": "cpIdx",
-	"snap_vm_name": "vmName",
-	"snap_name": "name",
+	"snap_cp_idx":     "cpIdx",
+	"snap_vm_name":    "vmName",
+	"snap_name":       "name",
 }
 
 var McVmSnapJsonMap = map[string]string{
-	"idx": "snap_idx",
+	"idx":       "snap_idx",
 	"serverIdx": "snap_server_idx",
-	"cpIdx": "snap_cp_idx",
-	"vmName": "snap_vm_name",
-	"name": "snap_name",
+	"cpIdx":     "snap_cp_idx",
+	"vmName":    "snap_vm_name",
+	"name":      "snap_name",
 }
 
 type McVmSnapshot struct {
@@ -83,16 +84,23 @@ func (o McVmSnapPage) GetOrderBy(orderby, order string) string {
 }
 
 type McVmBackup struct {
-	Idx         uint   `gorm:"primary_key;column:snap_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
-	McServerIdx int    `gorm:"type:int(11);column:snap_server_idx;comment:'서버 고유값'" json:"serverIdx"`
-	CompanyIdx  int    `gorm:"type:int(11);column:snap_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
-	VmName      string `gorm:"type:varchar(50);column:snap_vm_name;comment:'vm 이름'" json:"vmName"`
-	Name        string `gorm:"type:varchar(50);column:snap_name;comment:'snapshot 이름'" json:"name"`
-	Desc        string `gorm:"type:varchar(50);column:snap_desc;comment:'snapshot description'" json:"desc"`
-	Month       int    `gorm:"type:int(11);column:snap_month;comment:'month'" json:"month"`
-	Day         int    `gorm:"type:int(11);column:snap_day;comment:'day'" json:"day"`
-	Hour        int    `gorm:"type:int(11);column:snap_hour;comment:'hour'" json:"hour"`
-	Minute      int    `gorm:"type:int(11);column:snap_minute;comment:'minute'" json:"minute"`
+	Idx             uint      `gorm:"primary_key;column:backup_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
+	CompanyIdx      int       `gorm:"type:int(11);not null;column:backup_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
+	McServerIdx     int       `gorm:"type:int(11);column:backup_server_idx;comment:'서버 고유값'" json:"serverIdx"`
+	McServerSn      string    `gorm:"type:int(11);column:backup_server_serial_number;comment:'서버 시리얼 넘버'" json:"serverSn"`
+	KtAuthUrl       string    `gorm:"type:int(11);column:backup_kt_auth_url;comment:'KT 사용자 인증 URL'" json:"authUrl"`
+	NasBackupName   string    `gorm:"type:int(11);column:backup_nas_name;comment:'NAS 백업 파일 이름'" json:"nasBackupName"`
+	KtContainerName string    `gorm:"type:int(11);column:backup_kt_container_name;comment:'컨테이너 이름'" json:"containerName"`
+	KtContainerDate time.Time `gorm:"type:datetime;column:backup_container_date;comment:'컨테이너 생성일'" json:"containerDate"`
+	Name            string    `gorm:"type:varchar(50);column:backup_name;comment:'백업 파일 이름'" json:"filename"`
+	LastBackupDate  time.Time `gorm:"type:datetime;column:backup_register_date;comment:'최종 백업 날짜'" json:"registerDate"`
+	BackupSize      int       `gorm:"type:int(11);column:backup_size;comment:'백업 이미지 크기'" json:"fileSize"`
+	VmName          string    `gorm:"type:varchar(50);column:backup_vm_name;comment:'백업 VM 이름'" json:"vmName"`
+	Desc            string    `gorm:"type:varchar(255);column:backup_desc;comment:'백업 상세'" json:"desc"`
+	Month           int       `gorm:"type:int(11);column:backup_month;comment:'month'" json:"month"`
+	Day             int       `gorm:"type:int(11);column:backup_day;comment:'day'" json:"day"`
+	Hour            int       `gorm:"type:int(11);column:backup_hour;comment:'hour'" json:"hour"`
+	Minute          int       `gorm:"type:int(11);column:backup_minute;comment:'minute'" json:"minute"`
 }
 
 func (McVmBackup) TableName() string {

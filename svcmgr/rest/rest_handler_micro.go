@@ -924,3 +924,41 @@ func (h *Handler) RecoverySnapshot(c *gin.Context) {
 		}
 	}
 }
+
+func (h *Handler) GetMcVmCheckUser(c *gin.Context) {
+	/* id 중복체크 ()*/
+	/*
+	 * 1. user 테이블에 해당 id 존재하는지 확인
+	 * 2. 해당 회사의 vm에 user가 등록되어 있는지 중복체크
+	 *
+	*/
+	id := c.Param("id")
+	cpIdx := c.Param("cpIdx")
+
+	fmt.Println("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★")
+	fmt.Println("id : ", id)
+	fmt.Println("cpIdx : ", cpIdx)
+
+	// 1. user 테이블에 해당 id 존재하는지 확인 (조건으로 그 회사의 ! )
+	// success =>
+	// fail =>
+	user, err := h.db.GetUserByParam(id, cpIdx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	fmt.Println("user : ", user)
+
+	// 2. 해당 회사의 vm에 user가 등록되어 있는지 중복체크
+	// success =>
+	// fail =>
+
+
+	// return
+	// ex => c.JSON(http.StatusOK, gin.H{"success": true, "msg": "존재하지 않는 ID 입니다."})
+
+	/*c.JSON(200, gin.H{
+		"status":    "posted",
+		"file name": file.Filename,
+	})*/
+}
