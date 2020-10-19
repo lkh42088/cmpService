@@ -235,7 +235,6 @@ func (h *Handler) UpdateMcVmFromMc(c *gin.Context) {
 	c.JSON(http.StatusOK, msg)
 }
 
-
 func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
@@ -352,7 +351,6 @@ func (h *Handler) GetMcVmVnc(c *gin.Context) {
 
 }
 
-
 func (h *Handler) GetMcVms(c *gin.Context) {
 	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
 	if err != nil {
@@ -432,7 +430,7 @@ func (h *Handler) GetMcImages(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
-	
+
 	c.JSON(http.StatusOK, images)
 }
 
@@ -539,9 +537,9 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 
 	winCpu := make([]mcmodel.WinCpuStat, 1)
 	if res.Results[0].Series == nil ||
-		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
+		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running" {
 		//fmt.Println("")
-		lib.LogWarn(mac, "win_cpu InfluxDB Response Error" +
+		lib.LogWarn(mac, "win_cpu InfluxDB Response Error"+
 			" : No Data\n")
 
 		winCpu[0].PercentIdleTime = 0
@@ -575,7 +573,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 
 	winMem := make([]mcmodel.WinMemStat, 1)
 	if res.Results[0].Series == nil ||
-		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
+		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running" {
 		lib.LogWarn("win_mem InfluxDB Response Error : No Data\n")
 		//var winMem models.WinMemStat;
 		//winMem.AvailableBytes = json.Number(0)
@@ -611,7 +609,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 
 	winDisk := make([]mcmodel.WinDiskStat, 1)
 	if res.Results[0].Series == nil ||
-		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
+		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running" {
 		lib.LogWarn("win_disk InfluxDB Response Error : No Data\n")
 		//var winDisk models.WinDiskStat
 		//winDisk.FreeMegabytes = json.Number(0)
@@ -649,7 +647,7 @@ func (h *Handler) GetVmWinInterface(c *gin.Context) {
 	winTraffic := make([]mcmodel.WinVmIfStat, 1)
 	//fmt.Println(res.Err)
 	if res.Results[0].Series == nil ||
-		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running"{
+		len(res.Results[0].Series[0].Values) == 0 || currentStatus != "running" {
 		lib.LogWarn("win_net InfluxDB Response Error : No Data\n")
 		//var winTraffic models.WinVmIfStat
 		//winTraffic.BytesSentPersec = 0
@@ -701,7 +699,6 @@ func (h *Handler) GetVmSnapshotConfig(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, vms)
 }
-
 
 func (h *Handler) NotifyMcAgentVmSnapshot(c *gin.Context) {
 	var msg mcmodel.McVmSnapshot
@@ -929,7 +926,7 @@ func (h *Handler) GetMcVmCheckUser(c *gin.Context) {
 	 * 1. user 테이블에 해당 id 존재하는지 확인
 	 * 2. 해당 회사의 vm에 user가 등록되어 있는지 중복체크
 	 *
-	*/
+	 */
 	id := c.Param("id")
 	cpIdx := c.Param("cpIdx")
 
@@ -938,11 +935,14 @@ func (h *Handler) GetMcVmCheckUser(c *gin.Context) {
 	fmt.Println("cpIdx : ", cpIdx)
 
 	// 1. user 테이블에 해당 id 존재하는지 확인 (조건으로 그 회사의 ! )
-	// success =>
-	// fail =>
+	// success => 200
+	// fail => 404, type = user
 	user, err := h.db.GetUserByParam(id, cpIdx)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(200, gin.H{
+			"status": "fail",
+			"type":   "user",
+		})
 		return
 	}
 	fmt.Println("user : ", user)
@@ -951,6 +951,21 @@ func (h *Handler) GetMcVmCheckUser(c *gin.Context) {
 	// success =>
 	// fail =>
 
+	vm, vmErr := h.db.GetMcVmUserByParam(id, cpIdx)
+	if vmErr != nil {
+		c.JSON(200, gin.H{
+			"status" : "success",
+			"type" : "vm",
+		})
+		return
+	}
+
+	fmt.Println("vm : ", vm)
+
+	c.JSON(200, gin.H{
+		"status" : "fail",
+		"type" : "vm",
+	})
 
 	// return
 	// ex => c.JSON(http.StatusOK, gin.H{"success": true, "msg": "존재하지 않는 ID 입니다."})
