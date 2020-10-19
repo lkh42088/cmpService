@@ -106,6 +106,13 @@ func (db *DBORM) UpdateMcServerAll(obj mcmodel.McServer) (mcmodel.McServer, erro
 			"mc_domain_prefix":   obj.DomainPrefix,
 			"mc_domain_id":       obj.DomainId,
 			"mc_domain_password": obj.DomainPassword,
+			"mc_kt_access_key":   obj.UcloudAccessKey,
+			"mc_kt_secret_key":   obj.UcloudSecretKey,
+			"mc_kt_project_id":   obj.UcloudProjectId,
+			"mc_kt_domain_id":    obj.UcloudDomainId,
+			"mc_nas_url":         obj.NasUrl,
+			"mc_nas_id":          obj.NasId,
+			"mc_nas_password":    obj.NasPassword,
 		}).Error
 }
 
@@ -114,14 +121,25 @@ func (db *DBORM) UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error) 
 		Model(&obj).
 		Where(mcmodel.McServer{Idx: obj.Idx}).
 		Update(map[string]interface{}{
-			"mc_status":         obj.Status,
-			"mc_enable":         obj.Enable,
-			"mc_port":           obj.Port,
-			"mc_mac":            obj.Mac,
-			"mc_vm_count":       obj.VmCount,
-			"mc_ip_addr":        obj.IpAddr,
-			"mc_public_ip_addr": obj.PublicIpAddr,
-			"mc_l4_port":        obj.L4Port,
+			"mc_status":          obj.Status,
+			"mc_enable":          obj.Enable,
+			"mc_port":            obj.Port,
+			"mc_mac":             obj.Mac,
+			"mc_vm_count":        obj.VmCount,
+			"mc_ip_addr":         obj.IpAddr,
+			"mc_public_ip_addr":  obj.PublicIpAddr,
+			"mc_l4_port":         obj.L4Port,
+			"mc_register_type":   obj.RegisterType,
+			"mc_domain_prefix":   obj.DomainPrefix,
+			"mc_domain_id":       obj.DomainId,
+			"mc_domain_password": obj.DomainPassword,
+			"mc_kt_access_key":   obj.UcloudAccessKey,
+			"mc_kt_secret_key":   obj.UcloudSecretKey,
+			"mc_kt_project_id":   obj.UcloudProjectId,
+			"mc_kt_domain_id":    obj.UcloudDomainId,
+			"mc_nas_url":         obj.NasUrl,
+			"mc_nas_id":          obj.NasId,
+			"mc_nas_password":    obj.NasPassword,
 		}).Error
 }
 

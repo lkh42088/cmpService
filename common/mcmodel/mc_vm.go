@@ -71,6 +71,8 @@ type McVm struct {
 	IsCreated      bool   `gorm:"-" json:"isCreated"`
 	IsProcess      bool   `gorm:"-" json:"isProcess"`
 	IsChangeIpAddr bool   `gorm:"-" json:"-"`
+	UserId         string `gorm:"type:varchar(100);column:vm_user_id;" json:"userId"`
+	//vm_user_id
 }
 
 func (v *McVm) Dump() string {
