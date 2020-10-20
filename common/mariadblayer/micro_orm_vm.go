@@ -119,6 +119,9 @@ func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm,
 }
 
 func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
+	fmt.Println("micro-orm-vm UpdateVmCount start-------------------------------------------------------")
+	fmt.Println("vm : ", vm)
+	fmt.Println("vm.UserId : ", vm.UserId)
 	var server mcmodel.McServer
 	err := db.Where(mcmodel.McServer{Idx: uint(vm.McServerIdx)}).
 		Find(&server).Error
@@ -146,6 +149,9 @@ func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
 }
 
 func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	fmt.Println("micro-orm-vm AddMcVm start-------------------------------------------------------------")
+	fmt.Println("obj : ", obj)
+	fmt.Println("obj.UserId : ", obj.UserId)
 	err = db.Create(&obj).Error
 	vm = obj
 	if err == nil {

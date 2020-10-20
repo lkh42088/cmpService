@@ -44,6 +44,9 @@ func UpdateVmList(list *[]mcmodel.McVm) {
 }
 
 func AddVm2Repo(v *mcmodel.McVm) bool {
+	fmt.Println("AddVm2Repo start-----------------------------------------------------------------------")
+	fmt.Println("v : ", v)
+	fmt.Println("v.UserId : ", v.UserId)
 	if v.Name == "" {
 		return false
 	}
@@ -167,6 +170,9 @@ func InitCachingVms() {
 }
 
 func AddVm2Db(v mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	fmt.Println("vm-repo AddVm2Db start-----------------------------------------------------------------")
+	fmt.Println("vm : ", vm)
+	fmt.Println("vm.UserId : ", vm.UserId)
 	return config.GetMcGlobalConfig().DbOrm.AddMcVm(v)
 }
 

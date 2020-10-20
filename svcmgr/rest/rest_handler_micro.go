@@ -193,8 +193,11 @@ func (h *Handler) GetMcServersByCpIdx(c *gin.Context) {
 func (h *Handler) AddMcVm(c *gin.Context) {
 	var msg mcmodel.McVm
 	c.Bind(&msg)
+	fmt.Println("rest handler micro AddMcVm start-------------------------------------------------------")
+	fmt.Println("c : ", c);
+	fmt.Println("01 msg.bind userId : ", msg.UserId);
 
-	fmt.Printf("Add McVm : %v\n", msg)
+	//fmt.Printf("Add McVm : %v\n", msg)
 	msg.Dump()
 
 	msg.CurrentStatus = "Ready"
@@ -203,6 +206,7 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	fmt.Println("02 msg.bind userId : ", msg.UserId);
 
 	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
 	if err != nil {
@@ -211,6 +215,7 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 	}
 
 	// send to mcagent
+	fmt.Println("fin api send : ", msg)
 	mcapi.SendAddVm(msg, server)
 
 	c.JSON(http.StatusOK, msg)

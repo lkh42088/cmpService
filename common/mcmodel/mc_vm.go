@@ -71,7 +71,7 @@ type McVm struct {
 	IsCreated      bool   `gorm:"-" json:"isCreated"`
 	IsProcess      bool   `gorm:"-" json:"isProcess"`
 	IsChangeIpAddr bool   `gorm:"-" json:"-"`
-	UserId         string `gorm:"type:varchar(100);column:vm_user_id;" json:"userId"`
+	UserId         string `gorm:"type:varchar(100);column:vm_user_id;" json:"vmUserId"`
 	//vm_user_id
 }
 
