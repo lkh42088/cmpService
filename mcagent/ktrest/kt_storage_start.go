@@ -34,7 +34,9 @@ func CheckKtAccount() error {
 		CpIdx:   server.CompanyIdx,
 		Ip:      conf.ServerIp,
 	}
-	SendUpdateAuthUrl2Svcmgr(obj ,conf.SvcmgrIp + ":" + conf.SvcmgrPort)
+	if !SendUpdateAuthUrl2Svcmgr(obj ,conf.SvcmgrIp + ":" + conf.SvcmgrPort) {
+		return fmt.Errorf("! Error : Failed to sync svcmgr DB.")
+	}
 
 	return nil
 }

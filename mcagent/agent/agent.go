@@ -12,6 +12,7 @@ import (
 	"cmpService/mcagent/repo"
 	"cmpService/svcmgr/config"
 	"fmt"
+	"os"
 	"sync"
 )
 
@@ -223,7 +224,20 @@ func ApplyCronForSnapshot() {
 }
 
 func CheckBackup() {
-	ktrest.CheckKtAccount()
-	//CheckNasInfo()
+	// Check Backup Directory
+	cfg := config2.GetMcGlobalConfig()
+	if _, err := os.Stat(cfg.VmBackupDir); err != nil {
+		err = os.MkdirAll(cfg.VmBackupDir, 0755)
+		if err != nil {
+			return
+		}
+	}
+	// Check KT Storage Account
+	err := ktrest.CheckKtAccount()
+	if err != nil {
+		fmt.Println("** CheckKtAccount Error : ", err)
+	}
+	// Check NAS Info
+	// CheckNasInfo()
 }
 

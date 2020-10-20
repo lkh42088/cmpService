@@ -26,6 +26,7 @@ type McAgentConfig struct {
 	SvcmgrPort         string              `json:"svcmgr_port"`
 	VmImageDir         string              `json:"vm_image_dir"`
 	VmInstanceDir      string              `json:"vm_instance_dir"`
+	VmBackupDir        string              `json:"vm_backup_dir"`
 	ServerPort         string              `json:"server_port"`
 	ServerMac          string              `json:"server_mac"`
 	ServerIp           string              `json:"server_ip"`
