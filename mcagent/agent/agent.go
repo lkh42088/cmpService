@@ -81,7 +81,6 @@ func Start (config string) {
 	 * cron for Register, health check
 	 *********************************/
 	kvm.RegisterRegularMsg()
-	kvm.RegisterRegularMsgForBackup()
 
 	/****************************************
 	 * Check kt account & nas info for backup
