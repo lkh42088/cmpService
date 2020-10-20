@@ -87,11 +87,6 @@ func Start (config string) {
 	 * Check kt account & nas info for backup
 	 ****************************************/
 	CheckBackup()
-	if ktrest.CronBack != nil {
-		go ktrest.CronBack.Start(&wg)
-	} else {
-		wg.Done()
-	}
 
 	wg.Wait()
 }
