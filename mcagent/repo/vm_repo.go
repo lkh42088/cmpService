@@ -64,6 +64,7 @@ func AddVm2Repo(v *mcmodel.McVm) bool {
 	v.McServerIdx = int(GetMcServer().Idx)
 	// Insert to Cache List
 	GlobalVmCache = append(GlobalVmCache, *v)
+
 	/********************
 	 * Add to Database
 	 ********************/

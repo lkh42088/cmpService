@@ -5,15 +5,16 @@ import "time"
 /** Global Variables */
 var GlobalToken string
 var GlobalAccountUrl string
+var GlobalContainerName string
 
 // KT Storage variables
-const EXPIRED_TIME = 60 * time.Minute
-const CONTENT_TYPE_JSON = "application/json"
-const CONTENT_TYPE_BINARY = "binary/octet-stream"
-const RANGE_4096 = "4096"
-const METHODS_PASSWORD = "password"
-const ECONOMY_TYPE = "ec"
-const BACKUP_FILE_PERMISSION = 0644
+const ExpiredTime = 60 * time.Minute
+const ContentTypeJson = "application/json"
+const ContentTypeBinary = "binary/octet-stream"
+const Range4096 = "4096"
+const MethodsPassword = "password"
+const EconomyType = "ec"
+const BackupFilePermission = 0644
 
 // DB
 const storageAccessKey = "iwhan@nubes-bridge.com"
@@ -22,4 +23,9 @@ const storageProjectId = "fa632a4a0d04488c93b7184be92df4c8"
 const storageDomainId = "42a37f949dcd48a3a805fe0d2d3a7da5"
 
 const authToken = ""
+
+const BackupDisable = 0
+const BackupKtStorage = 1
+const BackupNas = 2
+
 

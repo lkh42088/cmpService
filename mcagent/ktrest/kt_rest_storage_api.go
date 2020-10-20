@@ -22,7 +22,7 @@ func PostAuthTokens() StorageAuthTokenResponse {
 	response := StorageAuthTokenResponse{}
 
 	//Make request
-	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, METHODS_PASSWORD)
+	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, MethodsPassword)
 	req.Auth.Identity.Password.User.Name = storageAccessKey
 	req.Auth.Identity.Password.User.Domain.Id = storageDomainId
 	req.Auth.Identity.Password.User.Password = storageSecretKey
@@ -32,7 +32,7 @@ func PostAuthTokens() StorageAuthTokenResponse {
 	body := bytes.NewBuffer(pbytes)
 
 	//Send API Query
-	resp, err := http.Post(baseUrl.String(), CONTENT_TYPE_JSON, body)
+	resp, err := http.Post(baseUrl.String(), ContentTypeJson, body)
 	if err != nil {
 		fmt.Println("error:", err)
 	} else {
@@ -67,7 +67,7 @@ func GetStorageAccount(auth StorageAuthTokenResponse) []StorageAccount {
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	req.Header.Add("Content-Type", ContentTypeJson)
 
 	//fmt.Println("URL: ", req)
 
@@ -90,7 +90,7 @@ func GetStorageAccount(auth StorageAuthTokenResponse) []StorageAccount {
 }
 
 // Get storage container
-func GetStorageContainer(containerName string) (err error) {
+func GetStorageContainer(containerName string) (code int, err error) {
 	//var response []StorageContainer
 
 	// Request URL
@@ -98,8 +98,8 @@ func GetStorageContainer(containerName string) (err error) {
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
-	//fmt.Println("URL: ", req)
+	req.Header.Add("Content-Type", ContentTypeJson)
+	fmt.Println("URL: ", req)
 
 	//Send API Query
 	client := &http.Client{}
@@ -113,10 +113,11 @@ func GetStorageContainer(containerName string) (err error) {
 	//Parsing data
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusNoContent {
-		return fmt.Errorf("Error: %s\n", resp.Status)
+		return resp.StatusCode, fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success\n")
+	//return fmt.Errorf("Success\n")
+	return resp.StatusCode, nil
 }
 
 // Put storage container
@@ -126,9 +127,9 @@ func PutStorageContainer(token string, containerName string) (err error) {
 	req, _ := http.NewRequest("PUT", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", token)
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
-	req.Header.Add("X-Storage-Policy", ECONOMY_TYPE)		// economy type
-	//fmt.Println("URL: ", req)
+	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Storage-Policy", EconomyType)		// economy type
+	fmt.Println("URL: ", req)
 
 	//Send API Query
 	client := &http.Client{}
@@ -140,11 +141,12 @@ func PutStorageContainer(token string, containerName string) (err error) {
 	}
 
 	//Parsing data
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusCreated &&
+		resp.StatusCode != http.StatusAccepted {
 		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success\n")
+	return nil
 }
 
 // Delete storage container
@@ -154,7 +156,7 @@ func DeleteStorageContainer(containerName string) (err error) {
 	req, _ := http.NewRequest("DELETE", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	req.Header.Add("Content-Type", ContentTypeJson)
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -179,7 +181,7 @@ func DeleteStorageContainer(containerName string) (err error) {
 func GetStorageTempUrl() {
 	method := "GET"
 	path := fmt.Sprintf(storagePathUrl, "iwhan@nubes-bridge.com", "Nubes-HC", "")  // Storage db field : account url, filebox name, file name
-	expired := int(time.Now().Add(EXPIRED_TIME).Unix())
+	expired := int(time.Now().Add(ExpiredTime).Unix())
 	baseUrl, _ := url.Parse(storageBaseUrl + path)
 	params := url.Values{}
 

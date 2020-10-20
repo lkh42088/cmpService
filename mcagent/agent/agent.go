@@ -81,11 +81,17 @@ func Start (config string) {
 	 * cron for Register, health check
 	 *********************************/
 	kvm.RegisterRegularMsg()
+	kvm.RegisterRegularMsgForBackup()
 
 	/****************************************
 	 * Check kt account & nas info for backup
 	 ****************************************/
 	CheckBackup()
+	if ktrest.CronBack != nil {
+		go ktrest.CronBack.Start(&wg)
+	} else {
+		wg.Done()
+	}
 
 	wg.Wait()
 }
@@ -236,6 +242,10 @@ func CheckBackup() {
 	err := ktrest.CheckKtAccount()
 	if err != nil {
 		fmt.Println("** CheckKtAccount Error : ", err)
+	}
+	// Backup configuration : KT Storage
+	if ktrest.ConfigurationForKtContainer() != nil {
+		fmt.Printf("\n** KT Storage configuration is invalid.\n\n")
 	}
 	// Check NAS Info
 	// CheckNasInfo()

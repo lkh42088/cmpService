@@ -141,7 +141,7 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 	req, _ := http.NewRequest("PUT", baseUrl, data)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	req.Header.Add("Content-Type", ContentTypeJson)
 	req.Header.Add("Content-Length", strconv.Itoa(int(fileInfo.Size())))
 	fmt.Println("URL: ", req)
 
@@ -174,7 +174,7 @@ func PutDLOManifest(container string, originFileName string) error {
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
 	req.Header.Add("X-Object-Manifest", container + "/" + originFileName + "/")
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	req.Header.Add("Content-Type", ContentTypeJson)
 	req.Header.Add("Content-Length", "0")
 	fmt.Println("URL: ", req)
 
@@ -207,7 +207,7 @@ func GetStorageObject(container string, fileName string, ch chan int) error {
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_BINARY)
+	req.Header.Add("Content-Type", ContentTypeBinary)
 	//req.Header.Add("Range", RANGE_4096)
 	fmt.Println("URL: ", req)
 
@@ -233,7 +233,7 @@ func GetStorageObject(container string, fileName string, ch chan int) error {
 		return fmt.Errorf("Error: %s\n", err)
 	}
 	//err = ioutil.WriteFile(lastPath, data, BACKUP_FILE_PERMISSION)
-	err = ioutil.WriteFile(path + "/" + "test_win10.qcow2", data, BACKUP_FILE_PERMISSION)	// test code
+	err = ioutil.WriteFile(path + "/" + "test_win10.qcow2", data, BackupFilePermission)	// test code
 	if err != nil {
 		return fmt.Errorf("Error: %s\n", err)
 	}
@@ -255,8 +255,8 @@ func GetStorageObjectByDLO(container string, fileName string, ch chan int) error
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_BINARY)
-	req.Header.Add("Range", RANGE_4096)
+	req.Header.Add("Content-Type", ContentTypeBinary)
+	req.Header.Add("Range", Range4096)
 	fmt.Println("URL: ", req)
 
 	ch <- 1 // file transfer start
@@ -285,7 +285,7 @@ func DeleteStorageObject(container string, fileName string) error {
 	req, _ := http.NewRequest("DELETE", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", CONTENT_TYPE_JSON)
+	req.Header.Add("Content-Type", ContentTypeJson)
 	//fmt.Println("URL: ", req)
 
 	//Send API Query

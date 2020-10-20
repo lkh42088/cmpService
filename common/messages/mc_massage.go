@@ -56,6 +56,26 @@ type KtAuthUrl struct {
 	Ip 			string			`json:"ip"`
 }
 
+type BackupConfigMsg struct {
+	ServerIdx uint   `json:"serverIdx"`
+	VmName    string `json:"vmName"`
+	Type      string `json:"type"`
+	Days      string `json:"days"`
+	Hours     string `json:"hours"`
+	Minutes   string `json:"minutes"`
+}
+
+type BackupEntry struct {
+	VmName   string `json:"vmName"`
+	BackupName string `json:"backupName"`
+}
+
+type BackupEntryMsg struct {
+	CompanyIdx   string           `json:"companyIdx"`
+	SerialNumber string           `json:"serialNumber"`
+	Entry        *[]BackupEntry   `json:"backupEntry"`
+}
+
 func (s *ServerRegularMsg) Dump() {
 	pretty, _ := json.MarshalIndent(s, "", "  ")
 	fmt.Printf("------------------------------------------------------------\n")
