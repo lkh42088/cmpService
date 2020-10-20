@@ -31,6 +31,10 @@ func checkValidation(msg mcmodel.McVm) bool {
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.McVm
 	err := c.ShouldBindJSON(&msg)
+	fmt.Println("vm-handler addVmHandler start----------------------------------------------------------")
+	fmt.Println("msg : ", msg)
+	fmt.Println("msg.UserId : ", msg.UserId)
+	fmt.Println("err : ", err)
 	fmt.Printf("addVmHandler: %s\n", msg.Dump())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
