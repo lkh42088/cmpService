@@ -119,6 +119,7 @@ func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm,
 }
 
 func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
+	// success
 	fmt.Println("micro-orm-vm UpdateVmCount start-------------------------------------------------------")
 	fmt.Println("vm : ", vm)
 	fmt.Println("vm.UserId : ", vm.UserId)
@@ -149,6 +150,7 @@ func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
 }
 
 func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	// success
 	fmt.Println("micro-orm-vm AddMcVm start-------------------------------------------------------------")
 	fmt.Println("obj : ", obj)
 	fmt.Println("obj.UserId : ", obj.UserId)

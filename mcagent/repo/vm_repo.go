@@ -44,6 +44,7 @@ func UpdateVmList(list *[]mcmodel.McVm) {
 }
 
 func AddVm2Repo(v *mcmodel.McVm) bool {
+	// success
 	fmt.Println("AddVm2Repo start-----------------------------------------------------------------------")
 	fmt.Println("v : ", v)
 	fmt.Println("v.UserId : ", v.UserId)
@@ -66,6 +67,9 @@ func AddVm2Repo(v *mcmodel.McVm) bool {
 	/********************
 	 * Add to Database
 	 ********************/
+	fmt.Println("AddVm2Repo -------> Add to Database")
+	fmt.Println("*v : ", *v)
+	fmt.Println("v : ", v)
 	AddVm2Db(*v)
 	return true
 }
@@ -170,6 +174,7 @@ func InitCachingVms() {
 }
 
 func AddVm2Db(v mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	// error
 	fmt.Println("vm-repo AddVm2Db start-----------------------------------------------------------------")
 	fmt.Println("vm : ", vm)
 	fmt.Println("vm.UserId : ", vm.UserId)

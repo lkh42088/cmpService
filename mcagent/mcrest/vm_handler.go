@@ -31,6 +31,7 @@ func checkValidation(msg mcmodel.McVm) bool {
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.McVm
 	err := c.ShouldBindJSON(&msg)
+	// success
 	fmt.Println("vm-handler addVmHandler start----------------------------------------------------------")
 	fmt.Println("msg : ", msg)
 	fmt.Println("msg.UserId : ", msg.UserId)
