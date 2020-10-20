@@ -1,6 +1,8 @@
 package ktrest
 
-import "time"
+import (
+	"time"
+)
 
 // KT Auth Request
 type StorageUser struct {
@@ -114,6 +116,13 @@ type StorageAccount struct {
 	Count 		int 			`json:"count"`
 	Bytes 		int 			`json:"bytes"`
 	Name 		string 			`json:"name"`
+}
+
+/** Auth Url */
+type KtAuthUrl struct {
+	AuthUrl 	string 			`json:"authUrl"`
+	CpIdx 		int 			`json:"cpIdx"`
+	Ip 			string			`json:"ip"`
 }
 
 /** ERROR */

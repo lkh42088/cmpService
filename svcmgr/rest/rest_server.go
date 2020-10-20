@@ -121,6 +121,8 @@ type HandlerInterface interface {
 
 	GetVmWinInterface(c *gin.Context)
 	GetMcVmCheckUser(c *gin.Context)
+
+	UpdateKtAuthUrl(c *gin.Context)
 }
 
 type Handler struct {
@@ -314,6 +316,9 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	//user check (vm register)
 	router.GET(lib.SvcmgrApiMicroVmCheckUser+"/:id/:cpIdx", h.GetMcVmCheckUser)
+
+	// Micro Cloud Backup
+	router.POST(lib.SvcmgrApiMicroKtAuthUrl, h.UpdateKtAuthUrl)
 
 	return router.Run(address)
 }

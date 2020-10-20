@@ -3,6 +3,7 @@ package repo
 import (
 	"cmpService/common/mcmodel"
 	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/ddns"
 	"fmt"
 )
 
@@ -35,6 +36,7 @@ func UpdateMcServer(s mcmodel.McServerDetail) bool {
 	}
 	GlobalServerRepo = s
 	GlobalServerRepo.Idx = temp.Idx
+	ddns.ApplyDdns(GlobalServerRepo.McServer)
 	return true
 }
 
@@ -43,11 +45,21 @@ func AddServer2Repo(s *mcmodel.McServerDetail) bool {
 	if len(list) > 0 {
 		return false
 	}
+	//if len(list) > 1 {
+	//	fmt.Println("AddServer2Repo: Error server count in DB", len(list))
+	//	return false
+	//} else if len(list) == 1 {
+	//	// Update
+	//	UpdateMcServer(*s)
+	//	return true
+	//}
 
 	GlobalServerRepo = *s
 	fmt.Println("AddServer2Repo: Add SN -", GlobalServerRepo.SerialNumber, "Idx", GlobalServerRepo.Idx)
 	temp, _ := AddServer2Db(s.McServer)
 	GlobalServerRepo.Idx = temp.Idx
+
+	ddns.ApplyDdns(GlobalServerRepo.McServer)
 
 	return true
 }
@@ -82,4 +94,13 @@ func DeleteServer2Db(s mcmodel.McServer) (mcmodel.McServer, error) {
 
 func GetServerFromDb() ([]mcmodel.McServer, error) {
 	return config2.GetMcGlobalConfig().DbOrm.GetMcServer()
+}
+
+// For Backup
+func GetServerFromDbByIp(ip string) (mcmodel.McServer, error) {
+	return config2.GetMcGlobalConfig().DbOrm.GetMcServerByIp(ip)
+}
+
+func UpdateKtAuthUrl2Db(ip string, authUrl string) (mcmodel.McServer, error) {
+	return config2.GetMcGlobalConfig().DbOrm.UpdateKtAuthUrl(ip, authUrl)
 }

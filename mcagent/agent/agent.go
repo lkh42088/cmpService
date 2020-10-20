@@ -4,6 +4,8 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
 	config2 "cmpService/mcagent/config"
+	"cmpService/mcagent/ddns"
+	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mcrest"
@@ -79,6 +81,11 @@ func Start (config string) {
 	 *********************************/
 	kvm.RegisterRegularMsg()
 
+	/****************************************
+	 * Check kt account & nas info for backup
+	 ****************************************/
+	CheckBackup()
+
 	wg.Wait()
 }
 
@@ -144,6 +151,16 @@ func configure() bool {
 	}
 
 	/********************************
+	 * Apply DDNS
+	 ********************************/
+	mcServer := repo.GetMcServer()
+	fmt.Println("configure: mcServer ")
+	mcServer.Dump()
+	if mcServer != nil && mcServer.Enable {
+		ddns.ApplyDdns(mcServer.McServer)
+	}
+
+	/********************************
 	 * Init Caching VMs
 	 ********************************/
 	repo.InitCachingVms()
@@ -203,5 +220,10 @@ func ApplyCronForSnapshot() {
 		fmt.Println("ApplyCronForSnapshot: ", vm.Name)
 		kvm.AddSnapshotByMcVm(&vm)
 	}
+}
+
+func CheckBackup() {
+	ktrest.CheckKtAccount()
+	//CheckNasInfo()
 }
 
