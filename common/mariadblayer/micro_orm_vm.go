@@ -119,10 +119,6 @@ func (db *DBORM) GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm,
 }
 
 func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
-	// success
-	fmt.Println("micro-orm-vm UpdateVmCount start-------------------------------------------------------")
-	fmt.Println("vm : ", vm)
-	fmt.Println("vm.UserId : ", vm.UserId)
 	var server mcmodel.McServer
 	err := db.Where(mcmodel.McServer{Idx: uint(vm.McServerIdx)}).
 		Find(&server).Error
@@ -150,10 +146,6 @@ func (db *DBORM) UpdateVmCount(vm mcmodel.McVm, isAdd bool) {
 }
 
 func (db *DBORM) AddMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
-	// success
-	fmt.Println("micro-orm-vm AddMcVm start-------------------------------------------------------------")
-	fmt.Println("obj : ", obj)
-	fmt.Println("obj.UserId : ", obj.UserId)
 	err = db.Create(&obj).Error
 	vm = obj
 	if err == nil {
@@ -216,5 +208,5 @@ func (db *DBORM) GetVmTotalCount() (total int, operate int, err error) {
 }
 
 func (db *DBORM) GetMcVmUserByParam(id string, cpIdx string) (vm mcmodel.McVm, err error) {
-	return vm, db.Where("vm_user_id = ? and cp_idx = ?", id, cpIdx).Find(&vm).Error
+	return vm, db.Debug().Where("vm_user_id = ? and vm_cp_idx = ?", id, cpIdx).Find(&vm).Error
 }
