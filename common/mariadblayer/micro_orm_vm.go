@@ -80,7 +80,7 @@ func (db *DBORM) GetMcVmsCount(cpName string) (total int, operate int, vm int, e
 		Joins("INNER JOIN mc_server_tb m ON m.mc_idx = mc_vm_tb.vm_server_idx").
 		Where(query).
 		Count(&vm).Error
-	//Find(&vms.Vms).Error
+	//Find(&vms.SnapVms).Error
 	if err != nil {
 		lib.LogWarn("[Error] %s\n", err)
 	}

@@ -102,7 +102,7 @@ func getResourceHandler(c *gin.Context) {
 	resource.CreateVmList = &kvm.CreateVmFsm.Vms
 	resource.CacheVmList = &repo.GlobalVmCache
 	resource.LibvirtVmList = kvm.LibvirtR.Old.Vms
-	resource.CronVmList = &kvm.CronSnap.Vms
+	resource.CronVmList = &kvm.CronSnap.SnapVms
 	c.JSON(http.StatusOK, resource)
 }
 

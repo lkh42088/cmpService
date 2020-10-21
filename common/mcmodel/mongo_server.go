@@ -92,7 +92,7 @@ const (
 //	Mac          string        `json:"mac"`
 //	Ip           string        `json:"ip"`
 //	PublicIp     string        `json:"publicIp"`
-//	Vms          *[]McVm       `json:"vms"`
+//	SnapVms          *[]McVm       `json:"vms"`
 //	Networks     *[]MgoNetwork `json:"networks"`
 //	Images       *[]MgoImage   `json:"images"`
 //}
@@ -108,8 +108,8 @@ const (
 //	vmCount := 0
 //	netCount := 0
 //	imgCount := 0
-//	if n.Vms != nil {
-//		vmCount = len(*n.Vms)
+//	if n.SnapVms != nil {
+//		vmCount = len(*n.SnapVms)
 //	}
 //	if n.Networks != nil {
 //		netCount = len(*n.Networks)

@@ -84,7 +84,7 @@ func deleteVm(vmName string) bool {
 	// 2. Delete Cron Rule
 	inVm := repo.GetVmFromRepoByName(vm.Name)
 	if inVm != nil && inVm.SnapType == true {
-		kvm.CronSnap.DeleteVm(inVm.Name)
+		kvm.CronSnap.DeleteBackupVm(inVm.Name)
 	}
 
 	// 3. Delete Vm snapshot

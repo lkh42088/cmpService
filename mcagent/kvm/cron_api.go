@@ -13,13 +13,14 @@ import (
 	"time"
 )
 
-type CronSnapshot struct {
+type CronScheduler struct {
 	Interval int
-	Cr *cron.Cron
-	Vms []SnapVm
+	Cr       *cron.Cron
+	SnapVms  []SnapVm
+	BackupVms []BackupVm
 }
 
-var CronSnap *CronSnapshot
+var CronSnap *CronScheduler
 
 type SnapVm struct {
 	VmName string
@@ -27,10 +28,16 @@ type SnapVm struct {
 	Timer string
 }
 
+type BackupVm struct {
+	VmName string
+	CronId cron.EntryID
+	Timer string
+}
+
 var vmSliceMutex sync.Mutex
 
-func (c *CronSnapshot) LookupVm(vmName string) bool {
-	for _, vm := range c.Vms {
+func (c *CronScheduler) LookupSnapVm(vmName string) bool {
+	for _, vm := range c.SnapVms {
 		if vm.VmName == vmName {
 			return true
 		}
@@ -38,9 +45,9 @@ func (c *CronSnapshot) LookupVm(vmName string) bool {
 	return false
 }
 
-func (c *CronSnapshot) DeleteVm(vmName string) bool {
+func (c *CronScheduler) DeleteBackupVm(vmName string) bool {
 	findIt := -1
-	for index, vm := range c.Vms {
+	for index, vm := range c.SnapVms {
 		if vm.VmName == vmName {
 			DeleteCronEntry(vm.CronId)
 			findIt = index
@@ -48,7 +55,7 @@ func (c *CronSnapshot) DeleteVm(vmName string) bool {
 	}
 	if findIt > 0 {
 		vmSliceMutex.Lock()
-		c.Vms = append(c.Vms[:findIt], c.Vms[findIt+1:]...)
+		c.SnapVms = append(c.SnapVms[:findIt], c.SnapVms[findIt+1:]...)
 		vmSliceMutex.Unlock()
 		return true
 	}
@@ -59,8 +66,8 @@ func DeleteCronEntry(id cron.EntryID) {
 	CronSnap.Cr.Remove(id)
 }
 
-func NewCronSnapshot(interval int) *CronSnapshot {
-	return &CronSnapshot{
+func NewCronSnapshot(interval int) *CronScheduler {
+	return &CronScheduler{
 		Interval: interval,
 	}
 }
@@ -70,13 +77,13 @@ func ConfigCron() {
 	SetCronSnapshot(c)
 }
 
-func SetCronSnapshot(c *CronSnapshot) {
+func SetCronSnapshot(c *CronScheduler) {
 	CronSnap = c
 	CronSnap.Cr = cron.New()
 	CronSnap.Cr.AddFunc("*/5 * * * *", func() { fmt.Println("CRON SNAPSHOT - every second 5.")})
 }
 
-func (c *CronSnapshot) Start(parentwg *sync.WaitGroup) {
+func (c *CronScheduler) Start(parentwg *sync.WaitGroup) {
 	loop := 1
 	c.Cr.Start()
 	for {
@@ -87,7 +94,7 @@ func (c *CronSnapshot) Start(parentwg *sync.WaitGroup) {
 	parentwg.Done()
 }
 
-func (c *CronSnapshot) Run() {
+func (c *CronScheduler) Run() {
 	//fmt.Printf("Entry %+v\n", c.Cr.Entries())
 }
 
@@ -140,7 +147,7 @@ func AddSnapshotByMcVm(vm *mcmodel.McVm) {
 		return
 	}
 
-	if CronSnap.LookupVm(vm.Name) {
+	if CronSnap.LookupSnapVm(vm.Name) {
 		fmt.Println("AddSnapshotByMcVm: Already have snapshot config!")
 		return
 	}
@@ -190,11 +197,11 @@ func AddSnapshotByMcVm(vm *mcmodel.McVm) {
 		Timer: fmt.Sprintf("%d days %d hours %d minutes",
 			vm.SnapDays, vm.SnapHours, vm.SnapMinutes),
 	}
-	CronSnap.Vms = append(CronSnap.Vms, entry)
+	CronSnap.SnapVms = append(CronSnap.SnapVms, entry)
 }
 
 func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
-	if CronSnap.LookupVm(config.VmName) {
+	if CronSnap.LookupSnapVm(config.VmName) {
 		fmt.Println("AddVmSnapshotByConifg: Already have snapshot config!")
 		return
 	}
@@ -227,16 +234,16 @@ func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
 		VmName: config.VmName,
 		CronId: id,
 	}
-	CronSnap.Vms = append(CronSnap.Vms, entry)
+	CronSnap.SnapVms = append(CronSnap.SnapVms, entry)
 }
 
 func UpdateVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
-	if CronSnap.LookupVm(config.VmName) == false {
+	if CronSnap.LookupSnapVm(config.VmName) == false {
 		fmt.Println("UpdateVmSnapshotByConfig: dosn'thave snapshot config!")
 		return
 	}
 
-	CronSnap.DeleteVm(config.VmName)
+	CronSnap.DeleteBackupVm(config.VmName)
 
 	var id cron.EntryID
 	var err error
@@ -268,16 +275,16 @@ func UpdateVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
 		VmName: config.VmName,
 		CronId: id,
 	}
-	CronSnap.Vms = append(CronSnap.Vms, entry)
+	CronSnap.SnapVms = append(CronSnap.SnapVms, entry)
 }
 
 func DeleteVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
-	if CronSnap.LookupVm(config.VmName) == false {
+	if CronSnap.LookupSnapVm(config.VmName) == false {
 		fmt.Println("DeleteVmSnapshotByConfig: dosen't have snapshot config!")
 		return
 	}
 
-	CronSnap.DeleteVm(config.VmName)
+	CronSnap.DeleteBackupVm(config.VmName)
 }
 
 func GetVmSnapshotAll() *[]messages.SnapshotEntry {
