@@ -11,7 +11,7 @@ import (
  * Backup
  *********************************************************************************/
 func AddCronSchForVmBackup(vm *mcmodel.McVm) {
-	if vm.BackupType == 0 {
+	if vm.BackupType == false {
 		return
 	}
 

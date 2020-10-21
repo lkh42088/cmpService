@@ -4,7 +4,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"fmt"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 	"strconv"
 )
 
