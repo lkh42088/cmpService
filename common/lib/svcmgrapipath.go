@@ -61,6 +61,11 @@ const (
 	SvcmgrApiMicroSnapshotCount         = SvcmgrApiMicroDashboard + "/snapshotcnt"
 	SvcmgrApiMicroVmCheckUser           = SvcmgrApiMicroVm + "/check/user"
 	SvcmgrApiMicroKtAuthUrl             = SvcmgrApiMicro + "/auth/url"
+	//backup
+	SvcmgrApiMicroVmBackupPaging          = SvcmgrApiMicro + "/backup-paging"
+	SvcmgrApiMicroVmDeleteBackupEntryList = SvcmgrApiMicroVm + "/backup/delete-entry-list"
+	SvcmgrApiMicroVmRecoveryBackup        = SvcmgrApiMicroVm + "/backup/recovery"
+	SvcmgrApiMicroVmUpdateFromMcBackup    = SvcmgrApiMicroVm + "/update-from-mc/backup"
 
 	// /v1/micro/vms/check/user
 )
