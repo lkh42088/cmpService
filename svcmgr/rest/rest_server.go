@@ -318,8 +318,13 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	//user check (vm register)
 	router.GET(lib.SvcmgrApiMicroVmCheckUser+"/:id/:cpIdx", h.GetMcVmCheckUser) //★
 
-	// Micro Cloud Backup
+	// Micro Cloud Backup From MC-agent
 	router.POST(lib.SvcmgrApiMicroKtAuthUrl, h.UpdateKtAuthUrl)
+	// Micro Cloud Backup From Web
+	router.GET(lib.SvcmgrApiMicroVmBackupPaging+pagingParam+"/:cpName", h.GetMcVmSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmDeleteBackupEntryList, h.DeleteVmSnapshotEntryList)
+	router.POST(lib.SvcmgrApiMicroVmRecoveryBackup, h.RecoverySnapshot)
+	router.POST(lib.SvcmgrApiMicroVmUpdateFromMcBackup, h.UpdateMcVmFromMcSnapshot)
 
 	return router.Run(address)
 }
