@@ -3,7 +3,6 @@ package agent
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
-	"cmpService/mcagent/cron"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/ktrest"
@@ -34,8 +33,8 @@ func Start (config string) {
 	SetSysInfo()
 
 	// Start Cron
-	if cron.CronSch != nil {
-		go cron.CronSch.Start(&wg)
+	if kvm.CronSch != nil {
+		go kvm.CronSch.Start(&wg)
 	} else {
 		wg.Done()
 	}
@@ -79,12 +78,12 @@ func Start (config string) {
 	ApplyCronSchFoSnapshotAndBackup()
 
 	/*********************************
-	 * cron for Register, health check
+	 * cronsch for Register, health check
 	 *********************************/
-	cron.RegisterRegularMsg()
+	kvm.RegisterRegularMsg()
 
 	/****************************************
-	 * Check kt account & nas info for cron
+	 * Check kt account & nas info for cronsch
 	 ****************************************/
 	CheckBackup()
 
@@ -188,7 +187,7 @@ func configure() bool {
 	/********************************
 	 * Config Cron
 	 ********************************/
-	cron.ConfigCron()
+	kvm.ConfigCron()
 
 	/********************************
 	 * Config Create Vm FSM
@@ -216,13 +215,13 @@ func configure() bool {
 func ApplyCronSchFoSnapshotAndBackup() {
 	for _, vm := range repo.GlobalVmCache {
 		if vm.SnapType == true {
-			fmt.Println("Apply snapshot cron schedular: ", vm.Name)
-			cron.AddCronSchFromVmSnapshot(&vm)
+			fmt.Println("Apply snapshot cronsch schedular: ", vm.Name)
+			kvm.AddCronSchFromVmSnapshot(&vm)
 		}
 
 		if vm.SnapType == true {
-			fmt.Println("Apply backup cron schedular: ", vm.Name)
-			cron.AddCronSchForVmBackup(&vm)
+			fmt.Println("Apply backup cronsch schedular: ", vm.Name)
+			kvm.AddCronSchForVmBackup(&vm)
 		}
 	}
 }

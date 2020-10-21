@@ -2,7 +2,6 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
-	"cmpService/mcagent/cron"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
@@ -95,8 +94,8 @@ func (k *CreateVmFSM) Run() {
 			 * 4. Apply Snapshot, Backup Cron
 			 *****************************************************************/
 			//AddSnapshotCronDailyTime(vm.Name, strconv.Itoa(vm.SnapHours), strconv.Itoa(vm.SnapMinutes))
-			cron.AddCronSchFromVmSnapshot(vm)
-			cron.AddCronSchForVmBackup(vm)
+			AddCronSchFromVmSnapshot(vm)
+			AddCronSchForVmBackup(vm)
 		}(&vm)
 	}
 	wg.Wait()

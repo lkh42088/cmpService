@@ -1,8 +1,7 @@
-package cron
+package kvm
 
 import (
 	"cmpService/common/messages"
-	"cmpService/mcagent/kvm"
 	"fmt"
 	"github.com/robfig/cron/v3"
 	"time"
@@ -150,11 +149,11 @@ func AddSnapshotCronBySecond(num string) {
 	c.AddFunc(cronTime, func() {
 		fmt.Println(fmt.Sprintf("every second - %s", num))
 	})
-	fmt.Println("start cron")
+	fmt.Println("start cronsch")
 	fmt.Printf("Entry %+v\n", c.Entries())
 	c.Start()
 	time.Sleep(1 * time.Minute)
-	fmt.Println("Stop cron")
+	fmt.Println("Stop cronsch")
 	c.Stop()
 	time.Sleep(1 * time.Minute)
 }
@@ -162,14 +161,14 @@ func AddSnapshotCronBySecond(num string) {
 func UpdateVmStatus(msg *messages.VmStatusActionMsg) {
 	switch(msg.Status) {
 	case "start":
-		kvm.LibvirtStartVm(msg.VmName)
+		LibvirtStartVm(msg.VmName)
 	case "stop":
-		kvm.LibvirtDestroyVm(msg.VmName)
+		LibvirtDestroyVm(msg.VmName)
 	case "restart":
-		kvm.LibvirtResumeVm(msg.VmName)
+		LibvirtResumeVm(msg.VmName)
 	case "suspend":
-		kvm.LibvirtSuspendVm(msg.VmName)
+		LibvirtSuspendVm(msg.VmName)
 	case "resume":
-		kvm.LibvirtResumeVm(msg.VmName)
+		LibvirtResumeVm(msg.VmName)
 	}
 }

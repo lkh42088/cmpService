@@ -1,9 +1,8 @@
-package cron
+package kvm
 
 import (
 	"cmpService/common/messages"
 	"cmpService/mcagent/config"
-	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
@@ -34,7 +33,7 @@ func RegisterRegularMsg() {
 			if res == true {
 				// Send ServerMsg
 				svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
-				serverInfo := kvm.GetMcServerInfo()
+				serverInfo := GetMcServerInfo()
 				svcmgrapi.SendUpdateServer2Svcmgr(serverInfo, svcmgrRestAddr)
 			}
 		}

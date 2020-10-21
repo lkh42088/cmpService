@@ -1,9 +1,8 @@
-package cron
+package kvm
 
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
-	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
@@ -70,11 +69,11 @@ func DecreaseQcow2Image(image, decreaseImage string) {
 }
 
 func BackupVmImage(vmName string) string {
-	backupVmName := vmName + "-cron"
+	backupVmName := vmName + "-cronsch"
 	backupFile := "/opt/vm_instances/" + backupVmName + ".qcow2"
 
 	// Stop Vm
-	dom, err := kvm.GetDomainByName(vmName)
+	dom, err := GetDomainByName(vmName)
 	if err != nil {
 		fmt.Printf("BackupVmImage (%s) error 0: %s", vmName, err)
 		return ""
@@ -94,7 +93,7 @@ func BackupVmImage(vmName string) string {
 	dom.Create()
 
 	// Destroy/Undefine Backup Vm
-	backupDom, err := kvm.GetDomainByName(backupVmName)
+	backupDom, err := GetDomainByName(backupVmName)
 	if err != nil {
 		fmt.Printf("BackupVmImage (%s) error 1: %s", vmName, err)
 		return ""
@@ -109,7 +108,7 @@ func BackupVmImage(vmName string) string {
 	// Delete temp file
 	DeleteFile(backupFile)
 
-	// return cron file
+	// return cronsch file
 	return decreaseImage
 }
 
@@ -121,7 +120,7 @@ func SafeBackup(name, snapName, desc string) {
 	backupFile := BackupVmImage(name)
 
 	/*****************
-	* Upload cron file to KT Cloud Storage or NAS
+	* Upload cronsch file to KT Cloud Storage or NAS
 	*****************/
 	fmt.Println("SafeBackup:", backupFile)
 
@@ -160,7 +159,7 @@ func GetBackupEntry(vmName, snapName, desc string) (*mcmodel.McVmBackup) {
 
 func RecoveryBackup(vmName, backupImage string) {
 	// vm stop
-	dom, err := kvm.GetDomainByName(vmName)
+	dom, err := GetDomainByName(vmName)
 	if err != nil {
 		fmt.Printf("BackupVmImage (%s) error 0: %s", vmName, err)
 		return
@@ -175,6 +174,6 @@ func RecoveryBackup(vmName, backupImage string) {
 	// delete vm snapshot
 	DeleteAllSnapshot(vmName)
 	//DeleteVm(vmName)
-	// download cron file
+	// download cronsch file
 	// change qcow2 file
 }

@@ -1,4 +1,4 @@
-package cron
+package kvm
 
 import (
 	"cmpService/common/mcmodel"
@@ -11,7 +11,7 @@ import (
 /*********************************************************************************
  * Snapshot
  *********************************************************************************/
-/* When to start mcagent daemon, add snapshot cron config */
+/* When to start mcagent daemon, add snapshot cronsch config */
 func AddCronSchFromVmSnapshot(vm *mcmodel.McVm) {
 	if vm.SnapType == false {
 		return
