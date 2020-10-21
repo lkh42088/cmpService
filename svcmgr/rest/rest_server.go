@@ -287,7 +287,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
 	router.POST(lib.SvcmgrApiMicroVmAddSnapshot, h.AddVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshot, h.DeleteVmSnapshot)
-	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot) //★ rest_handler_micro_go
+	router.POST(lib.SvcmgrApiMicroVmUpdateSnapshot, h.UpdateVmSnapshot)
 	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 	router.POST(lib.SvcmgrApiMicroVmRecoverySnapshot, h.RecoverySnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshotEntryList, h.DeleteVmSnapshotEntryList)
@@ -316,7 +316,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroSnapshotCount+"/:cpIdx", h.GetMcVmSnapshotByCpIdx)
 
 	//user check (vm register)
-	router.GET(lib.SvcmgrApiMicroVmCheckUser+"/:id/:cpIdx", h.GetMcVmCheckUser)
+	router.GET(lib.SvcmgrApiMicroVmCheckUser+"/:id/:cpIdx", h.GetMcVmCheckUser) //★
 
 	// Micro Cloud Backup From MC-agent
 	router.POST(lib.SvcmgrApiMicroKtAuthUrl, h.UpdateKtAuthUrl)

@@ -31,11 +31,6 @@ func checkValidation(msg mcmodel.McVm) bool {
 func addVmHandler(c *gin.Context) {
 	var msg mcmodel.McVm
 	err := c.ShouldBindJSON(&msg)
-	// success
-	fmt.Println("vm-handler addVmHandler start----------------------------------------------------------")
-	fmt.Println("msg : ", msg)
-	fmt.Println("msg.UserId : ", msg.UserId)
-	fmt.Println("err : ", err)
 	fmt.Printf("addVmHandler: %s\n", msg.Dump())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -84,7 +79,7 @@ func deleteVm(vmName string) bool {
 	// 2. Delete Cron Rule
 	inVm := repo.GetVmFromRepoByName(vm.Name)
 	if inVm != nil && inVm.SnapType == true {
-		kvm.CronSnap.DeleteVm(inVm.Name)
+		kvm.CronSnap.DeleteBackupVm(inVm.Name)
 	}
 
 	// 3. Delete Vm snapshot

@@ -89,7 +89,7 @@ func DumpMcVirtInfo() {
 }
 
 func GetVmByLibvirt() (vmList []mcmodel.McVm){
-	// Get Vms Domains
+	// Get SnapVms Domains
 	doms, err := GetDomainListAll()
 	if err != nil {
 		fmt.Println("GetVmByLibvirt error:", err)
@@ -258,7 +258,7 @@ func GetMcVirtInfo() (vmList []mcmodel.McVm, netList []mcmodel.McNetworks, imgLi
 }
 
 func GetMcVirtInfoDebug() (vmList []mcmodel.McVm, netList []mcmodel.McNetworks, imgList []mcmodel.McImages) {
-	// Get Vms Domains
+	// Get SnapVms Domains
 	doms, err := GetDomainListAll()
 	if err == nil {
 		fmt.Println("--------------------------------")

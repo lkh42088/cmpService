@@ -89,14 +89,14 @@ package mcmodel
 //func (o *MgoServer) Compare(n *MgoServer) bool {
 //	isChanged := false
 //
-//	if o.Vms != nil {
-//		if n.Vms == nil {
+//	if o.SnapVms != nil {
+//		if n.SnapVms == nil {
 //			isChanged = true
-//		} else if len(*(o.Vms)) != len(*(n.Vms)) {
+//		} else if len(*(o.SnapVms)) != len(*(n.SnapVms)) {
 //			isChanged = true
 //		} else {
-//			for _, obj1 := range *o.Vms {
-//				obj2 := LookupMcVm(n.Vms, obj1)
+//			for _, obj1 := range *o.SnapVms {
+//				obj2 := LookupMcVm(n.SnapVms, obj1)
 //				if obj2 == nil {
 //					isChanged = true
 //				} else {
@@ -108,7 +108,7 @@ package mcmodel
 //			}
 //		}
 //	} else {
-//		if n.Vms != nil {
+//		if n.SnapVms != nil {
 //			isChanged = true
 //		}
 //	}
