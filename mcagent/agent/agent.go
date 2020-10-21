@@ -3,6 +3,7 @@ package agent
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
+	"cmpService/mcagent/cron"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/ktrest"
@@ -33,8 +34,8 @@ func Start (config string) {
 	SetSysInfo()
 
 	// Start Cron
-	if kvm.CronSnap != nil {
-		go kvm.CronSnap.Start(&wg)
+	if cron.CronSch != nil {
+		go cron.CronSch.Start(&wg)
 	} else {
 		wg.Done()
 	}
@@ -80,10 +81,10 @@ func Start (config string) {
 	/*********************************
 	 * cron for Register, health check
 	 *********************************/
-	kvm.RegisterRegularMsg()
+	cron.RegisterRegularMsg()
 
 	/****************************************
-	 * Check kt account & nas info for backup
+	 * Check kt account & nas info for cron
 	 ****************************************/
 	CheckBackup()
 
@@ -187,7 +188,7 @@ func configure() bool {
 	/********************************
 	 * Config Cron
 	 ********************************/
-	kvm.ConfigCron()
+	cron.ConfigCron()
 
 	/********************************
 	 * Config Create Vm FSM
@@ -219,7 +220,7 @@ func ApplyCronForSnapshot() {
 		}
 		// apply cron
 		fmt.Println("ApplyCronForSnapshot: ", vm.Name)
-		kvm.AddSnapshotByMcVm(&vm)
+		cron.AddSnapshotByMcVm(&vm)
 	}
 }
 

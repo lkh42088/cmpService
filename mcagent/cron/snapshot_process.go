@@ -1,8 +1,9 @@
-package kvm
+package cron
 
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
@@ -15,7 +16,7 @@ import (
  * Snapshot
  ******************************************************************************/
 func CreateSnapshot(name, snapName, desc string) (snap *libvirt.DomainSnapshot, err error) {
-	dom, err := GetDomainByName(name)
+	dom, err := kvm.GetDomainByName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +38,7 @@ func CreateSnapshot(name, snapName, desc string) (snap *libvirt.DomainSnapshot, 
 }
 
 func SafeSnapshot(name, snapName, desc string) (entry *mcmodel.McVmSnapshot, snap *libvirt.DomainSnapshot, err error) {
-	dom, err := GetDomainByName(name)
+	dom, err := kvm.GetDomainByName(name)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -132,7 +133,7 @@ func GetMonthStr2Num(month string) int {
 }
 
 func GetSnapshotsListName(name string) (snaps[]string, err error) {
-	dom, err := GetDomainByName(name)
+	dom, err := kvm.GetDomainByName(name)
 	if err != nil {
 		fmt.Println("GetSnapshotListName error:", err)
 		return snaps, err
@@ -151,7 +152,7 @@ func GetSnapshotsListName(name string) (snaps[]string, err error) {
 }
 
 func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
-	dom, err := GetDomainByName(name)
+	dom, err := kvm.GetDomainByName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +169,7 @@ func GetAllSnapshots(name string) (snaps []libvirt.DomainSnapshot, err error) {
 
 func DeleteAllSnapshot(vmName string) (snaps []libvirt.DomainSnapshot, err error) {
 	fmt.Println("DeleteAllSnap: vm ", vmName)
-	dom, err := GetDomainByName(vmName)
+	dom, err := kvm.GetDomainByName(vmName)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +202,7 @@ func DeleteSnap(vmName string, snap *libvirt.DomainSnapshot) {
 }
 
 func Revert2Snapshot(domName, snapName string) error {
-	dom, err := GetDomainByName(domName)
+	dom, err := kvm.GetDomainByName(domName)
 	fmt.Println("Revert2Snapshot: vm", domName, ", snapshot", snapName)
 	if err != nil {
 		fmt.Println("Revert2Snapshot: error 1", err)
@@ -218,7 +219,7 @@ func Revert2Snapshot(domName, snapName string) error {
 		return err
 	}
 	fmt.Println("Revert2Snapshot: Success")
-	dom, err = GetDomainByName(domName)
+	dom, err = kvm.GetDomainByName(domName)
 	if err != nil {
 		return nil
 	}
@@ -226,9 +227,9 @@ func Revert2Snapshot(domName, snapName string) error {
 	if err == nil {
 		switch state {
 		case libvirt.DOMAIN_PAUSED:
-			LibvirtResumeVm(domName)
+			kvm.LibvirtResumeVm(domName)
 		case libvirt.DOMAIN_SHUTOFF:
-			LibvirtStartVm(domName)
+			kvm.LibvirtStartVm(domName)
 		}
 	}
 	return nil

@@ -154,10 +154,14 @@ type McVmBackup struct {
 	BackupSize      int       `gorm:"type:int(11);column:backup_size;comment:'백업 이미지 크기'" json:"fileSize"`
 	VmName          string    `gorm:"type:varchar(50);column:backup_vm_name;comment:'백업 VM 이름'" json:"vmName"`
 	Desc            string    `gorm:"type:varchar(255);column:backup_desc;comment:'백업 상세'" json:"desc"`
+	Year            int       `gorm:"type:int(11);column:snap_year;comment:'year'" json:"year"`
 	Month           int       `gorm:"type:int(11);column:backup_month;comment:'month'" json:"month"`
 	Day             int       `gorm:"type:int(11);column:backup_day;comment:'day'" json:"day"`
 	Hour            int       `gorm:"type:int(11);column:backup_hour;comment:'hour'" json:"hour"`
 	Minute          int       `gorm:"type:int(11);column:backup_minute;comment:'minute'" json:"minute"`
+	Second          int       `gorm:"type:int(11);column:snap_second;comment:'second'" json:"second"`
+	ServerSn        string    `gorm:"-" json:"serverSn"`
+	Command         string    `gorm:"-" json:"command"`
 }
 
 func (McVmBackup) TableName() string {
@@ -173,6 +177,13 @@ type McVmBackupDetail struct {
 type McBackupPage struct {
 	Page    models.Pagination  `json:"page"`
 	Backups []McVmBackupDetail `json:"data"`
+}
+
+func (s *McVmBackup) Dump() {
+	pretty, _ := json.MarshalIndent(s, "", "  ")
+	fmt.Printf("------------------------------------------------------------\n")
+	fmt.Printf("VM Backup: %s\n", s.VmName)
+	fmt.Printf("%s\n", string(pretty))
 }
 
 func DumpMcVmBackupList(list []McVmBackup) {

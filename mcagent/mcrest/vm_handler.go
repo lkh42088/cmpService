@@ -4,6 +4,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/common/utils"
+	"cmpService/mcagent/cron"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/repo"
@@ -79,11 +80,11 @@ func deleteVm(vmName string) bool {
 	// 2. Delete Cron Rule
 	inVm := repo.GetVmFromRepoByName(vm.Name)
 	if inVm != nil && inVm.SnapType == true {
-		kvm.CronSnap.DeleteBackupVm(inVm.Name)
+		cron.CronSch.DeleteSnapVm(inVm.Name)
 	}
 
 	// 3. Delete Vm snapshot
-	kvm.DeleteAllSnapshot(vm.Name)
+	cron.DeleteAllSnapshot(vm.Name)
 
 	// 4. Delete Vm instance
 	kvm.DeleteVm(*vm)
@@ -141,7 +142,7 @@ func applyVmActionHandler(c *gin.Context) {
 		kvm.LibvirtResumeVm(msg.VmName)
 	case 6:
 		// snapshot
-		kvm.SafeSnapshot(msg.VmName, kvm.GetTimeWord(), "By action command")
+		cron.SafeSnapshot(msg.VmName, cron.GetTimeWord(), "By action command")
 	default:
 	}
 	c.JSON(http.StatusOK, msg)

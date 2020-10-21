@@ -3,6 +3,7 @@ package mcrest
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/common/utils"
+	"cmpService/mcagent/cron"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/kvm"
@@ -42,7 +43,7 @@ type McResourceMsg struct {
 	CreateVmList *map[uint]mcmodel.McVm
 	CacheVmList *[]mcmodel.McVm
 	LibvirtVmList *[]mcmodel.McVm
-	CronVmList *[]kvm.SnapVm
+	CronVmList *[]cron.SnapVm
 }
 
 func (n *McResourceMsg) Dump() string {
@@ -102,7 +103,7 @@ func getResourceHandler(c *gin.Context) {
 	resource.CreateVmList = &kvm.CreateVmFsm.Vms
 	resource.CacheVmList = &repo.GlobalVmCache
 	resource.LibvirtVmList = kvm.LibvirtR.Old.Vms
-	resource.CronVmList = &kvm.CronSnap.SnapVms
+	resource.CronVmList = &cron.CronSch.SnapVms
 	c.JSON(http.StatusOK, resource)
 }
 

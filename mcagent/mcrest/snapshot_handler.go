@@ -2,6 +2,7 @@ package mcrest
 
 import (
 	"cmpService/common/messages"
+	"cmpService/mcagent/cron"
 	"cmpService/mcagent/kvm"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -10,14 +11,14 @@ import (
 
 func getVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotEntryMsg
-	msg.Entry = kvm.GetVmSnapshotAll()
+	msg.Entry = cron.GetVmSnapshotAll()
 	c.JSON(http.StatusOK, msg)
 }
 
 func addVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.ShouldBindJSON(&msg)
-	kvm.AddVmSnapshotByConfig(&msg)
+	cron.AddVmSnapshotByConfig(&msg)
 	c.JSON(http.StatusOK, msg)
 }
 
@@ -35,7 +36,7 @@ func deleteVmSnapshotEntryList(c *gin.Context) {
 			continue
 		}
 		// Delete snapshot
-		kvm.DeleteSnap(entry.VmName, snap)
+		cron.DeleteSnap(entry.VmName, snap)
 	}
 	c.JSON(http.StatusOK, msg)
 }
@@ -43,27 +44,27 @@ func deleteVmSnapshotEntryList(c *gin.Context) {
 func deleteVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.ShouldBindJSON(&msg)
-	kvm.DeleteVmSnapshotByConfig(&msg)
+	cron.DeleteVmSnapshotByConfig(&msg)
 	c.JSON(http.StatusOK, msg)
 }
 
 func updateVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.ShouldBindJSON(&msg)
-	kvm.UpdateVmSnapshotByConfig(&msg)
+	cron.UpdateVmSnapshotByConfig(&msg)
 	c.JSON(http.StatusOK, msg)
 }
 
 func updateVmStatus(c *gin.Context) {
 	var msg messages.VmStatusActionMsg
 	c.ShouldBindJSON(&msg)
-	kvm.UpdateVmStatus(&msg)
+	cron.UpdateVmStatus(&msg)
 	c.JSON(http.StatusOK, msg)
 }
 
 func recoveryVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotEntry
 	c.ShouldBindJSON(&msg)
-	kvm.Revert2Snapshot(msg.VmName, msg.SnapName)
+	cron.Revert2Snapshot(msg.VmName, msg.SnapName)
 	c.JSON(http.StatusOK, msg)
 }
