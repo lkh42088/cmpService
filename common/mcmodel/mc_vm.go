@@ -63,7 +63,7 @@ type McVm struct {
 	SnapHours      int    `gorm:"type:int(11);column:vm_snap_hours" json:"snapHours"`
 	SnapMinutes    int    `gorm:"type:int(11);column:vm_snap_minutes" json:"snapMinutes"`
 	SnapCount      int    `gorm:"type:int(11);column:vm_snap_count" json:"snapCount"`
-	BackupType     bool   `gorm:"type:tinyint(1);column:vm_backup_type" json:"backupType"`
+	BackupType     int    `gorm:"type:int(11);column:vm_backup_type" json:"backupType"`
 	BackupDays     int    `gorm:"type:int(11);column:vm_backup_days" json:"backupDays"`
 	BackupHours    int    `gorm:"type:int(11);column:vm_backup_hours" json:"backupHours"`
 	BackupMinutes  int    `gorm:"type:int(11);column:vm_backup_minutes" json:"backupMinutes"`

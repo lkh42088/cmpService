@@ -45,7 +45,6 @@ func addVmHandler(c *gin.Context) {
 	}
 
 	msg.CurrentStatus = "Ready"
-
 	repo.AddVm2Repo(&msg)
 
 	fmt.Printf("addVmHandler: success - %v\n", msg)

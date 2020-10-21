@@ -237,6 +237,10 @@ func CheckBackup() {
 	if err != nil {
 		fmt.Println("** CheckKtAccount Error : ", err)
 	}
+	// Backup configuration : KT Storage
+	if ktrest.ConfigurationForKtContainer() != nil {
+		fmt.Printf("\n** KT Storage configuration is invalid.\n\n")
+	}
 	// Check NAS Info
 	// CheckNasInfo()
 }

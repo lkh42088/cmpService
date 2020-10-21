@@ -3,6 +3,9 @@ package ktrest
 import (
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/repo"
+	"github.com/pkg/errors"
+	"net/http"
+	"strings"
 	//"cmpService/mcagent/svcmgrapi"
 	"fmt"
 )
@@ -36,6 +39,45 @@ func CheckKtAccount() error {
 	}
 	if !SendUpdateAuthUrl2Svcmgr(obj ,conf.SvcmgrIp + ":" + conf.SvcmgrPort) {
 		return fmt.Errorf("! Error : Failed to sync svcmgr DB.")
+	}
+
+	return nil
+}
+
+func ConfigurationForKtContainer() error {
+	// get server info
+	data := repo.GetMcServer()
+
+	// data valid check
+	if data == nil {
+		return errors.Errorf("! Error: Server data is nil.\n")
+	}
+
+	// backup account check
+	if data.UcloudAccessKey == "" {
+		return nil
+	}
+
+	// container check
+	ipNum := strings.Split(data.IpAddr, ".")
+
+	// container name : serial_number + _ + last ip (ex: SN87_87)
+	if len(ipNum) == 4 {
+		GlobalContainerName = data.SerialNumber + "_" + ipNum[len(ipNum)-1]
+	} else {
+		return errors.New("! Error: Server IP is invalid.\n")
+	}
+
+	code, err := GetStorageContainer(GlobalContainerName)
+	//fmt.Println("code : ", code)
+
+	// create container
+	if code != http.StatusOK &&
+		code != http.StatusNoContent {
+		err2 := PutStorageContainer(GlobalToken, GlobalContainerName)
+		if err2 != nil {
+			return err
+		}
 	}
 
 	return nil
