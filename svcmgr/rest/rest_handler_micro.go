@@ -193,10 +193,6 @@ func (h *Handler) GetMcServersByCpIdx(c *gin.Context) {
 func (h *Handler) AddMcVm(c *gin.Context) {
 	var msg mcmodel.McVm
 	c.Bind(&msg)
-	fmt.Println("rest handler micro AddMcVm start-------------------------------------------------------")
-	fmt.Println("c : ", c);
-	fmt.Println("01 msg.bind userId : ", msg.UserId);
-
 	//fmt.Printf("Add McVm : %v\n", msg)
 	msg.Dump()
 
