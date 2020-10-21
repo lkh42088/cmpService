@@ -19,8 +19,8 @@ func TestAddSnapshotCronBySecond(t *testing.T) {
 
 func TestStartCron(t *testing.T) {
 	var wg sync.WaitGroup
-	n := NewCronSnapshot(5)
-	SetCronSnapshot(n)
+	n := NewCronScheduler(5)
+	SetCronScheduler(n)
 
 	wg.Add(1)
 	AddSnapshotCronSecond("10", "vm01")

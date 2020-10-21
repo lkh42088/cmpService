@@ -53,7 +53,7 @@ func ConfigurationForKtContainer() error {
 		return errors.Errorf("! Error: Server data is nil.\n")
 	}
 
-	// backup account check
+	// cronsch account check
 	if data.UcloudAccessKey == "" {
 		return nil
 	}
