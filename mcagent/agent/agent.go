@@ -33,8 +33,8 @@ func Start (config string) {
 	SetSysInfo()
 
 	// Start Cron
-	if kvm.CronSnap != nil {
-		go kvm.CronSnap.Start(&wg)
+	if kvm.CronSch != nil {
+		go kvm.CronSch.Start(&wg)
 	} else {
 		wg.Done()
 	}
@@ -73,17 +73,17 @@ func Start (config string) {
 	SendSysInfo()
 
 	/*********************************
-	 * Apply Cron for snapshot
+	 * Apply Cron for snapshot/backup
 	 *********************************/
-	ApplyCronForSnapshot()
+	ApplyCronSchFoSnapshotAndBackup()
 
 	/*********************************
-	 * cron for Register, health check
+	 * cronsch for Register, health check
 	 *********************************/
 	kvm.RegisterRegularMsg()
 
 	/****************************************
-	 * Check kt account & nas info for backup
+	 * Check kt account & nas info for cronsch
 	 ****************************************/
 	CheckBackup()
 
@@ -212,14 +212,17 @@ func configure() bool {
 	return true
 }
 
-func ApplyCronForSnapshot() {
+func ApplyCronSchFoSnapshotAndBackup() {
 	for _, vm := range repo.GlobalVmCache {
-		if vm.SnapType == false {
-			continue
+		if vm.SnapType == true {
+			fmt.Println("Apply snapshot cronsch schedular: ", vm.Name)
+			kvm.AddCronSchFromVmSnapshot(&vm)
 		}
-		// apply cron
-		fmt.Println("ApplyCronForSnapshot: ", vm.Name)
-		kvm.AddSnapshotByMcVm(&vm)
+
+		if vm.SnapType == true {
+			fmt.Println("Apply backup cronsch schedular: ", vm.Name)
+			kvm.AddCronSchForVmBackup(&vm)
+		}
 	}
 }
 

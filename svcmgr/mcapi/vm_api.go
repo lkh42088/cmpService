@@ -21,7 +21,7 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	s.Port = recvMsg.Port
 	s.IpAddr = recvMsg.Ip
 	s.PublicIpAddr = recvMsg.PublicIp
-	// backup data : Do not sync to reverse (only svcmgr -> mcmgr)
+	// cronsch data : Do not sync to reverse (only svcmgr -> mcmgr)
 	//s.UcloudAccessKey = recvMsg.UcloudAccessKey
 	//s.UcloudSecretKey = recvMsg.UcloudSecretKey
 	//s.UcloudProjectId = recvMsg.UcloudProjectId

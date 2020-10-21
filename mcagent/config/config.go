@@ -124,7 +124,7 @@ func SetTelegraf(sn string, mac string) bool {
 	}
 	defer fd.Close()
 
-	backup_file := orgin_file + ".backup"
+	backup_file := orgin_file + ".cronsch"
 	backup_fd, err := os.Create(backup_file)
 	if err != nil {
 		fmt.Println("SetTelegraf: error", err)
