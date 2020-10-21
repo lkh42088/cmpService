@@ -158,6 +158,7 @@ type McVmBackup struct {
 	Day             int       `gorm:"type:int(11);column:backup_day;comment:'day'" json:"day"`
 	Hour            int       `gorm:"type:int(11);column:backup_hour;comment:'hour'" json:"hour"`
 	Minute          int       `gorm:"type:int(11);column:backup_minute;comment:'minute'" json:"minute"`
+	Command     	string 	  `gorm:"-" json:"command"`
 }
 
 func (McVmBackup) TableName() string {
