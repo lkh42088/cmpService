@@ -74,9 +74,9 @@ func Start (config string) {
 	SendSysInfo()
 
 	/*********************************
-	 * Apply Cron for snapshot
+	 * Apply Cron for snapshot/backup
 	 *********************************/
-	ApplyCronForSnapshot()
+	ApplyCronSchFoSnapshotAndBackup()
 
 	/*********************************
 	 * cron for Register, health check
@@ -213,14 +213,17 @@ func configure() bool {
 	return true
 }
 
-func ApplyCronForSnapshot() {
+func ApplyCronSchFoSnapshotAndBackup() {
 	for _, vm := range repo.GlobalVmCache {
-		if vm.SnapType == false {
-			continue
+		if vm.SnapType == true {
+			fmt.Println("Apply snapshot cron schedular: ", vm.Name)
+			cron.AddCronSchFromVmSnapshot(&vm)
 		}
-		// apply cron
-		fmt.Println("ApplyCronForSnapshot: ", vm.Name)
-		cron.AddSnapshotByMcVm(&vm)
+
+		if vm.SnapType == true {
+			fmt.Println("Apply backup cron schedular: ", vm.Name)
+			cron.AddCronSchForVmBackup(&vm)
+		}
 	}
 }
 

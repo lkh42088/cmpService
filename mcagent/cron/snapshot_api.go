@@ -12,13 +12,13 @@ import (
  * Snapshot
  *********************************************************************************/
 /* When to start mcagent daemon, add snapshot cron config */
-func AddSnapshotByMcVm(vm *mcmodel.McVm) {
+func AddCronSchFromVmSnapshot(vm *mcmodel.McVm) {
 	if vm.SnapType == false {
 		return
 	}
 
 	if CronSch.LookupSnapVm(vm.Name) {
-		fmt.Println("AddSnapshotByMcVm: Already have snapshot config!")
+		fmt.Println("AddCronSchFromVmSnapshot: Already have snapshot config!")
 		return
 	}
 
@@ -31,7 +31,7 @@ func AddSnapshotByMcVm(vm *mcmodel.McVm) {
 			strconv.Itoa(vm.SnapHours),
 			strconv.Itoa(vm.SnapMinutes))
 		if err != nil {
-			fmt.Println("AddSnapshotByMcVm: error", err)
+			fmt.Println("AddCronSchFromVmSnapshot: error", err)
 			return
 		}
 	case 7:
@@ -41,7 +41,7 @@ func AddSnapshotByMcVm(vm *mcmodel.McVm) {
 	default:
 		 /* etc */
 		if vm.SnapHours == 0 && vm.SnapMinutes == 0  {
-			fmt.Println("AddSnapshotByMcVm: hours 0, minutes 0 --> skip")
+			fmt.Println("AddCronSchFromVmSnapshot: hours 0, minutes 0 --> skip")
 			return
 		} else if vm.SnapHours == 0 {
 			AddSnapshotCronByMin(vm.Name,
