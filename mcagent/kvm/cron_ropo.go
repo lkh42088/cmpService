@@ -1,7 +1,7 @@
 package kvm
 
 import (
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 	"sync"
 )
 

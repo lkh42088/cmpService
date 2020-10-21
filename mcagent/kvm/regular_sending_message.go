@@ -6,7 +6,7 @@ import (
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 )
 
 var RegularSendToSvcmgrCronId cron.EntryID
