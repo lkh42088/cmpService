@@ -19,7 +19,7 @@ func TestGetKtStorageTempUrl(t *testing.T) {
 
 func TestGetStorageContainer(t *testing.T) {
 	_ = PostAuthTokens()
-	err := GetStorageContainer("nubes-test")
+	_, err := GetStorageContainer("nubes-test")
 	fmt.Println(err)
 }
 

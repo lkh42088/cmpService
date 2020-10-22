@@ -149,11 +149,14 @@ func (h *Handler) DeleteVmBackupEntryList(c *gin.Context) {
 		}
 	}
 	sendMsg.Entry = &entryList
+	fmt.Println("########## ", sendMsg.Entry, serverIdx)
 	if serverIdx != 0 {
 		server, err := h.db.GetMcServerByServerIdx(uint(serverIdx))
 		if err != nil {
 			return
 		}
+		fmt.Println("########## ", server)
+
 		mcapi.SendDeleteVmBackupList(sendMsg, server)
 	}
 }
@@ -168,3 +171,4 @@ func (h *Handler) UpdateVmBackup(c *gin.Context) {
 	}
 	mcapi.SendUpdateVmBackup(msg, server)
 }
+

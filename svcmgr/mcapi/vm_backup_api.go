@@ -52,7 +52,7 @@ func SendDeleteVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDet
 func SendDeleteVmBackupList(msg messages.BackupEntryMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmSnapshotList)
+	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmBackupList)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendDeleteVmBackupList: error 1 ", err)

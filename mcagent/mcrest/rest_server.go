@@ -64,7 +64,8 @@ func Start(parentwg *sync.WaitGroup) {
 	// Windows System API
 	rg.POST(lib.McUrlHealthCheckFromWin, CheckHealth)
 
-	// KT Rest API : Storage
+	// Backup
+	rg.POST(lib.McUrlDeleteVmBackupList, DeleteVmBackupEntryList)
 
 	Router.Run(address)
 	if parentwg != nil {

@@ -14,7 +14,7 @@ func getTestLkhConfig() *config.DBConfig {
 		"nubes",
 		"Nubes1510!",
 		"nubes",
-		"192.168.160.137",
+		"192.168.0.44",
 		3306,
 	}
 	return &config
@@ -49,3 +49,4 @@ func TestDBORM_GetDevicesServerWithJoin(t *testing.T) {
 		fmt.Println(i, "    ", v)
 	}
 }
+

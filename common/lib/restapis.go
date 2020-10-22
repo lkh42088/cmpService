@@ -33,4 +33,7 @@ const (
 	// KT Rest API : Storage
 	KtUrlPrefix				  = "/kt/storage"
 	KtUrlStorageInfo		  = "/info/get/:id"
+	// Backup
+	McUrlGetVmBackup = "/bakcup"
+	McUrlDeleteVmBackupList = McUrlGetVmBackup + "/delete-entry-list"
 )
