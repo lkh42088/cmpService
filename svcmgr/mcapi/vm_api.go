@@ -229,9 +229,9 @@ func SendMcUnRegisterServer(server mcmodel.McServer) bool {
 
 func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(vm)
-	fmt.Println("👽 vm api SendAddVm start");
-	fmt.Println("vm : ", vm)
-	fmt.Println("vm : ", vm.UserId)
+	fmt.Println("👽 vm api SendAddVm start")
+	vm.Dump()
+
 	buff := bytes.NewBuffer(pbytes)
 	var addr string
 	if server.RegisterType == 1 {
@@ -241,7 +241,9 @@ func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	}
 	url := fmt.Sprintf("http://%s%s%s",
 		addr, lib.McUrlPrefix, lib.McUrlCreateVm)
+	fmt.Println("SendAddVm: url", url)
 	response, err := http.Post(url, "application/json", buff)
+	fmt.Println("SendAddVm: response", response)
 	if err != nil {
 		fmt.Println("SendAddVm: error 1 ", err)
 		return false
