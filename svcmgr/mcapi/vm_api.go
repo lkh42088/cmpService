@@ -20,6 +20,12 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	s.Status = 1
 	s.Port = recvMsg.Port
 	s.IpAddr = recvMsg.Ip
+	s.L4Port= recvMsg.L4Port
+	if recvMsg.L4Port != "" {
+		s.L4Port = recvMsg.L4Port
+	} else if s.L4Port == "" {
+		s.L4Port = "8082"
+	}
 	s.PublicIpAddr = recvMsg.PublicIp
 	// cronsch data : Do not sync to reverse (only svcmgr -> mcmgr)
 	//s.UcloudAccessKey = recvMsg.UcloudAccessKey
@@ -229,9 +235,9 @@ func SendMcUnRegisterServer(server mcmodel.McServer) bool {
 
 func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(vm)
-	fmt.Println("👽 vm api SendAddVm start");
-	fmt.Println("vm : ", vm)
-	fmt.Println("vm : ", vm.UserId)
+	fmt.Println("👽 vm api SendAddVm start")
+	vm.Dump()
+
 	buff := bytes.NewBuffer(pbytes)
 	var addr string
 	if server.RegisterType == 1 {
@@ -241,7 +247,9 @@ func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	}
 	url := fmt.Sprintf("http://%s%s%s",
 		addr, lib.McUrlPrefix, lib.McUrlCreateVm)
+	fmt.Println("SendAddVm: url", url)
 	response, err := http.Post(url, "application/json", buff)
+	fmt.Println("SendAddVm: response", response)
 	if err != nil {
 		fmt.Println("SendAddVm: error 1 ", err)
 		return false

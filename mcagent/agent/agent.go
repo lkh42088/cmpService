@@ -25,12 +25,16 @@ func Start (config string) {
 		return
 	}
 
+	SetSysInfo()
+
 	if ! configure() {
 		fmt.Println("Fatal: Failed configuration!")
 		return
 	}
 
-	SetSysInfo()
+	cfg := config2.GetMcGlobalConfig()
+	fmt.Println("Start(): globlaConfig 1")
+	cfg.Dump()
 
 	// Start Cron
 	if kvm.CronSch != nil {
@@ -86,6 +90,9 @@ func Start (config string) {
 	 * Check kt account & nas info for cronsch
 	 ****************************************/
 	CheckBackup()
+	cfg = config2.GetMcGlobalConfig()
+	fmt.Println("Start(): globlaConfig 2")
+	cfg.Dump()
 
 	wg.Wait()
 }

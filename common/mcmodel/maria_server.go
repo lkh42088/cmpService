@@ -158,6 +158,7 @@ type McServerMsg struct {
 	Port            string        `json:"port"`
 	Mac             string        `json:"mac"`
 	Ip              string        `json:"ip"`
+	L4Port          string        `json:"l4Port"`
 	PublicIp        string        `json:"publicIp"`
 	UcloudAccessKey string        `json:"accessKey"`
 	UcloudSecretKey string        `json:"secretKey"`
