@@ -4,7 +4,6 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/repo"
-	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"github.com/libvirt/libvirt-go"
 	"os/exec"
@@ -113,7 +112,7 @@ func BackupVmImage(vmName string) string {
 }
 
 //func SafeBackup(name string) (entry *mcmodel.McVmSnapshot, snap *libvirt.DomainSnapshot, err error) {
-func SafeBackup(name, snapName, desc string) {
+func SafeBackup(name, backupName, desc string) {
 	/*****************
 	* Make Snapshot entry
 	*****************/
@@ -123,11 +122,13 @@ func SafeBackup(name, snapName, desc string) {
 	* Upload cronsch file to KT Cloud Storage or NAS
 	*****************/
 	fmt.Println("SafeBackup:", backupFile)
+	/* to-do: khlee will imple... */
+	/* Next, khlee delete backupFile */
 
 	/*****************
-	* Make Snapshot entry
+	* Make Backup message
 	*****************/
-	entry := GetBackupEntry(name, snapName, desc)
+	entry := GetBackupEntry(name, backupName, desc)
 	entry.Command = "add"
 	entry.Dump()
 	cfg := config.GetMcGlobalConfig()
@@ -136,7 +137,9 @@ func SafeBackup(name, snapName, desc string) {
 	/*****************************
 	 * Notify to svcmgr
 	 *****************************/
-	svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
+	fmt.Println("Send to svcmgr... ", svcmgrRestAddr)
+	/* to-do: khlee will open after kt is finished... */
+	//svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
 }
 
 func GetBackupEntry(vmName, snapName, desc string) (*mcmodel.McVmBackup) {

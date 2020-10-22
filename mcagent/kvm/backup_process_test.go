@@ -11,3 +11,8 @@ func TestBackupVmImage(t *testing.T) {
 	output := BackupVmImage(Name)
 	fmt.Println("Result: ", output)
 }
+
+func TestSafeBackup(t *testing.T) {
+	// khlee...
+	// SafeBackup()
+}
