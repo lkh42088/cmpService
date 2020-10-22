@@ -59,6 +59,21 @@ func (db *DBORM) GetMcBackupsByCpIdx(cpIdx int) (backups []mcmodel.McVmBackupDet
 	return backups, err
 }
 
+func (db *DBORM) GetMcVmBackupByVmName(vmName string) (obj mcmodel.McVmBackup, err error) {
+	return obj, db.Table("mc_vm_backup_tb").
+		Where(mcmodel.McVmBackup{VmName: vmName}).Find(&obj).Error
+}
+
+func (db *DBORM) GetMcVmBackupByName(name string) (obj mcmodel.McVmBackup, err error) {
+	return obj, db.Table("mc_vm_backup_tb").
+		Where(mcmodel.McVmBackup{Name: name}).Find(&obj).Error
+}
+
+func (db *DBORM) GetMcVmBackupByIdx(idx uint) (obj mcmodel.McVmBackup, err error) {
+	return obj, db.Table("mc_vm_backup_tb").
+		Where(mcmodel.McVmBackup{Idx: idx}).Find(&obj).Error
+}
+
 func (db *DBORM) GetMcVmBackup() (backups []mcmodel.McVmBackup, err error) {
 	return backups, db.Table("mc_vm_backup_tb").
 		Select("mc_vm_backup_tb.*").

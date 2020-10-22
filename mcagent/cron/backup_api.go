@@ -1,4 +1,4 @@
-package kvm
+package cron
 
 import (
 	"cmpService/common/mcmodel"
@@ -11,7 +11,7 @@ import (
  * Backup
  *********************************************************************************/
 func AddCronSchForVmBackup(vm *mcmodel.McVm) {
-	if vm.BackupType == false {
+	if vm.BackupType == 0 {
 		return
 	}
 
