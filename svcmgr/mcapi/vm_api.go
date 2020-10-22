@@ -21,6 +21,11 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 	s.Port = recvMsg.Port
 	s.IpAddr = recvMsg.Ip
 	s.L4Port= recvMsg.L4Port
+	if recvMsg.L4Port != "" {
+		s.L4Port = recvMsg.L4Port
+	} else if s.L4Port == "" {
+		s.L4Port = "8082"
+	}
 	s.PublicIpAddr = recvMsg.PublicIp
 	// cronsch data : Do not sync to reverse (only svcmgr -> mcmgr)
 	//s.UcloudAccessKey = recvMsg.UcloudAccessKey
