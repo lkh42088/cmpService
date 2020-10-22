@@ -67,7 +67,11 @@ func (h *Handler) ReceiveRegularMsg(c *gin.Context) {
 		server.Enable = true
 		server.PublicIpAddr = msg.PublicIp
 		server.IpAddr = msg.PrivateIp
-		server.L4Port = msg.Port
+		if msg.Port != "" {
+			server.L4Port = msg.Port
+		} else if server.L4Port == "" {
+			server.L4Port = "8082"
+		}
 		server.McServer, err = h.db.UpdateMcServer(server.McServer)
 		//server, err = h.db.GetMcServerBySerialNumber(server.SerialNumber)
 
