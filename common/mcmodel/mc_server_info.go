@@ -1,6 +1,8 @@
 package mcmodel
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
@@ -31,6 +33,13 @@ type SysInfo struct {
 	MemTotal        int64  `gorm:"column:mem_total;not null;unsigned;comment:'MEMORY 용량'" json:"mem"`
 	DiskTotal       int64  `gorm:"column:disk_total;not null;unsigned;comment:'HDD DISK 용량'" json:"disk"`
 	UpdateTime		time.Time  `gorm:"column:update_time;not null;comment:'UPDATE TIME'" json:"updateTime"`
+}
+
+func (s *SysInfo) Dump() string {
+	pretty, _ := json.MarshalIndent(s, "", "  ")
+
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
 }
 
 func (SysInfo) TableName() string {

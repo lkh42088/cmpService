@@ -40,6 +40,13 @@ type McAgentConfig struct {
 	DbOrm              *mariadblayer.DBORM `json:"-"`
 }
 
+func (s *McAgentConfig) Dump() string {
+	pretty, _ := json.MarshalIndent(s, "", "  ")
+
+	fmt.Printf("%s\n", string(pretty))
+	return string(pretty)
+}
+
 var globalConfig McAgentConfig
 
 func GetMcGlobalConfig() McAgentConfig {
