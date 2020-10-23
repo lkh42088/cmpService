@@ -3,16 +3,16 @@ package kvm
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
-var Name = "vm1"
+var Name = "SN87-VM-01"
 
 func TestBackupVmImage(t *testing.T) {
-	output := BackupVmImage(Name)
-	fmt.Println("Result: ", output)
+	output, size := BackupVmImage(Name)
+	fmt.Println("Result: ", output, size)
 }
 
 func TestSafeBackup(t *testing.T) {
-	// khlee...
-	// SafeBackup()
+	SafeBackup(Name, time.Now().String(), time.Now().String())
 }

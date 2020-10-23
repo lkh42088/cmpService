@@ -3,9 +3,12 @@ package kvm
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/repo"
+	"cmpService/mcagent/svcmgrapi"
 	"fmt"
 	"github.com/libvirt/libvirt-go"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -67,7 +70,7 @@ func DecreaseQcow2Image(image, decreaseImage string) {
 	fmt.Println("output", string(output))
 }
 
-func BackupVmImage(vmName string) string {
+func BackupVmImage(vmName string) (string, int) {
 	backupVmName := vmName + "-cronsch"
 	backupFile := "/opt/vm_instances/" + backupVmName + ".qcow2"
 
@@ -75,7 +78,7 @@ func BackupVmImage(vmName string) string {
 	dom, err := GetDomainByName(vmName)
 	if err != nil {
 		fmt.Printf("BackupVmImage (%s) error 0: %s", vmName, err)
-		return ""
+		return "", 0
 	}
 	name, _ := dom.GetName()
 	status, _, _ := dom.GetState()
@@ -95,7 +98,7 @@ func BackupVmImage(vmName string) string {
 	backupDom, err := GetDomainByName(backupVmName)
 	if err != nil {
 		fmt.Printf("BackupVmImage (%s) error 1: %s", vmName, err)
-		return ""
+		return "", 0
 	}
 
 	backupDom.Undefine()
@@ -106,29 +109,66 @@ func BackupVmImage(vmName string) string {
 
 	// Delete temp file
 	DeleteFile(backupFile)
+	file, err := os.Stat(decreaseImage)
 
 	// return cronsch file
-	return decreaseImage
+	return decreaseImage, int(file.Size())
 }
 
 //func SafeBackup(name string) (entry *mcmodel.McVmSnapshot, snap *libvirt.DomainSnapshot, err error) {
 func SafeBackup(name, backupName, desc string) {
 	/*****************
-	* Make Snapshot entry
+	* Make Bakcup entry
 	*****************/
-	backupFile := BackupVmImage(name)
+	backupFile, size := BackupVmImage(name)
+	// Get container name or Create container
+	ktrest.ConfigurationForKtContainer()
 
 	/*****************
 	* Upload cronsch file to KT Cloud Storage or NAS
 	*****************/
-	fmt.Println("SafeBackup:", backupFile)
-	/* to-do: khlee will imple... */
+	server := repo.GetMcServer()
+	vm, _ := repo.GetVmFromDbByName(name)
+	if vm.BackupType == false {
+		return
+	}
+	if server.UcloudAccessKey != "" {
+		fmt.Println("SafeBackup:", backupFile)
+		filenames, err := ktrest.DivisionVmBackupFile(backupFile)
+		if err != nil {
+			fmt.Printf("\n! SafeBackup(FileDivision) Error : %s\n\n", err)
+			return
+		}
+		for i, filename := range filenames {
+			err = ktrest.PutDynamicLargeObjects(ktrest.GlobalContainerName, backupFile, filename)
+			if err != nil {
+				fmt.Printf("\n! SafeBackup(PutDLO) Error : %s\n\n", err)
+				return
+			}
+			fmt.Printf(" KT Storage backup file upload %d. %s\n", i+1, filename)
+		}
+		err = ktrest.PutDLOManifest(ktrest.GlobalContainerName, backupFile)
+		if err != nil {
+			fmt.Printf("\n! SafeBackup(PutManifest) Error : %s\n\n", err)
+			return
+		}
+	} else {
+		// NAS backup
+	}
+
 	/* Next, khlee delete backupFile */
 
 	/*****************
 	* Make Backup message
 	*****************/
 	entry := GetBackupEntry(name, backupName, desc)
+	entry.BackupSize = size
+	if server.UcloudAccessKey != "" {
+		entry.Name = backupName
+		entry.KtContainerName = ktrest.GlobalContainerName
+	} else {
+		entry.NasBackupName = backupName
+	}
 	entry.Command = "add"
 	entry.Dump()
 	cfg := config.GetMcGlobalConfig()
@@ -138,19 +178,22 @@ func SafeBackup(name, backupName, desc string) {
 	 * Notify to svcmgr
 	 *****************************/
 	fmt.Println("Send to svcmgr... ", svcmgrRestAddr)
-	/* to-do: khlee will open after kt is finished... */
-	//svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
+	svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
 }
 
-func GetBackupEntry(vmName, snapName, desc string) (*mcmodel.McVmBackup) {
+func GetBackupEntry(vmName, backupName, desc string) (*mcmodel.McVmBackup) {
 	var backup mcmodel.McVmBackup
 	backup.VmName = vmName
-	backup.Name = snapName
 	backup.Desc = desc
 	backup.ServerSn = repo.GetMcServer().SerialNumber
 	backup.CompanyIdx = repo.GetMcServer().CompanyIdx
 
-	arr := strings.Split(snapName, "-")
+	//backup.NasBackupName = backupName
+	//backup.KtContainerName = ktrest.GlobalContainerName
+	//backup.Name = backupName
+	//backup.BackupSize = size
+
+	arr := strings.Split(backupName, "-")
 	backup.Year, _ = strconv.Atoi(arr[0])
 	backup.Month = GetMonthStr2Num(arr[1])
 	backup.Day, _ = strconv.Atoi(arr[2])

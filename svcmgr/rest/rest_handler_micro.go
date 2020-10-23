@@ -31,7 +31,7 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 
 	// KT Storage check : get auth url
 	if msg.UcloudAccessKey != "" {
-		err := ktrest.PostAuthTokens() 
+		err := ktrest.PostAuthTokens()
 		fmt.Printf("\n!! KT Storage user authorization failed.(%v)\n\n", err)
 		msg.UcloudAuthUrl = ktrest.GlobalAccountUrl
 	}

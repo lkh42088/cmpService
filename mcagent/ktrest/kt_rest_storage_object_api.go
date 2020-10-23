@@ -10,13 +10,14 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 /**
  * KT Storage File Upload/Download
  */
 // File Division & Zip
-func DivisionVmBackupFile(fileName string) error {
+func DivisionVmBackupFile(fileName string) (files []string, err error) {
 	// Get file path
 	conf := config.GetMcGlobalConfig()
 	path := conf.VmInstanceDir
@@ -26,7 +27,7 @@ func DivisionVmBackupFile(fileName string) error {
 	// file check
 	if _, err := os.Stat(lastPath); os.IsNotExist(err) {
 		fmt.Println(err)
-		return err
+		return files, err
 	}
 
 	// system call
@@ -39,12 +40,20 @@ func DivisionVmBackupFile(fileName string) error {
 	}
 	binary := "zip"
 	cmd := exec.Command(binary, args...)
-	output, err := cmd.Output()
+	_, err = cmd.Output()
 	if err != nil {
-		return err
+		return files, err
 	}
-	fmt.Println("output:", string(output))
-	return nil
+
+	allFiles, err := ioutil.ReadDir(path)
+	for _, file := range allFiles {
+		if strings.Contains(file.Name(), fileName + "z") {
+			files = append(files, file.Name())
+		}
+	}
+	fmt.Println("## FILE LIST : ", files)
+
+	return files, nil
 }
 
 // UnZip File
@@ -159,7 +168,7 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success\n")
+	return nil
 }
 
 // Put Dynamic Large Object Manifest File

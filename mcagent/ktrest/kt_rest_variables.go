@@ -22,10 +22,5 @@ const storageSecretKey = "MTYwMTg2MzU1OTE2MDE4NjI5MTk1MTQ2"
 const storageProjectId = "fa632a4a0d04488c93b7184be92df4c8"
 const storageDomainId = "42a37f949dcd48a3a805fe0d2d3a7da5"
 
-const authToken = ""
-
-const BackupDisable = 0
-const BackupKtStorage = 1
-const BackupNas = 2
 
 
