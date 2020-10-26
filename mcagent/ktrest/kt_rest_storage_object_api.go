@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"cmpService/common/download"
 	"cmpService/mcagent/config"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -33,25 +34,30 @@ func DivisionVmBackupFile(fileName string) (files []string, err error) {
 	// system call
 	args := []string{
 		"-s",
-		"4g",
+		"500m",
 		"-o",
 		path + "/" + fileName + ".zip",
 		lastPath,
 	}
 	binary := "zip"
 	cmd := exec.Command(binary, args...)
-	_, err = cmd.Output()
+	if _, err := os.Stat(lastPath+".zip"); os.IsNotExist(err) {
+		_, err = cmd.Output()
+	}
 	if err != nil {
 		return files, err
 	}
 
 	allFiles, err := ioutil.ReadDir(path)
 	for _, file := range allFiles {
-		if strings.Contains(file.Name(), fileName + "z") {
+		if strings.Contains(file.Name(), fileName + ".z") {
 			files = append(files, file.Name())
 		}
 	}
 	fmt.Println("## FILE LIST : ", files)
+	if len(files) == 0 {
+		return files, errors.New("Division file is failed.")
+	}
 
 	return files, nil
 }
@@ -150,7 +156,9 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 	req, _ := http.NewRequest("PUT", baseUrl, data)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	//req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("Content-Type", ContentTypeBinary)
+	req.Header.Add("Range", Range4096)
 	req.Header.Add("Content-Length", strconv.Itoa(int(fileInfo.Size())))
 	fmt.Println("URL: ", req)
 
@@ -183,7 +191,8 @@ func PutDLOManifest(container string, originFileName string) error {
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
 	req.Header.Add("X-Object-Manifest", container + "/" + originFileName + "/")
-	req.Header.Add("Content-Type", ContentTypeJson)
+	//req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("Content-Type", ContentTypeBinary)
 	req.Header.Add("Content-Length", "0")
 	fmt.Println("URL: ", req)
 
@@ -192,6 +201,7 @@ func PutDLOManifest(container string, originFileName string) error {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error:", err)
+		return err
 	} else {
 		defer resp.Body.Close()
 	}
@@ -201,7 +211,7 @@ func PutDLOManifest(container string, originFileName string) error {
 		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success\n")
+	return nil
 }
 
 // Get Storage Object (File download)

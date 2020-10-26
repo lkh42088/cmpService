@@ -186,3 +186,8 @@ func GetVmFromDbByName(name string) (mcmodel.McVm, error){
 func GetAllVmFromDb() ([]mcmodel.McVm, error){
 	return config.GetMcGlobalConfig().DbOrm.GetAllMcVm()
 }
+
+//backup
+func AddBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
+	return config.GetMcGlobalConfig().DbOrm.AddMcVmBackup(v)
+}
