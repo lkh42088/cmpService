@@ -2,9 +2,9 @@ package agent
 
 import (
 	"cmpService/common/mcmodel"
-	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/mciptables"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
@@ -32,7 +32,7 @@ func SyncRepoWithCurrentInfo() *mcmodel.McServerMsg {
 	 * Delete Reject Filter Rule
 	 ************************************/
 	if server.Networks != nil {
-		utils.DeleteFilterReject()
+		mciptables.DeleteFilterReject()
 	}
 
 	/************************************

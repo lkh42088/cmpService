@@ -2,10 +2,10 @@ package mcrest
 
 import (
 	"cmpService/common/mcmodel"
-	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/mciptables"
 	"cmpService/mcagent/repo"
 	"encoding/json"
 	"fmt"
@@ -38,7 +38,7 @@ func GetMcServer() (mcmodel.McServerMsg, error) {
 
 type McResourceMsg struct {
 	GlobalConfig config.McAgentConfig
-	DnatList *[]utils.DnatRule
+	DnatList *[]mciptables.DnatRule
 	CreateVmList *map[uint]mcmodel.McVm
 	CacheVmList *[]mcmodel.McVm
 	LibvirtVmList *[]mcmodel.McVm
@@ -98,7 +98,7 @@ func resourceControlHandler(c *gin.Context) {
 func getResourceHandler(c *gin.Context) {
 	var resource McResourceMsg
 	resource.GlobalConfig = config.GetMcGlobalConfig()
-	resource.DnatList = utils.GetDnatList()
+	resource.DnatList = mciptables.GetDnatList()
 	resource.CreateVmList = &kvm.CreateVmFsm.Vms
 	resource.CacheVmList = &repo.GlobalVmCache
 	resource.LibvirtVmList = kvm.LibvirtR.Old.Vms
