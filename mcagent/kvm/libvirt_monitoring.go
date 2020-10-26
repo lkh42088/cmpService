@@ -2,8 +2,8 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
-	"cmpService/common/utils"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/mciptables"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"fmt"
@@ -91,14 +91,14 @@ func ApplyChangeFactor(server *mcmodel.McServerMsg) {
 		}
 	}
 	if server.Networks != nil {
-		utils.DeleteFilterReject()
+		mciptables.DeleteFilterReject()
 	}
 }
 
-func GetDnatRuleConfigByVm(vm *mcmodel.McVm) *utils.DnatRule{
+func GetDnatRuleConfigByVm(vm *mcmodel.McVm) *mciptables.DnatRule {
 	cfg := config.GetMcGlobalConfig()
 	// apply DNAT
-	return &utils.DnatRule{
+	return &mciptables.DnatRule{
 		vm.IpAddr,
 		"3389",
 		cfg.ServerIp,
@@ -112,7 +112,7 @@ func AddDnatRuleByVm(vm *mcmodel.McVm) {
 	}
 	rule := GetDnatRuleConfigByVm(vm)
 	// Get Dnat Rules
-	dnatList := utils.GetDnatList()
+	dnatList := mciptables.GetDnatList()
 	isExist := false
 	for _, nat := range *dnatList {
 		if nat.Compare(rule) {
@@ -122,13 +122,13 @@ func AddDnatRuleByVm(vm *mcmodel.McVm) {
 	}
 	if isExist == false {
 		fmt.Println("AddDnatRuleByVm: do it")
-		utils.AddDNATRule(rule)
+		mciptables.AddDNATRule(rule)
 	}
 }
 
 func DeleteDnatRulByVm(vm *mcmodel.McVm) {
 	rule := GetDnatRuleConfigByVm(vm)
-	utils.DeleteDNATRule(rule)
+	mciptables.DeleteDNATRule(rule)
 }
 
 func GetDnatPort(vmIndex int) string {

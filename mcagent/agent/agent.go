@@ -2,12 +2,12 @@ package agent
 
 import (
 	"cmpService/common/mcmodel"
-	"cmpService/common/utils"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/ddns"
 	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
+	"cmpService/mcagent/mciptables"
 	"cmpService/mcagent/mcrest"
 	"cmpService/mcagent/repo"
 	"cmpService/svcmgr/config"
@@ -176,7 +176,7 @@ func configure() bool {
 	/********************************
 	 * Clear DNAT Rule in iptables
 	 ********************************/
-	utils.DeleteAllDnat()
+	mciptables.DeleteAllDnat()
 
 	if !mcinflux.ConfigureInfluxDB() {
 		fmt.Println("Failed to configure influxdb!")
