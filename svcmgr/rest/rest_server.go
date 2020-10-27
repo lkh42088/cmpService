@@ -320,7 +320,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Micro Cloud Backup From MC-agent
 	router.POST(lib.SvcmgrApiMicroKtAuthUrl, h.UpdateKtAuthUrl)
-	router.POST(lib.SvcmgrApiMicroMcAgentNotifyBackup, h.AddMcVmBackup)
+	router.POST(lib.SvcmgrApiMicroMcAgentNotifyBackup, h.StoreVmBackupFromMc)
 	// Micro Cloud Backup From Web
 	router.GET(lib.SvcmgrApiMicroVmBackupPaging+pagingParam+"/:cpName", h.GetMcVmBackup)
 	router.POST(lib.SvcmgrApiMicroVmDeleteBackupEntryList, h.DeleteVmBackupEntryList)

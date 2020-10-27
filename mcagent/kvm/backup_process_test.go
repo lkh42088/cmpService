@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-var Name = "SN87-VM-01"
-//var Name = "ebjee"
+//var Name = "SN87-VM-01"
+var Name = "KH-VM-01"
 
 func GetConfig() {
 	config2.ApplyGlobalConfig("/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf")

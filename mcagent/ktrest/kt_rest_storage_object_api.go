@@ -20,9 +20,8 @@ import (
 // File Division & Zip
 func DivisionVmBackupFile(fileName string) (files []string, err error) {
 	// Get file path
-	conf := config.GetMcGlobalConfig()
-	path := conf.VmInstanceDir
-	lastPath := path + "/" + fileName
+	dstPath := config.GetMcGlobalConfig().VmBackupDir
+	lastPath := dstPath + "/" + fileName
 	fmt.Println("PATH: ", lastPath)
 
 	// file check
@@ -36,7 +35,9 @@ func DivisionVmBackupFile(fileName string) (files []string, err error) {
 		"-s",
 		"500m",
 		"-o",
-		path + "/" + fileName + ".zip",
+		//dstPath + "/" + fileName + ".zip",
+		//lastPath,
+		lastPath + ".zip",
 		lastPath,
 	}
 	binary := "zip"
@@ -48,7 +49,7 @@ func DivisionVmBackupFile(fileName string) (files []string, err error) {
 		return files, err
 	}
 
-	allFiles, err := ioutil.ReadDir(path)
+	allFiles, err := ioutil.ReadDir(config.GetMcGlobalConfig().VmBackupDir)
 	for _, file := range allFiles {
 		if strings.Contains(file.Name(), fileName + ".z") {
 			files = append(files, file.Name())
@@ -56,7 +57,7 @@ func DivisionVmBackupFile(fileName string) (files []string, err error) {
 	}
 	fmt.Println("## FILE LIST : ", files)
 	if len(files) == 0 {
-		return files, errors.New("Division file is failed.")
+		return files, errors.New("Division is failed.")
 	}
 
 	return files, nil
@@ -139,7 +140,7 @@ func PutStorageObject(container string, fileName string) error {
 func PutDynamicLargeObjects(container string, originFileName string, fileName string) error {
 	// Get file path
 	conf := config.GetMcGlobalConfig()
-	path := conf.VmInstanceDir
+	path := conf.VmBackupDir
 	lastPath := path + "/" + fileName
 	fmt.Println("PATH: ", lastPath)
 
@@ -181,11 +182,7 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 
 // Put Dynamic Large Object Manifest File
 func PutDLOManifest(container string, originFileName string) error {
-	// Get empty file
-	//var manifest io.Reader
-	//data := bufio.NewReader(manifest)
-
-	// Request URL
+	// Request URL : https://ssproxy2.ucloudbiz.olleh.com/v1/AUTH_fa632a4a0d04488c93b7184be92df4c8/SN87_87/vm-01-cronsch.qcow2.decrease
 	baseUrl := GlobalAccountUrl + "/" + container + "/" + originFileName
 	req, _ := http.NewRequest("PUT", baseUrl, nil)
 	// Request HEADER
