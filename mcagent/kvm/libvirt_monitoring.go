@@ -91,7 +91,7 @@ func ApplyChangeFactor(server *mcmodel.McServerMsg) {
 		}
 	}
 	if server.Networks != nil {
-		mciptables.DeleteFilterReject()
+		mciptables.DeleteFilterForwardRejectAllRule()
 	}
 }
 

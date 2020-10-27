@@ -20,54 +20,6 @@ func GetIpt() (*IPTables, error) {
 	return gipt, nil
 }
 
-func GetFilterList() {
-	ipt, err := GetIpt()
-	if err != nil {
-		fmt.Println("GetFilterList: error", err)
-	}
-	ipt.Dump()
-	listChain, err := ipt.ListChains("filter")
-	for _, chain := range listChain {
-		fmt.Printf("%s\n", chain)
-	}
-	list, err := ipt.List("filter", "FORWARD")
-	for _, rule := range list{
-		if strings.Contains(rule, "REJECT") {
-			fmt.Printf("%s\n", rule)
-			arr := strings.Fields(rule)
-			arr = arr[2:]
-			fmt.Printf("new %s\n", arr)
-			err := ipt.Delete("filter", "FORWARD", arr[0], arr[1], arr[2], arr[3])
-			if err != nil {
-				fmt.Println("error:", err)
-			}
-		}
-	}
-}
-
-func DeleteFilterReject() {
-	ipt, err := GetIpt()
-	if err != nil {
-		fmt.Println("GetFilterList: error", err)
-		return
-	}
-	table := "filter"
-	chain := "FORWARD"
-	list, err := ipt.List(table, chain)
-	for _, rule := range list{
-		if strings.Contains(rule, "REJECT") {
-			fmt.Printf("%s\n", rule)
-			arr := strings.Fields(rule)
-			arr = arr[2:]
-			//fmt.Printf("new %s\n", arr)
-			err := ipt.Delete(table, chain, arr[0], arr[1], arr[2], arr[3])
-			if err != nil {
-				fmt.Println("error:", err)
-			}
-		}
-	}
-}
-
 type DnatRule struct {
 	ToAddr   string
 	ToPort   string

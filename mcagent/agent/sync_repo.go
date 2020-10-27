@@ -32,7 +32,7 @@ func SyncRepoWithCurrentInfo() *mcmodel.McServerMsg {
 	 * Delete Reject Filter Rule
 	 ************************************/
 	if server.Networks != nil {
-		mciptables.DeleteFilterReject()
+		mciptables.DeleteFilterForwardRejectAllRule()
 	}
 
 	/************************************
