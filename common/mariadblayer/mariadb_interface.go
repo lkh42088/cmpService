@@ -167,6 +167,7 @@ type MariaDBLayer interface {
 	// Micro Cloud
 	GetMcServersPage(paging models.Pagination, cpName string) (servers mcmodel.McServerPage, err error)
 	AddMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
+	ModifyMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	UpdateMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	DeleteMcServer(obj mcmodel.McServer) (mcmodel.McServer, error)
 	GetMcServersByCpIdx(cpIdx int) (servers []mcmodel.McServerDetail, err error)
@@ -179,6 +180,7 @@ type MariaDBLayer interface {
 	GetMcVmUserByParam(id string, cpIdx string) (obj mcmodel.McVm, err error)
 	AddMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
+	ModifyMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
  	GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error)
