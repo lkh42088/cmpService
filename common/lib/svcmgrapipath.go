@@ -20,6 +20,7 @@ const (
 	SvcmgrApiMicroServerPaging              = SvcmgrApiMicro + "/servers-paging"
 	SvcmgrApiMicroServerRegister            = SvcmgrApiMicroServer + "/register"
 	SvcmgrApiMicroServerUnRegister          = SvcmgrApiMicroServer + "/unregister"
+	SvcmgrApiMicroServerModify              = SvcmgrApiMicroServer + "/modify"
 	SvcmgrApiMicroServerSearchCompany       = SvcmgrApiMicroServer + "/search-company"
 	SvcmgrApiMicroServerResource            = SvcmgrApiMicroServer + "/resource"
 	SvcmgrApiMicroServerRegularMsg          = SvcmgrApiMicroServer + "/regular-msg"
@@ -27,6 +28,7 @@ const (
 	SvcmgrApiMicroVm                        = SvcmgrApiMicro + "/vms" // /v1/micro/vms
 	SvcmgrApiMicroVmRegister                = SvcmgrApiMicroVm + "/register"
 	SvcmgrApiMicroVmUnRegister              = SvcmgrApiMicroVm + "/unregister"
+	SvcmgrApiMicroVmModify                  = SvcmgrApiMicroVm + "/modify"
 	SvcmgrApiMicroVmUpdate                  = SvcmgrApiMicroVm + "/update"
 	SvcmgrApiMicroVmUpdateFromMc            = SvcmgrApiMicroVm + "/update-from-mc"
 	SvcmgrApiMicroVmUpdateFromMcSnapshot    = SvcmgrApiMicroVm + "/update-from-mc/snapshot"
@@ -34,6 +36,7 @@ const (
 	SvcmgrApiMicroVmPaging                  = SvcmgrApiMicro + "/vms-paging"
 	SvcmgrApiMicroVmAction                  = SvcmgrApiMicroVm + "/action"
 	SvcmgrApiMicroVmSnapshotPaging          = SvcmgrApiMicro + "/snapshot-paging"
+	SvcmgrApiMicroVmSnapshotPagingParam     = SvcmgrApiMicro + "/snapshot-paging-param"
 	SvcmgrApiMicroVmSnapshotConfig          = SvcmgrApiMicroVm + "/snapshot-config"
 	SvcmgrApiMicroVmAddSnapshot             = SvcmgrApiMicroVm + "/snapshot/add"
 	SvcmgrApiMicroVmUpdateSnapshot          = SvcmgrApiMicroVm + "/snapshot/update"
@@ -44,7 +47,7 @@ const (
 	SvcmgrApiMicroVmStatus              = SvcmgrApiMicroVm + "/status"
 	SvcmgrApiMicroVmGraph               = SvcmgrApiMicro + "/vms-graph"
 	SvcmgrApiMicroMcAgentNotifySnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/notify" // snapshot from mcagent
-	SvcmgrApiMicroMcAgentNotifyBackup   = SvcmgrApiMicroVm + "/mcagent/cronsch/notify"   // cronsch from mcagent
+	SvcmgrApiMicroMcAgentNotifyBackup   = SvcmgrApiMicroVm + "/mcagent/cronsch/notify"  // cronsch from mcagent
 	SvcmgrApiMicroImage                 = SvcmgrApiMicro + "/images"                    // /v1/micro/images
 	SvcmgrApiMicroImagePaging           = SvcmgrApiMicro + "/images-paging"
 	SvcmgrApiMicroNetwork               = SvcmgrApiMicro + "/networks" // /v1/micro/networks
@@ -55,6 +58,7 @@ const (
 	SvcmgrApiMicroVmStats               = SvcmgrApiMicroVmMonitor + "/stats"
 	SvcmgrApiMicroVmInfo                = SvcmgrApiMicroVmMonitor + "/info"
 	SvcmgrApiMicroMonitorCPU            = SvcmgrApiMicro + "/monitor/cpu"
+
 	SvcmgrApiMicroDashboard             = SvcmgrApiMicro + "/dashboard" // /v1/micro/dashboard
 	SvcmgrApiMicroTotalCount            = SvcmgrApiMicroDashboard + "/total-cnt"
 	SvcmgrApiMicroVmCount               = SvcmgrApiMicroDashboard + "/vmcnt"
