@@ -227,9 +227,11 @@ func (h *Handler) AddMcVm(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("02 msg.bind userId : ", msg.UserId);
+	fmt.Println("02 msg.bind userId : ", msg.UserId)
+	fmt.Println("! MSG: ", msg)
 
 	server, err := h.db.GetMcServerByServerIdx(uint(msg.McServerIdx))
+	fmt.Println("! SERVER: ", server)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

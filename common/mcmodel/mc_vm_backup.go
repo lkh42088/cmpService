@@ -151,7 +151,7 @@ type McVmBackup struct {
 	KtContainerDate time.Time `gorm:"type:datetime;column:backup_container_date;comment:'컨테이너 생성일'" json:"containerDate"`
 	Name            string    `gorm:"type:varchar(255);column:backup_name;comment:'백업 파일 이름'" json:"filename"`
 	LastBackupDate  time.Time `gorm:"type:datetime;column:backup_register_date;default:CURRENT_TIMESTAMP;comment:'최종 백업 날짜'" json:"registerDate"`
-	BackupSize      int       `gorm:"type:int(11);column:backup_size;comment:'백업 이미지 크기'" json:"fileSize"`
+	BackupSize      int       `gorm:"type:bigint;column:backup_size;comment:'백업 이미지 크기'" json:"fileSize"`
 	VmName          string    `gorm:"type:varchar(50);column:backup_vm_name;comment:'백업 VM 이름'" json:"vmName"`
 	Desc            string    `gorm:"type:varchar(255);column:backup_desc;comment:'백업 상세'" json:"desc"`
 	Year            int       `gorm:"type:int(11);column:bakcup_year;comment:'year'" json:"year"`
