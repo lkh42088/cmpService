@@ -144,13 +144,13 @@ type McVmBackup struct {
 	Idx             uint      `gorm:"primary_key;column:backup_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
 	CompanyIdx      int       `gorm:"type:int(11);not null;column:backup_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
 	McServerIdx     int       `gorm:"type:int(11);column:backup_server_idx;comment:'서버 고유값'" json:"serverIdx"`
-	McServerSn      string    `gorm:"type:int(11);column:backup_server_serial_number;comment:'서버 시리얼 넘버'" json:"mcServerSn"`
-	KtAuthUrl       string    `gorm:"type:int(11);column:backup_kt_auth_url;comment:'KT 사용자 인증 URL'" json:"authUrl"`
-	NasBackupName   string    `gorm:"type:int(11);column:backup_nas_name;comment:'NAS 백업 파일 이름'" json:"nasBackupName"`
-	KtContainerName string    `gorm:"type:int(11);column:backup_kt_container_name;comment:'컨테이너 이름'" json:"containerName"`
+	McServerSn      string    `gorm:"type:varchar(50);column:backup_server_serial_number;comment:'서버 시리얼 넘버'" json:"mcServerSn"`
+	KtAuthUrl       string    `gorm:"type:varchar(255);column:backup_kt_auth_url;comment:'KT 사용자 인증 URL'" json:"authUrl"`
+	NasBackupName   string    `gorm:"type:varchar(255);column:backup_nas_name;comment:'NAS 백업 파일 이름'" json:"nasBackupName"`
+	KtContainerName string    `gorm:"type:varchar(50);column:backup_kt_container_name;comment:'컨테이너 이름'" json:"containerName"`
 	KtContainerDate time.Time `gorm:"type:datetime;column:backup_container_date;comment:'컨테이너 생성일'" json:"containerDate"`
-	Name            string    `gorm:"type:varchar(50);column:backup_name;comment:'백업 파일 이름'" json:"filename"`
-	LastBackupDate  time.Time `gorm:"type:datetime;column:backup_register_date;comment:'최종 백업 날짜'" json:"registerDate"`
+	Name            string    `gorm:"type:varchar(255);column:backup_name;comment:'백업 파일 이름'" json:"filename"`
+	LastBackupDate  time.Time `gorm:"type:datetime;column:backup_register_date;default:CURRENT_TIMESTAMP;comment:'최종 백업 날짜'" json:"registerDate"`
 	BackupSize      int       `gorm:"type:int(11);column:backup_size;comment:'백업 이미지 크기'" json:"fileSize"`
 	VmName          string    `gorm:"type:varchar(50);column:backup_vm_name;comment:'백업 VM 이름'" json:"vmName"`
 	Desc            string    `gorm:"type:varchar(255);column:backup_desc;comment:'백업 상세'" json:"desc"`

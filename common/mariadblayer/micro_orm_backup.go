@@ -84,7 +84,7 @@ func (db *DBORM) AddMcVmBackup(obj mcmodel.McVmBackup) (mcmodel.McVmBackup, erro
 	return obj, db.Create(&obj).Error
 }
 
-func (db *DBORM) UpdateMcBackup(obj mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
+func (db *DBORM) UpdateMcVmBackup(obj mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
 	return obj, db.
 		Model(&obj).
 		Where(mcmodel.McVmBackup{Idx: obj.Idx}).

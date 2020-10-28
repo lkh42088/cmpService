@@ -72,8 +72,10 @@ func ConvertImageFile2MgoVM(vm *mcmodel.McVm, file string) {
 		vm.OS = "win10"
 	} else if list[0] == "ubuntu18" {
 		vm.OS= "ubuntu18"
-	} else {
+	} else if list[0] == "ubuntu16" {
 		vm.OS = "ubuntu16"
+	} else {
+		return
 	}
 	vm.VmIndex, _ = strconv.Atoi(list[2])
 	fmt.Printf("ConvertImageFile2MgoVM: vmIndex %d, %s\n", vm.VmIndex, list[2])

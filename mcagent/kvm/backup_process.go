@@ -6,12 +6,14 @@ import (
 	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
+	"errors"
 	"fmt"
 	"github.com/libvirt/libvirt-go"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 /*************************************************************************
@@ -49,8 +51,20 @@ func DeleteFile(fileName string) {
 
 	binary := "rm"
 	cmd := exec.Command(binary, args...)
-	output, _ := cmd.Output()
-	fmt.Println("output", string(output))
+	_, _ = cmd.Output()
+	//fmt.Println("output", string(output))
+}
+
+func DeleteAllFile(path string, filenames []string) {
+	if len(filenames) == 0 {
+		return
+	}
+	fmt.Println("# FILE LIST : ", filenames)
+	for i, filename := range filenames {
+		DeleteFile(path + "/" + filename)
+		fmt.Printf("%d 번째 파일이 삭제되었습니다.(%s)\n", i + 1, filename)
+	}
+	return
 }
 
 func DecreaseQcow2Image(image, decreaseImage string) {
@@ -72,7 +86,7 @@ func DecreaseQcow2Image(image, decreaseImage string) {
 
 func BackupVmImage(vmName string) (string, int) {
 	backupVmName := vmName + "-cronsch"
-	backupFile := "/opt/vm_instances/" + backupVmName + ".qcow2"
+	backupFile := config.GetMcGlobalConfig().VmBackupDir + "/" + backupVmName + ".qcow2"
 
 	// Stop Vm
 	dom, err := GetDomainByName(vmName)
@@ -82,7 +96,7 @@ func BackupVmImage(vmName string) (string, int) {
 	}
 	name, _ := dom.GetName()
 	status, _, _ := dom.GetState()
-	fmt.Println("dom:", name, status)
+	fmt.Println("dom:", name, status, backupFile)
 	if status != libvirt.DOMAIN_SHUTDOWN && status != libvirt.DOMAIN_SHUTOFF {
 		dom.Destroy()
 	}
@@ -100,7 +114,6 @@ func BackupVmImage(vmName string) (string, int) {
 		fmt.Printf("BackupVmImage (%s) error 1: %s", vmName, err)
 		return "", 0
 	}
-
 	backupDom.Undefine()
 
 	// Decrease qcow2 image size (long time)
@@ -109,63 +122,61 @@ func BackupVmImage(vmName string) (string, int) {
 
 	// Delete temp file
 	DeleteFile(backupFile)
-	file, err := os.Stat(decreaseImage)
 
 	// return cronsch file
+	file, _ := os.Stat(decreaseImage)
 	return decreaseImage, int(file.Size())
 }
 
 //func SafeBackup(name string) (entry *mcmodel.McVmSnapshot, snap *libvirt.DomainSnapshot, err error) {
-func SafeBackup(name, backupName, desc string) {
+func SafeBackup(vmName, backupName, desc string) {
+	path := config.GetMcGlobalConfig().VmBackupDir
 	/*****************
 	* Make Bakcup entry
 	*****************/
-	backupFile, size := BackupVmImage(name)
+	backupFilePath, size := BackupVmImage(vmName)
+	backupFile := strings.Trim(backupFilePath, path + "/")
 	// Get container name or Create container
 	ktrest.ConfigurationForKtContainer()
 
 	/*****************
 	* Upload cronsch file to KT Cloud Storage or NAS
 	*****************/
-	server := repo.GetMcServer()
-	vm, _ := repo.GetVmFromDbByName(name)
-	if vm.BackupType == false {
+	server, filenames, err := McVmBackup(vmName, backupFile)
+	if err != nil {
+		fmt.Printf("! SafeBackup() : McVmBackup() Err - %s\n", err)
 		return
 	}
-	if server.UcloudAccessKey != "" {
-		fmt.Println("SafeBackup:", backupFile)
-		filenames, err := ktrest.DivisionVmBackupFile(backupFile)
-		if err != nil {
-			fmt.Printf("\n! SafeBackup(FileDivision) Error : %s\n\n", err)
-			return
-		}
-		for i, filename := range filenames {
-			err = ktrest.PutDynamicLargeObjects(ktrest.GlobalContainerName, backupFile, filename)
-			if err != nil {
-				fmt.Printf("\n! SafeBackup(PutDLO) Error : %s\n\n", err)
-				return
-			}
-			fmt.Printf(" KT Storage backup file upload %d. %s\n", i+1, filename)
-		}
-		err = ktrest.PutDLOManifest(ktrest.GlobalContainerName, backupFile)
-		if err != nil {
-			fmt.Printf("\n! SafeBackup(PutManifest) Error : %s\n\n", err)
-			return
-		}
-	} else {
-		// NAS backup
-	}
-
-	/* Next, khlee delete backupFile */
 
 	/*****************
 	* Make Backup message
 	*****************/
-	entry := GetBackupEntry(name, backupName, desc)
+	entry, svcmgrRestAddr := MakeBackupMsg(vmName, backupFile, desc, size, *server)
+	_, err = repo.StoreVmBackup2Db(*entry)
+	if err != nil {
+		fmt.Printf("! StoreVmBackup2Db is failed.(%s)\n", err)
+	} else {
+		//fmt.Printf("Backup Entry : %+v\n", v)
+		/*****************************
+		 * Notify to svcmgr
+		 *****************************/
+		fmt.Println("Send to svcmgr... ", svcmgrRestAddr)
+		svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
+	}
+
+	/*****************
+	 * Delete backupFile
+	*****************/
+	DeleteAllFile(path, filenames)
+}
+
+func MakeBackupMsg(vmName string, backupName string, desc string, size int, server mcmodel.McServerDetail) (*mcmodel.McVmBackup, string) {
+	entry := GetBackupEntry(vmName, GetTimeWord(), desc)
 	entry.BackupSize = size
 	if server.UcloudAccessKey != "" {
 		entry.Name = backupName
 		entry.KtContainerName = ktrest.GlobalContainerName
+		entry.KtAuthUrl = server.UcloudAuthUrl
 	} else {
 		entry.NasBackupName = backupName
 	}
@@ -173,25 +184,63 @@ func SafeBackup(name, backupName, desc string) {
 	entry.Dump()
 	cfg := config.GetMcGlobalConfig()
 	svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+	return entry, svcmgrRestAddr
+}
 
-	/*****************************
-	 * Notify to svcmgr
-	 *****************************/
-	fmt.Println("Send to svcmgr... ", svcmgrRestAddr)
-	svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
+func McVmBackup(vmName string, backupFile string) (*mcmodel.McServerDetail, []string, error) {
+	server := repo.GetMcServer()
+	var filenames []string
+	var err error
+	vm, _ := repo.GetVmFromDbByName(vmName)
+	if vm.BackupType == false {
+	fmt.Println("! BackupType is false.")
+		return nil, filenames, errors.New("BackupType is false.\n")
+	}
+	if server.UcloudAccessKey != "" {
+		fmt.Println("KT Storage SafeBackup: ", backupFile)
+		filenames, err = ktrest.DivisionVmBackupFile(backupFile)
+		if err != nil {
+			fmt.Printf("\n! SafeBackup(FileDivision) Error : %s\n\n", err)
+			return nil, nil, err
+		}
+
+		// delete backup decrease file
+		DeleteFile(config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile)
+
+		tmp := time.Now()
+		for i, filename := range filenames {
+			err = ktrest.PutDynamicLargeObjects(ktrest.GlobalContainerName, backupFile, filename)
+			if err != nil {
+				//  오랜 시간 업로드 동작으로 인한 사용자 인증 해제 시 RETRY
+				ktrest.PostAuthTokens()
+				err = ktrest.PutDynamicLargeObjects(ktrest.GlobalContainerName, backupFile, filename)
+				if err != nil {
+					fmt.Printf("\n! SafeBackup(PutDLO) Error : %s\n\n", err)
+					return nil, nil, err
+				}
+			}
+			time.Sleep(1000)	// KT api restrictions : 1 sec term per 1 api
+			fmt.Printf("%d.%s %d 초 소요되었습니다. \n", i+1, filename, int(time.Now().Sub(tmp).Seconds()))
+			tmp = time.Now()
+		}
+		err = ktrest.PutDLOManifest(ktrest.GlobalContainerName, backupFile)
+		if err != nil {
+			fmt.Printf("\n! SafeBackup(PutManifest) Error : %s\n\n", err)
+			return nil, nil, err
+		}
+	} else {
+		// NAS backup
+	}
+	return server, filenames, nil
 }
 
 func GetBackupEntry(vmName, backupName, desc string) (*mcmodel.McVmBackup) {
 	var backup mcmodel.McVmBackup
 	backup.VmName = vmName
 	backup.Desc = desc
-	backup.ServerSn = repo.GetMcServer().SerialNumber
+	backup.McServerSn = repo.GetMcServer().SerialNumber
 	backup.CompanyIdx = repo.GetMcServer().CompanyIdx
-
-	//backup.NasBackupName = backupName
-	//backup.KtContainerName = ktrest.GlobalContainerName
-	//backup.Name = backupName
-	//backup.BackupSize = size
+	backup.McServerIdx = int(repo.GetMcServer().Idx)
 
 	arr := strings.Split(backupName, "-")
 	backup.Year, _ = strconv.Atoi(arr[0])

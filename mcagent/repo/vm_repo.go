@@ -3,6 +3,7 @@ package repo
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"errors"
 	"fmt"
 )
 
@@ -185,4 +186,28 @@ func GetVmFromDbByName(name string) (mcmodel.McVm, error){
 
 func GetAllVmFromDb() ([]mcmodel.McVm, error){
 	return config.GetMcGlobalConfig().DbOrm.GetAllMcVm()
+}
+
+//backup
+func StoreVmBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
+	var data mcmodel.McVmBackup
+	if v.VmName == "" {
+		return data, errors.New("! Error: backup struct is empty.\n")
+	}
+
+	_, err := config.GetMcGlobalConfig().DbOrm.GetMcVmBackupByVmName(v.VmName)
+	if err != nil {
+		data, err = AddBackup2Db(v)
+	} else {
+		data, err = UpdateBackup2Db(v)
+	}
+	return data, nil
+}
+
+func UpdateBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
+	return config.GetMcGlobalConfig().DbOrm.UpdateMcVmBackup(v)
+}
+
+func AddBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
+	return config.GetMcGlobalConfig().DbOrm.AddMcVmBackup(v)
 }

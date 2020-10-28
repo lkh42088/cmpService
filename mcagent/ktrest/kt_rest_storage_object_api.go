@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"cmpService/common/download"
 	"cmpService/mcagent/config"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -19,9 +20,8 @@ import (
 // File Division & Zip
 func DivisionVmBackupFile(fileName string) (files []string, err error) {
 	// Get file path
-	conf := config.GetMcGlobalConfig()
-	path := conf.VmInstanceDir
-	lastPath := path + "/" + fileName
+	dstPath := config.GetMcGlobalConfig().VmBackupDir
+	lastPath := dstPath + "/" + fileName
 	fmt.Println("PATH: ", lastPath)
 
 	// file check
@@ -33,25 +33,32 @@ func DivisionVmBackupFile(fileName string) (files []string, err error) {
 	// system call
 	args := []string{
 		"-s",
-		"4g",
+		"500m",
 		"-o",
-		path + "/" + fileName + ".zip",
+		//dstPath + "/" + fileName + ".zip",
+		//lastPath,
+		lastPath + ".zip",
 		lastPath,
 	}
 	binary := "zip"
 	cmd := exec.Command(binary, args...)
-	_, err = cmd.Output()
+	if _, err := os.Stat(lastPath+".zip"); os.IsNotExist(err) {
+		_, err = cmd.Output()
+	}
 	if err != nil {
 		return files, err
 	}
 
-	allFiles, err := ioutil.ReadDir(path)
+	allFiles, err := ioutil.ReadDir(config.GetMcGlobalConfig().VmBackupDir)
 	for _, file := range allFiles {
-		if strings.Contains(file.Name(), fileName + "z") {
+		if strings.Contains(file.Name(), fileName + ".z") {
 			files = append(files, file.Name())
 		}
 	}
 	fmt.Println("## FILE LIST : ", files)
+	if len(files) == 0 {
+		return files, errors.New("Division is failed.")
+	}
 
 	return files, nil
 }
@@ -133,7 +140,7 @@ func PutStorageObject(container string, fileName string) error {
 func PutDynamicLargeObjects(container string, originFileName string, fileName string) error {
 	// Get file path
 	conf := config.GetMcGlobalConfig()
-	path := conf.VmInstanceDir
+	path := conf.VmBackupDir
 	lastPath := path + "/" + fileName
 	fmt.Println("PATH: ", lastPath)
 
@@ -150,7 +157,9 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 	req, _ := http.NewRequest("PUT", baseUrl, data)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	//req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("Content-Type", ContentTypeBinary)
+	req.Header.Add("Range", Range4096)
 	req.Header.Add("Content-Length", strconv.Itoa(int(fileInfo.Size())))
 	fmt.Println("URL: ", req)
 
@@ -173,17 +182,14 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 
 // Put Dynamic Large Object Manifest File
 func PutDLOManifest(container string, originFileName string) error {
-	// Get empty file
-	//var manifest io.Reader
-	//data := bufio.NewReader(manifest)
-
-	// Request URL
+	// Request URL : https://ssproxy2.ucloudbiz.olleh.com/v1/AUTH_fa632a4a0d04488c93b7184be92df4c8/SN87_87/vm-01-cronsch.qcow2.decrease
 	baseUrl := GlobalAccountUrl + "/" + container + "/" + originFileName
 	req, _ := http.NewRequest("PUT", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
 	req.Header.Add("X-Object-Manifest", container + "/" + originFileName + "/")
-	req.Header.Add("Content-Type", ContentTypeJson)
+	//req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("Content-Type", ContentTypeBinary)
 	req.Header.Add("Content-Length", "0")
 	fmt.Println("URL: ", req)
 
@@ -192,6 +198,7 @@ func PutDLOManifest(container string, originFileName string) error {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error:", err)
+		return err
 	} else {
 		defer resp.Body.Close()
 	}
@@ -201,7 +208,7 @@ func PutDLOManifest(container string, originFileName string) error {
 		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success\n")
+	return nil
 }
 
 // Get Storage Object (File download)
