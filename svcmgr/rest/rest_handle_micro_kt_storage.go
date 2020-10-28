@@ -132,10 +132,11 @@ func (h *Handler) DeleteVmBackup(c *gin.Context) {
 func (h *Handler) DeleteVmBackupEntryList(c *gin.Context) {
 	var msg messages.DeleteDataMessage
 	c.Bind(&msg)
-	fmt.Println("DeleteVmBackup:", msg)
 	var sendMsg messages.BackupEntryMsg
 	var entryList []messages.BackupEntry
 	var serverIdx int
+
+	fmt.Println("DeleteVmBackup:", msg)
 	for _, idx := range msg.IdxList {
 		var entry messages.BackupEntry
 		backup, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmBackupByIdx(uint(idx))
@@ -149,16 +150,29 @@ func (h *Handler) DeleteVmBackupEntryList(c *gin.Context) {
 		}
 	}
 	sendMsg.Entry = &entryList
-	fmt.Println("########## ", sendMsg.Entry, serverIdx)
+	//fmt.Println("# ", sendMsg.Entry, serverIdx)
 	if serverIdx != 0 {
 		server, err := h.db.GetMcServerByServerIdx(uint(serverIdx))
 		if err != nil {
 			return
 		}
-		fmt.Println("########## ", server)
+		//fmt.Println("# ", server)
 
-		mcapi.SendDeleteVmBackupList(sendMsg, server)
+		if mcapi.SendDeleteVmBackupList(sendMsg, server) {
+			// svcmgr db update
+			for _, entry := range entryList {
+				backup, err := config.SvcmgrGlobalConfig.Mariadb.DeleteMcVmBackupByVmName(entry.VmName)
+				if err != nil {
+					fmt.Printf("# %s Backup file deleting is failed.(%s)\n", backup.VmName, backup.Name)
+					c.JSON(http.StatusInternalServerError, err)
+					return
+				} else {
+					fmt.Printf("# %s Backup file deleted.(%s)\n", backup.VmName, backup.Name)
+				}
+			}
+		}
 	}
+	c.JSON(http.StatusOK, "OK")
 }
 
 func (h *Handler) UpdateVmBackup(c *gin.Context) {

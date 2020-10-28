@@ -15,6 +15,7 @@ const Range4096 = "4096"
 const MethodsPassword = "password"
 const EconomyType = "ec"
 const BackupFilePermission = 0644
+const FILE_BLOCK_500M = 500 * 1024 * 1024
 
 // DB
 const storageAccessKey = "iwhan@nubes-bridge.com"

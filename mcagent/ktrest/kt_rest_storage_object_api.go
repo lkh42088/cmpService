@@ -302,7 +302,7 @@ func DeleteStorageObject(container string, fileName string) error {
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
 	req.Header.Add("Content-Type", ContentTypeJson)
-	//fmt.Println("URL: ", req)
+	fmt.Println("URL: ", req)
 
 	//Send API Query
 	client := &http.Client{}
@@ -314,10 +314,11 @@ func DeleteStorageObject(container string, fileName string) error {
 	}
 
 	//Parsing data
+	fmt.Println(resp.Status)
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("Error: %s\n", resp.Status)
 	}
 
-	return fmt.Errorf("Success\n")
+	return nil
 }

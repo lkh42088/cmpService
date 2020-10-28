@@ -120,3 +120,7 @@ func (db *DBORM) UpdateKtAuthUrl(ip string, authUrl string) (mcmodel.McServer, e
 func (db *DBORM) DeleteMcVmBackup(obj mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
 	return obj, db.Delete(&obj).Error
 }
+
+func (db *DBORM) DeleteMcVmBackupByVmName(vmName string) (obj mcmodel.McVmBackup, err error) {
+	return obj, db.Where(mcmodel.McVmBackup{VmName: vmName}).Delete(&obj).Error
+}

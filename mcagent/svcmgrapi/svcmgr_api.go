@@ -13,27 +13,6 @@ import (
 	"net/http"
 )
 
-func SendMcVmBackup2Svcmgr(obj mcmodel.McVmBackup, addr string) bool {
-	pbytes, _ := json.Marshal(obj)
-	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroMcAgentNotifyBackup)
-	fmt.Println("Notify: ", url)
-	obj.Dump()
-	response, err := http.Post(url, "application/json", buff)
-	if err != nil {
-		fmt.Println("error: ", err)
-		return false
-	}
-	defer response.Body.Close()
-	data, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println("error 2: ", err)
-		return false
-	}
-	fmt.Println("response: ", string(data))
-	return true
-}
-
 func SendMcVmSnapshot2Svcmgr(obj mcmodel.McVmSnapshot, addr string) bool {
 	pbytes, _ := json.Marshal(obj)
 	buff := bytes.NewBuffer(pbytes)
@@ -148,6 +127,28 @@ func SendRegularMsg2Svcmgr(obj messages.ServerRegularMsg, addr string, enable bo
 			return true
 		}
 		fmt.Println("SendReqularMsg2Svcmgr: uncorrect info - failed!")
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
+// FOR BACKUP
+func SendMcVmBackup2Svcmgr(obj mcmodel.McVmBackup, addr string, subUrl string) bool {
+	pbytes, _ := json.Marshal(obj)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s%s", addr, subUrl)
+	fmt.Println("Notify: ", url)
+	obj.Dump()
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error: ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
 		return false
 	}
 	fmt.Println("response: ", string(data))

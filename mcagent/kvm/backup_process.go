@@ -1,6 +1,7 @@
 package kvm
 
 import (
+	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
@@ -161,7 +162,7 @@ func SafeBackup(vmName, backupName, desc string) {
 		 * Notify to svcmgr
 		 *****************************/
 		fmt.Println("Send to svcmgr... ", svcmgrRestAddr)
-		svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr)
+		svcmgrapi.SendMcVmBackup2Svcmgr(*entry, svcmgrRestAddr, lib.SvcmgrApiMicroMcAgentNotifyBackup)
 	}
 
 	/*****************

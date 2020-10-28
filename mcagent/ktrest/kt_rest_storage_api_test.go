@@ -101,6 +101,6 @@ func TestGetStorageObject(t *testing.T) {
 
 func TestDeleteStorageObject(t *testing.T) {
 	_ = PostAuthTokens()
-	err := DeleteStorageObject("nubes-test", "a.txt")
+	err := DeleteStorageObject("SN87_87", "ebjee-cronsch.qcow2.decrease/ebjee-cronsch.qcow2.decrease.z18")
 	fmt.Println(err)
 }
