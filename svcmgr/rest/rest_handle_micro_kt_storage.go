@@ -186,39 +186,37 @@ func (h *Handler) UpdateVmBackup(c *gin.Context) {
 	mcapi.SendUpdateVmBackup(msg, server)
 }
 
-func (h *Handler) AddVmBackupFromMc(c *gin.Context) {
-	var backup mcmodel.McVmBackup
-	c.Bind(&backup)
-	data, err := config.SvcmgrGlobalConfig.Mariadb.AddMcVmBackup(backup)
+func AddVmBackupFromMc(backup mcmodel.McVmBackup) error {
+	fmt.Println("Add: ", backup)
+	_, err := config.SvcmgrGlobalConfig.Mariadb.AddMcVmBackup(backup)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+		return err
 	}
-
-	c.JSON(http.StatusOK, data)
+	return nil
 }
 
-func (h *Handler) UpdateVmBackupFromMc(c *gin.Context) {
-	var backup mcmodel.McVmBackup
-	c.Bind(&backup)
-	data, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmBackup(backup)
+func UpdateVmBackupFromMc(backup mcmodel.McVmBackup) error {
+	fmt.Println("Update: ", backup)
+	_, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmBackup(backup)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+		return err
 	}
-
-	c.JSON(http.StatusOK, data)
+	return nil
 }
 
 func (h *Handler) StoreVmBackupFromMc(c *gin.Context) {
 	var backup mcmodel.McVmBackup
 	c.Bind(&backup)
+	fmt.Println("Store: ", backup)
 	_, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmBackupByVmName(backup.VmName)
 	if err != nil {
-		h.AddVmBackupFromMc(c)
+		err = AddVmBackupFromMc(backup)
 	} else {
-		h.UpdateVmBackupFromMc(c)
+		err = UpdateVmBackupFromMc(backup)
 	}
-	return
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+	c.JSON(http.StatusOK, "OK")
 }
 

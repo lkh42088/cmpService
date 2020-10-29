@@ -153,6 +153,7 @@ func SafeBackup(vmName, backupName, desc string) {
 	* Make Backup message
 	*****************/
 	entry, svcmgrRestAddr := MakeBackupMsg(vmName, backupFile, desc, size, *server)
+
 	_, err = repo.StoreVmBackup2Db(*entry)
 	if err != nil {
 		fmt.Printf("! StoreVmBackup2Db is failed.(%s)\n", err)
