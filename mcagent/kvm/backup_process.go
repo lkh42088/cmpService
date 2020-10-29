@@ -68,6 +68,17 @@ func DeleteAllFile(path string, filenames []string) {
 	return
 }
 
+func DeleteDirectory(directoryPath string) {
+	args := []string{
+		"-rf",
+		directoryPath,
+	}
+
+	binary := "rm"
+	cmd := exec.Command(binary, args...)
+	_, _ = cmd.Output()
+}
+
 func DecreaseQcow2Image(image, decreaseImage string) {
 	//"qemu-img convert -c -O qcow2 backup2.qcow2 backup2_zero.qcow2"
 	args := []string{
@@ -254,23 +265,41 @@ func GetBackupEntry(vmName, backupName, desc string) (*mcmodel.McVmBackup) {
 	return &backup
 }
 
-func RecoveryBackup(vmName, backupImage string) {
-	// vm stop
-	dom, err := GetDomainByName(vmName)
+// Restore Backup
+func RebootingByBackupFile(src string, dst string, backup mcmodel.McVmBackup, vm mcmodel.McVm) {
+	// old vm stop
+	dom, err := GetDomainByName(backup.VmName)
 	if err != nil {
-		fmt.Printf("BackupVmImage (%s) error 0: %s", vmName, err)
-		return
-	}
-	name, _ := dom.GetName()
-	status, _, _ := dom.GetState()
-	fmt.Println("dom:", name, status)
-	if status != libvirt.DOMAIN_SHUTDOWN && status != libvirt.DOMAIN_SHUTOFF {
-		dom.Destroy()
+		fmt.Printf("BackupVmImage (%s) error 0: %s", backup.VmName, err)
+	} else {
+		name, _ := dom.GetName()
+		status, _, _ := dom.GetState()
+		fmt.Println("dom: ", name, status)
+		if status != libvirt.DOMAIN_SHUTDOWN && status != libvirt.DOMAIN_SHUTOFF {
+			dom.Destroy()
+		}
 	}
 
-	// delete vm snapshot
-	DeleteAllSnapshot(vmName)
-	//DeleteVm(vmName)
-	// download cronsch file
-	// change qcow2 file
+	// file move
+	fmt.Println("# Movefile : ", src, dst)
+	MoveFile(src, dst)
+
+	// delete file & directory
+	DeleteFile(src)
+	currentPath, _ := os.Getwd()
+	DeleteDirectory(currentPath + "/opt")
+
+	// new vm start
+	CreateVmInstance(vm)
+}
+
+func MoveFile(src string, dst string) {
+	args := []string{
+		src,
+		dst,
+	}
+
+	binary := "mv"
+	cmd := exec.Command(binary, args...)
+	_, _ = cmd.Output()
 }

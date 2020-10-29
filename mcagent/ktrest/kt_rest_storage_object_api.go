@@ -64,22 +64,24 @@ func DivisionVmBackupFile(fileName string) (files []string, err error) {
 }
 
 // UnZip File
-func UnZipVmBackupFile(fileName string, dstName string) error {
+func UnZipVmBackupFile(srcName string, dstName string) error {
 	// Get file path
 	//conf := config.GetMcGlobalConfig()
 	//path := conf.VmInstanceDir
-	lastPath := "/home/nubes/go/src/cmpService/mcagent/ktrest/" + fileName
-	fmt.Println("PATH: ", lastPath)
+	//lastPath := "/home/nubes/go/src/cmpService/mcagent/ktrest/" + fileName
+	//currentPath, _ := os.Getwd()
+	//lastPath := currentPath + "/" + fileName
+	fmt.Println("PATH: ", srcName)
 
 	// file check
-	if _, err := os.Stat(lastPath); os.IsNotExist(err) {
+	if _, err := os.Stat(srcName); os.IsNotExist(err) {
 		fmt.Println(err)
 		return err
 	}
 
 	// system call
 	args := []string{
-		fileName,
+		srcName,
 		"-d",
 		dstName,
 	}
@@ -269,7 +271,7 @@ func GetStorageObjectByDLO(container string, fileName string, ch chan int) error
 	// Request URL
 	baseUrl := GlobalAccountUrl + "/" + container + "/" + fileName
 	req, _ := http.NewRequest("GET", baseUrl, nil)
-	// Request HEADER
+		// Request HEADER
 	req.Header.Add("X-Auth-Token", GlobalToken)
 	req.Header.Add("Content-Type", ContentTypeBinary)
 	req.Header.Add("Range", Range4096)
@@ -279,18 +281,18 @@ func GetStorageObjectByDLO(container string, fileName string, ch chan int) error
 	download.DownloadLargeObjectForKtStorage(baseUrl, GlobalToken)
 	ch <- 5	// receive complete
 
-	return fmt.Errorf("Success\n")
+	return nil
 }
 
 func PrintDownloading(ch chan int) {
 	v := <- ch
 	switch v {
 	case 1:
-		fmt.Println("FILE TRANSFER START.")
+		fmt.Println("******* FILE TRANSFER START. *******")
 	case 5:
-		fmt.Println("FILE RECEIVE COMPLETE.")
+		fmt.Println("******* FILE RECEIVE COMPLETE. *******")
 	case 10:
-		fmt.Println("FILE TRANSFER SUCCESS.")
+		fmt.Println("******* FILE TRANSFER SUCCESS. *******")
 	}
 }
 
