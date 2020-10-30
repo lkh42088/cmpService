@@ -30,6 +30,7 @@ func PostAuthTokens() StorageAuthTokenResponse {
 	req.Auth.Scope.Project.Domain.Id = storageDomainId
 	pbytes, _ := json.Marshal(req)
 	body := bytes.NewBuffer(pbytes)
+	fmt.Println("# URL: ", req)
 
 	//Send API Query
 	resp, err := http.Post(baseUrl.String(), ContentTypeJson, body)

@@ -148,7 +148,7 @@ func SetLogValue(new interface{}, old interface{}) (newVal string, oldVal string
 	if new == nil || old == nil {
 		return "", ""
 	}
-	fmt.Println(reflect.TypeOf(new).Kind().String()) //todo
+	fmt.Println(reflect.TypeOf(new).Kind().String()) //todo (khlee)
 	switch reflect.TypeOf(new).Kind() {
 	case reflect.Int:
 		newVal = strconv.Itoa(int(reflect.ValueOf(new).Int()))
@@ -230,10 +230,10 @@ func StoreLog(info CompareInfo, v ChangeInfo) error {
 			return errors.New("Can't data parse.\n")
 		}
 		log = models.DeviceLog{
-			DeviceCode:   ds.DeviceCode, //todo
+			DeviceCode:   ds.DeviceCode,
 			WorkCode:     lib.ChangeInformation,
 			LogLevel:     lib.LevelInfo,
-			RegisterId:   ds.RegisterId, //todo
+			RegisterId:   ds.RegisterId,
 			Field:        v.Field,
 			OldStatus:    v.OldStatus,
 			NewStatus:    v.NewStatus,

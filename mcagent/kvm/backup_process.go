@@ -147,14 +147,14 @@ func SafeBackup(vmName, backupName, desc string) {
 	* Make Bakcup entry
 	*****************/
 	backupFilePath, size := BackupVmImage(vmName)
-	backupFile := strings.Trim(backupFilePath, path + "/")
+	backupFile := strings.TrimPrefix(backupFilePath, path + "/")
 	// Get container name or Create container
 	ktrest.ConfigurationForKtContainer()
 
 	/*****************
 	* Upload cronsch file to KT Cloud Storage or NAS
 	*****************/
-	server, filenames, err := McVmBackup(vmName, backupFile)
+	server, filenames, err := McVmBackup(vmName, backupFile, desc)
 	if err != nil {
 		fmt.Printf("! SafeBackup() : McVmBackup() Err - %s\n", err)
 		return
@@ -200,15 +200,18 @@ func MakeBackupMsg(vmName string, backupName string, desc string, size int, serv
 	return entry, svcmgrRestAddr
 }
 
-func McVmBackup(vmName string, backupFile string) (*mcmodel.McServerDetail, []string, error) {
+func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McServerDetail, []string, error) {
 	server := repo.GetMcServer()
 	var filenames []string
 	var err error
 	vm, _ := repo.GetVmFromDbByName(vmName)
-	if vm.BackupType == false {
-	fmt.Println("! BackupType is false.")
-		return nil, filenames, errors.New("BackupType is false.\n")
+	if command != "By action command" {
+		if vm.BackupType == false {
+			fmt.Println("! BackupType is false.")
+			return nil, filenames, errors.New("BackupType is false.\n")
+		}
 	}
+
 	if server.UcloudAccessKey != "" {
 		fmt.Println("KT Storage SafeBackup: ", backupFile)
 		filenames, err = ktrest.DivisionVmBackupFile(backupFile)
@@ -242,7 +245,7 @@ func McVmBackup(vmName string, backupFile string) (*mcmodel.McServerDetail, []st
 			return nil, nil, err
 		}
 	} else {
-		// NAS backup
+		// todo:NAS backup (khlee)
 	}
 	return server, filenames, nil
 }
@@ -280,17 +283,23 @@ func RebootingByBackupFile(src string, dst string, backup mcmodel.McVmBackup, vm
 		}
 	}
 
-	// file move
+	// old vm delete
+	//dom.Undefine()
+	//DeleteFile(dst)
+
+	// new file move
 	fmt.Println("# Movefile : ", src, dst)
 	MoveFile(src, dst)
 
-	// delete file & directory
-	DeleteFile(src)
+	// delete temp file & directory
 	currentPath, _ := os.Getwd()
+	DeleteFile(currentPath + "/" + backup.Name)
 	DeleteDirectory(currentPath + "/opt")
 
 	// new vm start
-	CreateVmInstance(vm)
+	fmt.Println("# New VM Start!")
+	//CreateVmInstance(vm)
+	StartVm(vm)
 }
 
 func MoveFile(src string, dst string) {

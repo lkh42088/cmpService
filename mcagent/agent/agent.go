@@ -226,7 +226,7 @@ func ApplyCronSchFoSnapshotAndBackup() {
 			kvm.AddCronSchFromVmSnapshot(&vm)
 		}
 
-		if vm.SnapType == true {
+		if vm.BackupType == true {
 			fmt.Println("Apply backup cronsch schedular: ", vm.Name)
 			kvm.AddCronSchForVmBackup(&vm)
 		}

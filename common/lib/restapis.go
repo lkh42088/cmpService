@@ -35,6 +35,9 @@ const (
 	KtUrlStorageInfo		  = "/info/get/:id"
 	// Backup
 	McUrlVmBackup = "/bakcup"
+	McUrlAddVmBackup = McUrlVmBackup + "/add"
+	McUrlDeleteVmBackup = McUrlVmBackup + "/delete"
 	McUrlDeleteVmBackupList = McUrlVmBackup + "/delete-entry-list"
 	McUrlRestoreVmBackup = McUrlVmBackup + "/restore"
+	McUrlUpdateVmBackup = McUrlVmBackup + "/update"
 )
