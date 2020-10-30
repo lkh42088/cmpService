@@ -68,6 +68,17 @@ func DeleteAllFile(path string, filenames []string) {
 	return
 }
 
+func DeleteDirectory(directoryPath string) {
+	args := []string{
+		"-rf",
+		directoryPath,
+	}
+
+	binary := "rm"
+	cmd := exec.Command(binary, args...)
+	_, _ = cmd.Output()
+}
+
 func DecreaseQcow2Image(image, decreaseImage string) {
 	//"qemu-img convert -c -O qcow2 backup2.qcow2 backup2_zero.qcow2"
 	args := []string{
@@ -136,14 +147,14 @@ func SafeBackup(vmName, backupName, desc string) {
 	* Make Bakcup entry
 	*****************/
 	backupFilePath, size := BackupVmImage(vmName)
-	backupFile := strings.Trim(backupFilePath, path + "/")
+	backupFile := strings.TrimPrefix(backupFilePath, path + "/")
 	// Get container name or Create container
 	ktrest.ConfigurationForKtContainer()
 
 	/*****************
 	* Upload cronsch file to KT Cloud Storage or NAS
 	*****************/
-	server, filenames, err := McVmBackup(vmName, backupFile)
+	server, filenames, err := McVmBackup(vmName, backupFile, desc)
 	if err != nil {
 		fmt.Printf("! SafeBackup() : McVmBackup() Err - %s\n", err)
 		return
@@ -189,15 +200,18 @@ func MakeBackupMsg(vmName string, backupName string, desc string, size int, serv
 	return entry, svcmgrRestAddr
 }
 
-func McVmBackup(vmName string, backupFile string) (*mcmodel.McServerDetail, []string, error) {
+func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McServerDetail, []string, error) {
 	server := repo.GetMcServer()
 	var filenames []string
 	var err error
 	vm, _ := repo.GetVmFromDbByName(vmName)
-	if vm.BackupType == false {
-	fmt.Println("! BackupType is false.")
-		return nil, filenames, errors.New("BackupType is false.\n")
+	if command != "By action command" {
+		if vm.BackupType == false {
+			fmt.Println("! BackupType is false.")
+			return nil, filenames, errors.New("BackupType is false.\n")
+		}
 	}
+
 	if server.UcloudAccessKey != "" {
 		fmt.Println("KT Storage SafeBackup: ", backupFile)
 		filenames, err = ktrest.DivisionVmBackupFile(backupFile)
@@ -231,7 +245,7 @@ func McVmBackup(vmName string, backupFile string) (*mcmodel.McServerDetail, []st
 			return nil, nil, err
 		}
 	} else {
-		// NAS backup
+		// todo:NAS backup (khlee)
 	}
 	return server, filenames, nil
 }
@@ -254,23 +268,47 @@ func GetBackupEntry(vmName, backupName, desc string) (*mcmodel.McVmBackup) {
 	return &backup
 }
 
-func RecoveryBackup(vmName, backupImage string) {
-	// vm stop
-	dom, err := GetDomainByName(vmName)
+// Restore Backup
+func RebootingByBackupFile(src string, dst string, backup mcmodel.McVmBackup, vm mcmodel.McVm) {
+	// old vm stop
+	dom, err := GetDomainByName(backup.VmName)
 	if err != nil {
-		fmt.Printf("BackupVmImage (%s) error 0: %s", vmName, err)
-		return
-	}
-	name, _ := dom.GetName()
-	status, _, _ := dom.GetState()
-	fmt.Println("dom:", name, status)
-	if status != libvirt.DOMAIN_SHUTDOWN && status != libvirt.DOMAIN_SHUTOFF {
-		dom.Destroy()
+		fmt.Printf("BackupVmImage (%s) error 0: %s", backup.VmName, err)
+	} else {
+		name, _ := dom.GetName()
+		status, _, _ := dom.GetState()
+		fmt.Println("dom: ", name, status)
+		if status != libvirt.DOMAIN_SHUTDOWN && status != libvirt.DOMAIN_SHUTOFF {
+			dom.Destroy()
+		}
 	}
 
-	// delete vm snapshot
-	DeleteAllSnapshot(vmName)
-	//DeleteVm(vmName)
-	// download cronsch file
-	// change qcow2 file
+	// old vm delete
+	//dom.Undefine()
+	//DeleteFile(dst)
+
+	// new file move
+	fmt.Println("# Movefile : ", src, dst)
+	MoveFile(src, dst)
+
+	// delete temp file & directory
+	currentPath, _ := os.Getwd()
+	DeleteFile(currentPath + "/" + backup.Name)
+	DeleteDirectory(currentPath + "/opt")
+
+	// new vm start
+	fmt.Println("# New VM Start!")
+	//CreateVmInstance(vm)
+	StartVm(vm)
+}
+
+func MoveFile(src string, dst string) {
+	args := []string{
+		src,
+		dst,
+	}
+
+	binary := "mv"
+	cmd := exec.Command(binary, args...)
+	_, _ = cmd.Output()
 }

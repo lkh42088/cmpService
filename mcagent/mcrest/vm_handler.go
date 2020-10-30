@@ -142,6 +142,9 @@ func applyVmActionHandler(c *gin.Context) {
 	case 6:
 		// snapshot
 		kvm.SafeSnapshot(msg.VmName, kvm.GetTimeWord(), "By action command")
+	case 7:
+		// backup
+		kvm.SafeBackup(msg.VmName, kvm.GetTimeWord(), "By action command")
 	default:
 	}
 	c.JSON(http.StatusOK, msg)

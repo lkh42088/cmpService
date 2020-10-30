@@ -139,7 +139,7 @@ func GetServerRank(c *gin.Context) {
 	// GET SERVER RX/TX
 	dbname = "interface"
 	field = `"time","serial_number","ifPhysAddress","ifInOctets","ifOutOctets"`
-	// ifIndex=2 : ethernet interface index (todo : need to fix)
+	// ifIndex=2 : ethernet interface index (todo : need to fix) khlee
 	query = fmt.Sprintf(`WHERE ifIndex = '2' AND time > now() - %s 
 		group by mac_address limit 10`, "5m")
 	resRxTx := conf.GetMeasurementsWithQuery(dbname, field, query)

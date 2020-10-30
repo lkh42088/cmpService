@@ -35,6 +35,6 @@ func TestSafeBackup(t *testing.T) {
 
 func TestMcVmBackup(t *testing.T) {
 	GetConfig()
-	McVmBackup(Name, "SN87-VM-01-cronsch.qcow2.decrease")
+	McVmBackup(Name, "SN87-VM-01-cronsch.qcow2.decrease", "By action command")
 }
 

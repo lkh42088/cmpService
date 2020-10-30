@@ -7,6 +7,7 @@ import (
 	"cmpService/common/utils"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/mcinflux"
+	config2 "cmpService/svcmgr/config"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -49,4 +50,13 @@ func TestGetVmInterfaceTrafficByMac(t *testing.T) {
 
 func TestGetMyPublicIp(t *testing.T) {
 	utils.GetMyPublicIp()
+}
+
+func TestDeleteVmBackup(t *testing.T) {
+	config.ApplyGlobalConfig("../etc/mcagent.lkh.conf")
+	cfg := config.GetMcGlobalConfig()
+	db, _ := config2.SetMariaDB(cfg.MariaUser, cfg.MariaPassword, cfg.MariaDb,
+		cfg.MariaIp, 3306)
+	config.SetDbOrm(db)
+	DeleteVmBackup("SN87-VM-01")
 }

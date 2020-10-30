@@ -59,17 +59,17 @@ const (
 	SvcmgrApiMicroVmInfo                = SvcmgrApiMicroVmMonitor + "/info"
 	SvcmgrApiMicroMonitorCPU            = SvcmgrApiMicro + "/monitor/cpu"
 
-	SvcmgrApiMicroDashboard             = SvcmgrApiMicro + "/dashboard" // /v1/micro/dashboard
-	SvcmgrApiMicroTotalCount            = SvcmgrApiMicroDashboard + "/total-cnt"
-	SvcmgrApiMicroVmCount               = SvcmgrApiMicroDashboard + "/vmcnt"
-	SvcmgrApiMicroServerRank            = SvcmgrApiMicroDashboard + "/rank"
-	SvcmgrApiMicroSnapshotCount         = SvcmgrApiMicroDashboard + "/snapshotcnt"
-	SvcmgrApiMicroVmCheckUser           = SvcmgrApiMicroVm + "/check/user"
-	SvcmgrApiMicroKtAuthUrl             = SvcmgrApiMicro + "/auth/url"
+	SvcmgrApiMicroDashboard     = SvcmgrApiMicro + "/dashboard" // /v1/micro/dashboard
+	SvcmgrApiMicroTotalCount    = SvcmgrApiMicroDashboard + "/total-cnt"
+	SvcmgrApiMicroVmCount       = SvcmgrApiMicroDashboard + "/vmcnt"
+	SvcmgrApiMicroServerRank    = SvcmgrApiMicroDashboard + "/rank"
+	SvcmgrApiMicroSnapshotCount = SvcmgrApiMicroDashboard + "/snapshotcnt"
+	SvcmgrApiMicroVmCheckUser   = SvcmgrApiMicroVm + "/check/user"
+	SvcmgrApiMicroKtAuthUrl     = SvcmgrApiMicro + "/auth/url"
 	//backup
 	SvcmgrApiMicroVmBackupPaging          = SvcmgrApiMicro + "/backup-paging"
 	SvcmgrApiMicroVmDeleteBackupEntryList = SvcmgrApiMicroVm + "/backup/delete-entry-list"
-	SvcmgrApiMicroVmRecoveryBackup        = SvcmgrApiMicroVm + "/backup/recovery"
+	SvcmgrApiMicroVmRestoreBackup         = SvcmgrApiMicroVm + "/backup/restore"
 	SvcmgrApiMicroVmUpdateFromMcBackup    = SvcmgrApiMicroVm + "/update-from-mc/backup"
 
 	// /v1/micro/vms/check/user

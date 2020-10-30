@@ -39,4 +39,9 @@ const (
 	// Backup
 	McUrlGetVmBackup        = "/bakcup"
 	McUrlDeleteVmBackupList = McUrlGetVmBackup + "/delete-entry-list"
+	McUrlVmBackup           = "/bakcup"
+	McUrlAddVmBackup        = McUrlVmBackup + "/add"
+	McUrlDeleteVmBackup     = McUrlVmBackup + "/delete"
+	McUrlRestoreVmBackup    = McUrlVmBackup + "/restore"
+	McUrlUpdateVmBackup     = McUrlVmBackup + "/update"
 )

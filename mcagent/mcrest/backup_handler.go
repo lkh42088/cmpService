@@ -1,13 +1,17 @@
 package mcrest
 
 import (
+	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
+	"cmpService/mcagent/kvm"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"os"
+	time "time"
 )
 
 func DeleteVmBackupEntryList(c *gin.Context) {
@@ -33,7 +37,7 @@ func DeleteVmBackup(vmName string) error {
 		fmt.Printf("! Error: No found to vm backup info.(%v)\n", err)
 		return err
 	}
-	if backupInfo.NasBackupName != "" {
+	if backupInfo.NasBackupName == "" {
 		size := backupInfo.BackupSize
 		// Make backup file name
 		// 1. manifest file : NAME-cronsh.qcow2.decrease
@@ -54,7 +58,7 @@ func DeleteVmBackup(vmName string) error {
 			}
 		}
 	} else {
-		// todo: Delete at NAS
+		// todo: Delete at NAS (khlee)
 	}
 	// DB update
 	_, err = config.GetMcGlobalConfig().DbOrm.DeleteMcVmBackup(backupInfo)
@@ -63,5 +67,41 @@ func DeleteVmBackup(vmName string) error {
 		return err
 	}
 	return nil
+}
+
+// Restore Backup
+func RestoreVmBackup(c *gin.Context) {
+	var data mcmodel.McVmBackup
+	c.Bind(&data)
+	fmt.Println("# RestoreVmBackup : ", data)
+
+	// Backup file download
+	ch := make(chan int)
+	_ = ktrest.PostAuthTokens()
+	go ktrest.GetStorageObjectByDLO(data.KtContainerName, data.Name, ch)
+
+	for {
+		v := <- ch
+		if v == 5 {
+			//Unzip file
+			currentPath, _ := os.Getwd()
+			// File unzip
+			fmt.Println("# Backup File Unzip......\n")
+			ktrest.UnZipVmBackupFile(currentPath + "/" + data.Name, "./.")
+
+			// Move file and Operating
+			dstPath := config.GetMcGlobalConfig().VmBackupDir
+			src :=  currentPath + dstPath + "/" + data.Name
+			vm, _ := config.GetMcGlobalConfig().DbOrm.GetMcVmByName(data.VmName)
+			dst := vm.FullPath
+			fmt.Println("# dst : ", dst)
+
+			// Move File & Delete Unnecessary File & Reboot VM
+			kvm.RebootingByBackupFile(src, dst, data, vm)
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	c.JSON(http.StatusOK, "OK")
 }
 
