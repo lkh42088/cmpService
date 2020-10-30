@@ -1,6 +1,10 @@
 package mciptables
 
-import "testing"
+import (
+	"fmt"
+	"strings"
+	"testing"
+)
 
 func TestGetFilterForwardAllRule(t *testing.T) {
 	GetFilterForwardAllRule()
@@ -20,7 +24,7 @@ func TestGetFilterForwardRejectRule(t *testing.T) {
 }
 
 func TestDeleteFilterForwardRejectRule(t *testing.T) {
-	DeleteFilterForwardRejectRule(virIfName)
+	DeleteFilterForwardRejectRuleUbuntu18(virIfName)
 }
 
 /**
@@ -59,4 +63,20 @@ func TestAddFFilterWrap(t *testing.T) {
 
 func TestDeleteFFilterWrap(t *testing.T) {
 	DeleteFFilterWrap(addr01, intf01)
+}
+
+func TestIPParse(t *testing.T) {
+	var ip = "192.168.254.18"
+	arr := strings.Split(ip, ".")
+	fmt.Printf("IP: %s\n", ip)
+	fmt.Printf("ARR: %s\n", arr)
+	prefix := fmt.Sprintf("%s.%s.%s.0/24",
+		arr[0], arr[1], arr[2])
+	fmt.Printf("Prefix: %s\n", prefix)
+}
+
+func TestIPParse2(t *testing.T) {
+	var ip = "192.168.254.18"
+	prefix := ConvertPrefix(ip)
+	fmt.Printf("Prefix: %s\n", prefix)
 }

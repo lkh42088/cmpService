@@ -57,6 +57,8 @@ func DoDdnsClient() bool {
 
 func ApplyDdns(s mcmodel.McServer) bool {
 	var res = false
+	fmt.Printf("ApplyDdns: RegisterType %d, DomainPrefix %s\n",
+		s.RegisterType, s.DomainPrefix)
 	if s.RegisterType == 1  && len(s.DomainPrefix) > 0 &&
 		len(s.DomainId) > 0 && len(s.DomainPassword) > 0 {
 		res = CreateDdnsConfig(s.DomainPrefix, s.DomainId, s.DomainPassword)

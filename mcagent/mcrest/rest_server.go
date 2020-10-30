@@ -49,6 +49,11 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.POST(lib.McUrlUpdateVmSnapshot, updateVmSnapshot)
 	rg.POST(lib.McUrlRecoveryVmSnapshot, recoveryVmSnapshot)
 
+	// Filter IP Address
+	rg.GET(lib.McUrlFilterIpAddress, getMcFilterAddress)
+	rg.POST(lib.McUrlAddFilterIpAddress, addMcFilterAddress)
+	rg.POST(lib.McUrlDeleteFilterIpAddress, deleteMcFilterAddress)
+
 	// Backup
 
 	// Network

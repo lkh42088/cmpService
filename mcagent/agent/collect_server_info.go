@@ -60,6 +60,7 @@ func GetSysInfo() mcmodel.SysInfo {
 			if info.IP == strings.Split(ip.Addr, "/")[0] {
 				info.IfName = v.Name
 				info.IfMac = v.HardwareAddr
+
 			}
 		}
 	}

@@ -26,6 +26,11 @@ func CreateMcPcTable(db *gorm.DB) {
 		db.AutoMigrate(&mcmodel.McVmBackup{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McVmBackup{})
 	}
+
+	if db.HasTable(&mcmodel.McFilterRule{}) == false {
+		db.AutoMigrate(&mcmodel.McFilterRule{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McFilterRule{})
+	}
 }
 
 func DropMcPcTable(db *gorm.DB) {
@@ -45,6 +50,9 @@ func DropMcPcTable(db *gorm.DB) {
 		db.DropTable(&mcmodel.McVmBackup{})
 	}
 
+	if db.HasTable(&mcmodel.McFilterRule{}) {
+		db.DropTable(&mcmodel.McFilterRule{})
+	}
 }
 
 // For svcmgr
@@ -89,6 +97,11 @@ func CreateMicroCloudTable(db *gorm.DB) {
 		db.AutoMigrate(&mcmodel.SysInfo{})
 		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.SysInfo{})
 	}
+
+	if db.HasTable(&mcmodel.McFilterRule{}) == false {
+		db.AutoMigrate(&mcmodel.McFilterRule{})
+		db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&mcmodel.McFilterRule{})
+	}
 }
 
 func DropMicroCloudTable(db *gorm.DB) {
@@ -118,6 +131,10 @@ func DropMicroCloudTable(db *gorm.DB) {
 
 	if db.HasTable(&mcmodel.McVmBackup{}) {
 		db.DropTable(&mcmodel.McVmBackup{})
+	}
+
+	if db.HasTable(&mcmodel.McFilterRule{}) {
+		db.DropTable(&mcmodel.McFilterRule{})
 	}
 
 	if db.HasTable(&mcmodel.SysInfo{}) {
