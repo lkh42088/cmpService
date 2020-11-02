@@ -101,7 +101,7 @@ type McServer struct {
 	UcloudProjectId string `gorm:"type:varchar(50);column:mc_kt_project_id;comment:'KT Ucloud Project ID'" json:"projectId"`
 	UcloudDomainId  string `gorm:"type:varchar(50);column:mc_kt_domain_id;comment:'KT Ucloud Domain ID'" json:"ktDomainId"`
 	UcloudAuthUrl   string `gorm:"type:varchar(255);column:mc_kt_auth_url;comment:'KT 사용자 인증 URL'" json:"authUrl"`
-	NasUrl          string `gorm:"type:varchar(50);column:mc_nas_url;comment:'NAS URL'" json:"nasUrl"`
+	NasUrl          string `gorm:"type:varchar(50);column:mc_nas_url;comment:'NAS URL(IP:/공유디렉토리)'" json:"nasUrl"`
 	NasId           string `gorm:"type:varchar(50);column:mc_nas_id;comment:'NAS ID'" json:"nasId"`
 	NasPassword     string `gorm:"type:varchar(50);column:mc_nas_password;comment:'NAS PASSWORD'" json:"nasPassword"`
 }

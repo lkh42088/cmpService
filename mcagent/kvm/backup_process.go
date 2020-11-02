@@ -245,7 +245,10 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 			return nil, nil, err
 		}
 	} else {
-		// todo:NAS backup (khlee)
+		currentPath, _ := os.Getwd()
+		src :=  currentPath + config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile
+		dst := os.Getenv("HOME") + "/nas/" + backupFile
+		MoveFile(src, dst)
 	}
 	return server, filenames, nil
 }
@@ -283,10 +286,6 @@ func RebootingByBackupFile(src string, dst string, backup mcmodel.McVmBackup, vm
 		}
 	}
 
-	// old vm delete
-	//dom.Undefine()
-	//DeleteFile(dst)
-
 	// new file move
 	fmt.Println("# Movefile : ", src, dst)
 	MoveFile(src, dst)
@@ -312,3 +311,68 @@ func MoveFile(src string, dst string) {
 	cmd := exec.Command(binary, args...)
 	_, _ = cmd.Output()
 }
+
+func CopyFile(src string, dst string) error {
+	args := []string{
+		src,
+		dst,
+	}
+
+	binary := "cp"
+	cmd := exec.Command(binary, args...)
+	_, err := cmd.Output()
+	return err
+}
+
+func CheckBackup() {
+	// Check Backup Directory
+	cfg := config.GetMcGlobalConfig()
+	if _, err := os.Stat(cfg.VmBackupDir); err != nil {
+		err = os.MkdirAll(cfg.VmBackupDir, 0755)
+		if err != nil {
+			return
+		}
+	}
+	// Check KT Storage Account
+	err := ktrest.CheckKtAccount()
+	if err != nil {
+		fmt.Println("** CheckKtAccount Error : ", err)
+	}
+	// Backup configuration : KT Storage
+	if ktrest.ConfigurationForKtContainer() != nil {
+		fmt.Printf("\n** KT Storage configuration is invalid.\n\n")
+	}
+	// Check NAS Info
+	CheckNasInfo()
+}
+
+func CheckNasInfo() {
+	// Check Nas DB info
+	server := repo.GetMcServer()
+	if server.NasUrl == "" {
+		fmt.Println("# NAS path info is empty.")
+		return
+	}
+
+	MountNasDirectory(server.NasUrl)
+
+	if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas"); err != nil {
+		fmt.Println("!! NAS directory is not mounted.\n")
+	}
+}
+
+func MountNasDirectory(nasSrc string) {
+	nasDst := os.Getenv("HOME") + "/nas"
+	args := []string{
+		"-t",
+		"nfs",
+		nasSrc,
+		nasDst,
+	}
+
+	binary := "mount"
+	cmd := exec.Command(binary, args...)
+	fmt.Println(cmd)
+	_, _ = cmd.Output()
+}
+

@@ -21,7 +21,7 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 	}
 
 	var id cron.EntryID
-	//var err error
+	var err error
 	switch (vm.BackupDays) {
 	case 7:
 		/* Weekly */
@@ -33,12 +33,16 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 			fmt.Println("AddCronSchForVmBackup: hours 0, minutes 0 --> skip")
 			return
 		} else if vm.BackupHours == 0 {
-			AddBackupCronByMin(vm.Name,
+			id, err = AddBackupCronByMin(vm.Name,
 				strconv.Itoa(vm.BackupMinutes))
 		} else {
-			AddBackupCronByHoursMin(vm.Name,
+			id, err = AddBackupCronByHoursMin(vm.Name,
 				strconv.Itoa(vm.BackupHours),
 				strconv.Itoa(vm.BackupMinutes))
+		}
+		if err != nil {
+			fmt.Println("AddCronSchFromVmBackup error: ", err)
+			return
 		}
 	}
 
@@ -49,5 +53,6 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 			vm.BackupDays, vm.BackupHours, vm.BackupMinutes),
 	}
 	CronSch.BackupVms = append(CronSch.BackupVms, entry)
+	fmt.Printf("\n## cron backup : %+v\n\n", CronSch.BackupVms)
 }
 

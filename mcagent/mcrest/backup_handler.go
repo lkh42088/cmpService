@@ -58,7 +58,8 @@ func DeleteVmBackup(vmName string) error {
 			}
 		}
 	} else {
-		// todo: Delete at NAS (khlee)
+		filePath := os.Getenv("HOME") + "/nas/" + backupInfo.NasBackupName
+		kvm.DeleteFile(filePath)
 	}
 	// DB update
 	_, err = config.GetMcGlobalConfig().DbOrm.DeleteMcVmBackup(backupInfo)
@@ -75,32 +76,48 @@ func RestoreVmBackup(c *gin.Context) {
 	c.Bind(&data)
 	fmt.Println("# RestoreVmBackup : ", data)
 
-	// Backup file download
-	ch := make(chan int)
-	_ = ktrest.PostAuthTokens()
-	go ktrest.GetStorageObjectByDLO(data.KtContainerName, data.Name, ch)
+	dstPath := config.GetMcGlobalConfig().VmBackupDir
+	vm, _ := config.GetMcGlobalConfig().DbOrm.GetMcVmByName(data.VmName)
 
-	for {
-		v := <- ch
-		if v == 5 {
-			//Unzip file
-			currentPath, _ := os.Getwd()
-			// File unzip
-			fmt.Println("# Backup File Unzip......\n")
-			ktrest.UnZipVmBackupFile(currentPath + "/" + data.Name, "./.")
+	// Backup Type check
+	if data.NasBackupName == "" {
+		// KT Backup file download
+		ch := make(chan int)
+		_ = ktrest.PostAuthTokens()
+		go ktrest.GetStorageObjectByDLO(data.KtContainerName, data.Name, ch)
 
-			// Move file and Operating
-			dstPath := config.GetMcGlobalConfig().VmBackupDir
-			src :=  currentPath + dstPath + "/" + data.Name
-			vm, _ := config.GetMcGlobalConfig().DbOrm.GetMcVmByName(data.VmName)
-			dst := vm.FullPath
-			fmt.Println("# dst : ", dst)
+		for {
+			v := <-ch
+			if v == 5 {
+				//Unzip file
+				currentPath, _ := os.Getwd()
+				// File unzip
+				fmt.Println("# Backup File Unzip......\n")
+				ktrest.UnZipVmBackupFile(currentPath+"/"+data.Name, "./.")
 
-			// Move File & Delete Unnecessary File & Reboot VM
-			kvm.RebootingByBackupFile(src, dst, data, vm)
-			break
+				// Move file and Operating
+				src := currentPath + dstPath + "/" + data.Name
+				dst := vm.FullPath
+				fmt.Println("# dst : ", dst)
+
+				// Move File & Delete Unnecessary File & Reboot VM
+				kvm.RebootingByBackupFile(src, dst, data, vm)
+				break
+			}
+			time.Sleep(100 * time.Millisecond)
 		}
-		time.Sleep(100 * time.Millisecond)
+	} else {
+		// NAS type
+		if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas"); err != nil {
+			fmt.Println("!! NAS directory is not mounted.\n")
+		}
+		src := os.Getenv("HOME") + "/nas/" + data.NasBackupName
+		dst := dstPath + "/" + vm.FullPath
+		err := kvm.CopyFile(src, dst)
+		if err != nil {
+			c.JSON(http.StatusRequestTimeout, err)
+		}
+		kvm.RebootingByBackupFile(src, dst, data, vm)
 	}
 	c.JSON(http.StatusOK, "OK")
 }

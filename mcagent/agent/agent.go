@@ -4,7 +4,6 @@ import (
 	"cmpService/common/mcmodel"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/ddns"
-	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
 	"cmpService/mcagent/mcinflux"
 	"cmpService/mcagent/mciptables"
@@ -12,7 +11,6 @@ import (
 	"cmpService/mcagent/repo"
 	"cmpService/svcmgr/config"
 	"fmt"
-	"os"
 	"sync"
 )
 
@@ -89,7 +87,7 @@ func Start (config string) {
 	/****************************************
 	 * Check kt account & nas info for cronsch
 	 ****************************************/
-	CheckBackup()
+	kvm.CheckBackup()
 	cfg = config2.GetMcGlobalConfig()
 	fmt.Println("Start(): globlaConfig 2")
 	cfg.Dump()
@@ -233,25 +231,4 @@ func ApplyCronSchFoSnapshotAndBackup() {
 	}
 }
 
-func CheckBackup() {
-	// Check Backup Directory
-	cfg := config2.GetMcGlobalConfig()
-	if _, err := os.Stat(cfg.VmBackupDir); err != nil {
-		err = os.MkdirAll(cfg.VmBackupDir, 0755)
-		if err != nil {
-			return
-		}
-	}
-	// Check KT Storage Account
-	err := ktrest.CheckKtAccount()
-	if err != nil {
-		fmt.Println("** CheckKtAccount Error : ", err)
-	}
-	// Backup configuration : KT Storage
-	if ktrest.ConfigurationForKtContainer() != nil {
-		fmt.Printf("\n** KT Storage configuration is invalid.\n\n")
-	}
-	// Check NAS Info
-	// CheckNasInfo()
-}
 
