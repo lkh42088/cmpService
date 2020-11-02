@@ -6,6 +6,7 @@ import (
 )
 
 func ConvertPrefix(ip string) string {
+	fmt.Println("ConvertPrefix:", ip)
 	arr := strings.Split(ip, ".")
 	prefix := fmt.Sprintf("%s.%s.%s.0/24",
 		arr[0], arr[1], arr[2])
