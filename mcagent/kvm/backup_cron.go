@@ -6,7 +6,7 @@ import (
 )
 
 func AddBackupCronByHoursMin(vmName, hour, min string) (cron.EntryID, error){
-	cronTime := fmt.Sprintf("@every %sh%sm0s - Backup", hour, min)
+	cronTime := fmt.Sprintf("@every %sh%sm0s", hour, min)
 	id, err := CronSch.Cr.AddFunc(cronTime, func() {
 		fmt.Printf("Backup: %s - %s\n", vmName, cronTime)
 		SafeBackup(vmName, GetTimeWord(), cronTime)
@@ -15,7 +15,7 @@ func AddBackupCronByHoursMin(vmName, hour, min string) (cron.EntryID, error){
 }
 
 func AddBackupCronByMin(vmName, min string) (cron.EntryID, error){
-	cronTime := fmt.Sprintf("@every 0h%sm0s - Backup", min)
+	cronTime := fmt.Sprintf("@every 0h%sm0s", min)
 	id, err := CronSch.Cr.AddFunc(cronTime, func() {
 		fmt.Printf("Backup: %s - %s\n", vmName, cronTime)
 		SafeBackup(vmName, GetTimeWord(), cronTime)
