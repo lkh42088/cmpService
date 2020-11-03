@@ -42,35 +42,38 @@ const (
 	SvcmgrApiMicroVmUpdateSnapshot          = SvcmgrApiMicroVm + "/snapshot/update"
 	SvcmgrApiMicroVmDeleteSnapshot          = SvcmgrApiMicroVm + "/snapshot/delete"
 	SvcmgrApiMicroVmDeleteSnapshotEntryList = SvcmgrApiMicroVm + "/snapshot/delete-entry-list"
-	/*SvcmgrApiMicroVmSnapshotCount           = SvcmgrApiMicroVm + "/snapshot/count"*/
-	SvcmgrApiMicroVmRecoverySnapshot    = SvcmgrApiMicroVm + "/snapshot/recovery"
-	SvcmgrApiMicroVmStatus              = SvcmgrApiMicroVm + "/status"
-	SvcmgrApiMicroVmGraph               = SvcmgrApiMicro + "/vms-graph"
-	SvcmgrApiMicroMcAgentNotifySnapshot = SvcmgrApiMicroVm + "/mcagent/snapshot/notify" // snapshot from mcagent
-	SvcmgrApiMicroMcAgentNotifyBackup   = SvcmgrApiMicroVm + "/mcagent/cronsch/notify"  // cronsch from mcagent
-	SvcmgrApiMicroImage                 = SvcmgrApiMicro + "/images"                    // /v1/micro/images
-	SvcmgrApiMicroImagePaging           = SvcmgrApiMicro + "/images-paging"
-	SvcmgrApiMicroNetwork               = SvcmgrApiMicro + "/networks" // /v1/micro/networks
-	SvcmgrApiMicroNetworkRegister       = SvcmgrApiMicroNetwork + "/register"
-	SvcmgrApiMicroNetworkUnRegister     = SvcmgrApiMicroNetwork + "/unregister"
-	SvcmgrApiMicroNetworkPaging         = SvcmgrApiMicro + "/networks-paging"
-	SvcmgrApiMicroVmMonitor             = SvcmgrApiMicro + "/monitor"
-	SvcmgrApiMicroVmStats               = SvcmgrApiMicroVmMonitor + "/stats"
-	SvcmgrApiMicroVmInfo                = SvcmgrApiMicroVmMonitor + "/info"
-	SvcmgrApiMicroMonitorCPU            = SvcmgrApiMicro + "/monitor/cpu"
-
-	SvcmgrApiMicroDashboard     = SvcmgrApiMicro + "/dashboard" // /v1/micro/dashboard
-	SvcmgrApiMicroTotalCount    = SvcmgrApiMicroDashboard + "/total-cnt"
-	SvcmgrApiMicroVmCount       = SvcmgrApiMicroDashboard + "/vmcnt"
-	SvcmgrApiMicroServerRank    = SvcmgrApiMicroDashboard + "/rank"
-	SvcmgrApiMicroSnapshotCount = SvcmgrApiMicroDashboard + "/snapshotcnt"
-	SvcmgrApiMicroVmCheckUser   = SvcmgrApiMicroVm + "/check/user"
-	SvcmgrApiMicroKtAuthUrl     = SvcmgrApiMicro + "/auth/url"
-	//backup
-	SvcmgrApiMicroVmBackupPaging          = SvcmgrApiMicro + "/backup-paging"
-	SvcmgrApiMicroVmDeleteBackupEntryList = SvcmgrApiMicroVm + "/backup/delete-entry-list"
-	SvcmgrApiMicroVmRestoreBackup         = SvcmgrApiMicroVm + "/backup/restore"
-	SvcmgrApiMicroVmUpdateFromMcBackup    = SvcmgrApiMicroVm + "/update-from-mc/backup"
+	SvcmgrApiMicroVmSnapshotCount           = SvcmgrApiMicroVm + "/snapshot/count"
+	SvcmgrApiMicroVmRecoverySnapshot        = SvcmgrApiMicroVm + "/snapshot/recovery"
+	SvcmgrApiMicroVmStatus                  = SvcmgrApiMicroVm + "/status"
+	SvcmgrApiMicroVmGraph                   = SvcmgrApiMicro + "/vms-graph"
+	SvcmgrApiMicroMcAgentNotifySnapshot     = SvcmgrApiMicroVm + "/mcagent/snapshot/notify" // snapshot from mcagent
+	SvcmgrApiMicroMcAgentNotifyBackup       = SvcmgrApiMicroVm + "/mcagent/cronsch/notify"  // cronsch from mcagent
+	SvcmgrApiMicroImage                     = SvcmgrApiMicro + "/images"                    // /v1/micro/images
+	SvcmgrApiMicroImagePaging               = SvcmgrApiMicro + "/images-paging"
+	SvcmgrApiMicroNetwork                   = SvcmgrApiMicro + "/networks" // /v1/micro/networks
+	SvcmgrApiMicroNetworkRegister           = SvcmgrApiMicroNetwork + "/register"
+	SvcmgrApiMicroNetworkUnRegister         = SvcmgrApiMicroNetwork + "/unregister"
+	SvcmgrApiMicroNetworkPaging             = SvcmgrApiMicro + "/networks-paging"
+	SvcmgrApiMicroVmMonitor                 = SvcmgrApiMicro + "/monitor"
+	SvcmgrApiMicroVmStats                   = SvcmgrApiMicroVmMonitor + "/stats"
+	SvcmgrApiMicroVmInfo                    = SvcmgrApiMicroVmMonitor + "/info"
+	SvcmgrApiMicroMonitorCPU                = SvcmgrApiMicro + "/monitor/cpu"
+	SvcmgrApiMicroDashboard                 = SvcmgrApiMicro + "/dashboard" // /v1/micro/dashboard
+	SvcmgrApiMicroTotalCount                = SvcmgrApiMicroDashboard + "/total-cnt"
+	SvcmgrApiMicroVmCount                   = SvcmgrApiMicroDashboard + "/vmcnt"
+	SvcmgrApiMicroServerRank                = SvcmgrApiMicroDashboard + "/rank"
+	SvcmgrApiMicroSnapshotCount             = SvcmgrApiMicroDashboard + "/snapshotcnt"
+	SvcmgrApiMicroVmCheckUser               = SvcmgrApiMicroVm + "/check/user"
+	SvcmgrApiMicroKtAuthUrl                 = SvcmgrApiMicro + "/auth/url"
+	SvcmgrApiMicroVmBackupPaging            = SvcmgrApiMicro + "/backup-paging"
+	SvcmgrApiMicroVmDeleteBackupEntryList   = SvcmgrApiMicroVm + "/backup/delete-entry-list"
+	SvcmgrApiMicroVmRestoreBackup           = SvcmgrApiMicroVm + "/backup/restore"
+	SvcmgrApiMicroVmUpdateFromMcBackup      = SvcmgrApiMicroVm + "/update-from-mc/backup"
+	SvcmgrApiMicroAccessSecurity            = SvcmgrApiMicro + "/access-security"
+	SvcmgrApiMicroAddAccessSecurity         = SvcmgrApiMicro + "/access-security/add"
+	SvcmgrApiMicroDeleteAccessSecurity      = SvcmgrApiMicro + "/access-security/delete"
+	SvcmgrApiMicroDeleteAccessSecurityList  = SvcmgrApiMicro + "/access-security/delete-list"
+	SvcmgrApiMicroAccessSecurityPaging      = SvcmgrApiMicro + "/access-security-paging"
 
 	// /v1/micro/vms/check/user
 )

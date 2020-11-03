@@ -210,4 +210,13 @@ type MariaDBLayer interface {
 
 	// Backup
 	UpdateKtAuthUrl(ip string, authUrl string) (mcmodel.McServer, error)
+
+	// Access Security
+	AddMcFilterRule(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error)
+	DeleteMcFilterRule(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error)
+	GetMcFilterRuleByIdx(idx uint) (obj mcmodel.McFilterRuleDetail, err error)
+	GetMcFilterRulePage(paging models.Pagination, cpName string) (obj mcmodel.McFilterRulePage, err error)
+	GetMcFilterRuleBySerialNumber(sn string) (obj []mcmodel.McFilterRule, err error)
+	GetMcFilterRuleBySerialNumberAndAddr(sn, addr string) (obj mcmodel.McFilterRule, err error)
+	GetMcFilterRule() (obj []mcmodel.McFilterRule, err error)
 }

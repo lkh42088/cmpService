@@ -334,5 +334,11 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroVmRestoreBackup, h.RestoreBackupStart)
 	//router.POST(lib.SvcmgrApiMicroVmUpdateFromMcBackup, h.UpdateMcVmFromMcBackup)
 
+	// IP based Access Security
+	router.GET(lib.SvcmgrApiMicroAccessSecurityPaging+pagingParam+"/:cpName", h.GetMcAccessSecurity)
+	router.POST(lib.SvcmgrApiMicroAddAccessSecurity, h.AddMcAccessSecurity)
+	router.POST(lib.SvcmgrApiMicroDeleteAccessSecurity, h.DeleteMcAccessSecurity)
+	router.POST(lib.SvcmgrApiMicroDeleteAccessSecurityList, h.DeleteMcAccessSecurityList)
+
 	return router.Run(address)
 }

@@ -12,7 +12,7 @@ func (db *DBORM) GetMcFilterRule() (obj []mcmodel.McFilterRule, err error) {
 		Find(&obj).Error
 }
 
-func (db *DBORM) GetMcFilterRuleBySerialNumberAndAddr(sn, addr string) (obj []mcmodel.McFilterRule, err error) {
+func (db *DBORM) GetMcFilterRuleBySerialNumberAndAddr(sn, addr string) (obj mcmodel.McFilterRule, err error) {
 	return obj, db.Table("mc_filter_rule_tb").
 		Select("mc_filter_rule_tb.*").
 		Where(mcmodel.McFilterRule{
@@ -40,7 +40,7 @@ func (db *DBORM) GetMcFilterRulePage(paging models.Pagination, cpName string) (
 	err = db.Debug().
 		Table("mc_filter_rule_tb").
 		Select("mc_filter_rule_tb.*, c.cp_name").
-		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_filter_rule_tb.mc_cp_idx").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_filter_rule_tb.filter_cp_idx").
 		Order(obj.GetOrderBy(paging.OrderBy, paging.Order)).
 		/*Limit(paging.RowsPerPage).*/
 		Offset(paging.Offset).
@@ -56,11 +56,11 @@ func (db *DBORM) GetMcFilterRulePage(paging models.Pagination, cpName string) (
 	return obj, err
 }
 
-func (db *DBORM) GetMcFilterRuleByServerIdx(idx uint) (obj mcmodel.McFilterRuleDetail, err error) {
+func (db *DBORM) GetMcFilterRuleByIdx(idx uint) (obj mcmodel.McFilterRuleDetail, err error) {
 	err = db.
 		Table("mc_filter_rule_tb").
 		Select("mc_filter_rule_tb.*, c.cp_name").
-		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_filter_rule_tb.mc_cp_idx").
+		Joins("INNER JOIN company_tb c ON c.cp_idx = mc_filter_rule_tb.filter_cp_idx").
 		Where(mcmodel.McFilterRule{Idx: idx}).
 		Find(&obj).Error
 	if err != nil {
