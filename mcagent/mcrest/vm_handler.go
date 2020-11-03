@@ -85,10 +85,13 @@ func deleteVm(vmName string) bool {
 	// 3. Delete Vm snapshot
 	kvm.DeleteAllSnapshot(vm.Name)
 
-	// 4. Delete Vm instance
+	// 4. Delete Backup Cron Schedule
+	kvm.CronSch.DeleteBackupVm(vm.Name)
+
+	// 5. Delete Vm instance
 	kvm.DeleteVm(*vm)
 
-	// 5. Delete Vm image
+	// 6. Delete Vm image
 	kvm.DeleteVmInstance(*vm)
 
 	repo.DeleteVmFromRepo(*vm)

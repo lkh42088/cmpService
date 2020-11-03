@@ -70,7 +70,7 @@ const (
 	SvcmgrApiMicroVmBackupPaging          = SvcmgrApiMicro + "/backup-paging"
 	SvcmgrApiMicroVmDeleteBackupEntryList = SvcmgrApiMicroVm + "/backup/delete-entry-list"
 	SvcmgrApiMicroVmRestoreBackup         = SvcmgrApiMicroVm + "/backup/restore"
-	SvcmgrApiMicroVmUpdateFromMcBackup    = SvcmgrApiMicroVm + "/update-from-mc/backup"
+	SvcmgrApiMicroVmUpdateList    		  = SvcmgrApiMicroVm + "/update-from-mc/vm-list"
 
 	// /v1/micro/vms/check/user
 )

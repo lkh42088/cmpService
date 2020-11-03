@@ -332,7 +332,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmBackupPaging+pagingParam+"/:cpName", h.GetMcVmBackup)
 	router.POST(lib.SvcmgrApiMicroVmDeleteBackupEntryList, h.DeleteVmBackupEntryList)
 	router.POST(lib.SvcmgrApiMicroVmRestoreBackup, h.RestoreBackupStart)
-	//router.POST(lib.SvcmgrApiMicroVmUpdateFromMcBackup, h.UpdateMcVmFromMcBackup)
+	router.POST(lib.SvcmgrApiMicroVmUpdateList, h.UpdateMcVmList)
 
 	return router.Run(address)
 }
