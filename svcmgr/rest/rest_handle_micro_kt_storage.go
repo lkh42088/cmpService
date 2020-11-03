@@ -143,7 +143,11 @@ func (h *Handler) DeleteVmBackupEntryList(c *gin.Context) {
 		backup, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmBackupByIdx(uint(idx))
 		if err == nil {
 			entry.VmName = backup.VmName
-			entry.BackupName = backup.Name
+			if backup.Name != "" {
+				entry.BackupName = backup.Name
+			} else if (backup.NasBackupName != "") {
+				entry.BackupName = backup.NasBackupName
+			}
 			entryList = append(entryList, entry)
 		}
 		if serverIdx == 0 {
@@ -244,4 +248,42 @@ func (h *Handler) RestoreBackupStart(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
+func (h *Handler) UpdateMcVmList(c *gin.Context) {
+	var recvMsg []mcmodel.McVm
+	c.Bind(&recvMsg)
+	fmt.Print("# VM List : ", recvMsg)
 
+	s, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcServerByIp(c.ClientIP())
+
+	if recvMsg != nil {
+		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
+		for _, vm := range recvMsg {
+			old := mcmodel.LookupVm(&vmList, vm)
+			if old != nil {
+				vm.Idx = old.Idx
+				vm.CompanyIdx = old.CompanyIdx
+				vm.McServerIdx = old.McServerIdx
+				obj, _ := config.SvcmgrGlobalConfig.Mariadb.UpdateMcVm(vm)
+				fmt.Println("update vm: ", obj)
+			} else {
+				vm.Idx = 0
+				vm.McServerIdx = int(s.Idx)
+				vm.CompanyIdx = s.CompanyIdx
+				obj, _ := config.SvcmgrGlobalConfig.Mariadb.AddMcVm(vm)
+				fmt.Println("insert vm: ", obj)
+			}
+		}
+		for _, vm := range vmList {
+			obj := mcmodel.LookupVm(&vmList, vm)
+			if obj == nil {
+				config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
+			}
+		}
+	} else {
+		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
+		for _, vm := range vmList {
+			config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
+		}
+	}
+	c.JSON(http.StatusOK, "OK")
+}

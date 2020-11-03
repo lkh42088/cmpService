@@ -5,6 +5,7 @@ import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
+	"cmpService/mcagent/nas"
 	"cmpService/mcagent/repo"
 	"cmpService/mcagent/svcmgrapi"
 	"errors"
@@ -118,7 +119,10 @@ func BackupVmImage(vmName string) (string, int) {
 	fmt.Println("Finish clone....")
 
 	// Start Vm
-	dom.Create()
+	err = dom.Create()
+	if err != nil {
+		fmt.Println("[BACKUP][Create] Error : ", err)
+	}
 
 	// Destroy/Undefine Backup Vm
 	backupDom, err := GetDomainByName(backupVmName)
@@ -126,7 +130,10 @@ func BackupVmImage(vmName string) (string, int) {
 		fmt.Printf("BackupVmImage (%s) error 1: %s", vmName, err)
 		return "", 0
 	}
-	backupDom.Undefine()
+	err = backupDom.Undefine()
+	if err != nil {
+		fmt.Println("[BACKUP][Undefine] Error : ", err)
+	}
 
 	// Decrease qcow2 image size (long time)
 	decreaseImage := backupFile + ".decrease"
@@ -136,7 +143,8 @@ func BackupVmImage(vmName string) (string, int) {
 	DeleteFile(backupFile)
 
 	// return cronsch file
-	file, _ := os.Stat(decreaseImage)
+	file, err := os.Stat(decreaseImage)
+	fmt.Println("# Backup : ", decreaseImage, err)
 	return decreaseImage, int(file.Size())
 }
 
@@ -181,6 +189,13 @@ func SafeBackup(vmName, backupName, desc string) {
 	 * Delete backupFile
 	*****************/
 	DeleteAllFile(path, filenames)
+
+	/*****************
+	 * Sync VM list
+	*****************/
+	vms := GetMcServerInfo().Vms
+	fmt.Println("# Backup Vms : ", *vms)
+	svcmgrapi.SendUpdateVmList2Svcmgr(*vms, svcmgrRestAddr)
 }
 
 func MakeBackupMsg(vmName string, backupName string, desc string, size int, server mcmodel.McServerDetail) (*mcmodel.McVmBackup, string) {
@@ -245,10 +260,12 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 			return nil, nil, err
 		}
 	} else {
-		currentPath, _ := os.Getwd()
-		src :=  currentPath + config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile
-		dst := os.Getenv("HOME") + "/nas/" + backupFile
+		fmt.Println("NAS SafeBackup: ", backupFile)
+		src :=  config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile
+		dst := os.Getenv("HOME") + "/nas/backup/" + backupFile
+		fmt.Println("NAS PATH: ", src, dst)
 		MoveFile(src, dst)
+		filenames = append(filenames, backupFile)
 	}
 	return server, filenames, nil
 }
@@ -301,6 +318,30 @@ func RebootingByBackupFile(src string, dst string, backup mcmodel.McVmBackup, vm
 	StartVm(vm)
 }
 
+func RebootingByBackupFileWithNas(src string, dst string, backup mcmodel.McVmBackup, vm mcmodel.McVm) {
+	// old vm stop
+	dom, err := GetDomainByName(backup.VmName)
+	if err != nil {
+		fmt.Printf("BackupVmImage (%s) error 0: %s", backup.VmName, err)
+	} else {
+		name, _ := dom.GetName()
+		status, _, _ := dom.GetState()
+		fmt.Println("dom: ", name, status)
+		if status != libvirt.DOMAIN_SHUTDOWN && status != libvirt.DOMAIN_SHUTOFF {
+			dom.Destroy()
+		}
+	}
+
+	// new file move
+	fmt.Println("# Movefile : ", src, dst)
+	MoveFile(src, dst)
+
+	// new vm start
+	fmt.Println("# New VM Start!")
+	//CreateVmInstance(vm)
+	StartVm(vm)
+}
+
 func MoveFile(src string, dst string) {
 	args := []string{
 		src,
@@ -310,18 +351,6 @@ func MoveFile(src string, dst string) {
 	binary := "mv"
 	cmd := exec.Command(binary, args...)
 	_, _ = cmd.Output()
-}
-
-func CopyFile(src string, dst string) error {
-	args := []string{
-		src,
-		dst,
-	}
-
-	binary := "cp"
-	cmd := exec.Command(binary, args...)
-	_, err := cmd.Output()
-	return err
 }
 
 func CheckBackup() {
@@ -353,26 +382,9 @@ func CheckNasInfo() {
 		fmt.Println("# NAS path info is empty.")
 		return
 	}
-
-	MountNasDirectory(server.NasUrl)
-
-	if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas"); err != nil {
+	nas.MountNasDirectory(server.NasUrl)
+	if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas/backup"); err != nil {
 		fmt.Println("!! NAS directory is not mounted.\n")
 	}
-}
-
-func MountNasDirectory(nasSrc string) {
-	nasDst := os.Getenv("HOME") + "/nas"
-	args := []string{
-		"-t",
-		"nfs",
-		nasSrc,
-		nasDst,
-	}
-
-	binary := "mount"
-	cmd := exec.Command(binary, args...)
-	fmt.Println(cmd)
-	_, _ = cmd.Output()
 }
 

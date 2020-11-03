@@ -69,11 +69,10 @@ const (
 	SvcmgrApiMicroVmDeleteBackupEntryList   = SvcmgrApiMicroVm + "/backup/delete-entry-list"
 	SvcmgrApiMicroVmRestoreBackup           = SvcmgrApiMicroVm + "/backup/restore"
 	SvcmgrApiMicroVmUpdateFromMcBackup      = SvcmgrApiMicroVm + "/update-from-mc/backup"
+	SvcmgrApiMicroVmUpdateList    		    = SvcmgrApiMicroVm + "/update-from-mc/vm-list"
 	SvcmgrApiMicroAccessSecurity            = SvcmgrApiMicro + "/access-security"
 	SvcmgrApiMicroAddAccessSecurity         = SvcmgrApiMicro + "/access-security/add"
 	SvcmgrApiMicroDeleteAccessSecurity      = SvcmgrApiMicro + "/access-security/delete"
 	SvcmgrApiMicroDeleteAccessSecurityList  = SvcmgrApiMicro + "/access-security/delete-list"
 	SvcmgrApiMicroAccessSecurityPaging      = SvcmgrApiMicro + "/access-security-paging"
-
-	// /v1/micro/vms/check/user
 )

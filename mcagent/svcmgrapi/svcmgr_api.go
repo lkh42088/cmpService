@@ -155,4 +155,24 @@ func SendMcVmBackup2Svcmgr(obj mcmodel.McVmBackup, addr string, subUrl string) b
 	return true
 }
 
+func SendUpdateVmList2Svcmgr(vms []mcmodel.McVm, addr string) bool {
+	pbytes, _ := json.Marshal(vms)
+	buff := bytes.NewBuffer(pbytes)
+	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroVmUpdateList)
+	fmt.Println("Notify: ", url)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("error: ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("error 2: ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
 

@@ -34,3 +34,18 @@ func CopyBackupFileToNas(srcPath string, dstPath string) error {
 	}
 	return nil
 }
+
+func MountNasDirectory(nasSrc string) {
+	nasDst := os.Getenv("HOME") + "/nas"
+	args := []string{
+		"-t",
+		"nfs",
+		nasSrc,
+		nasDst,
+	}
+
+	binary := "mount"
+	cmd := exec.Command(binary, args...)
+	fmt.Println(cmd)
+	_, _ = cmd.Output()
+}

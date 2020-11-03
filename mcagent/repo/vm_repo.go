@@ -5,6 +5,7 @@ import (
 	"cmpService/mcagent/config"
 	"errors"
 	"fmt"
+	"time"
 )
 
 var GlobalVmCache []mcmodel.McVm
@@ -197,8 +198,12 @@ func StoreVmBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
 
 	_, err := config.GetMcGlobalConfig().DbOrm.GetMcVmBackupByVmName(v.VmName)
 	if err != nil {
+		fmt.Println("# Backup Add: ", v, err)
+		v.LastBackupDate = time.Now()
 		data, err = AddBackup2Db(v)
 	} else {
+		fmt.Println("# Backup Update: ", v)
+		v.LastBackupDate = time.Now()
 		data, err = UpdateBackup2Db(v)
 	}
 	return data, nil

@@ -58,7 +58,7 @@ func DeleteVmBackup(vmName string) error {
 			}
 		}
 	} else {
-		filePath := os.Getenv("HOME") + "/nas/" + backupInfo.NasBackupName
+		filePath := os.Getenv("HOME") + "/nas/backup/" + backupInfo.NasBackupName
 		kvm.DeleteFile(filePath)
 	}
 	// DB update
@@ -92,8 +92,12 @@ func RestoreVmBackup(c *gin.Context) {
 				//Unzip file
 				currentPath, _ := os.Getwd()
 				// File unzip
-				fmt.Println("# Backup File Unzip......\n")
-				ktrest.UnZipVmBackupFile(currentPath+"/"+data.Name, "./.")
+				fmt.Println("# Backup File Unzip......")
+				err := ktrest.UnZipVmBackupFile(currentPath+"/"+data.Name, "./.")
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, err)
+					return
+				}
 
 				// Move file and Operating
 				src := currentPath + dstPath + "/" + data.Name
@@ -108,17 +112,25 @@ func RestoreVmBackup(c *gin.Context) {
 		}
 	} else {
 		// NAS type
-		if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas"); err != nil {
-			fmt.Println("!! NAS directory is not mounted.\n")
-		}
-		src := os.Getenv("HOME") + "/nas/" + data.NasBackupName
-		dst := dstPath + "/" + vm.FullPath
-		err := kvm.CopyFile(src, dst)
+		err := RestoreFromNas(data, vm)
 		if err != nil {
 			c.JSON(http.StatusRequestTimeout, err)
 		}
-		kvm.RebootingByBackupFile(src, dst, data, vm)
 	}
 	c.JSON(http.StatusOK, "OK")
+}
+
+func RestoreFromNas(data mcmodel.McVmBackup, vm mcmodel.McVm) error {
+	// Check Directory
+	if _, err := os.Stat(os.Getenv("HOME") + "/nas/backup"); err != nil {
+		fmt.Println("!! NAS directory is not mounted.")
+		return err
+	}
+	// Get Image from NAS
+	src := os.Getenv("HOME") + "/nas/backup/" + data.NasBackupName
+	dst := vm.FullPath
+	fmt.Println("NAS (RestoreVmBackup) : ", src, dst)
+	kvm.RebootingByBackupFileWithNas(src, dst, data, vm)
+	return nil
 }
 
