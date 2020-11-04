@@ -20,11 +20,11 @@ func addMcFilterAddress(c *gin.Context) {
 	fmt.Println("addMcFilterAddress:")
 	msg.Dump()
 	msg.Idx = 0
-	_, err := repo.AddAccessFilter2Db(msg)
+	rule, err := repo.AddAccessFilter(msg)
 	if err != nil {
 		fmt.Println("addMcFilterAddress error: ", err)
 	}
-	c.JSON(http.StatusOK, msg)
+	c.JSON(http.StatusOK, rule)
 }
 
 func deleteMcFilterAddress(c *gin.Context) {
@@ -33,14 +33,9 @@ func deleteMcFilterAddress(c *gin.Context) {
 	fmt.Println("deleteMcFilterAddress:")
 	msg.Dump()
 	msg.Idx = 0
-	rule, err := repo.GetAccessFilter2Db(msg)
+	rule, err := repo.DeleteAccessFilter(msg)
 	if err != nil {
-		fmt.Println("deleteMcFilterAddress error1: ", err)
-		return
+		fmt.Println("deleteMcFilterAddress error: ", err)
 	}
-	_, err = repo.DeleteAccessFilter2Db(rule)
-	if err != nil {
-		fmt.Println("deleteMcFilterAddress error2: ", err)
-	}
-	c.JSON(http.StatusOK, msg)
+	c.JSON(http.StatusOK, rule)
 }

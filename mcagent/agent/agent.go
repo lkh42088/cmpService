@@ -172,6 +172,11 @@ func configure() bool {
 	repo.InitCachingVms()
 
 	/********************************
+	 * Init Caching Filter Rules
+	 ********************************/
+	repo.InitCachingAccessFilter()
+
+	/********************************
 	 * Clear DNAT Rule in iptables
 	 ********************************/
 	mciptables.DeleteAllDnat()
