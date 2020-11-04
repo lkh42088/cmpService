@@ -104,3 +104,16 @@ func GetServerFromDbByIp(ip string) (mcmodel.McServer, error) {
 func UpdateKtAuthUrl2Db(ip string, authUrl string) (mcmodel.McServer, error) {
 	return config2.GetMcGlobalConfig().DbOrm.UpdateKtAuthUrl(ip, authUrl)
 }
+
+// Access Filter
+func AddAccessFilter2Db(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error) {
+	return config2.GetMcGlobalConfig().DbOrm.AddMcFilterRule(obj)
+}
+
+func DeleteAccessFilter2Db(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error) {
+	return config2.GetMcGlobalConfig().DbOrm.DeleteMcFilterRule(obj)
+}
+
+func GetAccessFilter2Db(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error) {
+	return config2.GetMcGlobalConfig().DbOrm.GetMcFilterRuleBySerialNumberAndAddr(obj.SerialNumber, obj.IpAddr)
+}

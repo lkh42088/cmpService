@@ -419,3 +419,56 @@ func SendDeleteNetwork(net mcmodel.McNetworks, server mcmodel.McServerDetail) bo
 	fmt.Println("response: ", string(data))
 	return true
 }
+
+// Access Security
+func SendAddAccessSecurity(obj mcmodel.McFilterRuleDetail, server mcmodel.McServerDetail) bool {
+	pbytes, _ := json.Marshal(obj)
+	buff := bytes.NewBuffer(pbytes)
+	var addr string
+	if server.RegisterType == 1 {
+		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
+	} else {
+		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
+	}
+	url := fmt.Sprintf("http://%s%s%s",
+		addr, lib.McUrlPrefix, lib.McUrlAddFilterIpAddress)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}
+
+func SendDeleteAccessSecurity(obj mcmodel.McFilterRuleDetail, server mcmodel.McServerDetail) bool {
+	pbytes, _ := json.Marshal(obj)
+	buff := bytes.NewBuffer(pbytes)
+	var addr string
+	if server.RegisterType == 1 {
+		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
+	} else {
+		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
+	}
+	url := fmt.Sprintf("http://%s%s%s",
+		addr, lib.McUrlPrefix, lib.McUrlDeleteFilterIpAddress)
+	response, err := http.Post(url, "application/json", buff)
+	if err != nil {
+		fmt.Println("SendAddVm: error 1 ", err)
+		return false
+	}
+	defer response.Body.Close()
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("SendAddVm: error 2 ", err)
+		return false
+	}
+	fmt.Println("response: ", string(data))
+	return true
+}

@@ -12,6 +12,7 @@ var McFilterRuleOrmMap = map[string]string{
 	"filter_mc_serial_number": "serialNumber",
 	"filter_cp_idx":           "cpIdx",
 	"filter_ip_addr":          "ipAddr",
+	"filter_comments":         "comments",
 }
 
 var McFilterRuleJsonMap = map[string]string{
@@ -19,13 +20,15 @@ var McFilterRuleJsonMap = map[string]string{
 	"serialNumber": "filter_mc_serial_number",
 	"cpIdx":        "filter_cp_idx",
 	"ipAddr":       "filter_ip_addr",
+	"comments":     "filter_comments",
 }
 
 type McFilterRule struct {
 	Idx          uint   `gorm:"primary_key;column:filter_idx;not null;auto_increment;comment:'INDEX'" json:"idx"`
-	SerialNumber string `gorm:"unique;type:varchar(50);column:filter_mc_serial_number;comment:'시리얼넘버'" json:"serialNumber"`
+	SerialNumber string `gorm:"type:varchar(50);column:filter_mc_serial_number;comment:'시리얼넘버'" json:"serialNumber"`
 	CompanyIdx   int    `gorm:"type:int(11);column:filter_cp_idx;comment:'회사 고유값'" json:"cpIdx"`
-	IpAddr       string `gorm:"type:varchar(50);column:filter_ip_addr;comment:'IP Address'" json:"ipAddr"`
+	IpAddr       string `gorm:"unique;type:varchar(50);column:filter_ip_addr;comment:'IP Address'" json:"ipAddr"`
+	Comments     string `gorm:"type:varchar(50);column:filter_comments;comment:'comments'" json:"comments"`
 }
 
 func (m *McFilterRule) Dump() string {
@@ -52,7 +55,7 @@ func (m *McFilterRuleDetail) Dump() string {
 }
 
 type McFilterRulePage struct {
-	Page    models.Pagination    `json:"page"`
+	Page        models.Pagination    `json:"page"`
 	FilterRules []McFilterRuleDetail `json:"data"`
 }
 
