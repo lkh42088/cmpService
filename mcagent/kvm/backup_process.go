@@ -261,13 +261,28 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 		}
 	} else {
 		fmt.Println("NAS SafeBackup: ", backupFile)
-		src :=  config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile
-		dst := os.Getenv("HOME") + "/nas/backup/" + backupFile
-		fmt.Println("NAS PATH: ", src, dst)
-		MoveFile(src, dst)
-		filenames = append(filenames, backupFile)
+		ch := make(chan string)
+		go TransferBackupFileToNas(backupFile, ch)
+		for {
+			v := <- ch
+			if v == "complete" {
+				filenames = append(filenames, backupFile)
+				break
+			}
+			time.Sleep(100 * time.Millisecond)
+		}
 	}
 	return server, filenames, nil
+}
+
+func TransferBackupFileToNas(backupFile string, ch chan string) {
+	src := config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile
+	dst := os.Getenv("HOME") + "/nas/backup/" + backupFile
+	fmt.Println("NAS PATH: ", src, dst)
+	MoveFile(src, dst)
+	ch <- "complete"
+
+	return
 }
 
 func GetBackupEntry(vmName, backupName, desc string) (*mcmodel.McVmBackup) {
