@@ -384,7 +384,7 @@ func CheckNasInfo() {
 	}
 	nas.MountNasDirectory(server.NasUrl)
 	if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas/backup"); err != nil {
-		fmt.Println("!! NAS directory is not mounted.\n")
+		fmt.Println("!! NAS directory is not mounted.")
 	}
 }
 

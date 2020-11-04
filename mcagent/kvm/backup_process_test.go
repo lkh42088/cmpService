@@ -3,6 +3,7 @@ package kvm
 import (
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
+	"cmpService/mcagent/svcmgrapi"
 	"cmpService/svcmgr/config"
 	"fmt"
 	"testing"
@@ -36,5 +37,15 @@ func TestSafeBackup(t *testing.T) {
 func TestMcVmBackup(t *testing.T) {
 	GetConfig()
 	McVmBackup(Name, "SN87-VM-01-cronsch.qcow2.decrease", "By action command")
+}
+
+func TestSendUpdapte(t *testing.T) {
+	config2.ApplyGlobalConfig("/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf")
+	cfg := config2.GetMcGlobalConfig()
+	svcmgrRestAddr := fmt.Sprintf("%s:%s", cfg.SvcmgrIp, cfg.SvcmgrPort)
+	vms := GetMcServerInfo().Vms
+	fmt.Println("# Backup Vms : ", *vms)
+
+	svcmgrapi.SendUpdateVmList2Svcmgr(*vms, svcmgrRestAddr)
 }
 

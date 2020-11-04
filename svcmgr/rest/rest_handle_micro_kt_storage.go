@@ -251,7 +251,7 @@ func (h *Handler) RestoreBackupStart(c *gin.Context) {
 func (h *Handler) UpdateMcVmList(c *gin.Context) {
 	var recvMsg []mcmodel.McVm
 	c.Bind(&recvMsg)
-	fmt.Print("# VM List : ", recvMsg)
+	fmt.Printf("# VM List : %+v\n", recvMsg)
 
 	s, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcServerByIp(c.ClientIP())
 
@@ -274,7 +274,7 @@ func (h *Handler) UpdateMcVmList(c *gin.Context) {
 			}
 		}
 		for _, vm := range vmList {
-			obj := mcmodel.LookupVm(&vmList, vm)
+			obj := mcmodel.LookupVm(&recvMsg, vm)
 			if obj == nil {
 				config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
 			}
