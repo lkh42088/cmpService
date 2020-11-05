@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-var ipaddr = "192.168.0.2"
+var ipaddr = "192.168.254.18"
 
 func TestGetResource(t *testing.T) {
 	url := fmt.Sprintf("http://%s:8082%s%s",

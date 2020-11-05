@@ -11,10 +11,11 @@ import (
 	"net/http"
 )
 
+
 func SendMcVmAction(msg messages.McVmActionMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlApplyVmAction)
+	url := fmt.Sprintf("http://%s%s%s",GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlApplyVmAction)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendMcVmAction: error 1 ", err)
@@ -33,7 +34,7 @@ func SendMcVmAction(msg messages.McVmActionMsg, server mcmodel.McServerDetail) b
 func SendAddVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlAddVmSnapshot)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlAddVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendAddVmSnapshot: error 1 ", err)
@@ -52,7 +53,7 @@ func SendAddVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServerDe
 func SendDeleteVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmSnapshot)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlDeleteVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendDeleteVmSnapshot: error 1 ", err)
@@ -71,7 +72,7 @@ func SendDeleteVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServe
 func SendDeleteVmSnapshotList(msg messages.SnapshotEntryMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmSnapshotList)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlDeleteVmSnapshotList)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendDeleteVmSnapshotList: error 1 ", err)
@@ -90,7 +91,7 @@ func SendDeleteVmSnapshotList(msg messages.SnapshotEntryMsg, server mcmodel.McSe
 func SendUpdateVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
 
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
@@ -110,7 +111,7 @@ func SendUpdateVmSnapshot(msg messages.SnapshotConfigMsg, server mcmodel.McServe
 func SendUpdateVmStatus(msg messages.VmStatusActionMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlUpdateVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendUpdateVmStatus: error 1 ", err)
@@ -129,7 +130,7 @@ func SendUpdateVmStatus(msg messages.VmStatusActionMsg, server mcmodel.McServerD
 func SendRecoverySnapshot(msg messages.SnapshotEntry, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlRecoveryVmSnapshot)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlRecoveryVmSnapshot)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendRecoverySnapshot: error 1 ", err)

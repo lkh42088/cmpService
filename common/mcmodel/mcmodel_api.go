@@ -79,6 +79,9 @@ func (v McVm) Compare(n McVm) bool {
 	if v.RemoteAddr != n.RemoteAddr {
 		return true
 	}
+	if v.PublicRemoteAddr != n.PublicRemoteAddr {
+		return true
+	}
 	return false
 }
 
@@ -121,6 +124,9 @@ func (v McVm) Update(n McVm) McVm {
 	}
 	if v.RemoteAddr != n.RemoteAddr {
 		v.RemoteAddr = n.RemoteAddr
+	}
+	if v.PublicRemoteAddr != n.PublicRemoteAddr {
+		v.PublicRemoteAddr = n.PublicRemoteAddr
 	}
 	return v
 }

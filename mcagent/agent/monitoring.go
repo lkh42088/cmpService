@@ -85,11 +85,15 @@ func (m *MonitorRoutine) RunByVirsh() {
 				vm.RemoteAddr = fmt.Sprintf("%s:%d",
 					cfg.ServerIp,
 					cfg.DnatBasePortNum + vm.VmIndex)
+				vm.PublicRemoteAddr = fmt.Sprintf("%s:%d",
+					cfg.ServerPublicIp,
+					cfg.DnatBasePortNum + vm.VmIndex)
 			}
 
 			// update mongodb
 			if updated {
-				fmt.Println("Update vm: ", *vm)
+				fmt.Println("Update vm: ")
+				vm.Dump()
 				//mcmongo.McMongo.UpdateVmByInternal(vm)
 				// notify svcmgr
 				svcmgrapi.SendUpdateVm2Svcmgr(*vm,"192.168.0.72:8081")

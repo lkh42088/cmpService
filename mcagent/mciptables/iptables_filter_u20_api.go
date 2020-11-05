@@ -157,13 +157,13 @@ func AddFilterForwardRejectRuleFromChain(chainIn, chainOut, ifName string) bool 
 	}
 	table := "filter"
 	//chain := "FORWARD"
-	err = ipt.Append(table, chainOut, "-o", ifName, "-j", "REJECT",
+	err = ipt.Append(table, chainIn, "-o", ifName, "-j", "REJECT",
 		"--reject-with", "icmp-port-unreachable")
 	if err != nil {
 		fmt.Println("AddFilterForwardIpv4AddrRuleFromChain error 1:", err)
 		return false
 	}
-	err = ipt.Append(table, chainIn, "-i", ifName, "-j", "REJECT",
+	err = ipt.Append(table, chainOut, "-i", ifName, "-j", "REJECT",
 		"--reject-with", "icmp-port-unreachable")
 	if err != nil {
 		fmt.Println("AddFilterForwardIpv4AddrRuleFromChain error 2:", err)
@@ -185,9 +185,7 @@ func AddFilterForwardIpv4AddrRuleFromChainNew(chainIn, chainOut, addr, ifName st
 	//var haveFilterRule = false
 	var haveFilterRule = CheckFilterAddrRule(chainIn, addr, ifName)
 	if haveFilterRule == false {
-		//err = ipt.Append(table, chainIn, "-d", addr, "-o", ifName, "-m", "conntrack",
-		//	"--ctstate", "RELATED,ESTABLISHED", "-j", "ACCEPT")
-		err = ipt.Append(table, chainIn, "-d", addr, "-o", ifName, "-j", "ACCEPT")
+		err = ipt.Append(table, chainIn, "-s", addr, "-i", ifName, "-j", "ACCEPT")
 		if err != nil {
 			fmt.Println("AddFilterForwardIpv4AddrRule error 1:", err)
 		}
@@ -197,7 +195,7 @@ func AddFilterForwardIpv4AddrRuleFromChainNew(chainIn, chainOut, addr, ifName st
 	 */
 	haveFilterRule = CheckFilterAddrRule(chainOut, addr, ifName)
 	if haveFilterRule == false {
-		err = ipt.Append(table, chainOut, "-s", addr, "-i", ifName, "-j", "ACCEPT")
+		err = ipt.Append(table, chainOut, "-d", addr, "-o", ifName, "-j", "ACCEPT")
 		if err != nil {
 			fmt.Println("AddFilterForwardIpv4AddrRule error 2:", err)
 		}
@@ -281,7 +279,7 @@ func DeleteFilterForwardIpv4AddrRuleFromChainNew(chainIn, chainOut, addr, ifName
 	 */
 	//err = ipt.Delete(table, chainIn, "-d", addr, "-o", ifName, "-m", "conntrack",
 	//	"--ctstate", "RELATED,ESTABLISHED", "-j", "ACCEPT")
-	err = ipt.Delete(table, chainIn, "-d", addr, "-o", ifName, "-j", "ACCEPT")
+	err = ipt.Delete(table, chainIn, "-s", addr, "-i", ifName, "-j", "ACCEPT")
 	if err != nil {
 		fmt.Println("DeleteFilterForwardIpv4AddrRule error 1:", err)
 		//return false
@@ -289,7 +287,7 @@ func DeleteFilterForwardIpv4AddrRuleFromChainNew(chainIn, chainOut, addr, ifName
 	/**
 	 * Check Chain Out
 	 */
-	err = ipt.Delete(table, chainOut, "-s", addr, "-i", ifName, "-j", "ACCEPT")
+	err = ipt.Delete(table, chainOut, "-d", addr, "-o", ifName, "-j", "ACCEPT")
 	if err != nil {
 		fmt.Println("DeleteFilterForwardIpv4AddrRule error 2:", err)
 		//return false

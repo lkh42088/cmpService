@@ -55,13 +55,14 @@ func ConvertVmStatus(status libvirt.DomainState) string {
 	return res
 }
 
-func ConvertImageFile2MgoVM(vm *mcmodel.McVm, file string) {
+func ConvertImageFile2MgoVM(vm *mcmodel.McVm, file string) bool {
 	// /opt/vm_instances/windows10-40G-0.qcow2
 	vm.FullPath = file
 	arr := strings.Split(file, "/")
 	if len(arr) < 3 || !strings.Contains(arr[1], "opt") {
-		fmt.Println("The directory isn't valid.", arr)
-		return
+		fmt.Printf("The directory(%s) isn't valid --> skip (we didn't create this vm)\n",
+			vm.FullPath)
+		return false
 	}
 	name := arr[3]
 	fmt.Printf("%s\n", arr)
@@ -75,12 +76,13 @@ func ConvertImageFile2MgoVM(vm *mcmodel.McVm, file string) {
 	} else if list[0] == "ubuntu16" {
 		vm.OS = "ubuntu16"
 	} else {
-		return
+		return false
 	}
 	vm.VmIndex, _ = strconv.Atoi(list[2])
 	fmt.Printf("ConvertImageFile2MgoVM: vmIndex %d, %s\n", vm.VmIndex, list[2])
 	vm.Image = fmt.Sprintf("%s-%s", list[0], list[1])
 	vm.Hdd, _ = strconv.Atoi(list[1][:strings.LastIndexAny(list[1],"G")])
+	return true
 }
 
 func DumpMcVirtInfo() {
@@ -117,11 +119,16 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 				vm.Ram = int(domcfg.Memory.Value / 1024)
 			}
 			if domcfg.Devices != nil {
+				var res = false
 				devices := domcfg.Devices
 				for _, disk := range devices.Disks {
 					if disk.Source != nil && disk.Source.File != nil {
-						ConvertImageFile2MgoVM(&vm, disk.Source.File.File)
+						res = ConvertImageFile2MgoVM(&vm, disk.Source.File.File)
 					}
+				}
+				if res == false {
+					// hcmp dit not create this vm!
+					continue
 				}
 				interfaces := domcfg.Devices.Interfaces
 				for _, intf := range interfaces {
@@ -162,6 +169,9 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 			cfg := config.GetMcGlobalConfig()
 			vm.RemoteAddr = fmt.Sprintf("%s:%d",
 				cfg.ServerIp,
+				cfg.DnatBasePortNum + vm.VmIndex)
+			vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
+				cfg.ServerPublicIp,
 				cfg.DnatBasePortNum + vm.VmIndex)
 			//config.AllocateVmIndex(uint(vm.VmIndex))
 			//fmt.Printf("\n")

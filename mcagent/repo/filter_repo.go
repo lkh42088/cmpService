@@ -20,7 +20,7 @@ func InitCachingAccessFilter() {
 	cfg := config2.GetMcGlobalConfig()
 	for _, rule := range rules {
 		rule.Dump()
-		mciptables.AddFFilterWrap(rule.IpAddr+"/32", cfg.McagentPort, "virbr0")
+		mciptables.AddFFilterWrap(rule.IpAddr+"/32", cfg.ServerPort, "virbr0")
 	}
 }
 
@@ -46,7 +46,7 @@ func AddAccessFilter(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error) {
 		fmt.Println("AddAccessFilter error: ", err)
 	} else {
 		cfg := config2.GetMcGlobalConfig()
-		mciptables.AddFFilterWrap(rule.IpAddr+"/32", cfg.McagentPort, "virbr0")
+		mciptables.AddFFilterWrap(rule.IpAddr+"/32", cfg.ServerPort, "virbr0")
 	}
 	return rule, err
 }
@@ -62,7 +62,7 @@ func DeleteAccessFilter(obj mcmodel.McFilterRule) (mcmodel.McFilterRule, error) 
 		fmt.Println("DeleteAccessFilter error2: ", err)
 	} else {
 		cfg := config2.GetMcGlobalConfig()
-		mciptables.DeleteFFilterWrap(rule.IpAddr+"/32", cfg.McagentPort)
+		mciptables.DeleteFFilterWrap(rule.IpAddr+"/32", cfg.ServerPort)
 	}
 	return rule, err
 }
