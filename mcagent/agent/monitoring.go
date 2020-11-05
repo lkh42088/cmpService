@@ -85,6 +85,9 @@ func (m *MonitorRoutine) RunByVirsh() {
 				vm.RemoteAddr = fmt.Sprintf("%s:%d",
 					cfg.ServerIp,
 					cfg.DnatBasePortNum + vm.VmIndex)
+				vm.PublicRemoteAddr = fmt.Sprintf("%s:%d",
+					cfg.ServerPublicIp,
+					cfg.DnatBasePortNum + vm.VmIndex)
 			}
 
 			// update mongodb

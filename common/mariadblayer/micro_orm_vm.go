@@ -160,14 +160,15 @@ func (db *DBORM) UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
 		Model(&obj).
 		Where(mcmodel.McVm{Idx: obj.Idx}).
 		Updates(map[string]interface{}{
-			"vm_filename":       obj.Filename,
-			"vm_full_path":      obj.FullPath,
-			"vm_vmIndex":        obj.VmIndex,
-			"vm_ip_addr":        obj.IpAddr,
-			"vm_mac":            obj.Mac,
-			"vm_vnc_port":       obj.VncPort,
-			"vm_current_status": obj.CurrentStatus,
-			"vm_remote_addr":    obj.RemoteAddr,
+			"vm_filename":           obj.Filename,
+			"vm_full_path":          obj.FullPath,
+			"vm_vmIndex":            obj.VmIndex,
+			"vm_ip_addr":            obj.IpAddr,
+			"vm_mac":                obj.Mac,
+			"vm_vnc_port":           obj.VncPort,
+			"vm_current_status":     obj.CurrentStatus,
+			"vm_public_remote_addr": obj.PublicRemoteAddr,
+			"vm_remote_addr":        obj.RemoteAddr,
 		}).Error
 }
 
