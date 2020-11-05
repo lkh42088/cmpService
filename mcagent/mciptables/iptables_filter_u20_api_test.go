@@ -9,8 +9,8 @@ import (
  * Wrapping Func
  */
 //var u20addr01 = "211.58.83.151/32" // home public
-var u20addr01 = "221.148.133.88/32" // company public
-//var u20addr01 = "192.168.254.0/24" // home local
+//var u20addr01 = "221.148.133.88/32" // company public
+var u20addr01 = "192.168.254.0/24" // home local
 //var u20intf01= "br0"
 var u20intf01= "wlo1"
 //var u20intf01= "virbr0"
@@ -49,6 +49,28 @@ func TestGetFilterForwardAllRuleFromChain(t *testing.T) {
  */
 func TestDeleteFilterForwardRejectAllRuleUbuntu20(t *testing.T) {
 	DeleteFilterForwardRejectAllRuleUbuntu20()
+}
+
+func TestDeleteFilterForwardRejectAllRuleUbuntu20IN(t *testing.T) {
+	var ifName = "virbr0"
+	var chainIn = "LIBVIRT_FWI"
+
+	// Delete REJECT Rule
+	DeleteFilterForwardRejectRuleFromChain(chainIn, ifName)
+}
+
+func TestDeleteFilterForwardRejectAllRuleUbuntu20OUT(t *testing.T) {
+	var ifName = "virbr0"
+	var chainOut = "LIBVIRT_FWO"
+
+	// Delete REJECT Rule
+	DeleteFilterForwardRejectRuleFromChain(chainOut, ifName)
+}
+
+func TestAddFilterForwardRejectRuleFromChainA(t *testing.T) {
+	var chainIn = "LIBVIRT_FWI"
+	var chainOut = "LIBVIRT_FWO"
+	AddFilterForwardRejectRuleFromChain(chainIn, chainOut, "virbr0")
 }
 
 func TestCheckFilterRule(t *testing.T) {

@@ -157,13 +157,13 @@ func AddFilterForwardRejectRuleFromChain(chainIn, chainOut, ifName string) bool 
 	}
 	table := "filter"
 	//chain := "FORWARD"
-	err = ipt.Append(table, chainOut, "-o", ifName, "-j", "REJECT",
+	err = ipt.Append(table, chainIn, "-o", ifName, "-j", "REJECT",
 		"--reject-with", "icmp-port-unreachable")
 	if err != nil {
 		fmt.Println("AddFilterForwardIpv4AddrRuleFromChain error 1:", err)
 		return false
 	}
-	err = ipt.Append(table, chainIn, "-i", ifName, "-j", "REJECT",
+	err = ipt.Append(table, chainOut, "-i", ifName, "-j", "REJECT",
 		"--reject-with", "icmp-port-unreachable")
 	if err != nil {
 		fmt.Println("AddFilterForwardIpv4AddrRuleFromChain error 2:", err)
