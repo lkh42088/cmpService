@@ -57,6 +57,7 @@ func Start (config string) {
 		wg.Done()
 	}
 
+	// print regular logging
 	if kvm.LibvirtR != nil {
 		go kvm.LibvirtR.Start(&wg)
 	} else {

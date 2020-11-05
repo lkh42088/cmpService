@@ -92,7 +92,8 @@ func (m *MonitorRoutine) RunByVirsh() {
 
 			// update mongodb
 			if updated {
-				fmt.Println("Update vm: ", *vm)
+				fmt.Println("Update vm: ")
+				vm.Dump()
 				//mcmongo.McMongo.UpdateVmByInternal(vm)
 				// notify svcmgr
 				svcmgrapi.SendUpdateVm2Svcmgr(*vm,"192.168.0.72:8081")

@@ -170,6 +170,9 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 			vm.RemoteAddr = fmt.Sprintf("%s:%d",
 				cfg.ServerIp,
 				cfg.DnatBasePortNum + vm.VmIndex)
+			vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
+				cfg.ServerPublicIp,
+				cfg.DnatBasePortNum + vm.VmIndex)
 			//config.AllocateVmIndex(uint(vm.VmIndex))
 			//fmt.Printf("\n")
 			vm.IsCreated = true
