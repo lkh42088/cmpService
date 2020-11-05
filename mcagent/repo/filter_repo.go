@@ -20,7 +20,7 @@ func InitCachingAccessFilter() {
 	cfg := config2.GetMcGlobalConfig()
 	for _, rule := range rules {
 		rule.Dump()
-		mciptables.AddFFilterWrap(rule.IpAddr+"/32", cfg.McagentPort, "virbr0")
+		mciptables.AddFFilterWrap(rule.IpAddr+"/32", cfg.ServerPort, "virbr0")
 	}
 }
 
