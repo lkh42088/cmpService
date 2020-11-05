@@ -11,6 +11,18 @@ import (
 	"net/http"
 )
 
+func GetMcServerRestAddr(s mcmodel.McServer) string {
+	var addr string
+	if s.RegisterType == 1 {
+		// Domain
+		addr = s.PublicIpAddr + ":" + s.L4Port
+	} else {
+		// IP Address
+		addr = s.IpAddr+ ":" + s.L4Port
+	}
+	return addr
+}
+
 func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerDetail) {
 	// Dao: Server
 	fmt.Println("recvMsg:", recvMsg.Mac)
@@ -110,14 +122,8 @@ func SendMcRegisterServer(server mcmodel.McServerDetail) bool {
 	fmt.Printf("McServer : %v\n", server)
 	pbytes, _ := json.Marshal(server)
 	buff := bytes.NewBuffer(pbytes)
-	var addr string
-	if server.RegisterType == 1 {
-		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
-	} else {
-		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
-	}
 	url := fmt.Sprintf("http://%s%s%s",
-		addr, lib.McUrlPrefix, lib.McUrlRegisterServer)
+		GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlRegisterServer)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendAddVm: error 1 ", err)
@@ -210,14 +216,8 @@ func SendMcRegisterServerOld(server mcmodel.McServerDetail) bool {
 func SendMcUnRegisterServer(server mcmodel.McServer) bool {
 	pbytes, _ := json.Marshal(server)
 	buff := bytes.NewBuffer(pbytes)
-	var addr string
-	if server.RegisterType == 1 {
-		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
-	} else {
-		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
-	}
 	url := fmt.Sprintf("http://%s%s%s",
-		addr, lib.McUrlPrefix, lib.McUrlUnRegisterServer)
+		GetMcServerRestAddr(server), lib.McUrlPrefix, lib.McUrlUnRegisterServer)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendAddVm: error 1 ", err)
@@ -239,14 +239,8 @@ func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	vm.Dump()
 
 	buff := bytes.NewBuffer(pbytes)
-	var addr string
-	if server.RegisterType == 1 {
-		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
-	} else {
-		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
-	}
 	url := fmt.Sprintf("http://%s%s%s",
-		addr, lib.McUrlPrefix, lib.McUrlCreateVm)
+		GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlCreateVm)
 	fmt.Println("SendAddVm: url", url)
 	response, err := http.Post(url, "application/json", buff)
 	fmt.Println("SendAddVm: response", response)
@@ -267,13 +261,7 @@ func SendAddVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 func SendDeleteVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(vm)
 	buff := bytes.NewBuffer(pbytes)
-	var addr string
-	if server.RegisterType == 1 {
-		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
-	} else {
-		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
-	}
-	url := fmt.Sprintf("http://%s%s%s", addr, lib.McUrlPrefix, lib.McUrlDeleteVm)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlDeleteVm)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendDeleteVm: error 1 ", err)
@@ -290,14 +278,8 @@ func SendDeleteVm(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
 }
 
 func SendGetVmById(vm mcmodel.McVm, server mcmodel.McServerDetail) bool {
-	var addr string
-	if server.RegisterType == 1 {
-		addr = fmt.Sprintf("%s:%s", server.PublicIpAddr, server.L4Port)
-	} else {
-		addr = fmt.Sprintf("%s:%s", server.IpAddr, server.L4Port)
-	}
 	url := fmt.Sprintf("http://%s%s%s/%d",
-		addr, lib.McUrlPrefix, lib.McUrlVm, vm.Idx)
+		GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlVm, vm.Idx)
 	response, err := http.Get(url)
 	if err != nil {
 		fmt.Println("SendGetVmById: error 1 ", err)

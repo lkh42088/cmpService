@@ -14,7 +14,7 @@ import (
 func SendAddVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlAddVmBackup)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlAddVmBackup)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendAddVmBackup: error 1 ", err)
@@ -33,7 +33,7 @@ func SendAddVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDetail
 func SendDeleteVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmBackup)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlDeleteVmBackup)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendDeleteVmBackup: error 1 ", err)
@@ -52,7 +52,7 @@ func SendDeleteVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDet
 func SendDeleteVmBackupList(msg messages.BackupEntryMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlDeleteVmBackupList)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlDeleteVmBackupList)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendDeleteVmBackupList: error 1 ", err)
@@ -71,7 +71,7 @@ func SendDeleteVmBackupList(msg messages.BackupEntryMsg, server mcmodel.McServer
 func SendUpdateVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(msg)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlUpdateVmBackup)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlUpdateVmBackup)
 
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
@@ -91,7 +91,7 @@ func SendUpdateVmBackup(msg messages.BackupConfigMsg, server mcmodel.McServerDet
 func SendRestoreBackup2Mc(mc mcmodel.McVmBackup, server mcmodel.McServerDetail) bool {
 	pbytes, _ := json.Marshal(mc)
 	buff := bytes.NewBuffer(pbytes)
-	url := fmt.Sprintf("http://%s:8082%s%s",server.IpAddr, lib.McUrlPrefix, lib.McUrlRestoreVmBackup)
+	url := fmt.Sprintf("http://%s%s%s", GetMcServerRestAddr(server.McServer), lib.McUrlPrefix, lib.McUrlRestoreVmBackup)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
 		fmt.Println("SendRestoreBackup2Mc: error 1 ", err)
