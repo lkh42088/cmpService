@@ -4,6 +4,8 @@ package lib
 const (
 	WinUrlPrefix = "/api/v1/win"
 	WinUrlHealth = WinUrlPrefix + "/health"
+	WinUrlModifyConf = WinUrlPrefix + "/modifyConf"
+	WinUrlAgentRestart = WinUrlPrefix + "/restart"
 )
 
 // To MC-Agent

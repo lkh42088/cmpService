@@ -2,13 +2,14 @@ package agent
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/winagent/common"
 	"cmpService/winagent/config"
 	"cmpService/winagent/winrest"
 	"fmt"
 	"sync"
 )
 
-var globalSysInfo mcmodel.SysInfo
+var GlobalSysInfo mcmodel.SysInfo
 
 func Start (conf string) {
 	var wg sync.WaitGroup
@@ -33,8 +34,8 @@ func Start (conf string) {
 func configure() bool {
 
 	CheckMySystem()
-	InsertMacInTelegrafConf(globalSysInfo.IfMac)
-	RestartTelegraf()
+	InsertMacInTelegrafConf(GlobalSysInfo.IfMac)
+	common.RestartTelegraf()
 
 	return true
 }
