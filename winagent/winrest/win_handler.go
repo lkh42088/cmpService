@@ -50,7 +50,7 @@ func UpdateWinAgentConf(field string, newVal string) bool {
 
 	// Get Conf
 	conf := config.GetGlobalConfig()
-	path := conf.WinAgentPath
+	path := conf.WinAgentPath + "\\winagent.conf"
 
 	// Change Value
 	val := reflect.ValueOf(conf)
