@@ -28,7 +28,7 @@ func ModifyConfVariable(c *gin.Context) {
 	case lib.SVCMGR_AGENT:
 		UpdateSvcmgrConf(data.FieldName, data.Value)
 	case lib.MC_AGENT, lib.WIN_AGENT:
-		SendToMcAgent(data, lib.McUrlSystemModifyConf)
+		SendToMcAgent(data, lib.McUrlPrefix + lib.McUrlSystemModifyConf)
 	}
 
 	c.JSON(http.StatusOK, "OK")
@@ -47,7 +47,7 @@ func RestartAgent(c *gin.Context) {
 	case lib.SVCMGR_AGENT:
 		RestartSvcmgr()
 	case lib.MC_AGENT, lib.WIN_AGENT:
-		SendToMcAgent(data, lib.McUrlAgentRestart)
+		SendToMcAgent(data, lib.McUrlPrefix + lib.McUrlAgentRestart)
 	}
 
 	c.JSON(http.StatusOK, "OK")
@@ -58,16 +58,32 @@ func UpdateSvcmgrConf(field string, newVal string) bool {
 	var err error
 
 	// Get Conf
-	conf := config.SvcmgrGlobalConfig
+	conf := *config.SvcmgrConfigStore
 	current, _ := os.Getwd()
 	path := current + "/svcmgr.conf"
 
 	// Change Value
-	val := reflect.ValueOf(conf)
+	val := reflect.ValueOf(&conf).Elem()
 	for i := 0; i < val.Type().NumField(); i++ {
-		confField := val.Type().Field(i).Tag.Get("json")
-		if confField == field {
-			reflect.ValueOf(conf).Elem().Field(i).SetString(newVal)
+		if val.Field(i).Type().String() == "config.MariaDbConfig" {
+			for j := 0; j < val.Field(i).Type().NumField(); j++ {
+				confField := val.Field(i).Type().Field(j).Tag.Get("json")
+				if strings.Contains(confField, field) {
+					val.Field(i).Field(j).SetString(newVal)
+				}
+			}
+		} else if val.Field(i).Type().String() == "config.InfluxDbConfig" {
+			for j := 0; j < val.Field(i).Type().NumField(); j++ {
+				confField := val.Field(i).Type().Field(j).Tag.Get("json")
+				if strings.Contains(confField, field) {
+					val.Field(i).Field(j).SetString(newVal)
+				}
+			}
+		} else {
+			confField := val.Type().Field(i).Tag.Get("json")
+			if strings.Contains(confField, field) {
+				val.Field(i).SetString(newVal)
+			}
 		}
 	}
 

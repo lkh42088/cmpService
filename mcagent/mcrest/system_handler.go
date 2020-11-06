@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -61,13 +62,43 @@ func UpdateMcAgentConf(field string, newVal string) bool {
 	conf := config.GetMcGlobalConfig()
 	current, _ := os.Getwd()
 	path := current + "/mcagent.conf"
+	fmt.Println(path)
 
 	// Change Value
-	val := reflect.ValueOf(conf)
+	val := reflect.ValueOf(&conf).Elem()
 	for i := 0; i < val.Type().NumField(); i++ {
-		confField := val.Type().Field(i).Tag.Get("json")
-		if confField == field {
-			reflect.ValueOf(conf).Elem().Field(i).SetString(newVal)
+		if val.Field(i).Type().String() == "config.MariaDbConfig" {
+			for j := 0; j < val.Field(i).Type().NumField(); j++ {
+				confField := val.Field(i).Type().Field(j).Tag.Get("json")
+				if strings.Contains(confField, field) {
+					val.Field(i).Field(j).SetString(newVal)
+				}
+			}
+		} else if val.Field(i).Type().String() == "config.MongoDbConfig" {
+			for j := 0; j < val.Field(i).Type().NumField(); j++ {
+				confField := val.Field(i).Type().Field(j).Tag.Get("json")
+				if strings.Contains(confField, field) {
+					val.Field(i).Field(j).SetString(newVal)
+				}
+			}
+		} else if val.Field(i).Type().String() == "config.InfluxDbConfig" {
+			for j := 0; j < val.Field(i).Type().NumField(); j++ {
+				confField := val.Field(i).Type().Field(j).Tag.Get("json")
+				if strings.Contains(confField, field) {
+					val.Field(i).Field(j).SetString(newVal)
+				}
+			}
+		} else {
+			confField := val.Type().Field(i).Tag.Get("json")
+			if strings.Contains(confField, field) {
+				fmt.Println(val.Field(i).Type().String())
+				if val.Field(i).Type().String() == "int" {
+					v, _ := strconv.Atoi(newVal)
+					val.Field(i).SetInt(int64(v))
+				} else {
+					val.Field(i).SetString(newVal)
+				}
+			}
 		}
 	}
 

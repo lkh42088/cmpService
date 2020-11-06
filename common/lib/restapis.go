@@ -48,7 +48,7 @@ const (
 	McUrlUpdateVmBackup     = McUrlVmBackup + "/update"
 
 	// System
-	McUrlSystemModifyConf 	= McUrlWinPrefix + "/modifyConf"
-	McUrlAgentRestart 		= McUrlWinPrefix + "/restart"
+	McUrlSystemModifyConf 	= "/modifyConf"
+	McUrlAgentRestart 		= "/restart"
 
 )

@@ -53,11 +53,11 @@ func UpdateWinAgentConf(field string, newVal string) bool {
 	path := conf.WinAgentPath + "\\winagent.conf"
 
 	// Change Value
-	val := reflect.ValueOf(conf)
+	val := reflect.ValueOf(&conf).Elem()
 	for i := 0; i < val.Type().NumField(); i++ {
 		confField := val.Type().Field(i).Tag.Get("json")
-		if confField == field {
-			reflect.ValueOf(conf).Elem().Field(i).SetString(newVal)
+		if strings.Contains(confField, field) {
+			val.Field(i).SetString(newVal)
 		}
 	}
 
