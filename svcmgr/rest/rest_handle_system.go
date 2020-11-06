@@ -15,19 +15,8 @@ import (
 	"strings"
 )
 
-const SVCMGR_AGENT	= 1
-const MC_AGENT		= 2
-const WIN_AGENT		= 3
-
-type ConfVariable struct {
-	AgentType 	int		`json:agentType`
-	IpAddr 		string 	`json:ipAddr`
-	FieldName	string	`json:fieldName`
-	Value 		string 	`json:value`
-}
-
 func ModifyConfVariable(c *gin.Context) {
-	var data ConfVariable
+	var data lib.ConfVariable
 	c.ShouldBind(&data)
 
 	if data.AgentType == 0 || data.IpAddr == "" || data.FieldName == "" {
@@ -36,9 +25,9 @@ func ModifyConfVariable(c *gin.Context) {
 	}
 
 	switch data.AgentType {
-	case SVCMGR_AGENT:
+	case lib.SVCMGR_AGENT:
 		UpdateSvcmgrConf(data)
-	case MC_AGENT, WIN_AGENT:
+	case lib.MC_AGENT, lib.WIN_AGENT:
 		SendToMcAgent(data, lib.McUrlSystemModifyConf)
 	}
 
@@ -46,7 +35,7 @@ func ModifyConfVariable(c *gin.Context) {
 }
 
 func RestartAgent(c *gin.Context) {
-	var data ConfVariable
+	var data lib.ConfVariable
 	c.ShouldBind(&data)
 
 	if data.AgentType == 0 || data.IpAddr == "" {
@@ -55,25 +44,25 @@ func RestartAgent(c *gin.Context) {
 	}
 
 	switch data.AgentType {
-	case SVCMGR_AGENT:
+	case lib.SVCMGR_AGENT:
 		RestartSvcmgr()
-	case MC_AGENT, WIN_AGENT:
+	case lib.MC_AGENT, lib.WIN_AGENT:
 		SendToMcAgent(data, lib.McUrlAgentRestart)
 	}
 
 	c.JSON(http.StatusOK, "OK")
 }
 
-func UpdateSvcmgrConf(data ConfVariable) {
+func UpdateSvcmgrConf(data lib.ConfVariable) {
 	SetEnvValue(data.FieldName, data.Value)
 }
 
-func SendToMcAgent(data ConfVariable, uri string) bool {
+func SendToMcAgent(data lib.ConfVariable, uri string) bool {
 	pbytes, _ := json.Marshal(data)
 	buff := bytes.NewBuffer(pbytes)
 
 	var serverIp string
-	if data.AgentType == WIN_AGENT {
+	if data.AgentType == lib.WIN_AGENT {
 		ipSet := strings.Split(data.IpAddr, "|")
 		serverIp = ipSet[0]
 	} else {
