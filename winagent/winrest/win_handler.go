@@ -8,7 +8,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/teamwork/reload"
+	"golang.org/x/sys/windows/svc"
+	"golang.org/x/sys/windows/svc/mgr"
 	"net/http"
 	"os"
 	"reflect"
@@ -28,7 +29,8 @@ func ModifyConfVariable(c *gin.Context) {
 		return
 	}
 
-	if UpdateWinAgentConf(data.FieldName, data.Value) {
+	//if UpdateWinAgentConf(data.FieldName, data.Value) {
+	if SetEnvValue(data.FieldName, data.Value) {
 		if data.FieldName == "influxdb_ip" ||
 			data.FieldName == "influxdb_port" {
 			UpdateTelegrafConf(data.FieldName, data.Value)
@@ -41,7 +43,20 @@ func ModifyConfVariable(c *gin.Context) {
 
 func RestartAgent(c *gin.Context) {
 	fmt.Println("\n\nAgent Restart...\n\n")
-	reload.Exec()
+	//reload.Exec()
+
+	scMgr, err := mgr.Connect()
+	defer scMgr.Disconnect()
+	sc, err := scMgr.OpenService("CMPWindowService")
+	defer sc.Close()
+
+	_, err = sc.Control(svc.Shutdown)
+	sc.Start()
+	if err != nil {
+		fmt.Println("[Service Restart Error] ", err)
+	}
+
+	c.JSON(http.StatusOK, "OK")
 }
 
 func UpdateWinAgentConf(field string, newVal string) bool {
@@ -131,9 +146,9 @@ func UpdateTelegrafConf(field string, value string) bool {
 		} else if isFind == false && influxdbTagsArea == true &&
 			strings.Contains(lineStr, findStr) == true {
 			if field == "influxdb_ip" {
-				w.WriteString(fmt.Sprintf("  urls = [\"http://%s:%s\"]\n", value, config.GetGlobalConfig().InfluxDbPort))
+				w.WriteString(fmt.Sprintf("  urls = [\"http://%s:%s\"]\n", value, config.GlobalConfig.InfluxDbPort))
 			} else if field == "influxdb_port" {
-				w.WriteString(fmt.Sprintf("  urls = [\"http://%s:%s\"]\n", config.GetGlobalConfig().InfluxDbIp, value))
+				w.WriteString(fmt.Sprintf("  urls = [\"http://%s:%s\"]\n", config.GlobalConfig.InfluxDbIp, value))
 			}
 			w.WriteString("\n")
 			isFind = true
@@ -148,6 +163,64 @@ func UpdateTelegrafConf(field string, value string) bool {
 	if err != nil {
 		return false
 	}
+
+	return true
+}
+
+func SetEnvValue(field string, newVal string) bool {
+	// ORIGIN FILE OPEN
+	current := config.GetGlobalConfig()
+	origin_file := current.WinAgentPath + "\\winagent.conf"
+	fd, err := os.Open(origin_file)
+	if err != nil {
+		fmt.Println("SetEnvValue file open error :", err)
+		return false
+	}
+	defer fd.Close()
+
+	// BACKUP FILE CREATE
+	backup_file := origin_file + ".backup"
+	backup_fd, err := os.Create(backup_file)
+	if err != nil {
+		fmt.Println("SetEnvValue file create error :", err)
+		return false
+	}
+	defer backup_fd.Close()
+
+	// UPDAATE CONF FILE
+	w := bufio.NewWriter(backup_fd)
+	if err != nil {
+		fmt.Println("SetEnvValue Writer error :", err)
+		return false
+	}
+
+	isFind := false
+	findStr := field
+	reader := bufio.NewReader(fd)
+	for {
+		line, isPrefix, err := reader.ReadLine()
+		if isPrefix || err != nil {
+			fmt.Println(isPrefix, "error", err)
+			break
+		}
+		lineStr := string(line)
+		if newVal != "" {
+			if isFind == true {
+				w.WriteString(lineStr + "\n")
+			} else if strings.Contains(lineStr, findStr) == true {
+				w.WriteString(fmt.Sprintf("  \"%s\": \"%s\",\n", findStr, newVal))
+				isFind = true
+			} else {
+				w.WriteString(lineStr + "\n")
+			}
+		}
+	}
+	w.Flush()
+	backup_fd.Sync()
+
+
+	// FILE CHANGE
+	common.CopyFile(backup_file, origin_file)
 
 	return true
 }

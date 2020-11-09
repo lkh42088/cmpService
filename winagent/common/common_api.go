@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 func CopyFile(src, dst string) (err error) {
@@ -71,9 +72,12 @@ func RestartTelegraf () {
 	}
 
 	cmd := exec.Command("net", args...)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}	// window 창 숨기기
 	cmd1 := exec.Command("net", args2...)
+	cmd1.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	out, _ := cmd.Output()
 	fmt.Println(out)
 	out, _ = cmd1.Output()
 	fmt.Println(out)
 }
+
