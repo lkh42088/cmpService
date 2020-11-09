@@ -32,8 +32,8 @@ const (
 	// Window system api
 	McUrlWinPrefix          = "/win"
 	McUrlHealthCheckFromWin = McUrlWinPrefix + "/health"
-	McUrlWinSystemModifyConf = McUrlWinPrefix + "/modifyConf"
-	McUrlWinAgentRestart 	= McUrlWinPrefix + "/restart"
+	McUrlWinSystemModifyConf = McUrlPrefix + McUrlWinPrefix + "/modifyConf"
+	McUrlWinAgentRestart 	= McUrlPrefix + McUrlWinPrefix + "/restart"
 
 	// KT Rest API : Storage
 	KtUrlPrefix      = "/kt/storage"

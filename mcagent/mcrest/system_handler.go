@@ -1,6 +1,7 @@
 package mcrest
 
 import (
+	"bufio"
 	"bytes"
 	"cmpService/common/lib"
 	"cmpService/mcagent/config"
@@ -11,6 +12,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"reflect"
 	"strconv"
 	"strings"
@@ -55,6 +57,12 @@ func RestartMcAgent(c *gin.Context) {
 }
 
 func UpdateMcAgentConf(field string, newVal string) bool {
+	return SetEnvValue(field, newVal)
+}
+
+func UpdateMcAgentConf2(field string, newVal string) bool {
+	// 구조체를 이용하여 conf 파일 적용하는 방식은 구조체에 따라 변동이 많으므로
+	// 기존 conf 파일을 읽어 update 하는 방식으로 변경
 	var f *os.File
 	var err error
 
@@ -141,15 +149,16 @@ func SendToWinAgent(data lib.ConfVariable, uri string) bool {
 	}
 
 	url := fmt.Sprintf("http://%s:8083%s", serverIp, uri)
+	fmt.Println("WIN URL: ", url)
 	response, err := http.Post(url, "application/json", buff)
 	if err != nil {
-		fmt.Println("SendToWinAgent: error 1 ", err)
+		fmt.Println("SendToWinAgent send error :", err)
 		return false
 	}
 	defer response.Body.Close()
 	resp, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("SendToWinAgent: error 2 ", err)
+		fmt.Println("SendToWinAgent response error : ", err)
 		return false
 	}
 	fmt.Println("SendToWinAgent: success - ", string(resp))
@@ -159,4 +168,69 @@ func SendToWinAgent(data lib.ConfVariable, uri string) bool {
 func RestartMcServer() {
 	fmt.Println("\n\nAgent Restart...\n\n")
 	reload.Exec()
+}
+
+func SetEnvValue(field string, newVal string) bool {
+	// ORIGIN FILE OPEN
+	current, _ := os.Getwd()
+	origin_file := current + "/mcagent.conf"
+	fd, err := os.Open(origin_file)
+	if err != nil {
+		fmt.Println("SetEnvValue file open error :", err)
+		return false
+	}
+	defer fd.Close()
+
+	// BACKUP FILE CREATE
+	backup_file := origin_file + ".backup"
+	backup_fd, err := os.Create(backup_file)
+	if err != nil {
+		fmt.Println("SetEnvValue file create error :", err)
+		return false
+	}
+	defer backup_fd.Close()
+
+	// UPDAATE CONF FILE
+	w := bufio.NewWriter(backup_fd)
+	if err != nil {
+		fmt.Println("SetEnvValue Writer error :", err)
+		return false
+	}
+
+	isFind := false
+	findStr := field
+	reader := bufio.NewReader(fd)
+	for {
+		line, isPrefix, err := reader.ReadLine()
+		if isPrefix || err != nil {
+			fmt.Println(isPrefix, "error", err)
+			break
+		}
+		lineStr := string(line)
+		if newVal != "" {
+			if isFind == true {
+				w.WriteString(lineStr + "\n")
+			} else if strings.Contains(lineStr, findStr) == true {
+				w.WriteString(fmt.Sprintf("  \"%s\": \"%s\",\n", findStr, newVal))
+				isFind = true
+			} else {
+				w.WriteString(lineStr + "\n")
+			}
+		}
+	}
+	w.Flush()
+	backup_fd.Sync()
+
+	// FILE CHANGE
+	args := []string{
+		backup_file,
+		origin_file,
+	}
+
+	binary := "mv"
+	cmd := exec.Command(binary, args...)
+	output, _ := cmd.Output()
+	fmt.Println("SetEnvValue output:", string(output))
+
+	return true
 }
