@@ -33,6 +33,8 @@ func Configure() bool {
 	common.CheckMySystem()
 	common.InsertMacInTelegrafConf(common.GlobalSysInfo.IfMac)
 	common.RestartTelegraf()
+	err := common.AddFireWallRule("WindowAgentRule", "in", "allow", "tcp", "8083")
+	fmt.Println("To add rule failed: ", err)
 
 	return true
 }

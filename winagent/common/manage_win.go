@@ -159,14 +159,26 @@ func InsertMacInTelegrafConf(mac string) bool {
 	return true
 }
 
-func addFireWallRule(names, appnames, dirs, actions string) error {
+func DeleteFireWallRule(names string) error {
+	c := exec.Command("netsh", "advfirewall", "firewall", "delete",
+		"name=\"" + names + "\"",
+	)
+	out, err := c.Output()
+	fmt.Println(out, err)
+	return err
+}
+
+func AddFireWallRule(names, dirs, actions, protocol, port string) error {
+	DeleteFireWallRule(names)
+
 	c := exec.Command("netsh", "advfirewall", "firewall", "add", "rule",
-			"name=" + names,
+			"name=\"" + names + "\"",
 			"dir=" + dirs,
 			"action=" + actions,
-			"program=" + appnames,
+			"protocol=" + protocol,
+			"localport=" + port,
 		)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	return c.Run()
+	out, err := c.Output()
+	fmt.Println(out, err)
+	return err
 }
