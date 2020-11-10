@@ -1,6 +1,7 @@
 package ktrest
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/mcagent/config"
 	"flag"
 	"fmt"
@@ -25,7 +26,7 @@ func TestGetStorageContainer(t *testing.T) {
 
 func TestPutStorageContainer(t *testing.T) {
 	_ = PostAuthTokens()
-	err := PutStorageContainer(GlobalToken, "nubes-test")
+	err := PutStorageContainer(ktapi.GlobalToken, "nubes-test")
 	fmt.Println(err)
 }
 

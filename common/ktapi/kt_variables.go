@@ -1,7 +1,6 @@
-package lib
+package ktapi
 
 import (
-	"cmpService/mcagent/ktrest"
 	"time"
 )
 
@@ -21,47 +20,26 @@ const storageAuthUrl = "/v3/auth"
 const storageAuthTokenUrl = storageAuthUrl + "/tokens"
 const getTempUrl = "v1/account/container/object?temp_url_sig=%s&temp_url_expires=%s"
 
-/** Global Variables */
-var GlobalToken = ktrest.GlobalToken
-var GlobalAccountUrl = ktrest.GlobalAccountUrl
-var GlobalContainerName = ktrest.GlobalContainerName
-
-// KT Storage variables
-const ExpiredTime = 60 * time.Minute
-const ContentTypeJson = "application/json"
-const ContentTypeBinary = "binary/octet-stream"
-const Range4096 = "4096"
-const MethodsPassword = "password"
-const EconomyType = "ec"
-const BackupFilePermission = 0644
-const FILE_BLOCK_500M = 500 * 1024 * 1024
-
-// DB
-const storageAccessKey = "iwhan@nubes-bridge.com"
-const storageSecretKey = "MTYwMTg2MzU1OTE2MDE4NjI5MTk1MTQ2"
-const storageProjectId = "fa632a4a0d04488c93b7184be92df4c8"
-const storageDomainId = "42a37f949dcd48a3a805fe0d2d3a7da5"
-
 // KT Auth Request
 type StorageUser struct {
-	Id 			string 			`json:"id"`
-	Name 		string  		`json:"name"`
-	Domain  	StorageDomain 	`json:"domain"`
-	Password 	string 			`json:"password"`
+	Id       string        `json:"id"`
+	Name     string        `json:"name"`
+	Domain   StorageDomain `json:"domain"`
+	Password string        `json:"password"`
 }
 
 type StoragePass struct {
-	User 		StorageUser `json:"user"`
+	User StorageUser `json:"user"`
 }
 
 type StorageIdentity struct {
-	Methods 	[]string 	`json:"methods"`
-	Password 	StoragePass	`json:"password"`
+	Methods  []string    `json:"methods"`
+	Password StoragePass `json:"password"`
 }
 
 type StorageAuth struct {
-	Identity 	StorageIdentity	`json:"identity"`
-	Scope 		StorageScope	`json:"scope"`
+	Identity StorageIdentity `json:"identity"`
+	Scope    StorageScope    `json:"scope"`
 }
 
 type StorageDomain struct {
@@ -70,17 +48,17 @@ type StorageDomain struct {
 }
 
 type StorageProject struct {
-	Id 			string			`json:"id"`
-	Domain 		StorageDomain	`json:"domain"`
-	Name 		string 			`json:"name"`
+	Id     string        `json:"id"`
+	Domain StorageDomain `json:"domain"`
+	Name   string        `json:"name"`
 }
 
 type StorageScope struct {
-	Project		StorageProject	`json:"project"`
+	Project StorageProject `json:"project"`
 }
 
 type StorageAuthRequest struct {
-	Auth 		StorageAuth		`json:"auth"`
+	Auth StorageAuth `json:"auth"`
 }
 
 // KT Auth Response
@@ -96,20 +74,20 @@ type StorageAuthLinks struct {
 }
 
 type StorageAuthValues struct {
-	Status 		string					`json:"status"`
-	Updated 	time.Time				`json:"updated`
-	MediaTypes 	[]StorageAuthMediaTypes 	`json:"media-types"`
-	Id 			string 					`json:"id"`
-	Links 		[]StorageAuthLinks 		`json:"links"`
+	Status 		string                  `json:"status"`
+	Updated 	time.Time                  `json:"updated`
+	MediaTypes 	[]StorageAuthMediaTypes `json:"media-types"`
+	Id 			string                  `json:"id"`
+	Links 		[]StorageAuthLinks       `json:"links"`
 }
 
 type StorageAuthVersions struct {
-	Values 		[]StorageAuthValues		`json:"values"`
+	Values 		[]StorageAuthValues `json:"values"`
 }
 
 type StorageAuthResponse struct {
-	Versions 	StorageAuthVersions		`json:"versions"`
-	Error 		StorageResponseError	`json:"error"`
+	Versions StorageAuthVersions  `json:"versions"`
+	Error    StorageResponseError `json:"error"`
 }
 
 /** RESPONSE TOKEN */
@@ -119,14 +97,14 @@ type StorageAuthRole struct {
 }
 
 type StorageAuthToken struct {
-	Methods 	[]string 			`json:"methods"`
-	Roles 		[]StorageAuthRole 	`json:"roles"`
-	Expires 	time.Time 			`json:"expires_at"`
-	Project 	StorageProject		`json:"project"`
-	Catalog 	[]StorageAuthCatalog	`json:"catalog"`
-	User 		StorageUser 			`json:"user"`
-	Audit 		[]string 				`json:"audit_ids"`
-	Issued 		time.Time 				`json:"issued_at"`
+	Methods []string             `json:"methods"`
+	Roles   []StorageAuthRole    `json:"roles"`
+	Expires time.Time            `json:"expires_at"`
+	Project StorageProject       `json:"project"`
+	Catalog []StorageAuthCatalog `json:"catalog"`
+	User    StorageUser          `json:"user"`
+	Audit   []string             `json:"audit_ids"`
+	Issued  time.Time            `json:"issued_at"`
 }
 
 type StorageEndpoint struct {
@@ -138,15 +116,15 @@ type StorageEndpoint struct {
 }
 
 type StorageAuthCatalog struct {
-	EndPoints 	[]StorageEndpoint 	`json:"endpoints"`
-	Type 		string 				`json:"type"`
-	Id 			string 				`json:"id"`
-	Name 		string				`json:"name"`
+	EndPoints 	[]StorageEndpoint `json:"endpoints"`
+	Type 		string             `json:"type"`
+	Id 			string           `json:"id"`
+	Name 		string             `json:"name"`
 }
 
 type StorageAuthTokenResponse struct {
-	Token		StorageAuthToken 		`json:"token"`
-	Error 		StorageResponseError	`json:"error"`
+	Token StorageAuthToken     `json:"token"`
+	Error StorageResponseError `json:"error"`
 }
 
 /** Account */

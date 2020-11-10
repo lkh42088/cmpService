@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
@@ -30,9 +31,11 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 
 	// KT Storage check : get auth url
 	if msg.UcloudAccessKey != "" {
-		err := lib.PostAuthTokens()
-		fmt.Printf("\n!! KT Storage user authorization failed.(%v)\n\n", err)
-		msg.UcloudAuthUrl = lib.GlobalAccountUrl
+		token, resp := ktapi.PostAuthTokens()
+		ktapi.GlobalToken = token
+		ktapi.GlobalAccountUrl = resp.Token.Catalog[1].EndPoints[0].Url
+		fmt.Printf("\n!! KT Storage user authorization failed.\n\n")
+		msg.UcloudAuthUrl = ktapi.GlobalAccountUrl
 	}
 
 	fmt.Printf("Add McServer : %v\n", msg)

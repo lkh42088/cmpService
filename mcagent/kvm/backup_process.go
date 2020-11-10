@@ -1,6 +1,7 @@
 package kvm
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/common/lib"
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
@@ -203,7 +204,7 @@ func MakeBackupMsg(vmName string, backupName string, desc string, size int, serv
 	entry.BackupSize = size
 	if server.UcloudAccessKey != "" {
 		entry.Name = backupName
-		entry.KtContainerName = ktrest.GlobalContainerName
+		entry.KtContainerName = ktapi.GlobalContainerName
 		entry.KtAuthUrl = server.UcloudAuthUrl
 	} else {
 		entry.NasBackupName = backupName
@@ -240,11 +241,12 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 
 		tmp := time.Now()
 		for i, filename := range filenames {
-			err = ktrest.PutDynamicLargeObjects(ktrest.GlobalContainerName, backupFile, filename)
+			err = ktrest.PutDynamicLargeObjects(ktapi.GlobalContainerName, backupFile, filename)
 			if err != nil {
 				//  오랜 시간 업로드 동작으로 인한 사용자 인증 해제 시 RETRY
-				ktrest.PostAuthTokens()
-				err = ktrest.PutDynamicLargeObjects(ktrest.GlobalContainerName, backupFile, filename)
+				token, _ := ktapi.PostAuthTokens()
+				ktapi.GlobalToken = token
+				err = ktrest.PutDynamicLargeObjects(ktapi.GlobalContainerName, backupFile, filename)
 				if err != nil {
 					fmt.Printf("\n! SafeBackup(PutDLO) Error : %s\n\n", err)
 					return nil, nil, err
@@ -254,7 +256,7 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 			fmt.Printf("%d.%s %d 초 소요되었습니다. \n", i+1, filename, int(time.Now().Sub(tmp).Seconds()))
 			tmp = time.Now()
 		}
-		err = ktrest.PutDLOManifest(ktrest.GlobalContainerName, backupFile)
+		err = ktrest.PutDLOManifest(ktapi.GlobalContainerName, backupFile)
 		if err != nil {
 			fmt.Printf("\n! SafeBackup(PutManifest) Error : %s\n\n", err)
 			return nil, nil, err

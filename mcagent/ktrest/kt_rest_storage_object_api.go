@@ -3,6 +3,7 @@ package ktrest
 import (
 	"bufio"
 	"cmpService/common/download"
+	"cmpService/common/ktapi"
 	"cmpService/mcagent/config"
 	"errors"
 	"fmt"
@@ -113,10 +114,10 @@ func PutStorageObject(container string, fileName string) error {
 	data := bufio.NewReader(file)
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + container + "/" + fileName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + container + "/" + fileName
 	req, _ := http.NewRequest("PUT", baseUrl, data)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
 	req.Header.Add("Content-Type", "test/plain; charset=UTF-8")
 	req.Header.Add("Content-Length", strconv.Itoa(int(fileInfo.Size())))
 	fmt.Println("URL: ", req)
@@ -155,13 +156,13 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 	data := bufio.NewReader(file)
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + container + "/" + originFileName + "/" + fileName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + container + "/" + originFileName + "/" + fileName
 	req, _ := http.NewRequest("PUT", baseUrl, data)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
 	//req.Header.Add("Content-Type", ContentTypeJson)
-	req.Header.Add("Content-Type", ContentTypeBinary)
-	req.Header.Add("Range", Range4096)
+	req.Header.Add("Content-Type", ktapi.ContentTypeBinary)
+	req.Header.Add("Range", ktapi.Range4096)
 	req.Header.Add("Content-Length", strconv.Itoa(int(fileInfo.Size())))
 	fmt.Println("URL: ", req)
 
@@ -185,13 +186,13 @@ func PutDynamicLargeObjects(container string, originFileName string, fileName st
 // Put Dynamic Large Object Manifest File
 func PutDLOManifest(container string, originFileName string) error {
 	// Request URL : https://ssproxy2.ucloudbiz.olleh.com/v1/AUTH_fa632a4a0d04488c93b7184be92df4c8/SN87_87/vm-01-cronsch.qcow2.decrease
-	baseUrl := GlobalAccountUrl + "/" + container + "/" + originFileName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + container + "/" + originFileName
 	req, _ := http.NewRequest("PUT", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
 	req.Header.Add("X-Object-Manifest", container + "/" + originFileName + "/")
 	//req.Header.Add("Content-Type", ContentTypeJson)
-	req.Header.Add("Content-Type", ContentTypeBinary)
+	req.Header.Add("Content-Type", ktapi.ContentTypeBinary)
 	req.Header.Add("Content-Length", "0")
 	fmt.Println("URL: ", req)
 
@@ -221,11 +222,11 @@ func GetStorageObject(container string, fileName string, ch chan int) error {
 	fmt.Println("PATH: ", lastPath)
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + container + "/" + fileName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + container + "/" + fileName
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeBinary)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeBinary)
 	//req.Header.Add("Range", RANGE_4096)
 	fmt.Println("URL: ", req)
 
@@ -251,7 +252,7 @@ func GetStorageObject(container string, fileName string, ch chan int) error {
 		return fmt.Errorf("Error: %s\n", err)
 	}
 	//err = ioutil.WriteFile(lastPath, data, BACKUP_FILE_PERMISSION)
-	err = ioutil.WriteFile(path + "/" + "test_win10.qcow2", data, BackupFilePermission)	// test code
+	err = ioutil.WriteFile(path + "/" + "test_win10.qcow2", data, ktapi.BackupFilePermission) // test code
 	if err != nil {
 		return fmt.Errorf("Error: %s\n", err)
 	}
@@ -269,16 +270,16 @@ func GetStorageObjectByDLO(container string, fileName string, ch chan int) error
 	fmt.Println("PATH: ", lastPath)
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + container + "/" + fileName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + container + "/" + fileName
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 		// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeBinary)
-	req.Header.Add("Range", Range4096)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeBinary)
+	req.Header.Add("Range", ktapi.Range4096)
 	fmt.Println("URL: ", req)
 
 	ch <- 1 // file transfer start
-	download.DownloadLargeObjectForKtStorage(baseUrl, GlobalToken)
+	download.DownloadLargeObjectForKtStorage(baseUrl, ktapi.GlobalToken)
 	ch <- 5	// receive complete
 
 	return nil
@@ -299,11 +300,11 @@ func PrintDownloading(ch chan int) {
 // DELETE Storage Object (File delete)
 func DeleteStorageObject(container string, fileName string) error {
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + container + "/" + fileName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + container + "/" + fileName
 	req, _ := http.NewRequest("DELETE", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 	fmt.Println("URL: ", req)
 
 	//Send API Query

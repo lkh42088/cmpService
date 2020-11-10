@@ -161,7 +161,7 @@ func SendToWinAgent(data lib.ConfVariable, uri string) bool {
 		fmt.Println("SendToWinAgent response error : ", err)
 		return false
 	}
-	fmt.Println("SendToWinAgent: success - ", string(resp))
+	fmt.Println("SendToWinAgent: success - ", string(resp), response.StatusCode)
 	return true
 }
 
@@ -190,7 +190,7 @@ func SetEnvValue(field string, newVal string) bool {
 	}
 	defer backup_fd.Close()
 
-	// UPDAATE CONF FILE
+	// UPDATE CONF FILE
 	w := bufio.NewWriter(backup_fd)
 	if err != nil {
 		fmt.Println("SetEnvValue Writer error :", err)

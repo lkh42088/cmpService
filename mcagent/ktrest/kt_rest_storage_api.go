@@ -1,6 +1,7 @@
 package ktrest
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/common/lib"
 	"encoding/json"
 	"fmt"
@@ -58,16 +59,16 @@ import (
 // Get storage container name
 func GetStorageAccount(auth StorageAuthTokenResponse) []StorageAccount {
 	var response []StorageAccount
-	if GlobalAccountUrl == "" {
+	if ktapi.GlobalAccountUrl == "" {
 		return response
 	}
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + formatJsonUrl
+	baseUrl := ktapi.GlobalAccountUrl + formatJsonUrl
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 
 	//fmt.Println("URL: ", req)
 
@@ -94,11 +95,11 @@ func GetStorageContainer(containerName string) (code int, err error) {
 	//var response []StorageContainer
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + containerName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + containerName
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -123,12 +124,12 @@ func GetStorageContainer(containerName string) (code int, err error) {
 // Put storage container
 func PutStorageContainer(token string, containerName string) (err error) {
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + containerName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + containerName
 	req, _ := http.NewRequest("PUT", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", token)
-	req.Header.Add("Content-Type", ContentTypeJson)
-	req.Header.Add("X-Storage-Policy", EconomyType)		// economy type
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
+	req.Header.Add("X-Storage-Policy", ktapi.EconomyType) // economy type
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -152,11 +153,11 @@ func PutStorageContainer(token string, containerName string) (err error) {
 // Delete storage container
 func DeleteStorageContainer(containerName string) (err error) {
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + containerName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + containerName
 	req, _ := http.NewRequest("DELETE", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -181,13 +182,13 @@ func DeleteStorageContainer(containerName string) (err error) {
 func GetStorageTempUrl() {
 	method := "GET"
 	path := fmt.Sprintf(storagePathUrl, "iwhan@nubes-bridge.com", "Nubes-HC", "")  // Storage db field : account url, filebox name, file name
-	expired := int(time.Now().Add(ExpiredTime).Unix())
+	expired := int(time.Now().Add(ktapi.ExpiredTime).Unix())
 	baseUrl, _ := url.Parse(storageBaseUrl + path)
 	params := url.Values{}
 
 	// Get Signature
 	hmacBody := fmt.Sprintf("%s\n%s\n%s", method, strconv.Itoa(expired), path)
-	sig := ComputeHmac(hmacBody, storageSecretKey)  // Storage db field : secret key
+	sig := ComputeHmac(hmacBody, ktapi.StorageSecretKey) // Storage db field : secret key
 
 	// TempUrl
 	params.Add("temp_url_sig", sig)

@@ -1,6 +1,7 @@
 package mcrest
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/mcagent/config"
@@ -42,7 +43,7 @@ func DeleteVmBackup(vmName string) error {
 		// Make backup file name
 		// 1. manifest file : NAME-cronsh.qcow2.decrease
 		// 2. partial zip file : NAME-cronsh.qcow2.decrease/NAME-cronsh.qcow2.decrease.z01
-		for i := 1; i <= (size / (ktrest.FILE_BLOCK_500M)); i++ {
+		for i := 1; i <= (size / (ktapi.FILE_BLOCK_500M)); i++ {
 			fileList = append (fileList, backupInfo.Name + "/" + backupInfo.Name + fmt.Sprintf(".z%.2d", i))
 		}
 		fileList = append (fileList, backupInfo.Name + "/" + backupInfo.Name + fmt.Sprintf(".zip"))
@@ -50,7 +51,8 @@ func DeleteVmBackup(vmName string) error {
 		fmt.Println("# FILE LIST: ", fileList)
 
 		// Delete at KT Storage
-		ktrest.PostAuthTokens()
+		token, _ := ktapi.PostAuthTokens()
+		ktapi.GlobalToken = token
 		for _, fileName := range fileList {
 			err = ktrest.DeleteStorageObject(backupInfo.KtContainerName, fileName)
 			if err != nil {
@@ -83,7 +85,8 @@ func RestoreVmBackup(c *gin.Context) {
 	if data.NasBackupName == "" {
 		// KT Backup file download
 		ch := make(chan int)
-		_ = ktrest.PostAuthTokens()
+		token, _ := ktapi.PostAuthTokens()
+		ktapi.GlobalToken = token
 		go ktrest.GetStorageObjectByDLO(data.KtContainerName, data.Name, ch)
 
 		for {
