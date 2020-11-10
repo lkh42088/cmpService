@@ -57,8 +57,8 @@ import (
 //}
 
 // Get storage container name
-func GetStorageAccount(auth StorageAuthTokenResponse) []StorageAccount {
-	var response []StorageAccount
+func GetStorageAccount(auth ktapi.StorageAuthTokenResponse) []ktapi.StorageAccount {
+	var response []ktapi.StorageAccount
 	if ktapi.GlobalAccountUrl == "" {
 		return response
 	}

@@ -35,7 +35,7 @@ func CheckKtAccount() error {
 	}
 
 	// 4. Send to Svcmgr
-	obj := KtAuthUrl{
+	obj := ktapi.KtAuthUrl{
 		AuthUrl: ktapi.GlobalAccountUrl,
 		CpIdx:   server.CompanyIdx,
 		Ip:      conf.ServerIp,
