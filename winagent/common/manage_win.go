@@ -1,9 +1,8 @@
-package agent
+package common
 
 import (
 	"bufio"
 	"cmpService/common/mcmodel"
-	"cmpService/winagent/common"
 	"encoding/json"
 	"fmt"
 	"github.com/shirou/gopsutil/cpu"
@@ -14,6 +13,8 @@ import (
 	"os"
 	"strings"
 )
+
+var GlobalSysInfo mcmodel.SysInfo
 
 func GetSysInfo() mcmodel.SysInfo {
 	hostStat, _ := host.Info()
@@ -149,7 +150,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 	w.Flush()
 	backup_fd.Sync()
 
-	err = common.CopyFile(backup_file, orgin_file)
+	err = CopyFile(backup_file, orgin_file)
 	if err != nil {
 		return false
 	}

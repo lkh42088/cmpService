@@ -8,8 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/sys/windows/svc"
-	"golang.org/x/sys/windows/svc/mgr"
 	"net/http"
 	"os"
 	"reflect"
@@ -41,22 +39,37 @@ func ModifyConfVariable(c *gin.Context) {
 	c.JSON(http.StatusOK, "OK")
 }
 
-func RestartAgent(c *gin.Context) {
-	fmt.Println("\n\nAgent Restart...\n\n")
-	//reload.Exec()
+//func RestartAgent(c *gin.Context) {
+//	fmt.Println("\n\nAgent Restart...\n\n")
+//	//reload.Exec()
+//
+//	scMgr, err := mgr.Connect()
+//	if err != nil {
+//		c.JSON(400, err)
+//		return
+//	}
+//	defer scMgr.Disconnect()
+//	sc, err1 := scMgr.OpenService("CMP Winows Service")
+//	if err1 != nil {
+//		c.JSON(401, err1)
+//		return
+//	}
+//	defer sc.Close()
+//
+//	_, err2 := sc.Control(svc.Stop)
+//	if err2 != nil {
+//		c.JSON(403, err2)
+//		return
+//	}
+//	c.JSON(http.StatusOK, "OK")
+//}
 
-	scMgr, err := mgr.Connect()
-	defer scMgr.Disconnect()
-	sc, err := scMgr.OpenService("CMPWindowService")
-	defer sc.Close()
-
-	_, err = sc.Control(svc.Shutdown)
-	sc.Start()
-	if err != nil {
-		fmt.Println("[Service Restart Error] ", err)
+func ReConfiguration(c *gin.Context) {
+	config.ApplyGlobalConfig("C:\\Program Files\\Nubes\\winagent.conf")
+	if !common.CheckMySystem() {
+		c.JSON(http.StatusBadRequest, "Configuration Failed")
 	}
-
-	c.JSON(http.StatusOK, "OK")
+	c.JSON(http.StatusOK, "Configuration OK")
 }
 
 func UpdateWinAgentConf(field string, newVal string) bool {
