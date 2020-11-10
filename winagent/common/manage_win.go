@@ -11,6 +11,7 @@ import (
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -158,3 +159,14 @@ func InsertMacInTelegrafConf(mac string) bool {
 	return true
 }
 
+func addFireWallRule(names, appnames, dirs, actions string) error {
+	c := exec.Command("netsh", "advfirewall", "firewall", "add", "rule",
+			"name=" + names,
+			"dir=" + dirs,
+			"action=" + actions,
+			"program=" + appnames,
+		)
+	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
+	return c.Run()
+}

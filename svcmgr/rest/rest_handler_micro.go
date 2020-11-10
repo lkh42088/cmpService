@@ -6,7 +6,6 @@ import (
 	"cmpService/common/messages"
 	"cmpService/common/models"
 	"cmpService/common/websocketproxy"
-	"cmpService/mcagent/ktrest"
 	"cmpService/svcmgr/config"
 	conf "cmpService/svcmgr/config"
 	"cmpService/svcmgr/mcapi"
@@ -31,9 +30,9 @@ func (h *Handler) AddMcServer(c *gin.Context) {
 
 	// KT Storage check : get auth url
 	if msg.UcloudAccessKey != "" {
-		err := ktrest.PostAuthTokens()
+		err := lib.PostAuthTokens()
 		fmt.Printf("\n!! KT Storage user authorization failed.(%v)\n\n", err)
-		msg.UcloudAuthUrl = ktrest.GlobalAccountUrl
+		msg.UcloudAuthUrl = lib.GlobalAccountUrl
 	}
 
 	fmt.Printf("Add McServer : %v\n", msg)
