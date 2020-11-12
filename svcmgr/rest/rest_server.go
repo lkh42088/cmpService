@@ -260,16 +260,16 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	// Micro Cloud
 	router.POST(lib.SvcmgrApiMicroServerRegister, h.AddMcServer)
 	router.POST(lib.SvcmgrApiMicroServerUnRegister, h.DeleteMcServer)
-	router.POST(lib.SvcmgrApiMicroServerModify, h.ModifyMcServer)  //★
+	router.POST(lib.SvcmgrApiMicroServerModify, h.ModifyMcServer)
 	router.GET(lib.SvcmgrApiMicroServerSearchCompany+"/:cpIdx", h.GetMcServersByCpIdx)
 	router.GET(lib.SvcmgrApiMicroServerPaging+pagingParam+"/:cpName", h.GetMcServers)
 
 	router.POST(lib.SvcmgrApiMicroVmRegister, h.AddMcVm)
 	router.POST(lib.SvcmgrApiMicroVmUnRegister, h.DeleteMcVm)
-	router.POST(lib.SvcmgrApiMicroVmModify, h.ModifyMcVm)  //★
+	router.POST(lib.SvcmgrApiMicroVmModify, h.ModifyMcVm)
 	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam+"/:cpName", h.GetMcVms)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
-	router.POST(lib.SvcmgrApiMicroVmUpdateFromMcSnapshot, h.UpdateMcVmFromMcSnapshot)
+	router.POST(lib.SvcmgrApiMicroVmUpdateFromMcSnapshot, h.UpdateMcVmFromMcSnapshot)  //★ 201111
 	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
 	router.POST(lib.SvcmgrApiMicroVmAction, h.ApplyVmAction)
 
