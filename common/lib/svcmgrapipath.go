@@ -11,6 +11,7 @@ const (
 	SvcmgrApiCompany     = SvcmgrApiPrefix + "/companies"
 	SvcmgrApiUser        = SvcmgrApiPrefix + "/users"
 	SvcmgrApiMicro       = SvcmgrApiPrefix + "/micro"
+	SvcmgrApiSystem      = SvcmgrApiPrefix + "/system"
 )
 
 // About Micro Cloud
@@ -75,4 +76,6 @@ const (
 	SvcmgrApiMicroDeleteAccessSecurity      = SvcmgrApiMicro + "/access-security/delete"
 	SvcmgrApiMicroDeleteAccessSecurityList  = SvcmgrApiMicro + "/access-security/delete-list"
 	SvcmgrApiMicroAccessSecurityPaging      = SvcmgrApiMicro + "/access-security-paging"
+	SvcmgrApiSystemModifyConf			    = SvcmgrApiSystem + "/modifyConf"
+	SvcmgrApiSystemRestartAgent			    = SvcmgrApiSystem + "/restart"
 )

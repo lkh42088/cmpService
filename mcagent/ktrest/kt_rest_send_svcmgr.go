@@ -2,6 +2,7 @@ package ktrest
 
 import (
 	"bytes"
+	"cmpService/common/ktapi"
 	"cmpService/common/lib"
 	"encoding/json"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 )
 
 // For Backup
-func SendUpdateAuthUrl2Svcmgr(obj KtAuthUrl, addr string) bool {
+func SendUpdateAuthUrl2Svcmgr(obj ktapi.KtAuthUrl, addr string) bool {
 	pbytes, _ := json.Marshal(obj)
 	buff := bytes.NewBuffer(pbytes)
 	url := fmt.Sprintf("http://%s%s", addr, lib.SvcmgrApiMicroKtAuthUrl)

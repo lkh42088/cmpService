@@ -73,6 +73,10 @@ func Start(parentwg *sync.WaitGroup) {
 	rg.POST(lib.McUrlDeleteVmBackupList, DeleteVmBackupEntryList)
 	rg.POST(lib.McUrlRestoreVmBackup, RestoreVmBackup)
 
+	// System
+	rg.POST(lib.McUrlSystemModifyConf, ModifyConfVariable)
+	rg.POST(lib.McUrlAgentRestart, RestartMcAgent)
+
 	Router.Run(address)
 	if parentwg != nil {
 		parentwg.Done()

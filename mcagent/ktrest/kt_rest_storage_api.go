@@ -1,7 +1,7 @@
 package ktrest
 
 import (
-	"bytes"
+	"cmpService/common/ktapi"
 	"cmpService/common/lib"
 	"encoding/json"
 	"fmt"
@@ -15,60 +15,60 @@ import (
 /**
  * STORAGE API
  */
-// Post Auth Token
-func PostAuthTokens() StorageAuthTokenResponse {
-	baseUrl, _ := url.Parse(storageBaseUrlPort + storageAuthTokenUrl)
-	req := StorageAuthRequest{}
-	response := StorageAuthTokenResponse{}
-
-	//Make request
-	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, MethodsPassword)
-	req.Auth.Identity.Password.User.Name = storageAccessKey
-	req.Auth.Identity.Password.User.Domain.Id = storageDomainId
-	req.Auth.Identity.Password.User.Password = storageSecretKey
-	req.Auth.Scope.Project.Id = storageProjectId
-	req.Auth.Scope.Project.Domain.Id = storageDomainId
-	pbytes, _ := json.Marshal(req)
-	body := bytes.NewBuffer(pbytes)
-	fmt.Println("# URL: ", req)
-
-	//Send API Query
-	resp, err := http.Post(baseUrl.String(), ContentTypeJson, body)
-	if err != nil {
-		fmt.Println("error:", err)
-	} else {
-		defer resp.Body.Close()
-	}
-
-	//Parsing data
-	data, err := ioutil.ReadAll(resp.Body)
-	err = json.Unmarshal(data, &response)
-
-	//tmp, _ := lib.PrettyPrint(data)
-	//fmt.Println("RESPONSE: ", string(tmp))
-	GlobalToken = resp.Header.Get("X-Subject-Token")
-	if len(response.Token.Catalog) < 1 ||
-		response.Token.Catalog[1].EndPoints == nil {
-		return response
-	}
-	GlobalAccountUrl = response.Token.Catalog[1].EndPoints[0].Url
-
-	return response
-}
+//// Post Auth Token
+//func PostAuthTokens() StorageAuthTokenResponse {
+//	baseUrl, _ := url.Parse(storageBaseUrlPort + storageAuthTokenUrl)
+//	req := StorageAuthRequest{}
+//	response := StorageAuthTokenResponse{}
+//
+//	//Make request
+//	req.Auth.Identity.Methods = append(req.Auth.Identity.Methods, MethodsPassword)
+//	req.Auth.Identity.Password.User.Name = storageAccessKey
+//	req.Auth.Identity.Password.User.Domain.Id = storageDomainId
+//	req.Auth.Identity.Password.User.Password = storageSecretKey
+//	req.Auth.Scope.Project.Id = storageProjectId
+//	req.Auth.Scope.Project.Domain.Id = storageDomainId
+//	pbytes, _ := json.Marshal(req)
+//	body := bytes.NewBuffer(pbytes)
+//	fmt.Println("# URL: ", req)
+//
+//	//Send API Query
+//	resp, err := http.Post(baseUrl.String(), ContentTypeJson, body)
+//	if err != nil {
+//		fmt.Println("error:", err)
+//	} else {
+//		defer resp.Body.Close()
+//	}
+//
+//	//Parsing data
+//	data, err := ioutil.ReadAll(resp.Body)
+//	err = json.Unmarshal(data, &response)
+//
+//	//tmp, _ := lib.PrettyPrint(data)
+//	//fmt.Println("RESPONSE: ", string(tmp))
+//	GlobalToken = resp.Header.Get("X-Subject-Token")
+//	if len(response.Token.Catalog) < 1 ||
+//		response.Token.Catalog[1].EndPoints == nil {
+//		return response
+//	}
+//	GlobalAccountUrl = response.Token.Catalog[1].EndPoints[0].Url
+//
+//	return response
+//}
 
 // Get storage container name
-func GetStorageAccount(auth StorageAuthTokenResponse) []StorageAccount {
-	var response []StorageAccount
-	if GlobalAccountUrl == "" {
+func GetStorageAccount(auth ktapi.StorageAuthTokenResponse) []ktapi.StorageAccount {
+	var response []ktapi.StorageAccount
+	if ktapi.GlobalAccountUrl == "" {
 		return response
 	}
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + formatJsonUrl
+	baseUrl := ktapi.GlobalAccountUrl + formatJsonUrl
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 
 	//fmt.Println("URL: ", req)
 
@@ -95,11 +95,11 @@ func GetStorageContainer(containerName string) (code int, err error) {
 	//var response []StorageContainer
 
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + containerName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + containerName
 	req, _ := http.NewRequest("GET", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -124,12 +124,12 @@ func GetStorageContainer(containerName string) (code int, err error) {
 // Put storage container
 func PutStorageContainer(token string, containerName string) (err error) {
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + containerName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + containerName
 	req, _ := http.NewRequest("PUT", baseUrl, nil)
 	// Request HEADER
 	req.Header.Add("X-Auth-Token", token)
-	req.Header.Add("Content-Type", ContentTypeJson)
-	req.Header.Add("X-Storage-Policy", EconomyType)		// economy type
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
+	req.Header.Add("X-Storage-Policy", ktapi.EconomyType) // economy type
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -153,11 +153,11 @@ func PutStorageContainer(token string, containerName string) (err error) {
 // Delete storage container
 func DeleteStorageContainer(containerName string) (err error) {
 	// Request URL
-	baseUrl := GlobalAccountUrl + "/" + containerName
+	baseUrl := ktapi.GlobalAccountUrl + "/" + containerName
 	req, _ := http.NewRequest("DELETE", baseUrl, nil)
 	// Request HEADER
-	req.Header.Add("X-Auth-Token", GlobalToken)
-	req.Header.Add("Content-Type", ContentTypeJson)
+	req.Header.Add("X-Auth-Token", ktapi.GlobalToken)
+	req.Header.Add("Content-Type", ktapi.ContentTypeJson)
 	fmt.Println("URL: ", req)
 
 	//Send API Query
@@ -182,13 +182,13 @@ func DeleteStorageContainer(containerName string) (err error) {
 func GetStorageTempUrl() {
 	method := "GET"
 	path := fmt.Sprintf(storagePathUrl, "iwhan@nubes-bridge.com", "Nubes-HC", "")  // Storage db field : account url, filebox name, file name
-	expired := int(time.Now().Add(ExpiredTime).Unix())
+	expired := int(time.Now().Add(ktapi.ExpiredTime).Unix())
 	baseUrl, _ := url.Parse(storageBaseUrl + path)
 	params := url.Values{}
 
 	// Get Signature
 	hmacBody := fmt.Sprintf("%s\n%s\n%s", method, strconv.Itoa(expired), path)
-	sig := ComputeHmac(hmacBody, storageSecretKey)  // Storage db field : secret key
+	sig := ComputeHmac(hmacBody, ktapi.StorageSecretKey) // Storage db field : secret key
 
 	// TempUrl
 	params.Add("temp_url_sig", sig)

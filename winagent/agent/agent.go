@@ -1,14 +1,12 @@
 package agent
 
 import (
-	"cmpService/common/mcmodel"
+	"cmpService/winagent/common"
 	"cmpService/winagent/config"
 	"cmpService/winagent/winrest"
 	"fmt"
 	"sync"
 )
-
-var globalSysInfo mcmodel.SysInfo
 
 func Start (conf string) {
 	var wg sync.WaitGroup
@@ -17,7 +15,7 @@ func Start (conf string) {
 		return
 	}
 
-	if ! configure() {
+	if ! Configure() {
 		fmt.Println("Fatal: Failed configuration!")
 		return
 	}
@@ -30,11 +28,16 @@ func Start (conf string) {
 	wg.Wait()
 }
 
-func configure() bool {
+func Configure() bool {
 
-	CheckMySystem()
-	InsertMacInTelegrafConf(globalSysInfo.IfMac)
-	RestartTelegraf()
+	common.CheckMySystem()
+	common.InsertMacInTelegrafConf(common.GlobalSysInfo.IfMac)
+	common.RestartTelegraf()
+	err := common.AddFireWallRule("WindowAgentRule", "in", "allow", "tcp", "8083")
+	fmt.Println("To add rule failed: ", err)
 
 	return true
 }
+
+
+

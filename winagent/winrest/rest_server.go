@@ -29,6 +29,8 @@ func Start(parentwg *sync.WaitGroup) {
 
 	// Health Check
 	rg.GET(lib.WinUrlHealth, HealthCheck)
+	rg.POST(lib.WinUrlModifyConf, ModifyConfVariable)
+	rg.POST(lib.WinUrlAgentRestart, ReConfiguration)
 
 	Router.Run(address)
 	if parentwg != nil {

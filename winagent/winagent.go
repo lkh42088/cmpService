@@ -71,7 +71,7 @@ func runBody(stopChan chan bool) {
 
 func main() {
 	err := svc.Run("CMPWindowService", &CMPWindowService{})
-	//err := debug.Run("DummyService", &dummyService{}) //콘솔출력 디버깅시
+	//err := debug.Run("CMPWindowService", &CMPWindowService{}) //콘솔출력 디버깅시
 	if err != nil {
 		panic(err)
 	}

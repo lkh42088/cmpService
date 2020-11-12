@@ -1,13 +1,13 @@
 package ktrest
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/repo"
+	"fmt"
 	"github.com/pkg/errors"
 	"net/http"
 	"strings"
-	//"cmpService/mcagent/svcmgrapi"
-	"fmt"
 )
 
 func CheckKtAccount() error {
@@ -20,20 +20,23 @@ func CheckKtAccount() error {
 	//fmt.Printf("CheckKtAccount() GetServerFromDbByIp : %+v\n", server)
 
 	// 2. KT ucloud user authorization
-	PostAuthTokens()
-	if GlobalAccountUrl == "" {
+	token, resp := ktapi.PostAuthTokens()
+	ktapi.GlobalToken = token
+	ktapi.GlobalAccountUrl = resp.Token.Catalog[1].EndPoints[0].Url
+
+	if ktapi.GlobalAccountUrl == "" {
 		return fmt.Errorf("! Alarm : Not found the KT Ucloud information.\n")
 	}
 
 	// 3. Store auth_url
-	_, err = repo.UpdateKtAuthUrl2Db(conf.ServerIp, GlobalAccountUrl)
+	_, err = repo.UpdateKtAuthUrl2Db(conf.ServerIp, ktapi.GlobalAccountUrl)
 	if err != nil {
 		return fmt.Errorf("! Error : %s\n", err)
 	}
 
 	// 4. Send to Svcmgr
-	obj := KtAuthUrl{
-		AuthUrl: GlobalAccountUrl,
+	obj := ktapi.KtAuthUrl{
+		AuthUrl: ktapi.GlobalAccountUrl,
 		CpIdx:   server.CompanyIdx,
 		Ip:      conf.ServerIp,
 	}
@@ -63,18 +66,18 @@ func ConfigurationForKtContainer() error {
 
 	// container name : serial_number + _ + last ip (ex: SN87_87)
 	if len(ipNum) == 4 {
-		GlobalContainerName = data.SerialNumber + "_" + ipNum[len(ipNum)-1]
+		ktapi.GlobalContainerName = data.SerialNumber + "_" + ipNum[len(ipNum)-1]
 	} else {
 		return errors.New("! Error: Server IP is invalid.\n")
 	}
 
-	code, err := GetStorageContainer(GlobalContainerName)
+	code, err := GetStorageContainer(ktapi.GlobalContainerName)
 	//fmt.Println("code : ", code)
 
 	// create container
 	if code != http.StatusOK &&
 		code != http.StatusNoContent {
-		err2 := PutStorageContainer(GlobalToken, GlobalContainerName)
+		err2 := PutStorageContainer(ktapi.GlobalToken, ktapi.GlobalContainerName)
 		if err2 != nil {
 			return err
 		}

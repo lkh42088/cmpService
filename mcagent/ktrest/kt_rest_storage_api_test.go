@@ -1,6 +1,7 @@
 package ktrest
 
 import (
+	"cmpService/common/ktapi"
 	"cmpService/mcagent/config"
 	"flag"
 	"fmt"
@@ -8,9 +9,14 @@ import (
 	"time"
 )
 
+func GetToken() {
+	token, _ := ktapi.PostAuthTokens()
+	ktapi.GlobalToken = token
+}
+
 func TestGetUserAuth(t *testing.T) {
-	r := PostAuthTokens()
-	GetStorageAccount(r)
+	_, res := ktapi.PostAuthTokens()
+	GetStorageAccount(res)
 }
 
 func TestGetKtStorageTempUrl(t *testing.T) {
@@ -18,19 +24,19 @@ func TestGetKtStorageTempUrl(t *testing.T) {
 }
 
 func TestGetStorageContainer(t *testing.T) {
-	_ = PostAuthTokens()
+	GetToken()
 	_, err := GetStorageContainer("nubes-test")
 	fmt.Println(err)
 }
 
 func TestPutStorageContainer(t *testing.T) {
-	_ = PostAuthTokens()
-	err := PutStorageContainer(GlobalToken, "nubes-test")
+	GetToken()
+	err := PutStorageContainer(ktapi.GlobalToken, "nubes-test")
 	fmt.Println(err)
 }
 
 func TestDeleteStorageContainer(t *testing.T) {
-	_ = PostAuthTokens()
+	GetToken()
 	err := DeleteStorageContainer( "nubes-test")
 	fmt.Println(err)
 }
@@ -53,7 +59,7 @@ func TestPutStorageObject(t *testing.T) {
 	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
 	flag.Parse()
 	config.ApplyGlobalConfig(*conf)
-	_ = PostAuthTokens()
+	GetToken()
 	err := PutStorageObject("nubes-test", "a.txt")
 	fmt.Println(err)
 }
@@ -62,7 +68,7 @@ func TestPutDynamicLargeObjects(t *testing.T) {
 	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
 	flag.Parse()
 	config.ApplyGlobalConfig(*conf)
-	_ = PostAuthTokens()
+	GetToken()
 	//err := PutDynamicLargeObjects("nubes-test", "windows10-100G-0.qcow2",
 	//	"vm_win10.z01")
 	//err := PutDynamicLargeObjects("nubes-test", "windows10-100G-0.qcow2",
@@ -76,7 +82,7 @@ func TestPutDLOManifest(t *testing.T) {
 	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
 	flag.Parse()
 	config.ApplyGlobalConfig(*conf)
-	_ = PostAuthTokens()
+	GetToken()
 	err := PutDLOManifest("nubes-test", "windows10-100G-0.qcow2")
 	fmt.Println(err)
 }
@@ -85,7 +91,7 @@ func TestGetStorageObject(t *testing.T) {
 	conf := flag.String("file", "/home/nubes/go/src/cmpService/mcagent/etc/mcagent.lkh.conf","Input configuration file")
 	flag.Parse()
 	config.ApplyGlobalConfig(*conf)
-	_ = PostAuthTokens()
+	GetToken()
 	ch := make(chan int)
 	go GetStorageObjectByDLO("nubes-test", "windows10-100G-0.qcow2", ch)
 	//go GetStorageObjectByDLO("nubes-test", "a.txt", ch)
@@ -100,7 +106,7 @@ func TestGetStorageObject(t *testing.T) {
 }
 
 func TestDeleteStorageObject(t *testing.T) {
-	_ = PostAuthTokens()
+	ktapi.PostAuthTokens()
 	err := DeleteStorageObject("SN87_87", "ebjee-cronsch.qcow2.decrease/ebjee-cronsch.qcow2.decrease.z18")
 	fmt.Println(err)
 }

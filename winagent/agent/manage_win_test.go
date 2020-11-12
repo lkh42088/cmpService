@@ -1,17 +1,18 @@
 package agent
 
 import (
+	"cmpService/winagent/common"
 	"flag"
 	"testing"
 )
 
 func TestInsertMacInTelegrafConf(t *testing.T) {
-	data := GetSysInfo()
-	InsertMacInTelegrafConf(data.IfMac)
+	data := common.GetSysInfo()
+	common.InsertMacInTelegrafConf(data.IfMac)
 }
 
 func TestRestartTelegraf(t *testing.T) {
-	RestartTelegraf()
+	common.RestartTelegraf()
 }
 
 func TestRestServer(t *testing.T) {
