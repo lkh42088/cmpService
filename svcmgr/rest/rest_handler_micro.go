@@ -306,14 +306,30 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 		return
 	}
 
-	var sncMsg messages.SnapshotConfigMsg
-	c.Bind(&sncMsg)
+/*	var sncMsg messages.SnapshotConfigMsg
+	c.Bind(&sncMsg)*/
+
+	sncMsg := messages.SnapshotConfigMsg{
+		ServerIdx: uint(mbMsg.McServerIdx),
+		VmName:    mbMsg.Name,
+		Type:      strconv.FormatBool(mbMsg.SnapType),
+		Days:      string(mbMsg.SnapDays),
+		Hours:     string(mbMsg.SnapHours),
+		Minutes:   string(mbMsg.SnapMinutes),
+	}
+
 	fmt.Println("UpdateVmSnapshot:", sncMsg)
 	server, err := h.db.GetMcServerByServerIdx(sncMsg.ServerIdx)
 	if err != nil {
 		return
 	}
 	mcapi.SendUpdateVmSnapshot(sncMsg, server)
+
+	//mcagent/kvm/backup_api.go    AddCronSchForVmBackup()
+	//11:43
+	//mcagent/kvm/snapshot_api.go    AddCronSchFromVmSnapshot()
+	//11:44
+	//parameter 로 vm info 넣어주면 Cron 스케줄 추가 될 거에요
 
 	c.JSON(http.StatusOK, msg)
 }
