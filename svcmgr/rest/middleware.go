@@ -15,7 +15,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
-			fmt.Println("CORSMiddleware: 204 error!")
+			fmt.Println("CORSMiddleware: 204 error!", WebServerAddress, webServerUrl)
 			c.AbortWithStatus(204)
 			return
 		}
