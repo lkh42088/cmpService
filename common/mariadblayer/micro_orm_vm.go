@@ -202,6 +202,18 @@ func (db *DBORM) UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error) {
 		}).Error
 }
 
+func (db *DBORM) UpdateMcVmBackupVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
+	return obj, db.Debug().
+		Model(&obj).
+		Where(mcmodel.McVm{Idx: obj.Idx}).
+		Updates(map[string]interface{}{
+			"vm_backup_type":    obj.BackupType,
+			"vm_backup_days":    obj.BackupDays,
+			"vm_backup_hours":   obj.BackupHours,
+			"vm_backup_minutes": obj.BackupMinutes,
+		}).Error
+}
+
 func (db *DBORM) DeleteMcVm(obj mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	err = db.Delete(&obj).Error
 	vm = obj

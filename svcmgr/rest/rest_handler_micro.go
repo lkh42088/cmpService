@@ -325,10 +325,28 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	}
 	mcapi.SendUpdateVmSnapshot(sncMsg, server)
 
-	//mcagent/kvm/backup_api.go    AddCronSchForVmBackup()
-	//11:43
 	//mcagent/kvm/snapshot_api.go    AddCronSchFromVmSnapshot()
 	//11:44
+	//parameter 로 vm info 넣어주면 Cron 스케줄 추가 될 거에요
+
+	c.JSON(http.StatusOK, msg)
+}
+
+
+func (h *Handler) UpdateMcVmFromMcBackup(c *gin.Context) {
+	var mbMsg mcmodel.McVm
+	c.Bind(&mbMsg)
+
+	fmt.Printf("update McVm : %v\n", mbMsg)
+
+	msg, err := h.db.UpdateMcVmBackupVm(mbMsg) //UpdateMcVmBackup duplicate
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	//mcagent/kvm/backup_api.go    AddCronSchForVmBackup()
+	//11:43
 	//parameter 로 vm info 넣어주면 Cron 스케줄 추가 될 거에요
 
 	c.JSON(http.StatusOK, msg)
@@ -940,6 +958,61 @@ func (h *Handler) GetMcVmSnapshotParam(c *gin.Context) {
 	fmt.Println("1. page:")
 	page.String()
 	vms, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmSnapshotPageParam(page, cpIdx, serverIdx, name)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, vms)
+}
+
+
+func (h *Handler) GetMcVmBackupParam(c *gin.Context) {
+	rowsPerPage, err := strconv.Atoi(c.Param("rows"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	offset, err := strconv.Atoi(c.Param("offset"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	orderBy := c.Param("orderby")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	order := c.Param("order")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	cpIdx := c.Param("cpIdx")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	serverIdx := c.Param("serverIdx")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+	name := c.Param("name")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": lib.RestAbnormalParam})
+		return
+	}
+
+	page := models.Pagination{
+		TotalCount:  0,
+		RowsPerPage: rowsPerPage,
+		Offset:      offset,
+		OrderBy:     orderBy,
+		Order:       order,
+	}
+	page.String()
+	vms, err := config.SvcmgrGlobalConfig.Mariadb.GetMcVmBackupPageParam(page, cpIdx, serverIdx, name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
