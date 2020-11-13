@@ -106,7 +106,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 	}
 	defer fd.Close()
 
-	backup_file := orgin_file +".cronsch"
+	backup_file := orgin_file +".backup"
 	backup_fd, err := os.Create(backup_file)
 	if err != nil {
 		fmt.Println("InsertMacInTelegrafConf: error", err)
