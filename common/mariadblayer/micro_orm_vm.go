@@ -195,9 +195,22 @@ func (db *DBORM) UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error) {
 		Model(&obj).
 		Where(mcmodel.McVm{Idx: obj.Idx}).
 		Updates(map[string]interface{}{
+			"vm_snap_type":    obj.SnapType,
 			"vm_snap_days":    obj.SnapDays,
 			"vm_snap_hours":   obj.SnapHours,
 			"vm_snap_minutes": obj.SnapMinutes,
+		}).Error
+}
+
+func (db *DBORM) UpdateMcVmBackupVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
+	return obj, db.Debug().
+		Model(&obj).
+		Where(mcmodel.McVm{Idx: obj.Idx}).
+		Updates(map[string]interface{}{
+			"vm_backup_type":    obj.BackupType,
+			"vm_backup_days":    obj.BackupDays,
+			"vm_backup_hours":   obj.BackupHours,
+			"vm_backup_minutes": obj.BackupMinutes,
 		}).Error
 }
 
