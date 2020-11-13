@@ -18,7 +18,7 @@ type WinAgentConfig struct {
 	SvcmgrPort         string             `json:"svcmgr_port"`
 	InfluxDbIp		   string			  `json:"influxdb_ip"`
 	InfluxDbPort	   string			  `json:"influxdb_port"`
-	MonitoringInterval int                `json:"monitoring_interval"`
+	MonitoringInterval string             `json:"monitoring_interval"`
 }
 
 var GlobalConfig WinAgentConfig

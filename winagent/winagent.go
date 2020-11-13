@@ -64,16 +64,19 @@ func runBody(stopChan chan bool) {
 		default:
 			// 10초 마다 현재시간 새로 쓰기
 			time.Sleep(10 * time.Second)
-			ioutil.WriteFile("C:/temp/log.txt", []byte(time.Now().String()), 0)
+			ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(time.Now().String()), 0)
 		}
 	}
 }
 
 func main() {
 	err := svc.Run("CMPWindowService", &CMPWindowService{})
-	//err := debug.Run("CMPWindowService", &CMPWindowService{}) //콘솔출력 디버깅시
+	//err := debug.Run("DummyService", &dummyService{}) //콘솔출력 디버깅시
 	if err != nil {
+		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
 		panic(err)
+	} else {
+		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte("service run success"), 0)
 	}
 }
 

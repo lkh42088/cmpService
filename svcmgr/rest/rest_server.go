@@ -98,6 +98,7 @@ type HandlerInterface interface {
 	DeleteVmSnapshot(c *gin.Context)
 	UpdateVmSnapshot(c *gin.Context)
 	GetMcVmSnapshotParam(c *gin.Context)
+	GetMcVmBackupParam(c *gin.Context)
 
 	AddMcAgentVmSnapshot(c *gin.Context)
 
@@ -270,6 +271,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroVmPaging+pagingParam+"/:cpName", h.GetMcVms)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMc, h.UpdateMcVmFromMc)
 	router.POST(lib.SvcmgrApiMicroVmUpdateFromMcSnapshot, h.UpdateMcVmFromMcSnapshot)  //★ 201111
+	router.POST(lib.SvcmgrApiMicroVmUpdateFromMcBackup, h.UpdateMcVmFromMcBackup)  //★ 201112
 	router.GET(lib.SvcmgrApiMicroVmVnc+"/:target/:port", h.GetMcVmVnc)
 	router.POST(lib.SvcmgrApiMicroVmAction, h.ApplyVmAction)
 
@@ -289,6 +291,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 
 	// Snapshot
 	router.GET(lib.SvcmgrApiMicroVmSnapshotPaging+pagingParam+"/:cpName", h.GetMcVmSnapshot)
+
 	router.GET(lib.SvcmgrApiMicroVmSnapshotPagingParam+pagingParam+"/:cpIdx/:serverIdx/:name",
 		h.GetMcVmSnapshotParam) ///${cpIdx}/${serverIdx}/${name}
 	router.GET(lib.SvcmgrApiMicroVmSnapshotConfig+"/:serverIdx", h.GetVmSnapshotConfig)
@@ -298,6 +301,10 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.POST(lib.SvcmgrApiMicroVmStatus, h.UpdateVmStatus)
 	router.POST(lib.SvcmgrApiMicroVmRecoverySnapshot, h.RecoverySnapshot)
 	router.POST(lib.SvcmgrApiMicroVmDeleteSnapshotEntryList, h.DeleteVmSnapshotEntryList)
+
+	// Backup
+	router.GET(lib.SvcmgrApiMicroVmBackupPagingParam+pagingParam+"/:cpIdx/:serverIdx/:name",
+		h.GetMcVmBackupParam) ///${cpIdx}/${serverIdx}/${name}
 
 	// Snapshot from mcagent
 	router.POST(lib.SvcmgrApiMicroMcAgentNotifySnapshot, h.NotifyMcAgentVmSnapshot)
