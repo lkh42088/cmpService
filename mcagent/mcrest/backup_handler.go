@@ -137,3 +137,10 @@ func RestoreFromNas(data mcmodel.McVmBackup, vm mcmodel.McVm) error {
 	return nil
 }
 
+
+func UpdateVmBackup(c *gin.Context) {
+	var msg messages.BackupConfigMsg
+	c.ShouldBindJSON(&msg)
+	kvm.UpdateVmBackupByConfig(&msg)
+	c.JSON(http.StatusOK, msg)
+}

@@ -72,6 +72,7 @@ func Start(parentwg *sync.WaitGroup) {
 	// Backup
 	rg.POST(lib.McUrlDeleteVmBackupList, DeleteVmBackupEntryList)
 	rg.POST(lib.McUrlRestoreVmBackup, RestoreVmBackup)
+	rg.POST(lib.McUrlUpdateVmBackup, UpdateVmBackup)
 
 	// System
 	rg.POST(lib.McUrlSystemModifyConf, ModifyConfVariable)

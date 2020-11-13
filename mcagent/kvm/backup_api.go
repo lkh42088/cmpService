@@ -2,6 +2,7 @@ package kvm
 
 import (
 	"cmpService/common/mcmodel"
+	"cmpService/common/messages"
 	"fmt"
 	"github.com/robfig/cron/v3"
 	"strconv"
@@ -54,5 +55,46 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 	}
 	CronSch.BackupVms = append(CronSch.BackupVms, entry)
 	fmt.Printf("\n## cron backup : %+v\n\n", CronSch.BackupVms)
+}
+
+func UpdateVmBackupByConfig(config *messages.BackupConfigMsg) {
+	if CronSch.LookupBackupVm(config.VmName) == false {
+		fmt.Println("UpdateVmBakcupByConfig: dosn't have backup config!")
+		return
+	}
+
+	CronSch.DeleteBackupVm(config.VmName)
+
+	var id cron.EntryID
+	var err error
+	switch (config.Type) {
+	case "designatedTime":
+		id, err = AddBackupCronDailyTime(config.VmName, config.Hours, config.Minutes)
+	case "periodically":
+		if config.Days == "30" {
+			// monthly
+			id, err = AddBackupCronMonthly(config.VmName)
+		} else if config.Days == "7" {
+			// weekly
+			id, err = AddBackupCronWeekly(config.VmName)
+		} else if config.Days == "1" {
+			// daily
+			id, err = AddBackupCronDaily(config.VmName)
+		} else {
+			// hourly
+			id, err = AddBackupCronPeriodically(config.VmName, config.Hours, "0")
+		}
+	default:
+	}
+
+	if err != nil {
+		fmt.Println("UpdateVmSnapshotByConfig: error", err)
+		return
+	}
+	entry := BackupVm{
+		VmName: config.VmName,
+		CronId: id,
+	}
+	CronSch.BackupVms = append(CronSch.BackupVms, entry)
 }
 
