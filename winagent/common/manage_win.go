@@ -10,6 +10,7 @@ import (
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -47,6 +48,8 @@ func GetSysInfo() mcmodel.SysInfo {
 
 	pretty, _ := json.MarshalIndent(info, "", "  ")
 	fmt.Printf("%s\n", string(pretty))
+
+	ioutil.WriteFile("C:/temp/winagent_log.txt", pretty, 0)
 	GlobalSysInfo = *info
 
 	return *info
@@ -101,6 +104,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 	orgin_file := "c:\\Program files\\Telegraf\\telegraf.conf"
 	fd, err := os.Open(orgin_file)
 	if err != nil {
+		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
 		fmt.Println("InsertMacInTelegrafConf: error", err)
 		return false
 	}
@@ -109,6 +113,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 	backup_file := orgin_file +".backup"
 	backup_fd, err := os.Create(backup_file)
 	if err != nil {
+		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
 		fmt.Println("InsertMacInTelegrafConf: error", err)
 		return false
 	}
@@ -116,6 +121,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 
 	w := bufio.NewWriter(backup_fd)
 	if err != nil {
+		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
 		fmt.Println("InsertMacInTelegrafConf: error", err)
 		return false
 	}
@@ -153,6 +159,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 
 	err = CopyFile(backup_file, orgin_file)
 	if err != nil {
+		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
 		return false
 	}
 
