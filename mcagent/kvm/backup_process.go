@@ -37,6 +37,7 @@ func CloneVm(vmName, backupVmName, backupFile string) {
 
 	binary := "virt-clone"
 	cmd := exec.Command(binary, args...)
+	//fmt.Println("CloneVm : ", cmd)
 	output, err := cmd.Output()
 	if err != nil {
 		fmt.Println("output error : ", err)
