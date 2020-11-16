@@ -58,50 +58,62 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 }
 
 func UpdateVmBackupByConfig(config *messages.BackupConfigMsg) {
-	//if CronSch.LookupBackupVm(config.VmName) == false {
-	//	fmt.Println("UpdateVmBackupByConfig: doesn't have backup config!")
-	//	return
-	//}
 	var configType string
-	if config.Type == "false" {
-		fmt.Println("UpdateVmBackupByConfig: Doesn't have backup config!")
-		return
-	} else {
-		configType = "periodically"
-	}
-
 	CronSch.DeleteBackupVm(config.VmName)
+	configType = ""
 
 	var id cron.EntryID
+	id = -1
 	var err error
-	switch (configType) {
-	case "designatedTime":
-		id, err = AddBackupCronDailyTime(config.VmName, config.Hours, config.Minutes)
-	case "periodically":
-		if config.Days == "30" {
-			// monthly
-			id, err = AddBackupCronMonthly(config.VmName)
-		} else if config.Days == "7" {
-			// weekly
-			id, err = AddBackupCronWeekly(config.VmName)
-		} else if config.Days == "1" {
-			// daily
-			id, err = AddBackupCronDaily(config.VmName)
-		} else {
-			// hourly
-			id, err = AddBackupCronPeriodically(config.VmName, config.Hours, "0")
+	if config.Type == "true" {
+		switch configType {
+		case "designatedTime":
+			id, err = AddBackupCronDailyTime(config.VmName, config.Hours, config.Minutes)
+		case "periodically":
+			if config.Days == "30" {
+				// monthly
+				id, err = AddBackupCronMonthly(config.VmName)
+			} else if config.Days == "7" {
+				// weekly
+				id, err = AddBackupCronWeekly(config.VmName)
+			} else if config.Days == "1" {
+				// daily
+				id, err = AddBackupCronDaily(config.VmName)
+			} else {
+				// hourly
+				id, err = AddBackupCronPeriodically(config.VmName, config.Hours, "0")
+			}
+		default:
+			if config.Hours == "0" && config.Minutes == "0"  {
+				fmt.Println("AddCronSchForVmBackup: hours 0, minutes 0 --> skip")
+				return
+			} else if config.Hours == "0" {
+				id, err = AddBackupCronByMin(config.VmName,	config.Minutes)
+			} else {
+				id, err = AddBackupCronByHoursMin(config.VmName, config.Hours, config.Minutes)
+			}
+			if err != nil {
+				fmt.Println("AddCronSchFromVmBackup error: ", err)
+				return
+			}
 		}
-	default:
 	}
 
 	if err != nil {
 		fmt.Println("UpdateVmSnapshotByConfig: error", err)
 		return
 	}
-	entry := BackupVm{
-		VmName: config.VmName,
-		CronId: id,
+	if id != -1 {
+		entry := BackupVm{
+			VmName: config.VmName,
+			CronId: id,
+			Timer: fmt.Sprintf("%s days %s hours %s minutes",
+				config.Days, config.Hours, config.Minutes),
+		}
+		CronSch.BackupVms = append(CronSch.BackupVms, entry)
 	}
-	CronSch.BackupVms = append(CronSch.BackupVms, entry)
+	for i, v := range CronSch.BackupVms {
+		fmt.Printf("%d CronSch : %+v\n", i, v)
+	}
 }
 
