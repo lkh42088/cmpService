@@ -58,16 +58,23 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 }
 
 func UpdateVmBackupByConfig(config *messages.BackupConfigMsg) {
-	if CronSch.LookupBackupVm(config.VmName) == false {
-		fmt.Println("UpdateVmBakcupByConfig: dosn't have backup config!")
+	//if CronSch.LookupBackupVm(config.VmName) == false {
+	//	fmt.Println("UpdateVmBackupByConfig: doesn't have backup config!")
+	//	return
+	//}
+	var configType string
+	if config.Type == "false" {
+		fmt.Println("UpdateVmBackupByConfig: Doesn't have backup config!")
 		return
+	} else {
+		configType = "periodically"
 	}
 
 	CronSch.DeleteBackupVm(config.VmName)
 
 	var id cron.EntryID
 	var err error
-	switch (config.Type) {
+	switch (configType) {
 	case "designatedTime":
 		id, err = AddBackupCronDailyTime(config.VmName, config.Hours, config.Minutes)
 	case "periodically":

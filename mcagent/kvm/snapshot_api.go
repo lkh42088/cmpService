@@ -101,16 +101,23 @@ func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
 }
 
 func UpdateVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
-	if CronSch.LookupSnapVm(config.VmName) == false {
-		fmt.Println("UpdateVmSnapshotByConfig: dosn'thave snapshot config!")
+	//if CronSch.LookupSnapVm(config.VmName) == false {
+	//	fmt.Println("UpdateVmSnapshotByConfig: dosn'thave snapshot config!")
+	//	return
+	//}
+	var configType string
+	if config.Type == "false" {
+		fmt.Println("UpdateVmSnapshotByConifg: Already have snapshot config!")
 		return
+	} else {
+		configType = "periodically"
 	}
 
 	CronSch.DeleteSnapVm(config.VmName)
 
 	var id cron.EntryID
 	var err error
-	switch (config.Type) {
+	switch (configType) {
 	case "designatedTime":
 		id, err = AddSnapshotCronDailyTime(config.VmName, config.Hours, config.Minutes)
 	case "periodically":
