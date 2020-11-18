@@ -13,7 +13,7 @@ func Start (conf string) {
 	var wg sync.WaitGroup
 
 	if !config.ApplyGlobalConfig(conf) {
-		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte("ApplyGlobalConfig failed.\n"), 0)
+		ioutil.WriteFile(common.LogPath, []byte("ApplyGlobalConfig failed.\n"), 0)
 		return
 	}
 
