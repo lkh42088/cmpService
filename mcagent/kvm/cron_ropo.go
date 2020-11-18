@@ -1,6 +1,7 @@
 package kvm
 
 import (
+	"fmt"
 	"github.com/robfig/cron/v3"
 	"sync"
 )
@@ -38,12 +39,13 @@ func (c *CronScheduler) LookupBackupVm(vmName string) bool {
 func (c *CronScheduler) DeleteBackupVm(vmName string) bool {
 	findIt := -1
 	for index, vm := range c.BackupVms {
+		fmt.Println("vm name: ", vm.VmName, vmName)
 		if vm.VmName == vmName {
 			DeleteCronEntry(vm.CronId)
 			findIt = index
 		}
 	}
-	if findIt > 0 {
+	if findIt >= 0 {
 		vmSliceMutex.Lock()
 		c.BackupVms = append(c.BackupVms[:findIt], c.BackupVms[findIt+1:]...)
 		vmSliceMutex.Unlock()
@@ -69,7 +71,7 @@ func (c *CronScheduler) DeleteSnapVm(vmName string) bool {
 			findIt = index
 		}
 	}
-	if findIt > 0 {
+	if findIt >= 0 {
 		vmSliceMutex.Lock()
 		c.SnapVms = append(c.SnapVms[:findIt], c.SnapVms[findIt+1:]...)
 		vmSliceMutex.Unlock()
