@@ -340,7 +340,7 @@ func RebootingByBackupFileWithNas(src string, dst string, backup mcmodel.McVmBac
 	// old vm stop
 	dom, err := GetDomainByName(backup.VmName)
 	if err != nil {
-		fmt.Printf("BackupVmImage (%s) error 0: %s", backup.VmName, err)
+		fmt.Printf("GetDomainByName (%s) error 0: %s\n", backup.VmName, err)
 	} else {
 		name, _ := dom.GetName()
 		status, _, _ := dom.GetState()
@@ -351,8 +351,8 @@ func RebootingByBackupFileWithNas(src string, dst string, backup mcmodel.McVmBac
 	}
 
 	// new file move
-	fmt.Println("# Movefile : ", src, dst)
-	MoveFile(src, dst)
+	fmt.Println("# Copyfile : ", src, dst)
+	CopyFile(src, dst)
 
 	// new vm start
 	fmt.Println("# New VM Start!")
@@ -367,6 +367,23 @@ func MoveFile(src string, dst string) {
 	}
 
 	binary := "mv"
+	cmd := exec.Command(binary, args...)
+	_, _ = cmd.Output()
+}
+
+func CopyFile(src string, dst string) {
+	if src == "" || dst == "" {
+		fmt.Println("CopyFile is failed. (File Path is empty)")
+		return
+	}
+
+	args := []string{
+		"-avb",
+		src,
+		dst,
+	}
+
+	binary := "cp"
 	cmd := exec.Command(binary, args...)
 	_, _ = cmd.Output()
 }
