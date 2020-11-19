@@ -13,11 +13,11 @@ import (
 
 const INT32_VALUE = 0xFFFFFFFF
 
-func GetVmInterfaceTrafficByMac(c *gin.Context) {
+func GetBaremetalInterfaceTrafficByMac(c *gin.Context) {
 	mac := c.Param("mac")
 	dbname := "interface"
 	field := `"time","hostname","ifDescr","ifPhysAddress","ifInOctets","ifOutOctets"`
-	where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND time > now() - %s`, mac, "30m")
+	where := fmt.Sprintf(`"ifPhysAddress" =~ /.*%s/ AND ifDescr='br0' AND time > now() - %s`, mac, "30m")
 	res := conf.GetMeasurementsWithCondition(dbname, field, where)
     fmt.Println(res.Err)
 

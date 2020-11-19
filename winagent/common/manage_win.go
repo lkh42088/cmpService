@@ -17,6 +17,7 @@ import (
 )
 
 var GlobalSysInfo mcmodel.SysInfo
+const LogPath = "c:\\Program Files\\Nubes\\winagent_log.txt"
 
 func GetSysInfo() mcmodel.SysInfo {
 	hostStat, _ := host.Info()
@@ -37,7 +38,8 @@ func GetSysInfo() mcmodel.SysInfo {
 	info.KernelArch = hostStat.KernelArch
 	info.KernelVersion = hostStat.KernelVersion
 	for _, v := range netIf {
-		if v.Name == "Ethernet" || v.Name == "이더넷" {
+		if strings.Contains(v.Name, "Ethernet") ||
+			strings.Contains(v.Name, "이더넷") {
 			info.IfName = v.Name
 			info.IfMac = v.HardwareAddr
 			info.IP = v.Addrs[0].Addr
@@ -49,7 +51,7 @@ func GetSysInfo() mcmodel.SysInfo {
 	pretty, _ := json.MarshalIndent(info, "", "  ")
 	fmt.Printf("%s\n", string(pretty))
 
-	ioutil.WriteFile("C:/temp/winagent_log.txt", pretty, 0)
+	ioutil.WriteFile(LogPath, pretty, 0)
 	GlobalSysInfo = *info
 
 	return *info
@@ -101,10 +103,13 @@ func GetGlbalSysInfo() mcmodel.SysInfo {
 }
 
 func InsertMacInTelegrafConf(mac string) bool {
+	sysInfo := GetSysInfo()
+	mac = sysInfo.IfMac
+
 	orgin_file := "c:\\Program files\\Telegraf\\telegraf.conf"
 	fd, err := os.Open(orgin_file)
 	if err != nil {
-		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
+		ioutil.WriteFile(LogPath, []byte(err.Error()), 0)
 		fmt.Println("InsertMacInTelegrafConf: error", err)
 		return false
 	}
@@ -113,7 +118,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 	backup_file := orgin_file +".backup"
 	backup_fd, err := os.Create(backup_file)
 	if err != nil {
-		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
+		ioutil.WriteFile(LogPath, []byte(err.Error()), 0)
 		fmt.Println("InsertMacInTelegrafConf: error", err)
 		return false
 	}
@@ -121,7 +126,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 
 	w := bufio.NewWriter(backup_fd)
 	if err != nil {
-		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
+		ioutil.WriteFile(LogPath, []byte(err.Error()), 0)
 		fmt.Println("InsertMacInTelegrafConf: error", err)
 		return false
 	}
@@ -159,7 +164,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 
 	err = CopyFile(backup_file, orgin_file)
 	if err != nil {
-		ioutil.WriteFile("C:/temp/winagent_log.txt", []byte(err.Error()), 0)
+		ioutil.WriteFile(LogPath, []byte(err.Error()), 0)
 		return false
 	}
 
@@ -167,7 +172,7 @@ func InsertMacInTelegrafConf(mac string) bool {
 }
 
 func DeleteFireWallRule(names string) error {
-	c := exec.Command("netsh", "advfirewall", "firewall", "delete",
+	c := exec.Command("netsh", "advfirewall", "firewall", "delete", "rule",
 		"name=\"" + names + "\"",
 	)
 	out, err := c.Output()

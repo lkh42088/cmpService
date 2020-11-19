@@ -99,6 +99,7 @@ func proxyHandlerVNC(ws *websocket.Conn, c *Config) {
 	address := arr[2]
 	port := arr[3]
 	c.Address = fmt.Sprintf("%s:%s", address, port)
+	log.Println(">>>>>>>> VNC: address", c.Address)
 	conn, err := getConn(c)
 	if err != nil {
 		log.Printf("[ERROR] %v\n", err)

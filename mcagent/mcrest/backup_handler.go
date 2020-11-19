@@ -131,7 +131,12 @@ func RestoreFromNas(data mcmodel.McVmBackup, vm mcmodel.McVm) error {
 	}
 	// Get Image from NAS
 	src := os.Getenv("HOME") + "/nas/backup/" + data.NasBackupName
-	dst := vm.FullPath
+	var dst string
+	if vm.FullPath == "" {
+		return fmt.Errorf("RestoreFromNas Failed. (Not exist vm instance)")
+	} else {
+		dst = vm.FullPath
+	}
 	fmt.Println("NAS (RestoreVmBackup) : ", src, dst)
 	kvm.RebootingByBackupFileWithNas(src, dst, data, vm)
 	return nil

@@ -25,7 +25,7 @@ func AddCronSchFromVmSnapshot(vm *mcmodel.McVm) {
 	var id cron.EntryID
 	var err error
 	switch (vm.SnapDays) {
-	case 2:
+	case 1:
 		 /* Daily */
 		id, err = AddSnapshotCronDailyTime(vm.Name,
 			strconv.Itoa(vm.SnapHours),
@@ -36,8 +36,10 @@ func AddCronSchFromVmSnapshot(vm *mcmodel.McVm) {
 		}
 	case 7:
 		 /* Weekly */
+		id, err = AddSnapshotCronWeekly(vm.Name)
 	case 30:
 		 /* Monthly */
+		id, err = AddSnapshotCronMonthly(vm.Name)
 	default:
 		 /* etc */
 		if vm.SnapHours == 0 && vm.SnapMinutes == 0  {
@@ -81,7 +83,6 @@ func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
 			// weekly
 			id, err = AddSnapshotCronWeekly(config.VmName)
 		} else if config.Days == "1" {
-			// daily
 			id, err = AddSnapshotCronDaily(config.VmName)
 		} else {
 			// hourly

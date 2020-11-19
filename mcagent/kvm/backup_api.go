@@ -24,10 +24,17 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 	var id cron.EntryID
 	var err error
 	switch (vm.BackupDays) {
+	case 1:
+		/* Daily */
+		id, err = AddBackupCronDailyTime(vm.Name,
+			strconv.Itoa(vm.BackupHours),
+			strconv.Itoa(vm.BackupMinutes))
 	case 7:
 		/* Weekly */
+		id, err = AddBackupCronMonthly(vm.Name)
 	case 30:
 		/* Monthly */
+		id, err = AddBackupCronMonthly(vm.Name)
 	default:
 		/* etc */
 		if vm.BackupHours == 0 && vm.BackupMinutes == 0  {
