@@ -212,6 +212,7 @@ func (h *Handler) CheckPassword(c *gin.Context) {
 	password := msg["password"].(string)
 	user, err := h.db.GetUserById(id)
 	match := models.CheckPasswordHash(password, user.Password)
+	//fmt.Println("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ CheckPassword user : ", user)
 	if !match {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "errors": ""})
 		return

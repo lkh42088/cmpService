@@ -269,7 +269,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 	var msg messages.UserRegisterMessage
 	c.Bind(&msg)
 
-	//fmt.Println("■ ModifyUser Message: ", msg)
+	//fmt.Println("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ ModifyUser msg: ", msg)
 	msg.String()
 
 	oldUser, err := h.db.GetUserById(msg.Id)
@@ -303,6 +303,7 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 			}
 		}
 	}
+	//fmt.Println("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ ModifyUser user : ", user)
 
 	updateUser, err := h.db.UpdateUser(user)
 	fmt.Println("■ update user: ", updateUser)
@@ -329,7 +330,6 @@ func (h *Handler) ModifyUser(c *gin.Context) {
 		fmt.Println("ModifyUser: error 5.", err)
 		return
 	}
-	fmt.Println("■■■■■■■■■■■■■■■■■■■■■ Modify user:", updateUser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": updateUser})
 }
 
@@ -426,6 +426,7 @@ func (h *Handler) UnRegisterUser(c *gin.Context) {
 		deleteUser(h, uint(idx))
 	}
 
+	fmt.Println("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ UnRegisterUser msg : ", msg)
 	for _, avata := range msg.AvataList {
 		errRemove := os.Remove(ApiImage+string(avata))
 		if errRemove != nil {
