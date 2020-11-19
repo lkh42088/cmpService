@@ -23,6 +23,7 @@ func (c *CronScheduler) Run() {
 	//fmt.Printf("Entry %+v\n", c.Cr.Entries())
 }
 
+// Run once a month, midnight, first of month
 func AddSnapshotCronMonthly(vmName string) (id cron.EntryID, err error){
 	cronTime := fmt.Sprintf("@monthly")
 	id, err = CronSch.Cr.AddFunc(cronTime, func() {
@@ -32,6 +33,7 @@ func AddSnapshotCronMonthly(vmName string) (id cron.EntryID, err error){
 	return id, err
 }
 
+// Run once a week, midnight between Sat/Sun
 func AddSnapshotCronWeekly(vmName string) (id cron.EntryID, err error){
 	cronTime := fmt.Sprintf("@weekly")
 	id, err = CronSch.Cr.AddFunc(cronTime, func() {
@@ -40,6 +42,7 @@ func AddSnapshotCronWeekly(vmName string) (id cron.EntryID, err error){
 	return id, err
 }
 
+// Run once a day, midnight
 func AddSnapshotCronDaily(vmName string) (id cron.EntryID, err error){
 	cronTime := fmt.Sprintf("@daily")
 	id, err = CronSch.Cr.AddFunc(cronTime, func() {
