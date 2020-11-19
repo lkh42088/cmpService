@@ -150,7 +150,9 @@ func CreateVmInstance(vm mcmodel.McVm) {
 		netStr,
 		"--noautoconsole",
 		"--graphics",
-		"vnc,listen=0.0.0.0",
+		"type=vnc,listen=0.0.0.0",
+		"--autostart",
+		"-v",
 	}
 
 	fmt.Println("args:", args)

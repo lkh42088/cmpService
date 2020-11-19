@@ -25,7 +25,7 @@ func AddCronSchFromVmSnapshot(vm *mcmodel.McVm) {
 	var id cron.EntryID
 	var err error
 	switch (vm.SnapDays) {
-	case 2:
+	case 1:
 		 /* Daily */
 		id, err = AddSnapshotCronDailyTime(vm.Name,
 			strconv.Itoa(vm.SnapHours),
@@ -36,8 +36,10 @@ func AddCronSchFromVmSnapshot(vm *mcmodel.McVm) {
 		}
 	case 7:
 		 /* Weekly */
+		id, err = AddSnapshotCronWeekly(vm.Name)
 	case 30:
 		 /* Monthly */
+		id, err = AddSnapshotCronMonthly(vm.Name)
 	default:
 		 /* etc */
 		if vm.SnapHours == 0 && vm.SnapMinutes == 0  {
@@ -81,7 +83,6 @@ func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
 			// weekly
 			id, err = AddSnapshotCronWeekly(config.VmName)
 		} else if config.Days == "1" {
-			// daily
 			id, err = AddSnapshotCronDaily(config.VmName)
 		} else {
 			// hourly
@@ -101,42 +102,57 @@ func AddVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
 }
 
 func UpdateVmSnapshotByConfig(config *messages.SnapshotConfigMsg) {
-	if CronSch.LookupSnapVm(config.VmName) == false {
-		fmt.Println("UpdateVmSnapshotByConfig: dosn'thave snapshot config!")
-		return
-	}
-
+	var configType string
 	CronSch.DeleteSnapVm(config.VmName)
+	configType = ""
 
 	var id cron.EntryID
+	id = -1
 	var err error
-	switch (config.Type) {
-	case "designatedTime":
-		id, err = AddSnapshotCronDailyTime(config.VmName, config.Hours, config.Minutes)
-	case "periodically":
-		if config.Days == "30" {
-			// monthly
-			id, err = AddSnapshotCronMonthly(config.VmName)
-		} else if config.Days == "7" {
-			// weekly
-			id, err = AddSnapshotCronWeekly(config.VmName)
-		} else if config.Days == "1" {
-			// daily
-			id, err = AddSnapshotCronDaily(config.VmName)
-		} else {
-			// hourly
-			id, err = AddSnapshotCronPeriodically(config.VmName, config.Hours, "0")
+	if config.Type == "true" {
+		switch configType {
+		case "designatedTime":
+			id, err = AddSnapshotCronDailyTime(config.VmName, config.Hours, config.Minutes)
+		case "periodically":
+			if config.Days == "30" {
+				// monthly
+				id, err = AddSnapshotCronMonthly(config.VmName)
+			} else if config.Days == "7" {
+				// weekly
+				id, err = AddSnapshotCronWeekly(config.VmName)
+			} else if config.Days == "1" {
+				// daily
+				id, err = AddSnapshotCronDaily(config.VmName)
+			} else {
+				// hourly
+				id, err = AddSnapshotCronPeriodically(config.VmName, config.Hours, "0")
+			}
+		default:
+			if config.Hours == "0" && config.Minutes == "0" {
+				fmt.Println("AddCronSchFromVmSnapshot: hours 0, minutes 0 --> skip")
+				return
+			} else if config.Hours == "0" {
+				id, err = AddSnapshotCronByMin(config.VmName, config.Minutes)
+			} else {
+				id, err = AddSnapshotCronByHoursMin(config.VmName, config.Hours, config.Minutes)
+			}
 		}
-	default:
 	}
 
 	if err != nil {
 		fmt.Println("UpdateVmSnapshotByConfig: error", err)
 		return
 	}
-	entry := SnapVm{
-		VmName: config.VmName,
-		CronId: id,
+	if id != -1 {
+		entry := SnapVm{
+			VmName: config.VmName,
+			CronId: id,
+			Timer: fmt.Sprintf("%s days %s hours %s minutes",
+				config.Days, config.Hours, config.Minutes),
+		}
+		CronSch.SnapVms = append(CronSch.SnapVms, entry)
 	}
-	CronSch.SnapVms = append(CronSch.SnapVms, entry)
+	for i, v := range CronSch.SnapVms {
+		fmt.Printf("%d CronSch : %+v\n", i, v)
+	}
 }

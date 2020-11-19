@@ -100,84 +100,82 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 		return vmList
 	}
 
-	if err == nil {
-		for _, dom := range doms {
-			// vm name
-			var vm mcmodel.McVm
-			name, _ := dom.GetName()
+	for _, dom := range doms {
+		// vm name
+		var vm mcmodel.McVm
+		name, _ := dom.GetName()
 
-			vm.Name = name
-			//****************************************************************
-			xmlstr, _ := dom.GetXMLDesc(0)
-			domcfg := &libvirtxml.Domain{}
-			err = domcfg.Unmarshal(xmlstr)
-			if domcfg.VCPU != nil {
-				vcpu := domcfg.VCPU.Value
-				vm.Cpu = int(vcpu)
-			}
-			if domcfg.Memory != nil {
-				vm.Ram = int(domcfg.Memory.Value / 1024)
-			}
-			if domcfg.Devices != nil {
-				var res = false
-				devices := domcfg.Devices
-				for _, disk := range devices.Disks {
-					if disk.Source != nil && disk.Source.File != nil {
-						res = ConvertImageFile2MgoVM(&vm, disk.Source.File.File)
-					}
-				}
-				if res == false {
-					// hcmp dit not create this vm!
-					continue
-				}
-				interfaces := domcfg.Devices.Interfaces
-				for _, intf := range interfaces {
-					if intf.Source != nil && intf.Source.Network != nil {
-						vm.Network = intf.Source.Network.Network
-					}
-					if intf.MAC != nil {
-						vm.Mac = intf.MAC.Address
-					}
-					//for _, ip := range intf.IP {
-					//	fmt.Printf("%s\n", ip.Address)
-					//}
-				}
-				graps := domcfg.Devices.Graphics
-				for _, grap := range graps {
-					if grap.VNC != nil {
-						vm.VncPort = fmt.Sprintf("%d", grap.VNC.Port)
-					}
-				}
-			}
-			//****************************************************************
-			// os type
-			//ostype, _ := dom.GetOSType()
-
-			// status
-			status, _, _ := dom.GetState()
-			vm.CurrentStatus = ConvertVmStatus(status)
-
-			// ip address
-			domifs, _ := dom.ListAllInterfaceAddresses(0)
-			for _, intf := range domifs {
-				//fmt.Printf("   intf: %s, %s", intf.Name, intf.Hwaddr)
-				for _, ip := range intf.Addrs {
-					//fmt.Printf(", %s", ip.Addr)
-					vm.IpAddr = ip.Addr
-				}
-			}
-			cfg := config.GetMcGlobalConfig()
-			vm.RemoteAddr = fmt.Sprintf("%s:%d",
-				cfg.ServerIp,
-				cfg.DnatBasePortNum + vm.VmIndex)
-			vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
-				cfg.ServerPublicIp,
-				cfg.DnatBasePortNum + vm.VmIndex)
-			//config.AllocateVmIndex(uint(vm.VmIndex))
-			//fmt.Printf("\n")
-			vm.IsCreated = true
-			vmList = append(vmList, vm)
+		vm.Name = name
+		//****************************************************************
+		xmlstr, _ := dom.GetXMLDesc(0)
+		domcfg := &libvirtxml.Domain{}
+		err = domcfg.Unmarshal(xmlstr)
+		if domcfg.VCPU != nil {
+			vcpu := domcfg.VCPU.Value
+			vm.Cpu = int(vcpu)
 		}
+		if domcfg.Memory != nil {
+			vm.Ram = int(domcfg.Memory.Value / 1024)
+		}
+		if domcfg.Devices != nil {
+			var res = false
+			devices := domcfg.Devices
+			for _, disk := range devices.Disks {
+				if disk.Source != nil && disk.Source.File != nil {
+					res = ConvertImageFile2MgoVM(&vm, disk.Source.File.File)
+				}
+			}
+			if res == false {
+				// hcmp dit not create this vm!
+				continue
+			}
+			interfaces := domcfg.Devices.Interfaces
+			for _, intf := range interfaces {
+				if intf.Source != nil && intf.Source.Network != nil {
+					vm.Network = intf.Source.Network.Network
+				}
+				if intf.MAC != nil {
+					vm.Mac = intf.MAC.Address
+				}
+				//for _, ip := range intf.IP {
+				//	fmt.Printf("%s\n", ip.Address)
+				//}
+			}
+			graps := domcfg.Devices.Graphics
+			for _, grap := range graps {
+				if grap.VNC != nil {
+					vm.VncPort = fmt.Sprintf("%d", grap.VNC.Port)
+				}
+			}
+		}
+		//****************************************************************
+		// os type
+		//ostype, _ := dom.GetOSType()
+
+		// status
+		status, _, _ := dom.GetState()
+		vm.CurrentStatus = ConvertVmStatus(status)
+
+		// ip address
+		domifs, _ := dom.ListAllInterfaceAddresses(0)
+		for _, intf := range domifs {
+			//fmt.Printf("   intf: %s, %s", intf.Name, intf.Hwaddr)
+			for _, ip := range intf.Addrs {
+				//fmt.Printf(", %s", ip.Addr)
+				vm.IpAddr = ip.Addr
+			}
+		}
+		cfg := config.GetMcGlobalConfig()
+		vm.RemoteAddr = fmt.Sprintf("%s:%d",
+			cfg.ServerIp,
+			cfg.DnatBasePortNum + vm.VmIndex)
+		vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
+			cfg.ServerPublicIp,
+			cfg.DnatBasePortNum + vm.VmIndex)
+		//config.AllocateVmIndex(uint(vm.VmIndex))
+		//fmt.Printf("\n")
+		vm.IsCreated = true
+		vmList = append(vmList, vm)
 	}
 
 	return vmList

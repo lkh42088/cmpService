@@ -298,9 +298,9 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
 
-	fmt.Printf("update McVm : %v\n", mbMsg)
+	//fmt.Printf("update McVm : %v\n", mbMsg)
 
-	msg, err := h.db.UpdateMcVmSnapshot(mbMsg)
+	_, err := h.db.UpdateMcVmSnapshot(mbMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -309,13 +309,15 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 /*	var sncMsg messages.SnapshotConfigMsg
 	c.Bind(&sncMsg)*/
 
+	vm, err := h.db.GetMcVmByIdx(mbMsg.Idx)
+
 	sncMsg := messages.SnapshotConfigMsg{
-		ServerIdx: uint(mbMsg.McServerIdx),
-		VmName:    mbMsg.Name,
-		Type:      strconv.FormatBool(mbMsg.SnapType),
-		Days:      string(mbMsg.SnapDays),
-		Hours:     string(mbMsg.SnapHours),
-		Minutes:   string(mbMsg.SnapMinutes),
+		ServerIdx: uint(vm.McServerIdx),
+		VmName:    vm.Name,
+		Type:      strconv.FormatBool(vm.SnapType),
+		Days:      strconv.Itoa(vm.SnapDays),
+		Hours:     strconv.Itoa(vm.SnapHours),
+		Minutes:   strconv.Itoa(vm.SnapMinutes),
 	}
 
 	fmt.Println("UpdateVmSnapshot:", sncMsg)
@@ -325,11 +327,7 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	}
 	mcapi.SendUpdateVmSnapshot(sncMsg, server)
 
-	//mcagent/kvm/snapshot_api.go    AddCronSchFromVmSnapshot()
-	//11:44
-	//parameter 로 vm info 넣어주면 Cron 스케줄 추가 될 거에요
-
-	c.JSON(http.StatusOK, msg)
+	c.JSON(http.StatusOK, vm)
 }
 
 
@@ -337,19 +335,33 @@ func (h *Handler) UpdateMcVmFromMcBackup(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
 
-	fmt.Printf("update McVm : %v\n", mbMsg)
+	//fmt.Printf("update McVm : %v\n", mbMsg)
 
-	msg, err := h.db.UpdateMcVmBackupVm(mbMsg) //UpdateMcVmBackup duplicate
+	_, err := h.db.UpdateMcVmBackupVm(mbMsg) //UpdateMcVmBackup duplicate
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	//mcagent/kvm/backup_api.go    AddCronSchForVmBackup()
-	//11:43
-	//parameter 로 vm info 넣어주면 Cron 스케줄 추가 될 거에요
+	vm, err := h.db.GetMcVmByIdx(mbMsg.Idx)
+	//fmt.Printf("%+v\n", vm)
+	backupMsg := messages.BackupConfigMsg{
+		ServerIdx: uint(vm.McServerIdx),
+		VmName:    vm.Name,
+		Type:      strconv.FormatBool(vm.BackupType),
+		Days:      strconv.Itoa(vm.BackupDays),
+		Hours:     strconv.Itoa(vm.BackupHours),
+		Minutes:   strconv.Itoa(vm.BackupMinutes),
+	}
 
-	c.JSON(http.StatusOK, msg)
+	fmt.Printf("UpdateVmBackup: %+v\n", backupMsg)
+	server, err := h.db.GetMcServerByServerIdx(backupMsg.ServerIdx)
+	if err != nil {
+		return
+	}
+	mcapi.SendUpdateVmBackup(backupMsg, server)
+
+	c.JSON(http.StatusOK, vm)
 }
 
 func (h *Handler) ApplyVmAction(c *gin.Context) {
