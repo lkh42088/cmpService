@@ -14,6 +14,7 @@ func GetMeasurementsWithCondition(collector string, field string, where string) 
 	query := "SELECT " + field + " FROM " + collector
 	query += " WHERE " + where
 
+	fmt.Println("** Query : ", query)
 	res, err := InfluxdbQuery(query)
 	if err != nil {
 		return nil
