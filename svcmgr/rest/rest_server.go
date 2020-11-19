@@ -283,7 +283,7 @@ func RunAPI(address string, db *mariadblayer.DBORM) error {
 	router.GET(lib.SvcmgrApiMicroNetworkPaging+pagingParam, h.GetMcNetworks)
 	router.GET(lib.SvcmgrApiMicroNetwork+"/:serverIdx", h.GetMcNetworksByServerIdx)
 
-	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetVmInterfaceTrafficByMac)
+	router.GET(lib.SvcmgrApiMicroVmStats+"/:mac", GetBaremetalInterfaceTrafficByMac)
 	router.GET(lib.SvcmgrApiMicroVmInfo+"/:mac", GetVmInfoStats)
 	router.POST(lib.SvcmgrApiMicroServerResource, h.UpdateMcServerResource)
 
