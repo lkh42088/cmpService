@@ -220,6 +220,12 @@ func (db *DBORM) UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error) 
 		}).Error
 }
 
+func (db *DBORM) DeleteSystemInfoByMac(mac string) error {
+	return db.
+		Where(mcmodel.SysInfo{IfMac: mac}).
+		Delete(mcmodel.SysInfo{}).Error
+}
+
 func (db *DBORM) GetServerTotalCount() (total int, operate int, err error) {
 	// Server total count
 	err = db.
