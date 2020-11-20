@@ -32,7 +32,7 @@ func AddBackupCronDaily(vmName string) (id cron.EntryID, err error){
 }
 
 func AddBackupCronDailyTime(vmName, hour, min string) (id cron.EntryID, err error){
-	cronTime := fmt.Sprintf("CRON_TZ=Asia/Seoul %s %s * * *", hour, min)
+	cronTime := fmt.Sprintf("CRON_TZ=Asia/Seoul %s %s * * *", min, hour)
 	fmt.Println("AddBackupCronDailyTime:", vmName, "-", cronTime)
 	id, err = CronSch.Cr.AddFunc(cronTime, func() {
 		fmt.Println(fmt.Sprintf("run at %s:%s Seoul time every day", hour, min))
