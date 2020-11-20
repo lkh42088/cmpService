@@ -202,8 +202,6 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	var userMsg messages.UserRegisterMessage
 	c.Bind(&userMsg)
 
-	fmt.Println("Register c: ", c)
-	fmt.Println("Register Message: ", userMsg)
 	userMsg.String()
 
 /*	v, _ := c.MultipartForm()
@@ -245,7 +243,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 	//fmt.Println("User: ", user)
 	models.HashPassword(&user)
 	adduser, err := h.db.AddUser(user)
-	fmt.Println("Add User: ", adduser)
+	//fmt.Println("Add User: ", adduser)
 	if len(emailAuthList) > 0 {
 		for _, loginAuth := range emailAuthList {
 			loginAuth.UserIdx = adduser.Idx
@@ -261,7 +259,7 @@ func (h *Handler) RegisterUser(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"success": false, "errors": err})
 		return
 	}
-	fmt.Println("Add user:", adduser)
+	//fmt.Println("Add user:", adduser)
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": adduser})
 }
 
