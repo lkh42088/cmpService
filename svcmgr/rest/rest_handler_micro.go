@@ -159,6 +159,8 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		DeleteMcNetworksByServerIdx(idx)
 		// Dao: Image
 		DeleteMcImagesByServerIdx(idx)
+		// Dao: SysInfo
+		h.db.DeleteSystemInfoByMac(server.Mac)
 		h.db.DeleteMcServer(server)
 	}
 

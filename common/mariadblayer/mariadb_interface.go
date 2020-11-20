@@ -200,6 +200,7 @@ type MariaDBLayer interface {
 	AddSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error)
 	GetSystemInfoByMac(mac string) (mcmodel.SysInfo, error)
 	UpdateSystemInfo(obj mcmodel.SysInfo) (mcmodel.SysInfo, error)
+	DeleteSystemInfoByMac(mac string) error
 
 	// Micro-Dashboard
 	GetServerTotalCount() (int, int, error)
