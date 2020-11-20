@@ -300,7 +300,7 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
 
-	//fmt.Printf("update McVm : %v\n", mbMsg)
+	fmt.Printf("update McVm : %v\n", mbMsg)
 
 	_, err := h.db.UpdateMcVmSnapshot(mbMsg)
 	if err != nil {
@@ -339,7 +339,7 @@ func (h *Handler) UpdateMcVmFromMcBackup(c *gin.Context) {
 
 	//fmt.Printf("update McVm : %v\n", mbMsg)
 
-	_, err := h.db.UpdateMcVmBackupVm(mbMsg) //UpdateMcVmBackup duplicate
+	_, err := h.db.UpdateMcVmBackup(mbMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

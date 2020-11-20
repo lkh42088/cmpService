@@ -169,7 +169,11 @@ func (db *DBORM) UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
 			"vm_current_status":     obj.CurrentStatus,
 			"vm_public_remote_addr": obj.PublicRemoteAddr,
 			"vm_remote_addr":        obj.RemoteAddr,
-		}).Error
+			"vm_backupType":			 obj.BackupType,
+			"vm_backupDays":			 obj.BackupDays,
+			"vm_backupHours":			 obj.BackupHours,
+			"vm_backupMinutes":		 obj.BackupMinutes,
+	}).Error
 }
 
 func (db *DBORM) ModifyMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
@@ -193,7 +197,7 @@ func (db *DBORM) ModifyMcVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
 func (db *DBORM) UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error) {
 	return obj, db.Debug().
 		Model(&obj).
-		Where(mcmodel.McVm{Idx: obj.Idx}).
+		Where(mcmodel.McVm{Name: obj.Name}).
 		Updates(map[string]interface{}{
 			"vm_snap_type":    obj.SnapType,
 			"vm_snap_days":    obj.SnapDays,
@@ -202,10 +206,10 @@ func (db *DBORM) UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error) {
 		}).Error
 }
 
-func (db *DBORM) UpdateMcVmBackupVm(obj mcmodel.McVm) (mcmodel.McVm, error) {
+func (db *DBORM) UpdateMcVmForBackup(obj mcmodel.McVm) (mcmodel.McVm, error) {
 	return obj, db.Debug().
 		Model(&obj).
-		Where(mcmodel.McVm{Idx: obj.Idx}).
+		Where(mcmodel.McVm{Name: obj.Name}).
 		Updates(map[string]interface{}{
 			"vm_backup_type":    obj.BackupType,
 			"vm_backup_days":    obj.BackupDays,

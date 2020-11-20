@@ -1,11 +1,14 @@
 package mcrest
 
 import (
+	"cmpService/common/mcmodel"
 	"cmpService/common/messages"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/repo"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func getVmSnapshot(c *gin.Context) {
@@ -51,6 +54,14 @@ func updateVmSnapshot(c *gin.Context) {
 	var msg messages.SnapshotConfigMsg
 	c.ShouldBindJSON(&msg)
 	kvm.UpdateVmSnapshotByConfig(&msg)
+
+	vm := mcmodel.McVm{}
+	vm.Name = msg.VmName
+	vm.SnapType, _ = strconv.ParseBool(msg.Type)
+	vm.SnapDays, _ = strconv.Atoi(msg.Days)
+	vm.SnapHours, _ = strconv.Atoi(msg.Hours)
+	vm.SnapMinutes, _ = strconv.Atoi(msg.Minutes)
+	repo.UpdateVm2DbForSnapshot(vm)
 	c.JSON(http.StatusOK, msg)
 }
 

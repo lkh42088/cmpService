@@ -182,7 +182,7 @@ type MariaDBLayer interface {
 	UpdateMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	ModifyMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
 	UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error)
-	UpdateMcVmBackupVm(obj mcmodel.McVm) (mcmodel.McVm, error)
+	UpdateMcVmBackup(obj mcmodel.McVm) (mcmodel.McVm, error)
 	DeleteMcVm(obj mcmodel.McVm) (mcmodel.McVm, error)
  	GetMcVmByNameAndCpIdx(name string, cpidx int) (vm mcmodel.McVm, err error)
 

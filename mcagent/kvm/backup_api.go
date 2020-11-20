@@ -31,7 +31,7 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 			strconv.Itoa(vm.BackupMinutes))
 	case 7:
 		/* Weekly */
-		id, err = AddBackupCronMonthly(vm.Name)
+		id, err = AddBackupCronWeekly(vm.Name)
 	case 30:
 		/* Monthly */
 		id, err = AddBackupCronMonthly(vm.Name)
@@ -65,31 +65,25 @@ func AddCronSchForVmBackup(vm *mcmodel.McVm) {
 }
 
 func UpdateVmBackupByConfig(config *messages.BackupConfigMsg) {
-	var configType string
+	//var configType string
 	CronSch.DeleteBackupVm(config.VmName)
-	configType = ""
+	//configType = ""
 
 	var id cron.EntryID
 	id = -1
-	var err error
+	//var err error
 	if config.Type == "true" {
-		switch configType {
-		case "designatedTime":
+		days, err := strconv.Atoi(config.Days)
+		switch days {
+		case 1:
+			/* Daily */
 			id, err = AddBackupCronDailyTime(config.VmName, config.Hours, config.Minutes)
-		case "periodically":
-			if config.Days == "30" {
-				// monthly
-				id, err = AddBackupCronMonthly(config.VmName)
-			} else if config.Days == "7" {
-				// weekly
-				id, err = AddBackupCronWeekly(config.VmName)
-			} else if config.Days == "1" {
-				// daily
-				id, err = AddBackupCronDaily(config.VmName)
-			} else {
-				// hourly
-				id, err = AddBackupCronPeriodically(config.VmName, config.Hours, "0")
-			}
+		case 7:
+			/* Weekly */
+			id, err = AddBackupCronWeekly(config.VmName)
+		case 30:
+			/* Monthly */
+			id, err = AddBackupCronMonthly(config.VmName)
 		default:
 			if config.Hours == "0" && config.Minutes == "0"  {
 				fmt.Println("AddCronSchForVmBackup: hours 0, minutes 0 --> skip")
@@ -106,10 +100,6 @@ func UpdateVmBackupByConfig(config *messages.BackupConfigMsg) {
 		}
 	}
 
-	if err != nil {
-		fmt.Println("UpdateVmSnapshotByConfig: error", err)
-		return
-	}
 	if id != -1 {
 		entry := BackupVm{
 			VmName: config.VmName,

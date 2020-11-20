@@ -7,11 +7,13 @@ import (
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/repo"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
+	"strconv"
 	time "time"
 )
 
@@ -147,5 +149,14 @@ func UpdateVmBackup(c *gin.Context) {
 	var msg messages.BackupConfigMsg
 	c.ShouldBindJSON(&msg)
 	kvm.UpdateVmBackupByConfig(&msg)
+
+	vm := mcmodel.McVm{}
+	vm.Name = msg.VmName
+	vm.BackupType, _ = strconv.ParseBool(msg.Type)
+	vm.BackupDays, _ = strconv.Atoi(msg.Days)
+	vm.BackupHours, _ = strconv.Atoi(msg.Hours)
+	vm.BackupMinutes, _ = strconv.Atoi(msg.Minutes)
+	repo.UpdateVm2DbForBackup(vm)
+
 	c.JSON(http.StatusOK, msg)
 }
