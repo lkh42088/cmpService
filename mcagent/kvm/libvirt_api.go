@@ -3,6 +3,7 @@ package kvm
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/repo"
 	"fmt"
 	"github.com/libvirt/libvirt-go"
 	libvirtxml "github.com/libvirt/libvirt-go-xml"
@@ -165,7 +166,7 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 				vm.IpAddr = ip.Addr
 			}
 		}
-		//svr := repo.GetMcServer()
+		svr := repo.GetMcServer()
 		cfg := config.GetMcGlobalConfig()
 		vm.RemoteAddr = fmt.Sprintf("%s:%d",
 			cfg.ServerIp,
@@ -173,9 +174,9 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 		vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
 			cfg.ServerPublicIp,
 			cfg.DnatBasePortNum + vm.VmIndex)
-		//vm.RemoteAddr = fmt.Sprintf("%s:%d",
-		//	svr.DomainPrefix + ".nubes-bridge.com",
-		//	cfg.DnatBasePortNum + vm.VmIndex)
+		vm.DomainAddr = fmt.Sprintf("%s:%d",
+			svr.DomainPrefix + ".nubes-bridge.com",
+			cfg.DnatBasePortNum + vm.VmIndex)
 		//config.AllocateVmIndex(uint(vm.VmIndex))
 		//fmt.Printf("\n")
 		vm.IsCreated = true
