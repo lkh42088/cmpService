@@ -165,6 +165,7 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 				vm.IpAddr = ip.Addr
 			}
 		}
+		//svr := repo.GetMcServer()
 		cfg := config.GetMcGlobalConfig()
 		vm.RemoteAddr = fmt.Sprintf("%s:%d",
 			cfg.ServerIp,
@@ -172,6 +173,9 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 		vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
 			cfg.ServerPublicIp,
 			cfg.DnatBasePortNum + vm.VmIndex)
+		//vm.RemoteAddr = fmt.Sprintf("%s:%d",
+		//	svr.DomainPrefix + ".nubes-bridge.com",
+		//	cfg.DnatBasePortNum + vm.VmIndex)
 		//config.AllocateVmIndex(uint(vm.VmIndex))
 		//fmt.Printf("\n")
 		vm.IsCreated = true
