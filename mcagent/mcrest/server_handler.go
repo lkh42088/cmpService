@@ -158,6 +158,16 @@ func unRegisterServerHandler(c *gin.Context) {
 	}
 
 	/*********************
+	 * Delete Filter Rules
+	 *********************/
+	rules, err := repo.GetAccessFilterAll()
+	if err == nil && len(rules) > 0 {
+		for _, rule := range rules {
+			repo.DeleteAccessFilter(rule)
+		}
+	}
+
+	/*********************
 	 * Delete Server
 	 *********************/
 	deleteServer()

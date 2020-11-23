@@ -162,6 +162,13 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		// Dao: SysInfo
 		h.db.DeleteSystemInfoByMac(server.Mac)
 		h.db.DeleteMcServer(server)
+		// Delete Filter Rules
+		rules, err := h.db.GetMcFilterRule()
+		if err == nil && len(rules) > 0 {
+			for _, rule := range rules {
+				h.db.DeleteMcFilterRule(rule)
+			}
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
