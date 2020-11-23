@@ -1,6 +1,7 @@
 package kvm
 
 import (
+	"cmpService/common/ktapi"
 	config2 "cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/svcmgrapi"
@@ -19,7 +20,8 @@ func GetConfig() {
 	db, _ := config.SetMariaDB(cfg.MariaUser, cfg.MariaPassword, cfg.MariaDb,
 		cfg.MariaIp, 3306)
 	config2.SetDbOrm(db)
-	_ = ktrest.PostAuthTokens()
+	token, _ := ktapi.PostAuthTokens()
+	ktapi.GlobalToken = token
 	ktrest.ConfigurationForKtContainer()
 
 }

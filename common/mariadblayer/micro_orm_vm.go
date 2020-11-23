@@ -206,7 +206,7 @@ func (db *DBORM) UpdateMcVmSnapshot(obj mcmodel.McVm) (mcmodel.McVm, error) {
 		}).Error
 }
 
-func (db *DBORM) UpdateMcVmForBackup(obj mcmodel.McVm) (mcmodel.McVm, error) {
+func (db *DBORM) UpdateMcVmBackup(obj mcmodel.McVm) (mcmodel.McVm, error) {
 	return obj, db.Debug().
 		Model(&obj).
 		Where(mcmodel.McVm{Name: obj.Name}).

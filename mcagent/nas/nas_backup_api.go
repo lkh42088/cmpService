@@ -36,7 +36,8 @@ func CopyBackupFileToNas(srcPath string, dstPath string) error {
 }
 
 func MountNasDirectory(nasSrc string) {
-	nasDst := os.Getenv("HOME") + "/nas"
+	//nasDst := os.Getenv("HOME") + "/nas"
+	nasDst := "/home/nubes/nas"
 	args := []string{
 		"-t",
 		"nfs",

@@ -337,7 +337,7 @@ func (h *Handler) UpdateMcVmFromMcBackup(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
 
-	//fmt.Printf("update McVm : %v\n", mbMsg)
+	fmt.Printf("update McVm : %v\n", mbMsg)
 
 	_, err := h.db.UpdateMcVmBackup(mbMsg)
 	if err != nil {
