@@ -106,6 +106,12 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 		var vm mcmodel.McVm
 		name, _ := dom.GetName()
 
+		// (25nov2020,bhjung)
+		if strings.HasSuffix(name, "-cronsch") {
+			// This vm is a croning vm
+			continue
+		}
+
 		vm.Name = name
 		//****************************************************************
 		xmlstr, _ := dom.GetXMLDesc(0)
