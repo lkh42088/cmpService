@@ -195,9 +195,9 @@ func SafeBackup(vmName, backupName, desc string) {
 	/*****************
 	 * Sync VM list
 	*****************/
-	vms := GetMcServerInfo().Vms
-	fmt.Println("# Backup Vms : ", *vms)
-	svcmgrapi.SendUpdateVmList2Svcmgr(*vms, svcmgrRestAddr)
+	//vms := GetMcServerInfo().Vms
+	//fmt.Println("# Backup Vms : ", *vms)
+	//svcmgrapi.SendUpdateVmList2Svcmgr(*vms, svcmgrRestAddr)
 }
 
 func MakeBackupMsg(vmName string, backupName string, desc string, size int, server mcmodel.McServerDetail) (*mcmodel.McVmBackup, string) {
