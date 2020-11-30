@@ -87,7 +87,7 @@ func (db *DBORM) UpdateUser(user models.User) (models.User, error) {
 			"user_position":              user.Position,
 			"user_email_auth_flag":       user.EmailAuth,
 			"user_group_email_auth_flag": user.GroupEmailAuth,
-			"user_register_date":         user.RegisterDate,
+			/*"user_register_date":         user.RegisterDate,*/
 			"user_last_access_date":      user.LastAccessDate,
 			"user_last_access_ip":        user.LastAccessIp,
 			"user_avata":                 user.Avata,

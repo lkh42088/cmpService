@@ -329,6 +329,7 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	}
 	mcapi.SendUpdateVmSnapshot(sncMsg, server)
 
+	//fmt.Println("vm:", vm)
 	c.JSON(http.StatusOK, vm)
 }
 
