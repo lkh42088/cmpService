@@ -104,17 +104,17 @@ func ApplyMcServerResource(recvMsg mcmodel.McServerMsg, server mcmodel.McServerD
 				fmt.Println("insert vm: ", obj)
 			}
 		}
-		for _, vm := range vmList {
-			obj := mcmodel.LookupVm(&vmList, vm)
-			if obj == nil {
-				config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
-			}
-		}
+		//for _, vm := range vmList {
+		//	obj := mcmodel.LookupVm(&vmList, vm)
+		//	if obj == nil {
+		//		config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
+		//	}
+		//}
 	} else {
-		vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
-		for _, vm := range vmList {
-			config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
-		}
+		//vmList, _ := config.SvcmgrGlobalConfig.Mariadb.GetMcVmsByServerIdx(int(s.Idx))
+		//for _, vm := range vmList {
+		//	config.SvcmgrGlobalConfig.Mariadb.DeleteMcVm(vm)
+		//}
 	}
 }
 
