@@ -162,6 +162,13 @@ func (h *Handler) DeleteMcServer(c *gin.Context) {
 		// Dao: SysInfo
 		h.db.DeleteSystemInfoByMac(server.Mac)
 		h.db.DeleteMcServer(server)
+		// Delete Filter Rules
+		rules, err := h.db.GetMcFilterRule()
+		if err == nil && len(rules) > 0 {
+			for _, rule := range rules {
+				h.db.DeleteMcFilterRule(rule)
+			}
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "created successfully"})
@@ -300,7 +307,7 @@ func (h *Handler) UpdateMcVmFromMcSnapshot(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
 
-	//fmt.Printf("update McVm : %v\n", mbMsg)
+	fmt.Printf("update McVm : %v\n", mbMsg)
 
 	_, err := h.db.UpdateMcVmSnapshot(mbMsg)
 	if err != nil {
@@ -338,9 +345,9 @@ func (h *Handler) UpdateMcVmFromMcBackup(c *gin.Context) {
 	var mbMsg mcmodel.McVm
 	c.Bind(&mbMsg)
 
-	//fmt.Printf("update McVm : %v\n", mbMsg)
+	fmt.Printf("update McVm : %v\n", mbMsg)
 
-	_, err := h.db.UpdateMcVmBackupVm(mbMsg) //UpdateMcVmBackup duplicate
+	_, err := h.db.UpdateMcVmBackup(mbMsg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

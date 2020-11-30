@@ -7,11 +7,13 @@ import (
 	"cmpService/mcagent/config"
 	"cmpService/mcagent/ktrest"
 	"cmpService/mcagent/kvm"
+	"cmpService/mcagent/repo"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
+	"strconv"
 	time "time"
 )
 
@@ -60,7 +62,8 @@ func DeleteVmBackup(vmName string) error {
 			}
 		}
 	} else {
-		filePath := os.Getenv("HOME") + "/nas/backup/" + backupInfo.NasBackupName
+		//filePath := os.Getenv("HOME") + "/nas/backup/" + backupInfo.NasBackupName
+		filePath := "/home/nubes/nas/backup/" + backupInfo.NasBackupName
 		kvm.DeleteFile(filePath)
 	}
 	// DB update
@@ -125,12 +128,14 @@ func RestoreVmBackup(c *gin.Context) {
 
 func RestoreFromNas(data mcmodel.McVmBackup, vm mcmodel.McVm) error {
 	// Check Directory
-	if _, err := os.Stat(os.Getenv("HOME") + "/nas/backup"); err != nil {
+	//if _, err := os.Stat(os.Getenv("HOME") + "/nas/backup"); err != nil {
+	if _, err := os.Stat("/home/nubes/nas/backup"); err != nil {
 		fmt.Println("!! NAS directory is not mounted.")
 		return err
 	}
 	// Get Image from NAS
-	src := os.Getenv("HOME") + "/nas/backup/" + data.NasBackupName
+	//src := os.Getenv("HOME") + "/nas/backup/" + data.NasBackupName
+	src := "/home/nubes/nas/backup/" + data.NasBackupName
 	var dst string
 	if vm.FullPath == "" {
 		return fmt.Errorf("RestoreFromNas Failed. (Not exist vm instance)")
@@ -147,5 +152,14 @@ func UpdateVmBackup(c *gin.Context) {
 	var msg messages.BackupConfigMsg
 	c.ShouldBindJSON(&msg)
 	kvm.UpdateVmBackupByConfig(&msg)
+
+	vm := mcmodel.McVm{}
+	vm.Name = msg.VmName
+	vm.BackupType, _ = strconv.ParseBool(msg.Type)
+	vm.BackupDays, _ = strconv.Atoi(msg.Days)
+	vm.BackupHours, _ = strconv.Atoi(msg.Hours)
+	vm.BackupMinutes, _ = strconv.Atoi(msg.Minutes)
+	repo.UpdateVm2DbForBackup(vm)
+
 	c.JSON(http.StatusOK, msg)
 }

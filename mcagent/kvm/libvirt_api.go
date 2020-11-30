@@ -3,6 +3,7 @@ package kvm
 import (
 	"cmpService/common/mcmodel"
 	"cmpService/mcagent/config"
+	"cmpService/mcagent/repo"
 	"fmt"
 	"github.com/libvirt/libvirt-go"
 	libvirtxml "github.com/libvirt/libvirt-go-xml"
@@ -105,6 +106,12 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 		var vm mcmodel.McVm
 		name, _ := dom.GetName()
 
+		// (25nov2020,bhjung)
+		if strings.HasSuffix(name, "-cronsch") {
+			// This vm is a croning vm
+			continue
+		}
+
 		vm.Name = name
 		//****************************************************************
 		xmlstr, _ := dom.GetXMLDesc(0)
@@ -165,12 +172,16 @@ func GetVmByLibvirt() (vmList []mcmodel.McVm){
 				vm.IpAddr = ip.Addr
 			}
 		}
+		svr := repo.GetMcServer()
 		cfg := config.GetMcGlobalConfig()
 		vm.RemoteAddr = fmt.Sprintf("%s:%d",
 			cfg.ServerIp,
 			cfg.DnatBasePortNum + vm.VmIndex)
 		vm.PublicRemoteAddr= fmt.Sprintf("%s:%d",
 			cfg.ServerPublicIp,
+			cfg.DnatBasePortNum + vm.VmIndex)
+		vm.DomainAddr = fmt.Sprintf("%s:%d",
+			svr.DomainPrefix + ".nubes-bridge.com",
 			cfg.DnatBasePortNum + vm.VmIndex)
 		//config.AllocateVmIndex(uint(vm.VmIndex))
 		//fmt.Printf("\n")

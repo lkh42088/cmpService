@@ -158,6 +158,6 @@ func TestDeleteMcVm(t*testing.T) {
 var vmName = "vm01"
 
 func TestSnapCount(t*testing.T) {
-	CheckSnapshotClout(vmName)
+	CheckSnapshotCount(vmName)
 }
 

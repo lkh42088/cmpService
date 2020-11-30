@@ -58,6 +58,7 @@ type McVm struct {
 	FullPath         string `gorm:"type:varchar(50);column:vm_full_path;comment:'file full path'" json:"fullPath"`
 	Network          string `gorm:"type:varchar(50);column:vm_network;comment:'vm network'" json:"network"`
 	IpAddr           string `gorm:"type:varchar(50);column:vm_ip_addr;comment:'vm ip address'" json:"ipAddr"`
+	DomainAddr 		 string `gorm:"type:varchar(50);column:vm_domain_addr;comment:'Domain address'" json:"domainAddr"`
 	PublicRemoteAddr string `gorm:"type:varchar(50);column:vm_public_remote_addr;comment:'Public Remote Address for RDP'" json:"publicRemoteAddr"`
 	RemoteAddr       string `gorm:"type:varchar(50);column:vm_remote_addr;comment:'Remote Address for RDP'" json:"remoteAddr"`
 	VncPort          string `gorm:"type:varchar(50);column:vm_vnc_port;comment:'vm vnc port'" json:"vncPort"`

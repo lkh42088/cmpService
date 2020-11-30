@@ -177,6 +177,14 @@ func UpdateVm2Db(v mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	return config.GetMcGlobalConfig().DbOrm.UpdateMcVm(v)
 }
 
+func UpdateVm2DbForSnapshot(v mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	return config.GetMcGlobalConfig().DbOrm.UpdateMcVmSnapshot(v)
+}
+
+func UpdateVm2DbForBackup(v mcmodel.McVm) (vm mcmodel.McVm, err error) {
+	return config.GetMcGlobalConfig().DbOrm.UpdateMcVmBackup(v)
+}
+
 func DeleteVmFromDb(v mcmodel.McVm) (vm mcmodel.McVm, err error) {
 	return config.GetMcGlobalConfig().DbOrm.DeleteMcVm(v)
 }
@@ -210,7 +218,7 @@ func StoreVmBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
 }
 
 func UpdateBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {
-	return config.GetMcGlobalConfig().DbOrm.UpdateMcVmBackup(v)
+	return config.GetMcGlobalConfig().DbOrm.UpdateMcBackup(v)
 }
 
 func AddBackup2Db(v mcmodel.McVmBackup) (mcmodel.McVmBackup, error) {

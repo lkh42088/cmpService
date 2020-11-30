@@ -195,9 +195,9 @@ func SafeBackup(vmName, backupName, desc string) {
 	/*****************
 	 * Sync VM list
 	*****************/
-	vms := GetMcServerInfo().Vms
-	fmt.Println("# Backup Vms : ", *vms)
-	svcmgrapi.SendUpdateVmList2Svcmgr(*vms, svcmgrRestAddr)
+	//vms := GetMcServerInfo().Vms
+	//fmt.Println("# Backup Vms : ", *vms)
+	//svcmgrapi.SendUpdateVmList2Svcmgr(*vms, svcmgrRestAddr)
 }
 
 func MakeBackupMsg(vmName string, backupName string, desc string, size int, server mcmodel.McServerDetail) (*mcmodel.McVmBackup, string) {
@@ -265,6 +265,7 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 	} else {
 		fmt.Println("NAS SafeBackup: ", backupFile)
 		ch := make(chan string)
+		CheckNasInfo()
 		go TransferBackupFileToNas(backupFile, ch)
 		for {
 			v := <- ch
@@ -280,7 +281,8 @@ func McVmBackup(vmName string, backupFile string, command string) (*mcmodel.McSe
 
 func TransferBackupFileToNas(backupFile string, ch chan string) {
 	src := config.GetMcGlobalConfig().VmBackupDir + "/" + backupFile
-	dst := os.Getenv("HOME") + "/nas/backup/" + backupFile
+	//dst := os.Getenv("HOME") + "/nas/backup/" + backupFile
+	dst := "/home/nubes/nas/backup/" + backupFile
 	fmt.Println("NAS PATH: ", src, dst)
 	MoveFile(src, dst)
 	ch <- "complete"
@@ -418,8 +420,10 @@ func CheckNasInfo() {
 		return
 	}
 	nas.MountNasDirectory(server.NasUrl)
-	if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas/backup"); err != nil {
-		fmt.Println("!! NAS directory is not mounted.")
+	//if _, err := os.Stat(os.Getenv("HOME") + "/" + "nas/backup"); err != nil {
+	if _, err := os.Stat("/home/nubes/nas/backup"); err != nil {
+			fmt.Println("!! NAS directory is not mounted.")
 	}
 }
+
 

@@ -145,7 +145,7 @@ func (h *Handler) DeleteVmBackupEntryList(c *gin.Context) {
 			entry.VmName = backup.VmName
 			if backup.Name != "" {
 				entry.BackupName = backup.Name
-			} else if (backup.NasBackupName != "") {
+			} else if backup.NasBackupName != "" {
 				entry.BackupName = backup.NasBackupName
 			}
 			entryList = append(entryList, entry)
@@ -203,7 +203,7 @@ func AddVmBackupFromMc(backup mcmodel.McVmBackup) error {
 
 func UpdateVmBackupFromMc(backup mcmodel.McVmBackup) error {
 	fmt.Println("# Update: ", backup)
-	_, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcVmBackup(backup)
+	_, err := config.SvcmgrGlobalConfig.Mariadb.UpdateMcBackup(backup)
 	if err != nil {
 		return err
 	}
